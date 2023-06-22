@@ -1,6 +1,6 @@
 export default [
     {
-        dbName: 'expanses',
+        dbName: 'expenses',
         stores:[
             {
                 name:'section',
