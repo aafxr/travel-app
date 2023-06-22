@@ -14,7 +14,7 @@ const section_limit={
 
 
 // фактические расходы
-const item ={
+const expanse_item ={
     id,
     user_id,
     primary_entity_type,
