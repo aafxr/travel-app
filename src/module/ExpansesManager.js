@@ -67,5 +67,5 @@ const expensesActions = {
 
 
 export class ExpansesManager{
-    constructor(id, title)
+    constructor(id, title, )
 }
