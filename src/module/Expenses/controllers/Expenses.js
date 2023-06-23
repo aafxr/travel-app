@@ -7,17 +7,64 @@ class Expenses {
         this.db = db
     }
 
-    section(action, entity){
+    section(event){
 
     }
 
-    limit(action, entity){}
+    async limit(event){
+        switch (event.action){
+            case 'add':
+                break;
+            case 'edit':
+                break;
+            case 'remove':
+                break;
+            default:
+                console.error(`[Expenses] Unknown action type: ${event.action}`)
+        }
+    }
 
-    expensesActual(action, entity){}
+    async expensesActual(event){
+        switch (event.action){
+            case 'add':
+                break;
+            case 'edit':
+                break;
+            case 'remove':
+                break;
+            default:
+                console.error(`[Expenses] Unknown action type: ${event.action}`)
+        }
+    }
 
-    expensesPlaned(action, entity){}
+    async expensesPlaned(event){
+        switch (event.action){
+            case 'add':
+                break;
+            case 'edit':
+                break;
+            case 'remove':
+                break;
+            default:
+                console.error(`[Expenses] Unknown action type: ${event.action}`)
+        }
+    }
 
-    action(){}
+    add(event){
+        switch (event.entity){
+            case 'limit':
+                this.limit(event)
+                break;
+            case 'expenses_actual':
+                this.expensesActual(event)
+                break;
+            case 'expenses_plan':
+                this.expensesPlaned(event)
+                break;
+            default:
+                console.error(`[Expenses] Unknown entity type: ${event.entity}`)
+        }
+    }
 
     myExpenses(){}
 
