@@ -12,9 +12,12 @@ function init({dbname, version, stores}) {
         upgrade(db) {
             stores.forEach(function (storeInfo) {
                 if (!db.objectStoreNames.contains(storeInfo.name)) {
-                    const store = db.createObjectStore(storeInfo.name, {keyPath: storeInfo.key});
+                    const store = db.createObjectStore(
+                        storeInfo.name,
+                        {autoIncrement: true}
+                    );
                     storeInfo.indexes.forEach(function (indexName) {
-                        store.createIndex(indexName, indexName);
+                        store.createIndex(indexName, indexName, {});
                     })
                 }
             })
@@ -78,6 +81,10 @@ export class Database {
         if (storeInfo) {
             return openDB(this.dbname, this.version)
                 .then(db => {
+                    if (query === 'all')
+                        return db.getAll(store)
+                    if (query instanceof IDBKeyRange)
+                        return db.getAll(store, query)
                     return db.get(store, query)
                 })
         }
@@ -94,9 +101,13 @@ export class Database {
     getFromIndex(store, indexName, query) {
         const storeInfo = this.getStoreInfo(store)
         if (storeInfo) {
-            if (this.isIndexProp(store, indexName)) {
+            if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 return openDB(this.dbname, this.version)
                     .then(db => {
+                        if (query === 'all')
+                            return db.getAllFromIndex(store, indexName)
+                        if (query instanceof IDBKeyRange)
+                            return db.getAllFromIndex(store, indexName, query)
                         return db.getFromIndex(store, indexName, query)
                     })
             }
@@ -150,6 +161,8 @@ export class Database {
         if (storeInfo) {
             return openDB(this.dbname, this.version)
                 .then(db => {
+                    if (key === 'all')
+                        return db.clear()
                     return db.delete(store, key)
                 })
         }

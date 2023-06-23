@@ -7,35 +7,30 @@ export default function Expanses({
                                      primaryEntityType,
                                      primaryEntityId
                                  }) {
-    const [db, setDb] = useState()
-
+    const [db, setDb] = useState(null)
+    const [dbReady, setDbReady] = useState(false)
+    const [idCounter, setIdCounter] = useState(0)
 
     useEffect(() => {
-        const db = new Database(schema, {onReady: setDb, onError: console.error})
+        setDb(new Database(schema, {onReady: () => setDbReady(true), onError: console.error}))
     }, [])
 
     const addHandler = function () {
-        db.addElement('section', {id: 1, title: 'Отель', hidden: false, color: 'green'})
-            .then(console.log)
+        db.addElement('section', {
+            id: idCounter,
+            hidden: 1,
+            title: 'title',
+            color: 'green',
+        })
+            .then(res => console.log(res))
             .catch(console.error)
+
+        setIdCounter(prev => prev + 1)
     }
-    const updateHandler = function () {
-        db.editElement('section', {id: 1, title: 'Отель', hidden: false, color: 'red'})
-            .then(console.log)
-            .catch(console.error)
-    }
-    const removeHandler = function () {
-        db.removeElement('section', 1)
-            .catch(console.error)
-            .then(console.log)
-    }
+
+
     const getHandler = function () {
-        db.getElement('section', 1)
-            .then(console.log)
-            .catch(console.error)
-    }
-    const wrangHandler = function () {
-        db.getElement('setion', 1)
+        db.getFromIndex('section_limit', 'section_id', IDBKeyRange.bound(100, 180))
             .then(console.log)
             .catch(console.error)
     }
@@ -47,11 +42,9 @@ export default function Expanses({
         alignItems: 'center'
     }}>
         <h2>Expanses</h2>
-        <button onClick={addHandler} disabled={!db}>add element</button>
-        <button onClick={updateHandler} disabled={!db}>update element</button>
-        <button onClick={removeHandler} disabled={!db}>remove element</button>
-        <button onClick={getHandler} disabled={!db}>get element</button>
-        <button onClick={wrangHandler} disabled={!db}>wrang section</button>
+        {idCounter}
+        <button onClick={addHandler} disabled={!dbReady}>add element</button>
+        <button onClick={getHandler} disabled={!dbReady}>get element</button>
 
     </div>
 }

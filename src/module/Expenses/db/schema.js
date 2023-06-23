@@ -5,12 +5,13 @@ const schema = {
         {
             name:'section',
             key:'id',
-            indexes: []
+            indexes: [],
         },
         {
             name:'section_limit',
             key:'id',
-            indexes: ['section_id','personal']
+            indexes: ['section_id','personal'],
+
         },
         {
             name:'expenses_actual',
@@ -24,7 +25,7 @@ const schema = {
         },{
             name:'expensesActions',
             key:'id',
-            indexes: ['synced']
+            indexes: ['synced','entity','action']
         },
 
     ]
