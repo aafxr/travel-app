@@ -1,0 +1,6 @@
+{
+    "ignorePatterns": ["Expenses.js"],
+    "rules": {
+        //...
+    }
+}

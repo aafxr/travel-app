@@ -1,14 +1,11 @@
-import logo from './logo.svg';
-import {init} from './db'
-
+import Expenses from './module/Expenses'
 import './App.css';
 
 function App() {
-  init()
-  
+
   return (
     <div className="App">
-      
+      <Expenses />
     </div>
   );
 }
