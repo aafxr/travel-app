@@ -14,7 +14,7 @@ const section_limit={
 
 
 // фактические расходы
-const expense_item ={
+const expense_actual ={
     id,
     user_id,
     primary_entity_type,
@@ -29,7 +29,7 @@ const expense_item ={
     created_at
 }
 
-const plan={
+const expense_planed={
     id,
     user_id,
     primary_entity_type,
