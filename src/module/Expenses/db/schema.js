@@ -1,6 +1,6 @@
 const schema = {
     dbname: 'expenses',
-    version: 2,
+    version: 3,
     stores:[
         {
             name:'section',
@@ -21,6 +21,10 @@ const schema = {
             name:'expenses_planed',
             key:'id',
             indexes: ['user_id', 'primary_entity_id', 'section_id']
+        },{
+            name:'expensesActions',
+            key:'id',
+            indexes: ['synced']
         },
 
     ]
