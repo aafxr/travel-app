@@ -58,11 +58,11 @@ export class Database {
 
     /**
      * проверяет наличие зранилищя в бд
-     * @param {String} store            имя хранилища в бд
+     * @param {String} storeName        имя хранилища в бд
      * @returns {StoreInfo | undefined} StoreInfo | undefined
      */
-    getStoreInfo(store) {
-        return this.stores.find((item) => item.name === store);
+    getStoreInfo(storeName) {
+        return this.stores.find((item) => item.name === storeName);
     }
 
     /**
@@ -120,7 +120,7 @@ export class Database {
             );
         }
         return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${store}' not exist`)
+            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
         );
     }
 
