@@ -3,7 +3,7 @@ import {openDB} from 'idb';
 /**
  * @typedef {object} StoreInfo
  * @property {string} name имя хранилища (store) в бд
- * @property {string} [key] (optional) (primery key) ключ по которому осуществляется поиск в store
+ * @property {string} [key] (optional) (primary key) ключ по которому осуществляется поиск в store
  * @property {Array.<String>} indexes массив индексов по которым будем искать в store
  */
 
@@ -37,7 +37,7 @@ export class Database {
      *  @constructor
      * @param {string} dbname    имя бд
      * @param {number} version   версия бд
-     * @param {StoreInfo} stores массив с инфо о всех хранилищах в бд
+     * @param {Array.<StoreInfo>} stores массив с инфо о всех хранилищах в бд
      * @param {function} onReady вызывается если бд откылась без ошибок
      * @param {function} onError вызывается если бд откылась с ошибок
      */
@@ -58,7 +58,7 @@ export class Database {
 
     /**
      * проверяет наличие зранилищя в бд
-     * @param {StoreInfo} store         массив с инфо о всех хранилищах в бд
+     * @param {String} store            имя хранилища в бд
      * @returns {StoreInfo | undefined} StoreInfo | undefined
      */
     getStoreInfo(store) {
@@ -77,45 +77,45 @@ export class Database {
 
     /**
      * поиск объекта в store по переданным параметрам query
-     * @param {StoreInfo} store                     массив с инфо о всех хранилищах в бд
+     * @param {String} storeName                     массив с инфо о всех хранилищах в бд
      * @param {String | Number | IDBKeyRange} query параметры поиска
      * @returns {Promise<any>|Promise<never>}       возвращает Promise с резултатом поиска либо с ошибкой
      */
-    getElement(store, query) {
-        const storeInfo = this.getStoreInfo(store);
+    getElement(storeName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             return openDB(this.dbname, this.version).then((db) => {
-                if (query === 'all') return db.getAll(store);
-                if (query instanceof IDBKeyRange) return db.getAll(store, query);
-                return db.get(store, query);
+                if (query === 'all') return db.getAll(storeName);
+                if (query instanceof IDBKeyRange) return db.getAll(storeName, query);
+                return db.get(storeName, query);
             });
         }
         return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${store}' not exist`)
+            new Error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
         );
     }
 
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
-     * @param {string} store                       имя хранилища в бд
+     * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
      * @returns {Promise<any>|Promise<never>}      Promise с результатом поиска либо ошибкой
      */
-    getFromIndex(store, indexName, query) {
-        const storeInfo = this.getStoreInfo(store);
+    getFromIndex(storeName, indexName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 return openDB(this.dbname, this.version).then((db) => {
-                    if (query === 'all') return db.getAllFromIndex(store, indexName);
+                    if (query === 'all') return db.getAllFromIndex(storeName, indexName);
                     if (query instanceof IDBKeyRange)
-                        return db.getAllFromIndex(store, indexName, query);
-                    return db.getFromIndex(store, indexName, query);
+                        return db.getAllFromIndex(storeName, indexName, query);
+                    return db.getFromIndex(storeName, indexName, query);
                 });
             }
             return Promise.reject(
                 new Error(
-                    `[DB/${this.dbname}]: Index ${indexName} not exists in ${store}`
+                    `[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`
                 )
             );
         }
@@ -126,56 +126,56 @@ export class Database {
 
     /**
      * добавляет объект в хранилище
-     * @param {string} store             имя хранилища
+     * @param {string} storeName         имя хранилища
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>}   Promise с результатом добавления либо ошибкой
      */
-    addElement(store, payload) {
-        const storeInfo = this.getStoreInfo(store);
+    addElement(storeName, payload) {
+        const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             return openDB(this.dbname, this.version).then((db) => {
-                return db.add(store, payload);
+                return db.add(storeName, payload);
             });
         }
         return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${store}' not exist`)
+            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
         );
     }
 
     /**
      * обновляет объект в хранилище
-     * @param {string} store             имя хранилища
+     * @param {string} storeName         имя хранилища
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>} Promise с результатом обовления либо ошибкой
      */
-    editElement(store, payload) {
-        const storeInfo = this.getStoreInfo(store);
+    editElement(storeName, payload) {
+        const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             return openDB(this.dbname, this.version).then((db) => {
-                return db.put(store, payload);
+                return db.put(storeName, payload);
             });
         }
         return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${store}' not exist`)
+            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
         );
     }
 
     /**
      * удаляет объект из хранилище
-     * @param {string} store             имя хранилища
+     * @param {string} storeName         имя хранилища
      * @param {string} key               ключ удаляемого объекта
      * @returns {Promise<never>|Promise<void>}
      */
-    removeElement(store, key) {
-        const storeInfo = this.getStoreInfo(store);
+    removeElement(storeName, key) {
+        const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             return openDB(this.dbname, this.version).then((db) => {
-                if (key === 'all') return db.clear();
-                return db.delete(store, key);
+                if (key === 'all') return db.clear(storeName);
+                return db.delete(storeName, key);
             });
         }
         return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${store}' not exist`)
+            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
         );
     }
 }
