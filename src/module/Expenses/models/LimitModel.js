@@ -1,6 +1,7 @@
 import constants from "../db/constants";
 import isString from "../../../utils/validation/isString";
 import Section from "./SectionModel";
+import throwIfError from "../../../utils/throwIfError";
 
 /**
  * @typedef {object} LimitType
@@ -50,7 +51,7 @@ export default function (db, user_id) {
             if ((result instanceof Error)) {
                 throw result;
             }
-            return id;
+            return section_id;
         },
 
         /**
@@ -91,9 +92,7 @@ export default function (db, user_id) {
                     throw new Error(`[Limit.edit] Section with id "${limit.section_id}" is not exist`);
                 }
                 const res = await Section(db, user_id).edit({...section, title});
-                if (res instanceof Error) {
-                    throw res;
-                }
+                throwIfError(res)
             }
             if (needUpdate) {
                 await db.editElement(constants.store.SECTION_LIMITS, limit);
