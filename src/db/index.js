@@ -31,7 +31,7 @@ function init({dbname, version, stores}) {
     });
 }
 
-export class Database {
+export class LocalDB {
     /**
      *  создает объект для работы с конкретной базой данных (например Expenses)
      *  @constructor
@@ -79,20 +79,19 @@ export class Database {
      * поиск объекта в store по переданным параметрам query
      * @param {String} storeName                     массив с инфо о всех хранилищах в бд
      * @param {String | Number | IDBKeyRange} query параметры поиска
-     * @returns {Promise<any>|Promise<never>}       возвращает Promise с резултатом поиска либо с ошибкой
+     * @returns {Promise<any | undefined>}       возвращает Promise с резултатом поиска либо с ошибкой
      */
-    getElement(storeName, query) {
+    async getElement(storeName, query) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version).then((db) => {
-                if (query === 'all') return db.getAll(storeName);
-                if (query instanceof IDBKeyRange) return db.getAll(storeName, query);
-                return db.get(storeName, query);
-            });
+            const db = await openDB(this.dbname, this.version)
+            if (query === 'all') {
+                return await db.getAll(storeName);
+            }
+            return await db.get(storeName, query);
         }
-        return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
-        );
+        console.error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
+        return Promise.resolve();
     }
 
     /**
