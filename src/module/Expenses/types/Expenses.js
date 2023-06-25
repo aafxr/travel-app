@@ -66,6 +66,39 @@ class Expenses {
         }
     }
 
+
+
+    create(entityType, data){
+        if (navigator.onLine){
+            switch (entityType){
+                case 'expenses_actual':
+                    fetch(`${process.env.REACT_APP_SERVER_URL}/travel/${this.primaryEntityId}/expenses/add/`,{
+                        method: 'POST',
+                        headers:{
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .catch(()=>{
+                            
+                        })
+                    break;
+
+                case 'expenses_plan':
+                    fetch(`${process.env.REACT_APP_SERVER_URL}/travel/${this.primaryEntityId}/expenses/plan/add/`)
+
+                    break;
+
+                default:
+
+                    console.error(`[Expenses] Unknown entity type: ${event.entity}`)
+
+            }
+
+        }
+
+    }
+
     myExpenses(){}
 
     allExpenses(){}
