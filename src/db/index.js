@@ -99,7 +99,7 @@ export class LocalDB {
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
-     * @returns {Promise<any>|Promise<never>}      Promise с результатом поиска либо ошибкой
+     * @returns {Promise<any>}      Promise с результатом поиска либо ошибкой
      */
     getFromIndex(storeName, indexName, query) {
         const storeInfo = this.getStoreInfo(storeName);
