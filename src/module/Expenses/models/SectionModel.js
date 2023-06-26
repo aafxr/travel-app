@@ -1,5 +1,6 @@
 import constants from "../db/constants";
 import isString from "../../../utils/validation/isString";
+import createId from "../../../utils/createId";
 
 /**
  * @typedef {object} SectionType
@@ -29,12 +30,12 @@ function isValidData(data) {
 }
 
 /**
- *
+ * возвращает методы для работы с SectionType (название секции, цвет, скрыта/видима)
  * @param {import('../../../db').LocalDB} db
  * @param {string} user_id
  * @returns {{add(*): SectionHandler, edit(SectionType): Promise<*>, get(*): Promise<*|undefined>, remove(string): Promise<*>}|Promise<number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>|*|undefined}
  */
-export default function (db, user_id,) {
+export default function (db, user_id) {
     return {
         /**
          * Записывает новую секцию в бд
@@ -45,7 +46,7 @@ export default function (db, user_id,) {
             if (!isValidData(data)) {
                 throw new Error(`[Section.add] Data is not valid: ${JSON.stringify(data)}`);
             }
-            const id = user_id + ':' + Date.now();
+            const id = createId(user_id);
             const result = await db.addElement(constants.store.SECTION, {...data, id});
 
             if ((result instanceof Error)){
@@ -56,11 +57,11 @@ export default function (db, user_id,) {
 
         /**
          * возвращает элемент из бд
-         * @param {string} id
+         * @param {string | number | IDBKeyRange} query
          * @returns {Promise<SectionType|undefined>}
          */
-        async get(id){
-            return await db.getElement(constants.store.SECTION, id)
+        async get(query){
+            return await db.getElement(constants.store.SECTION, query)
         },
 
         /**

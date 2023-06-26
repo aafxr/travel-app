@@ -9,7 +9,6 @@ import throwIfError from "../../../utils/throwIfError";
  @property {string | number} section_id
  @property {number } personal
  @property {number} value >= 0
- *
  */
 
 /**
@@ -22,9 +21,10 @@ import throwIfError from "../../../utils/throwIfError";
  */
 
 /**
+ * возвращает методы для работы с LimitType (лимит расходов на категорию)
  * @param {string | number} user_id
  * @param {import('./db').LocalDB} db
- * */
+ */
 export default function (db, user_id) {
     return {
         /**
@@ -56,11 +56,11 @@ export default function (db, user_id) {
 
         /**
          * возвращает элемент из бд
-         * @param {string} id
+         * @param {string | number | IDBKeyRange} query
          * @returns {Promise<*|undefined>}
          */
-        async get(id) {
-            return await db.getElement(constants.store.SECTION_LIMITS, id);
+        async get(query) {
+            return await db.getElement(constants.store.SECTION_LIMITS, query);
         },
 
         /**

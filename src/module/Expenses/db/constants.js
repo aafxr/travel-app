@@ -6,7 +6,7 @@ const constants = {
         EXPENSES_PLANED: 'expenses_planed',
         ACTIONS: 'expensesActions'
     },
-    indexe:{
+    indexes:{
         SECTION_ID:'section_id',
         PERSONAL:'personal',
         USER_ID:'user_id',

@@ -17,6 +17,7 @@
 import isString from "../../../utils/validation/isString";
 import constants from "../db/constants";
 import throwIfError from "../../../utils/throwIfError";
+import createId from "../../../utils/createId";
 
 /**
  * @param {ExpenseType} data
@@ -55,7 +56,7 @@ export default function (db, type) {
                 throw new Error(`[Expenses.add] Data is not valid: ${JSON.stringify(data)}`);
             }
 
-            const id = data.user_id + ':' + Date.now();
+            const id = createId(data.user_id);
             data.id = id;
             data.created_at = id;
 
@@ -66,11 +67,11 @@ export default function (db, type) {
         },
 
         /**
-         * @param {string} id
+         * @param {string | number | IDBKeyRange} query
          * @returns {Promise<void>}
          */
-        async get(id) {
-            return await db.getElement(expensesType, id)
+        async get(query) {
+            return await db.getElement(expensesType, query)
         },
 
         /**
