@@ -14,8 +14,7 @@ const constants = {
         SYNCED: 'synced',
         ENTITY: 'entity',
         ACTION: 'action'
-    },
-    TOTAL_EXPENSES: 'totalExpenses'
+    }
 }
 
 export default constants
