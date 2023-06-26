@@ -21,11 +21,22 @@ import throwIfError from "../../../utils/throwIfError";
  */
 
 /**
+ * @typedef {object} SectionDescriptionType
+ @property {string } title
+ @property {number} value >= 0
+ */
+
+/**
+ * @typedef {import('./SectionType').SectionType} SectionType
+ */
+
+/**
  * возвращает методы для работы с LimitType (лимит расходов на категорию)
  * @param {string | number} user_id
  * @param {import('./db').LocalDB} db
  */
 export default function (db, user_id) {
+    const storeName = storeName
     return {
         /**
          * добавляет новый лимит в бд
@@ -46,7 +57,7 @@ export default function (db, user_id) {
                 personal, value
             };
 
-            const result = await db.addElement(constants.store.SECTION_LIMITS, newLimit);
+            const result = await db.addElement(storeName, newLimit);
 
             if ((result instanceof Error)) {
                 throw result;
@@ -60,7 +71,22 @@ export default function (db, user_id) {
          * @returns {Promise<*|undefined>}
          */
         async get(query) {
-            return await db.getElement(constants.store.SECTION_LIMITS, query);
+            return await db.getElement(storeName, query);
+        },
+
+        /**
+         *
+         * @param id
+         * @returns {Promise<SectionDescriptionType | undefined>}
+         */
+        async getLimitWithSection(id){
+            const limit = await db.getFromIndex(storeName,constants.indexes.SECTION_ID, id)
+            const section = await Section(db, user_id).get(limit.section_id)
+
+            return {
+                title: section.title,
+                value: limit.value
+            }
         },
 
         /**
@@ -72,7 +98,7 @@ export default function (db, user_id) {
             const {personal, title, value} = data;
 
             /**@type {LimitType}*/
-            const limit = await db.getElement(constants.store.SECTION_LIMITS, data.id);
+            const limit = await db.getElement(storeName, data.id);
             let needUpdate = false;
 
             if (!limit) {
@@ -87,6 +113,7 @@ export default function (db, user_id) {
                 needUpdate = true;
             }
             if (title && isString(title)) {
+                /**@type {SectionType}*/
                 const section = await Section(db, user_id).get(limit.section_id);
                 if (section instanceof Error) {
                     throw new Error(`[Limit.edit] Section with id "${limit.section_id}" is not exist`);
@@ -95,7 +122,7 @@ export default function (db, user_id) {
                 throwIfError(res)
             }
             if (needUpdate) {
-                await db.editElement(constants.store.SECTION_LIMITS, limit);
+                await db.editElement(storeName, limit);
             }
             return true;
         },
@@ -106,7 +133,7 @@ export default function (db, user_id) {
          * @returns {Promise<void>}
          */
         async remove(id) {
-            return await db.removeElement(constants.store.SECTION_LIMITS, id);
+            return await db.removeElement(storeName, id);
         },
     };
 }

@@ -43,7 +43,7 @@ function validateExpensesData(data) {
  * @param {import('../../../db').LocalDB} db
  * @param {'actual' | 'planed'} type
  */
-export default function (db, type) {
+export default function ExpenseModel(db, type) {
     const expensesType = type === 'actual' ? constants.store.EXPENSES_ACTUAL : constants.store.EXPENSES_PLANED;
 
     return {
@@ -68,10 +68,19 @@ export default function (db, type) {
 
         /**
          * @param {string | number | IDBKeyRange} query
-         * @returns {Promise<void>}
+         * @returns {Promise<ExpenseType | undefined>}
          */
         async get(query) {
             return await db.getElement(expensesType, query)
+        },
+
+        /**
+         * @param {string} indexName
+         * @param {string | number | IDBKeyRange} query
+         * @returns {Promise<ExpenseType[] >}
+         */
+        async getFromIndex(indexName,query) {
+            return await db.getFromIndex(expensesType,indexName, query)
         },
 
         /**
