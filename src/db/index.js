@@ -105,12 +105,13 @@ export class LocalDB {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
-                return openDB(this.dbname, this.version).then((db) => {
-                    if (query === 'all') return db.getAllFromIndex(storeName, indexName);
-                    if (query instanceof IDBKeyRange)
-                        return db.getAllFromIndex(storeName, indexName, query);
-                    return db.getFromIndex(storeName, indexName, query);
-                });
+                return openDB(this.dbname, this.version)
+                    .then((db) => {
+                        if (query === 'all') return db.getAllFromIndex(storeName, indexName);
+                        if (query instanceof IDBKeyRange)
+                            return db.getAllFromIndex(storeName, indexName, query);
+                        return db.getFromIndex(storeName, indexName, query);
+                    });
             }
             return Promise.reject(
                 new Error(
@@ -132,9 +133,10 @@ export class LocalDB {
     addElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version).then((db) => {
-                return db.add(storeName, payload);
-            });
+            return openDB(this.dbname, this.version)
+                .then((db) => {
+                    return db.add(storeName, payload);
+                })
         }
         return Promise.reject(
             new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
@@ -150,9 +152,10 @@ export class LocalDB {
     editElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version).then((db) => {
-                return db.put(storeName, payload);
-            });
+            return openDB(this.dbname, this.version)
+                .then((db) => {
+                    return db.put(storeName, payload);
+                });
         }
         return Promise.reject(
             new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
@@ -168,10 +171,11 @@ export class LocalDB {
     removeElement(storeName, key) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version).then((db) => {
-                if (key === 'all') return db.clear(storeName);
-                return db.delete(storeName, key);
-            });
+            return openDB(this.dbname, this.version)
+                .then((db) => {
+                    if (key === 'all') return db.clear(storeName);
+                    return db.delete(storeName, key);
+                });
         }
         return Promise.reject(
             new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
