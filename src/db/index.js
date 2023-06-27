@@ -107,7 +107,8 @@ export class LocalDB {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 return openDB(this.dbname, this.version)
                     .then((db) => {
-                        if (query === 'all') return db.getAllFromIndex(storeName, indexName);
+                        if (query === 'all')
+                            return db.getAllFromIndex(storeName, indexName);
                         if (query instanceof IDBKeyRange)
                             return db.getAllFromIndex(storeName, indexName, query);
                         return db.getFromIndex(storeName, indexName, query);

@@ -5,7 +5,11 @@ function App() {
 
   return (
     <div className="App">
-      <Expenses />
+      <Expenses
+          user_id={Date.now().toString()}
+          primary_entity_id={Date.now().toString()}
+          primaryEntityType={'travel'}
+      />
     </div>
   );
 }
