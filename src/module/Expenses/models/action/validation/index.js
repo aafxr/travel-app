@@ -27,7 +27,7 @@ function validatePayload(data) {
         && data.entity && entityType.includes(data.entity)
         && data.action && entityType.includes(data.action)
         && data.datetime && !Number.isNaN(Date.parse(data.datetime))
-        && data.synced && typeof data.synced === 'number' && (data.synced === 0 || data.synced === 1)
+        && typeof data.synced === 'number' && (data.synced === 0 || data.synced === 1)
     )
 }
 

@@ -33,7 +33,7 @@ function validatePayload(data) {
         && data.entity_id && isString(data.entity_id)
         && data.title && isString(data.title)
         && data.value && isPositiveNumber(data.value)
-        && data.personal && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
+        && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
         && data.section_id && isString(data.section_id)
         && data.datetime && !Number.isNaN(Date.parse(data.datetime))
         && data.created_at && !Number.isNaN(Date.parse(data.created_at))

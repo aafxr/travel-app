@@ -4,13 +4,14 @@
 
 import isString from "../../../../../utils/validation/isString";
 import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
+import isPositiveNumber from "../../../../../utils/validation/isPositiveNumber";
 
 
 function validatePayload(data) {
     return (
         data.section_id && isString(data.section_id)
-        && data.personal && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
-        && data.value && typeof data.value === 'number' && data.value >= 0
+        && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
+        && data.value && isPositiveNumber(data.value)
     )
 }
 

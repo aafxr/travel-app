@@ -7,6 +7,7 @@ import limitValidationObj from '../models/limit/validation'
 import actionValidationObj from '../models/action/validation'
 import sectionValidationObj from '../models/section/validation'
 import accumulate from "../../../utils/accumulate";
+import createId from "../../../utils/createId";
 /**
  * @typedef {object} ExpensesActionType
  * @property {string} [id]
@@ -108,10 +109,18 @@ export default class ExpensesActionController {
     async _limitHandler(data) {
         /**@type {import('../models/LimitModel').LimitType}*/
         const limitData = JSON.parse(data.data)
+        if (!limitData){
+            throw new Error('data not correct')
+        }
+
+        const {hidden, color, title, value, personal} = limitData
 
         switch (data.action) {
             case 'add':
-                await this.limitModel.add(limitData)
+                const section_id = this.user_id + ':' + '11'//createId(this.user_id)
+                const section = await this.sectionModel.add({hidden, color, title, id: section_id})
+                console.log(section)
+                section && await this.limitModel.add({value, personal, section_id: section_id})
                 break
             case 'edit':
                 await this.limitModel.edit(limitData)
@@ -196,12 +205,12 @@ export default class ExpensesActionController {
      * пересчитывает актуальные данные расходов
      * @param {ExpensesActionType} data время действия
      */
-    async updateTotalExpenses(data) {
+    async updateTotalExpenses() {
         /**@type {number} */
         let updated_at = Date.now()
 
         const expenses_actual = await this.expensesActualModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
-        const expenses_planed = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, this.primary_entity_id)
+        const expenses_planed = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
 
         const total_actual = accumulate(expenses_actual, item => item.value)
         const total_planed = accumulate(expenses_planed, item => item.value)
