@@ -29,8 +29,8 @@ import accumulate from "../../../utils/accumulate";
  * @typedef {object} TotalExpensesType
  * @property {number} updated_at
  * @property {Array.<LimitsType>} limits
- * @property {number} expenses_actual
- * @property {number} expenses_planned
+ * @property {number} total_actual
+ * @property {number} total_planed
  */
 
 
@@ -53,8 +53,8 @@ export default class ExpensesActionController {
         this.totalExpenses = JSON.parse(total) || {
             updated_at: Date.now(),
             limits: [],
-            expenses_actual: 0,
-            expenses_planned: 0
+            total_actual: 0,
+            total_planed: 0
         }
         this.storeName = constants.store.ACTIONS
 
@@ -63,6 +63,8 @@ export default class ExpensesActionController {
         this.limitModel = new Model(db, constants.store.SECTION_LIMITS, limitValidationObj)
         this.sectionModel = new Model(db, constants.store.SECTION, sectionValidationObj)
         this.actionsModel = new Model(db, constants.store.ACTIONS, actionValidationObj)
+
+        this.updateTotalExpenses()
     }
 
 
@@ -127,19 +129,19 @@ export default class ExpensesActionController {
     async _expanseActualHandler(data) {
         /**@type {import('../models/ExpenseModel').ExpenseType}*/
         const actualData = JSON.parse(data.data)
-        const isAfter = this.isActionAfterUpdate(data)
+        const isAfter = this._isActionAfterUpdate(data)
 
         switch (data.action) {
             case 'add':
                 await this.expensesActualModel.add(actualData)
-                isAfter && (this.totalExpenses += actualData.value)
+                isAfter && (this.totalExpenses.total_actual += actualData.value)
                 break
             case 'edit':
                 await this.expensesActualModel.edit(actualData)
                 break
             case 'remove':
                 await this.expensesActualModel.remove(actualData.id)
-                isAfter && (this.totalExpenses -= actualData.value)
+                isAfter && (this.totalExpenses.total_actual -= actualData.value)
                 break
             default:
                 throw new Error(`[ExpensesActionController._limitHandler] Unexpected action type "${data.action}"`)
@@ -155,19 +157,19 @@ export default class ExpensesActionController {
     async _expansePlanedHandler(data) {
         /**@type {import('../models/ExpenseModel').ExpenseType}*/
         const planedData = JSON.parse(data.data)
-        const isAfter = this.isActionAfterUpdate(data)
+        const isAfter = this._isActionAfterUpdate(data)
 
         switch (data.action) {
             case 'add':
                 await this.expensesPlanedModel.add(planedData)
-                isAfter && (this.totalExpenses += planedData.value)
+                isAfter && (this.totalExpenses.total_planed += planedData.value)
                 break
             case 'edit':
                 await this.expensesPlanedModel.edit(planedData)
                 break
             case 'remove':
                 await this.expensesPlanedModel.remove(planedData.id)
-                isAfter && (this.totalExpenses -= planedData.value)
+                isAfter && (this.totalExpenses.total_planed -= planedData.value)
                 break
             default:
                 throw new Error(`[ExpensesActionController._limitHandler] Unexpected action type "${data.action}"`)
@@ -181,11 +183,12 @@ export default class ExpensesActionController {
     }
 
 
-    isActionAfterUpdate(data) {
+    _isActionAfterUpdate(data) {
         return this.totalExpenses.updated_at < Date.parse(data.datetime);
     }
 
     updateLS() {
+        this.totalExpenses.updated_at = Date.now()
         localStorage.setItem(constants.TOTAL_EXPENSES, JSON.stringify(this.totalExpenses))
     }
 
@@ -194,17 +197,11 @@ export default class ExpensesActionController {
      * @param {ExpensesActionType} data время действия
      */
     async updateTotalExpenses(data) {
-        const currentActionDate = Date.parse(data.datetime)
-        if (Number.isNaN(currentActionDate)) {
-            console.error(`Date format is not correct: ${data.datetime}`)
-            return
-        }
+        /**@type {number} */
+        let updated_at = Date.now()
 
         const expenses_actual = await this.expensesActualModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
         const expenses_planed = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, this.primary_entity_id)
-
-        console.log('actual ', expenses_actual)
-        console.log('planed ', expenses_planed)
 
         const total_actual = accumulate(expenses_actual, item => item.value)
         const total_planed = accumulate(expenses_planed, item => item.value)
@@ -230,7 +227,7 @@ export default class ExpensesActionController {
             limits,
             total_planed,
             total_actual,
-            updated_at: currentActionDate
+            updated_at
         }))
     }
 
