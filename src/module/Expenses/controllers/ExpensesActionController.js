@@ -1,7 +1,12 @@
 import constants from "../db/constants";
-import expensesModel from '../models/ExpenseModel'
-import limitModel from '../models/LimitModel'
 import distinctValues from "../../../utils/distinctValues";
+import Model from "../../../model/Model";
+
+import expenseValidationObj from '../models/expenses/validation'
+import limitValidationObj from '../models/limit/validation'
+import actionValidationObj from '../models/action/validation'
+import sectionValidationObj from '../models/section/validation'
+import accumulate from "../../../utils/accumulate";
 /**
  * @typedef {object} ExpensesActionType
  * @property {string} [id]
@@ -29,7 +34,7 @@ import distinctValues from "../../../utils/distinctValues";
  */
 
 
-export default class {
+export default class ExpensesActionController {
     /**
      * обрработка поступающих Action
      * @constructor
@@ -45,19 +50,30 @@ export default class {
         const total = localStorage.getItem(constants.TOTAL_EXPENSES)
 
         /**@type {TotalExpensesType | null}*/
-        total && (
-            this.totalExpenses = JSON.parse(total) || {
-                updated_at: Date.now(),
-                limits: [],
-                expenses_actual: 0,
-                expenses_planned: 0
-            }
-        )
+        this.totalExpenses = JSON.parse(total) || {
+            updated_at: Date.now(),
+            limits: [],
+            expenses_actual: 0,
+            expenses_planned: 0
+        }
         this.storeName = constants.store.ACTIONS
 
-        this.expensesActualModel = expensesModel(db, 'actual')
-        this.expensesPlanedModel = expensesModel(db, 'planed')
-        this.limitModel = limitModel(db, user_id)
+        this.expensesActualModel = new Model(db, constants.store.EXPENSES_ACTUAL, expenseValidationObj)
+        this.expensesPlanedModel = new Model(db, constants.store.EXPENSES_PLANED, expenseValidationObj)
+        this.limitModel = new Model(db, constants.store.SECTION_LIMITS, limitValidationObj)
+        this.sectionModel = new Model(db, constants.store.SECTION, sectionValidationObj)
+        this.actionsModel = new Model(db, constants.store.ACTIONS, actionValidationObj)
+    }
+
+
+    /**
+     *
+     * @param {ExpensesActionType} data
+     * @returns {ExpensesActionType}
+     */
+    createAction(data, payload) {
+        data.data = JSON.stringify(payload)
+        return data
     }
 
     /**
@@ -90,17 +106,16 @@ export default class {
     async _limitHandler(data) {
         /**@type {import('../models/LimitModel').LimitType}*/
         const limitData = JSON.parse(data.data)
-        const storeName = constants.store.SECTION
 
         switch (data.action) {
             case 'add':
-                await this.db.addElement(storeName, limitData)
+                await this.limitModel.add(limitData)
                 break
             case 'edit':
-                await this.db.editElement(storeName, limitData)
+                await this.limitModel.edit(limitData)
                 break
             case 'remove':
-                await this.db.removeElement(storeName, limitData.id)
+                await this.limitModel.remove(limitData.id)
                 break
             default:
                 throw new Error(`[ExpensesActionController._limitHandler] Unexpected action type "${data.action}"`)
@@ -112,28 +127,27 @@ export default class {
     async _expanseActualHandler(data) {
         /**@type {import('../models/ExpenseModel').ExpenseType}*/
         const actualData = JSON.parse(data.data)
-        const storeName = constants.store.EXPENSES_ACTUAL
         const isAfter = this.isActionAfterUpdate(data)
 
         switch (data.action) {
             case 'add':
-                await this.db.addElement(storeName, actualData)
+                await this.expensesActualModel.add(actualData)
                 isAfter && (this.totalExpenses += actualData.value)
                 break
             case 'edit':
-                await this.db.editElement(storeName, actualData)
+                await this.expensesActualModel.edit(actualData)
                 break
             case 'remove':
-                await this.db.removeElement(storeName, actualData.id)
+                await this.expensesActualModel.remove(actualData.id)
                 isAfter && (this.totalExpenses -= actualData.value)
                 break
             default:
                 throw new Error(`[ExpensesActionController._limitHandler] Unexpected action type "${data.action}"`)
         }
 
-        if (isAfter && data.action !== 'edit'){
+        if (isAfter && data.action !== 'edit') {
             this.updateLS()
-        } else{
+        } else {
             await this.updateTotalExpenses(data)
         }
     }
@@ -141,28 +155,27 @@ export default class {
     async _expansePlanedHandler(data) {
         /**@type {import('../models/ExpenseModel').ExpenseType}*/
         const planedData = JSON.parse(data.data)
-        const storeName = constants.store.EXPENSES_PLANED
         const isAfter = this.isActionAfterUpdate(data)
 
         switch (data.action) {
             case 'add':
-                await this.db.addElement(storeName, planedData)
+                await this.expensesPlanedModel.add(planedData)
                 isAfter && (this.totalExpenses += planedData.value)
                 break
             case 'edit':
-                await this.db.editElement(storeName, planedData)
+                await this.expensesPlanedModel.edit(planedData)
                 break
             case 'remove':
-                await this.db.removeElement(storeName, planedData.id)
+                await this.expensesPlanedModel.remove(planedData.id)
                 isAfter && (this.totalExpenses -= planedData.value)
                 break
             default:
                 throw new Error(`[ExpensesActionController._limitHandler] Unexpected action type "${data.action}"`)
         }
 
-        if (isAfter && data.action !== 'edit'){
+        if (isAfter && data.action !== 'edit') {
             this.updateLS()
-        } else{
+        } else {
             await this.updateTotalExpenses(data)
         }
     }
@@ -172,7 +185,7 @@ export default class {
         return this.totalExpenses.updated_at < Date.parse(data.datetime);
     }
 
-    updateLS(){
+    updateLS() {
         localStorage.setItem(constants.TOTAL_EXPENSES, JSON.stringify(this.totalExpenses))
     }
 
@@ -187,21 +200,31 @@ export default class {
             return
         }
 
-        const expenses_actual = await this.expensesActualModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, this.primary_entity_id)
+        const expenses_actual = await this.expensesActualModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
         const expenses_planed = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, this.primary_entity_id)
 
-        const total_actual = expenses_actual.reduce((acc, item) => item.value + acc, 0)
-        const total_planed = expenses_planed.reduce((acc, item) => item.value + acc, 0)
+        console.log('actual ', expenses_actual)
+        console.log('planed ', expenses_planed)
+
+        const total_actual = accumulate(expenses_actual, item => item.value)
+        const total_planed = accumulate(expenses_planed, item => item.value)
 
         /**@type {string[]}*/
-        const sections_is = distinctValues(expenses_planed, item => item.section_id)
+        const sections_ids = distinctValues(expenses_planed, item => item.section_id)
 
-        const promises = []
-        sections_is.forEach((section_id) => {
-            promises.push(this.limitModel.getLimitWithSection(section_id))
-        })
 
-        const limits = await Promise.all(promises)
+        const limits = []
+        for (const section_id of sections_ids) {
+            const section = await this.sectionModel.get(section_id)
+            const limit = await this.limitModel.getFromIndex(constants.indexes.SECTION_ID, section_id)
+            limit && section && limits.push(
+                {
+                    section_id,
+                    title: section.title,
+                    value: limit.value
+                }
+            )
+        }
 
         localStorage.setItem(constants.TOTAL_EXPENSES, JSON.stringify({
             limits,
