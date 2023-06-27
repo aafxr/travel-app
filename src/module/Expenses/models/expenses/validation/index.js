@@ -1,4 +1,5 @@
 import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
+import isPositiveNumber from "../../../../../utils/validation/isPositiveNumber";
 import isString from "../../../../../utils/validation/isString";
 
 
@@ -23,7 +24,6 @@ const entityType = [
 ]
 
 
-
 function validatePayload(data) {
     return (
         data.user_id && isString(data.user_id)
@@ -40,8 +40,6 @@ function validatePayload(data) {
 
     )
 }
-
-
 
 
 /**
