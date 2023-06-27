@@ -85,7 +85,7 @@ export default class Model {
 
     /**
      * добавляет в бд -> в хранилище storeName данные (payload)
-     * @param {PayloadType} payload
+     * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
     async add(payload){
@@ -100,7 +100,7 @@ export default class Model {
 
     /**
      * редактирует в бд -> в хранилище storeName данные (payload)
-     * @param {PayloadType} payload
+     * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
     async edit(payload){
