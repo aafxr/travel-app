@@ -1,0 +1,67 @@
+.chip{
+    display: inline-block;
+    position: relative;
+    padding: 8px 9px;
+
+    color: var(--color-active-contrast);
+    font-size: .6rem;
+    line-height: 1;
+    font-weight: 700;
+
+    border-radius: 9px;
+    transition: all .3s;
+}
+.chip:hover{
+    opacity: .8;
+}
+.chip img{
+    /*fill: var(--color-active-contrast);*/
+    stroke: var(--color-active-contrast);
+}
+
+.icon img{
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.icon.icon-left img{
+    left: 12px;
+}
+.icon.icon-right img{
+    right:12px
+}
+.icon-left{
+    padding-left: 32px;
+}
+.icon-right{
+    padding-right: 32px;
+}
+.rounded{
+    border-radius: 30.5rem;
+}
+.orange {
+    background-color: var(--color-active);
+}
+.green {
+    background-color: var(--color-green);
+}
+
+.gray{
+    color: var(--color-grey);
+    background-color: var(--color-light-grey);
+}
+.gray img{
+    /*fill: var(--color-grey);*/
+    stroke: var(--color-grey);
+}
+
+.light-orange{
+    color: var(--color-black);
+    background-color: var(--color-black);
+}
+.light-orange img{
+    /*fill: var(--color-black);*/
+    stroke: var(--color-black);
+}
