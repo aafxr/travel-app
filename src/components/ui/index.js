@@ -1,3 +1,4 @@
-export {default as Chip} from './Chip'
-export {default as PageHeader} from './PageHeader'
-export {default as Tab} from './Tab'
+export {default as Chip} from './Chip/Chip'
+export {default as PageHeader} from './PageHeader/PageHeader'
+export {default as Tab} from './Tab/Tab'
+export {default as Input} from './Input/Input'

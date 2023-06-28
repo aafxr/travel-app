@@ -31,7 +31,10 @@
 }
 
 .title{
-    flex: 0 1;
+    /*flex: 0 1;*/
     font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
