@@ -1,0 +1,22 @@
+.add-btn{
+    position: relative;
+    padding: 24px 20px 16px 64px;
+    font-weight: 600;
+    background-color: transparent;
+    border: none;
+    transition: transform .3s;
+}
+
+.add-btn img{
+    position: absolute;
+    top: 24px;
+    left: 20px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.add-btn:active{
+    transform: scale(.95);
+}
+
