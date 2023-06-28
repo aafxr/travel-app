@@ -1,0 +1,26 @@
+.section{
+    padding: 20px 0;
+}
+
+.sectionTitle{
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.sectionSubtitle{
+    margin-top: 5px;
+    margin-bottom: 16px;
+    font-size: 0.75rem;
+    color: var(--color-grey);
+}
+
+.sectionItem{
+    margin: 12px 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.sectionItem span{
+    font-size: 0.75rem;
+}
+
