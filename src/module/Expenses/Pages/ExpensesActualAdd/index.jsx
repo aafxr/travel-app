@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
-import {Input, PageHeader} from "../../../components/ui";
+import {Input, PageHeader} from "../../../../components/ui";
 
-export default function ExpensesPlan({
+export default function ExpensesActualAdd({
                                          user_id,
                                          primaryEntityType,
                                          primary_entity_id
@@ -18,9 +18,6 @@ export default function ExpensesPlan({
     return (
         <>
             <PageHeader arrowBack title={'Добавить расходы'}/>
-            <div>
-                Записать расходы
-            </div>
             <div style={{padding: '0 20px'}}>
                 <Input placeholder={'Название'}/>
                 <br/>

@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
-import distinctValues from "../../../utils/distinctValues";
+import distinctValues from "../../../../utils/distinctValues";
 
-import ExpensesActionController from '../../Expenses/controllers/ExpensesActionController'
-import {LocalDB} from "../../../db";
-import schema from '../db/schema'
+import ExpensesActionController from '../../controllers/ExpensesActionController'
+import {LocalDB} from "../../../../db";
+import schema from '../../db/schema'
 
-import AddButton from "../components/AddButtom/AddButton";
-import Line from "../components/Line/Line";
-import {Input, PageHeader, Tab} from "../../../components/ui";
+import AddButton from "../../components/AddButtom/AddButton";
+import Line from "../../components/Line/Line";
+import {Input, PageHeader, Tab} from "../../../../components/ui";
+
+
+
 
 export default function ExpensesPlan({
                                          user_id,
@@ -58,7 +61,7 @@ export default function ExpensesPlan({
 
     return (
         <>
-            <PageHeader arrowBack title={'Expenses'}/>
+            <PageHeader arrowBack title={'Бюджет'}/>
             <div style={{display: 'flex', justifyContent: 'stretch', width: '100%'}}>
                 <Tab name={'Планы'} active/>
                 <Tab name={'Расходы'}/>

@@ -14,3 +14,8 @@ html, body {
   color: inherit;
   line-height: inherit;
 }
+
+.flex-between{
+  display: flex;
+  justify-content: space-between;
+}

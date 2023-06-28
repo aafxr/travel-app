@@ -31,6 +31,9 @@ export default function ExpensesPlan({
                 </h2>
                 <Link to={`/travel/123/expenses/plan/`}>План расходов</Link>
                 <Link to={`/travel/123/expenses/add/`}>Добавить расходы</Link>
+                <Link to={`/travel/123/expenses/limits/`}>Список лимитов</Link>
+                <Link to={`/travel/123/expenses/limit/123`}>Редактировать лимит</Link>
+                <Link to={`/travel/123/expenses/plan/add/`}>Добавить фактические расходов</Link>
                 <Link to={`/travel/123/expenses/plan/add/`}>Добавить план расходов</Link>
             </div>
         </>
