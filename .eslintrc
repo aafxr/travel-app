@@ -3,7 +3,7 @@
         "Expenses.js"
     ],
     "rules": {
-        //...
+        "prefer-rest-params": "off"
     },
     "parserOptions": {
         "ecmaVersion": 2017,
