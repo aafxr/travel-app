@@ -1,8 +1,8 @@
 import React from "react";
-import st from './AddButtom.module.css'
+import st from './AddButton.module.css'
 import clsx from "clsx";
 
-export default function AddButtom({className, children, props}){
+export default function AddButton({className, children, props}){
     const styles = clsx({
         [st['add-btn']]: true,
         className
