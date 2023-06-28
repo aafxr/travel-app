@@ -6,7 +6,7 @@ import st from './PageHeader.module.css'
 export default function PageHeader({
                                        arrowBack,
                                        className,
-    title,
+                                       title,
                                        children,
                                        ...props
                                    }) {
