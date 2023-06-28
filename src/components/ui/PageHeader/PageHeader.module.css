@@ -1,0 +1,37 @@
+.pageHeader-container{
+    padding: 12px 20px 0;
+
+}
+
+.page-header{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-header img{
+    position: absolute;
+    /*top: 12px;*/
+    left: 0;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+
+    cursor: pointer;
+
+}
+
+.page-header.arrowBack{
+    padding-left: 34px;
+}
+
+.page-header > *{
+    flex: 0 0;
+}
+
+.title{
+    flex: 0 1;
+    font-weight: 700;
+}
+
