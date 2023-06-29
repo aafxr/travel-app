@@ -17,7 +17,7 @@ export default ({
         [st.icon]: icon,
         [st.orange]: color === 'orange',
         [st.green]: color === 'green',
-        [st['gray']]: color === 'gray',
+        [st['gray']]: color === 'grey',
         [st['light-orange']]: color === 'light-orange',
         [st['icon-left']]: icon && iconPosition === 'left',
         [st['icon-right']]: icon && iconPosition === 'right',

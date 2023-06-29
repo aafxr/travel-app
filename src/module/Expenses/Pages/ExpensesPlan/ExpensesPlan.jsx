@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 import distinctValues from "../../../../utils/distinctValues";
 
@@ -10,44 +10,27 @@ import AddButton from "../../components/AddButtom/AddButton";
 import Line from "../../components/Line/Line";
 import {Input, PageHeader, Tab} from "../../../../components/ui";
 
-
+import {ExpensesContext} from "../../components/ExpensesContextProvider";
 
 
 export default function ExpensesPlan({
                                          user_id,
-                                         primaryEntityType,
-                                         primary_entity_id
+                                         primaryEntityType
                                      }) {
-    const params = useParams()
-    console.log(params)
-    const [db, setDb] = useState(null)
-    const [dbReady, setDbReady] = useState(false)
-    const [idCounter, setIdCounter] = useState(0)
-    const [controller, setController] = useState(null)
+    const {travelCode: primary_entity_id} = useParams()
+    const {controller} = useContext(ExpensesContext)
+
     const [sections, setSections] = useState([])
     const [expenses, setExpenses] = useState([])
 
-    useEffect(() => {
-        setDb(new LocalDB(
-            schema,
-            {
-                onReady: (db) => {
-                    console.log(db)
-                    setDbReady(true)
-                    setController(new ExpensesActionController(db, user_id, '123'))
-                },
-                onError: console.error
-            }))
-    }, [])
-
-    useEffect(() => {
+        useEffect(() => {
         if (controller) {
             controller.sectionModel.get('all')
                 .then(items => distinctValues(items, item => item.id))
                 .then(items => setSections(items))
                 .catch(console.error)
         }
-    }, [controller])
+    }, [])
 
     useEffect(() => {
         if (sections.length) {
@@ -61,11 +44,6 @@ export default function ExpensesPlan({
 
     return (
         <>
-            <PageHeader arrowBack title={'Бюджет'}/>
-            <div style={{display: 'flex', justifyContent: 'stretch', width: '100%'}}>
-                <Tab name={'Планы'} active/>
-                <Tab name={'Расходы'}/>
-            </div>
             <div style={{padding: '0 20px'}}>
                 <AddButton>Записать расходы</AddButton>
                 <Line value={0.3} color={'#52CF37'}/>

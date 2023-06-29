@@ -1,5 +1,9 @@
-.tab{
-    padding: 12px 24px;
+.tab {
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
     width: 100%;
     text-align: center;
     color: var(--color-grey);
@@ -7,11 +11,11 @@
 
     border-bottom: 2px solid var(--color-grey);
     background-color: transparent;
-    transition: all .3s;
+    transition: all .3s ease-out;
     cursor: pointer;
 }
 
-.active{
+.active:global {
     color: var(--color-active);
     border-bottom: 2px solid var(--color-active);
 

@@ -12,7 +12,6 @@
 
 .page-header img{
     position: absolute;
-    /*top: 12px;*/
     left: 0;
     width: 24px;
     height: 24px;
@@ -35,6 +34,5 @@
     font-weight: 700;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: hidden;
 }
 

@@ -1,18 +1,14 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 import {Input, PageHeader} from "../../../../components/ui";
+import {ExpensesContext} from "../../components/ExpensesContextProvider";
 
 export default function Limits({
                                          user_id,
-                                         primaryEntityType,
-                                         primary_entity_id
+                                         primaryEntityType
                                      }) {
-    const params = useParams()
-    console.log(params)
-    const [db, setDb] = useState(null)
-    const [dbReady, setDbReady] = useState(false)
-    const [idCounter, setIdCounter] = useState(0)
-    const [controller, setController] = useState(null)
+    const {travelCode: primary_entity_id} = useParams()
+    const {controller} = useContext(ExpensesContext)
 
 
     return (
