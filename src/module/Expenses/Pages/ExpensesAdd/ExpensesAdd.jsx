@@ -5,12 +5,12 @@ import Container from "../../components/Container/Container";
 import {ExpensesContext} from "../../components/ExpensesContextProvider";
 import Button from "../../components/Button/Button";
 
-import './ExpensesActualAdd.css'
 import createId from "../../../../utils/createId";
 
-export default function ExpensesActualAdd({
+export default function ExpensesAdd({
                                               user_id,
-                                              primaryEntityType
+                                              primaryEntityType,
+    expensesType = 'actual' // 'actual' | 'plan'
                                           }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
@@ -22,6 +22,8 @@ export default function ExpensesActualAdd({
     const [sections, setSections] = useState(null)
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(false)
+
+    const isPlan = expensesType === 'plan'
 
 
     useEffect(() => {
@@ -35,7 +37,8 @@ export default function ExpensesActualAdd({
 
     function handler(){
         if (user_id && primaryEntityType) {
-            controller.expensesActualModel.add({
+            const type =  isPlan ? 'expensesPlanedModel' : 'expensesActualModel'
+            controller[type].add({
                 user_id,
                 primary_entity_type: primaryEntityType,
                 primary_entity_id,
@@ -62,7 +65,7 @@ export default function ExpensesActualAdd({
 
     return (
         <>
-            <PageHeader arrowBack title={'Добавить расходы'}/>
+            <PageHeader arrowBack title={isPlan ? 'Добавить плановые расходы' : 'Добавить текущие расходы'}/>
             <Container>
                 <div className='title'>Записать расходы</div>
                 <Input
@@ -77,7 +80,7 @@ export default function ExpensesActualAdd({
                     onChange={e => setExpSum(e.target.value)}
                     placeholder='Сумма'
                 />
-                <div className='expenses-actual-sections'>
+                <div className='flex-wrap-gap'>
                     {
                         sections && !!sections.length && sections.map(
                             ({id, title}) => (
