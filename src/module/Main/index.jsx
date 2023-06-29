@@ -8,11 +8,6 @@ export default function ExpensesPlan({
                                          primary_entity_id
                                      }) {
     const params = useParams()
-    console.log(params)
-    const [db, setDb] = useState(null)
-    const [dbReady, setDbReady] = useState(false)
-    const [idCounter, setIdCounter] = useState(0)
-    const [controller, setController] = useState(null)
 
 
     return (
@@ -24,17 +19,18 @@ export default function ExpensesPlan({
                 padding: '0 20px',
                 display: 'flex',
                 gap: '20px',
-                flexDirection:'column'
+                flexDirection:'column',
+                letterSpacing: '1px'
             }}>
-                <h2>
-                    <b>Записать расходы</b>
+                <h2 style={{fontWeight: '900'}}>
+                    <b>Опции</b>
                 </h2>
-                <Link to={`/travel/123/expenses/plan/`}>План расходов</Link>
-                <Link to={`/travel/123/expenses/add/`}>Добавить расходы</Link>
-                <Link to={`/travel/123/expenses/limits/`}>Список лимитов</Link>
-                <Link to={`/travel/123/expenses/limit/123`}>Редактировать лимит</Link>
-                <Link to={`/travel/123/expenses/plan/add/`}>Добавить фактические расходов</Link>
-                <Link to={`/travel/123/expenses/plan/add/`}>Добавить план расходов</Link>
+                <Link to={`/travel/123/expenses/limits/`} style={{color: 'green'}}>Список лимитов</Link>
+                <Link to={`/travel/123/expenses/limit/123`} style={{color: 'green'}}>Редактировать лимит</Link>
+                <Link to={`/travel/123/expenses/plan/`} style={{color: 'green'}}>План расходов</Link>
+                <Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>
+                <Link to={`/travel/123/expenses/plan/add/`} style={{color: 'green'}} >Добавить план расходов</Link>
+                <Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>
             </div>
         </>
     )

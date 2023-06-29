@@ -10,7 +10,7 @@ const schema = {
     {
       name: 'section_limit',
       key: 'id',
-      indexes: ['section_id', 'personal'],
+      indexes: ['section_id', 'personal','primary_entity_id'],
     },
     {
       name: 'expenses_actual',

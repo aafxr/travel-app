@@ -20,6 +20,7 @@ function init({dbname, version, stores}) {
             stores.forEach(function (storeInfo) {
                 if (!db.objectStoreNames.contains(storeInfo.name)) {
                     const store = db.createObjectStore(storeInfo.name, {
+                        keyPath: storeInfo.key,
                         autoIncrement: true,
                     });
                     storeInfo.indexes.forEach(function (indexName) {

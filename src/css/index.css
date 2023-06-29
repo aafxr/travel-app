@@ -13,9 +13,25 @@ html, body {
 *,*::after, *::before{
   color: inherit;
   line-height: inherit;
+  box-sizing: border-box;
 }
 
 .flex-between{
   display: flex;
   justify-content: space-between;
 }
+
+.title{
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+
+.flex-wrap-gap{
+  display: flex;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+
+
