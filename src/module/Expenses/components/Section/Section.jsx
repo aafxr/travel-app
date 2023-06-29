@@ -1,7 +1,8 @@
 import React from "react";
-import st from './Line.module.css'
-import Line from "../Line/Line";
 import clsx from "clsx";
+import Line from "../Line/Line";
+
+import st from './Section.module.css'
 
 
 /**
@@ -15,40 +16,50 @@ import clsx from "clsx";
 export default function Section({
                                     name,
                                     expLimit,
-                                    expenses = []
+                                    expenses = [],
+                                    actual = false
                                 }) {
-    const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value) || 0
+    const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
+
     const personalExpenses = expenses
         .filter(item => item.personal === 1)
-        .reduce((acc, item) => acc + item.value)
+        .reduce((acc, item) => acc + item.value, 0)
 
+    const persent = personalExpenses / expLimit
+    const color = persent < 0.45 ? 'green' : persent > 0.82 ? 'red' : 'yellow'
 
-    return <div className={st.section}>
-        <div className={'flex-between'}>
-            <div className={st.sectionTitle}>{name}</div>
-            <div className={st.sectionTitle}>{sectionTotalExpenses}</div>
+    return (
+        <div className={st.expensesList}>
+
+            <div className={st.section}>
+                <div className={clsx('flex-between')}>
+                    <div className={st.sectionTitle}>{name}</div>
+                    <div className={st.sectionTitle}>{sectionTotalExpenses}</div>
+                </div>
+                {
+                    !!actual && (
+                        <>
+                            <Line value={personalExpenses / expLimit} color={color}/>
+                            <div className={'flex-between'}>
+                                <div className={st.sectionSubtitle}>Лимит {expLimit} ₽</div>
+                                <div className={st.sectionSubtitle}>Осталось {expLimit - personalExpenses} ₽</div>
+                            </div>
+                        </>
+                    )
+                }
+                {
+                    !!expenses.length && expenses.map(
+                        item => <SectionItem key={item.id} {...item}/>
+                    )
+                }
+            </div>
         </div>
-        <Line value={personalExpenses / expLimit} color={'green'}/>
-        <div className={'flex-between'}>
-            <div className={st.sectionTitle}>Лимит {name} ₽</div>
-            <div className={st.sectionTitle}>Осталось {sectionTotalExpenses} ₽</div>
-        </div>
-        {
-            !!expenses.length && expenses.map(
-                item => <SectionItem key={item.id} {...item}/>
-            )
-        }
 
-    </div>
+    )
 }
 
 
-
-
 const month = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
-
-
-
 
 
 /**
@@ -65,15 +76,17 @@ function SectionItem(expense) {
         : time = time.getDay() + ' ' + month[time.getMonth()]
 
 
-    return <div className={clsx(st.sctionItem, 'flex-between')}>
-        <div>
+    return (
+        <div className={clsx(st.sectionItem, 'flex-between')}>
             <div>
-                {title || ''} <span>{entity_type || ''}</span>
+                <div>
+                    {title || ''} <span>{entity_type || ''}</span>
+                </div>
+                <span>{time}</span>
             </div>
-            <span>{time}</span>
-        </div>
 
-        <div>{value} ₽</div>
-    </div>
+            <div>{value} ₽</div>
+        </div>
+    )
 
 }

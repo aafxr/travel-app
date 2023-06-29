@@ -1,4 +1,5 @@
 .line{
+    margin: 4px 0;
     position: relative;
     height: 5px;
     background-color: var(--color-light-grey);

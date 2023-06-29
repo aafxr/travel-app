@@ -1,8 +1,10 @@
 import React from "react";
+import './container.css'
+import clsx from "clsx";
 
-export default Container({children, className}){
+export default function Container({children, className}) {
 
-    return <div>
-
+    return <div className={clsx('expenses-container', className)}>
+        {children}
     </div>
 }

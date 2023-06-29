@@ -20,7 +20,13 @@
     font-weight: 600;
 }
 
-.sectionItem span{
+.sectionItem  span{
     font-size: 0.75rem;
+    color: var(--color-grey);
 }
+
+.expensesList > *{
+    border-bottom: 2px solid var(--color-light-grey);
+}
+
 
