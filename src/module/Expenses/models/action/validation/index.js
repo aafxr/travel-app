@@ -24,9 +24,9 @@ const actionType = [
 function validatePayload(data) {
     return (
         data.uid && isString(data.uid)
-        && data.entity && entityType.includes(data.entity)
-        && data.action && entityType.includes(data.action)
-        && data.datetime && !Number.isNaN(Date.parse(data.datetime))
+        && isString(data.entity)
+        && isString(data.action)
+        && !Number.isNaN(Date.parse(data.datetime))
         && typeof data.synced === 'number' && (data.synced === 0 || data.synced === 1)
     )
 }

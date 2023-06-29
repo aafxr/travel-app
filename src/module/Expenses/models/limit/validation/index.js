@@ -1,6 +1,7 @@
 // section_id
 // personal
 // value
+// primary_entity_id
 
 import isString from "../../../../../utils/validation/isString";
 import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
@@ -11,7 +12,8 @@ function validatePayload(data) {
     return (
         data.section_id && isString(data.section_id)
         && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
-        && data.value && isPositiveNumber(data.value)
+        && isPositiveNumber(data.value)
+        && isString(data.primary_entity_id)
     )
 }
 

@@ -43,6 +43,7 @@ export default function (db, user_id) {
          * @param {string} title
          * @param {number | boolean} personal
          * @param {string} color
+         * @param {string} primary_entity_id
          * @param {number} value
          * @returns {Promise<*>}
          */

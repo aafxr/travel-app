@@ -13,7 +13,7 @@ function validatePayload(data) {
     return (
         data.color && isHexColor(data.color)
         && typeof data.hidden === 'number' && (data.hidden === 0 || data.hidden === 1)
-        && data.title && isString(data.title)
+        && isString(data.title)
     )
 }
 

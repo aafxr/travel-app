@@ -26,17 +26,17 @@ const entityType = [
 
 function validatePayload(data) {
     return (
-        data.user_id && isString(data.user_id)
-        && data.primary_entity_type && primaryEntityType.includes(data.primary_entity_type)
-        && data.primary_entity_id && isString(data.primary_entity_id)
-        && data.entity_type && entityType.includes(data.entity_type)
-        && data.entity_id && isString(data.entity_id)
-        && data.title && isString(data.title)
-        && data.value && isPositiveNumber(data.value)
+        isString(data.user_id)
+        && isString(data.primary_entity_type)
+        && isString(data.primary_entity_id)
+        && isString(data.entity_type)
+        && isString(data.entity_id)
+        && isString(data.title)
+        && isPositiveNumber(data.value)
         && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
-        && data.section_id && isString(data.section_id)
-        && data.datetime && !Number.isNaN(Date.parse(data.datetime))
-        && data.created_at && !Number.isNaN(Date.parse(data.created_at))
+        && isString(data.section_id)
+        && !Number.isNaN(Date.parse(data.datetime))
+        && !Number.isNaN(Date.parse(data.created_at))
 
     )
 }
