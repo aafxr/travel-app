@@ -7,10 +7,10 @@
     padding: 12px 12px 12px 16px;
     width: 100%;
     border-radius: 10px;
-    border: 2px solid var(--color-light-grey);
-    background-color: var(--color-active-contrast);
+    border: 2px solid var(--color-grey-light);
+    background-color: var(--color-secondary);
 }
 
 .inout::placeholder{
-    color: var(--color-light-grey);
+    color: var(--color-grey-light);
 }

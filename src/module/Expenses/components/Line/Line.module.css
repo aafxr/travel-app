@@ -2,7 +2,7 @@
     margin: 4px 0;
     position: relative;
     height: 5px;
-    background-color: var(--color-light-grey);
+    background-color: var(--color-grey-light);
     border-radius: 5px;
     overflow: hidden;
 }

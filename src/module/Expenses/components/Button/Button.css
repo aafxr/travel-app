@@ -1,17 +1,17 @@
 .expenses-btn-container{
     position: relative;
     padding: 10px 20px;
-    background-color: var(--color-active-contrast);
+    background-color: var(--color-secondary);
     box-shadow: 0 -10px 30px 0 rgba(0, 0, 0, 0.10);
 }
 
 .expenses-btn{
     padding: 16px 0;
     width: 100%;
-    color: var(--color-active-contrast);
+    color: var(--color-secondary);
     font-weight: 700;
     border-radius: 8px;
-    background-color: var(--color-active);
+    background-color: var(--color-primary);
     border: none;
 
     overflow: hidden;
@@ -21,7 +21,7 @@
 
 .expenses-btn:disabled{
     color: var(--color-grey);
-    background-color: var(--color-light-active);
+    background-color: var(--color-primary-light);
     cursor: default;
     pointer-events: none;
 }

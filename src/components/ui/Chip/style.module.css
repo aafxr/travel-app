@@ -3,7 +3,7 @@
     position: relative;
     padding: 8px 9px;
 
-    color: var(--color-active-contrast);
+    color: var(--color-secondary);
     font-size: .6rem;
     line-height: 1;
     font-weight: 700;
@@ -15,8 +15,8 @@
     opacity: .8;
 }
 .chip img{
-    /*fill: var(--color-active-contrast);*/
-    stroke: var(--color-active-contrast);
+    /*fill: var(--color-secondary);*/
+    stroke: var(--color-secondary);
 }
 
 .icon img{
@@ -42,7 +42,7 @@
     border-radius: 30.5rem;
 }
 .orange {
-    background-color: var(--color-active);
+    background-color: var(--color-primary);
 }
 .green {
     background-color: var(--color-green);
@@ -50,7 +50,7 @@
 
 .gray{
     color: var(--color-grey);
-    background-color: var(--color-light-grey);
+    background-color: var(--color-grey-light);
 }
 .gray img{
     /*fill: var(--color-grey);*/
@@ -58,10 +58,10 @@
 }
 
 .light-orange{
-    color: var(--color-black);
-    background-color: var(--color-black);
+    color: var(--color-text);
+    background-color: var(--color-text);
 }
 .light-orange img{
-    /*fill: var(--color-black);*/
-    stroke: var(--color-black);
+    /*fill: var(--color-text);*/
+    stroke: var(--color-text);
 }

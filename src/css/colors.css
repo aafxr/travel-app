@@ -1,10 +1,10 @@
 :root {
-    --color-grey: #A2A2A2;
     --color-green: #52CF37;
-    --color-active: #FF8E09;
-    --color-active-contrast: #FFF;
-    --color-light-active: #FFF3E4;
-    --color-light-active-contrast: #1E1E1E;
-    --color-light-grey: #F0F0F0;
-    --color-black: #000;
+    --color-primary: #FF8E09;
+    --color-primary-light: #FFF3E4;
+    --color-secondary: #FFF;
+    --color-grey: #A2A2A2;
+    --color-grey-light: #F0F0F0;
+    --color-text: #000;
+    --color-text-light: #1E1E1E;
 }

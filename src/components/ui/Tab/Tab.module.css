@@ -16,8 +16,8 @@
 }
 
 .active:global {
-    color: var(--color-active);
-    border-bottom: 2px solid var(--color-active);
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
 
     cursor: default;
     pointer-events: none;
