@@ -8,10 +8,10 @@ import Button from "../../components/Button/Button";
 import createId from "../../../../utils/createId";
 
 export default function ExpensesAdd({
-                                              user_id,
-                                              primaryEntityType,
-    expensesType = 'actual' // 'actual' | 'plan'
-                                          }) {
+                                        user_id,
+                                        primaryEntityType,
+                                        expensesType = 'actual' // 'actual' | 'plan'
+                                    }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
     const navigate = useNavigate()
@@ -35,9 +35,9 @@ export default function ExpensesAdd({
             .catch(console.error)
     }, [controller])
 
-    function handler(){
+    function handler() {
         if (user_id && primaryEntityType) {
-            const type =  isPlan ? 'expensesPlanedModel' : 'expensesActualModel'
+            const type = isPlan ? 'expensesPlanedModel' : 'expensesActualModel'
             controller[type].add({
                 user_id,
                 primary_entity_type: primaryEntityType,
@@ -65,43 +65,48 @@ export default function ExpensesAdd({
 
     return (
         <>
-            <PageHeader arrowBack title={isPlan ? 'Добавить плановые расходы' : 'Добавить текущие расходы'}/>
-            <Container>
-                <div className='title'>Записать расходы</div>
-                <Input
-                    type={'text'}
-                    value={expName}
-                    onChange={e => setExpName(e.target.value)}
-                    placeholder='Название'
-                />
-                <Input
-                    type={'number'}
-                    value={expSum}
-                    onChange={e => setExpSum(e.target.value)}
-                    placeholder='Сумма'
-                />
-                <div className='flex-wrap-gap'>
-                    {
-                        sections && !!sections.length && sections.map(
-                            ({id, title}) => (
-                                <Chip
-                                    key={id}
-                                    rounded
-                                    color={section_id === id ? 'orange' : 'grey'}
-                                    onClick={() => setSectionId(id)}
-                                >
-                                    {title}
-                                </Chip>
-                            ))
-                    }
+            <div className='wrapper'>
+                <div className='content'>
+                    <PageHeader arrowBack title={isPlan ? 'Добавить плановые расходы' : 'Добавить текущие расходы'}/>
+                    <Container>
+                        <div className='title'>Записать расходы</div>
+                        <Input
+                            type={'text'}
+                            value={expName}
+                            onChange={e => setExpName(e.target.value)}
+                            placeholder='Название'
+                        />
+                        <Input
+                            type={'number'}
+                            value={expSum}
+                            onChange={e => setExpSum(e.target.value)}
+                            placeholder='Сумма'
+                        />
+                        <div className='flex-wrap-gap'>
+                            {
+                                sections && !!sections.length && sections.map(
+                                    ({id, title}) => (
+                                        <Chip
+                                            key={id}
+                                            rounded
+                                            color={section_id === id ? 'orange' : 'grey'}
+                                            onClick={() => setSectionId(id)}
+                                        >
+                                            {title}
+                                        </Chip>
+                                    ))
+                            }
+                        </div>
+                        <label>
+                            <input type="checkbox" checked={personal} onChange={e => setPersonal(e.target.checked)}/>
+                            Личные
+                        </label>
+                    </Container>
                 </div>
-                <label>
-                    <input type="checkbox" checked={personal} onChange={e => setPersonal(e.target.checked)}/>
-                    Личные
-                </label>
-            </Container>
 
-            <Button onClick={handler} disabled={!section_id || !expName || !expSum}>Добавить</Button>
+                <Button className='footer' onClick={handler}
+                        disabled={!section_id || !expName || !expSum}>Добавить</Button>
+            </div>
         </>
     )
 }
