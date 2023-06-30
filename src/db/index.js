@@ -8,6 +8,13 @@ import {openDB} from 'idb';
  */
 
 /**
+ * @typedef {object} DBSchemaType
+ * @property {string} dbname
+ * @property {number} version
+ * @property {Array.<StoreInfo>} stores
+ */
+
+/**
  * инициализация базы данных
  * @param {string} dbname                                имя создаваемой базы данных
  * @param {number} version                               версия базы дынных
@@ -39,8 +46,8 @@ export class LocalDB {
      * @param {string} dbname    имя бд
      * @param {number} version   версия бд
      * @param {Array.<StoreInfo>} stores массив с инфо о всех хранилищах в бд
-     * @param {function} onReady вызывается если бд откылась без ошибок
-     * @param {function} onError вызывается если бд откылась с ошибок
+     * @param {function} [onReady] вызывается если бд откылась без ошибок
+     * @param {function} [onError] вызывается если бд откылась с ошибок
      */
     constructor({dbname, version, stores}, {onReady, onError}) {
         this.dbname = dbname;
@@ -48,12 +55,10 @@ export class LocalDB {
         this.stores = stores;
         init({dbname, version, stores})
             .then((db) => {
-                if (onReady) {
-                    onReady(this);
-                }
+                onReady && onReady(this);
             })
             .catch((err) => {
-                onError(err);
+                onError && onError(err);
             });
     }
 

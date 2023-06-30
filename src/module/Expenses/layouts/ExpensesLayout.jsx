@@ -12,7 +12,7 @@ export default function ExpensesLayout() {
     return (
         <>
             <PageHeader arrowBack title={'Бюджет'}/>
-            <div style={{display: 'flex', justifyContent: 'stretch', width: '100%'}}>
+            <div className='content-stretch'>
                 <Tab name={'Планы'} to={`/travel/${travelCode}/expenses/plan/`}/>
                 <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/limits/`}/>
             </div>

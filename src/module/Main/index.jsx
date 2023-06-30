@@ -1,6 +1,7 @@
 import React, { useState} from 'react'
 import {Link, useParams} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
+import Checkbox from "../../components/ui/Checkbox/Checkbox";
 
 export default function ExpensesPlan({
                                          user_id,
@@ -31,6 +32,9 @@ export default function ExpensesPlan({
                 <Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>
                 <Link to={`/travel/123/expenses/plan/add/`} style={{color: 'green'}} >Добавить план расходов</Link>
                 <Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>
+
+                <Checkbox >Маршрут</Checkbox>
+                <Checkbox left >Маршрут</Checkbox>
             </div>
         </>
     )

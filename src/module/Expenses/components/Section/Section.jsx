@@ -10,6 +10,7 @@ import st from './Section.module.css'
  * @param {string} name имя секции расходов
  * @param {number} expLimit
  * @param {Array.<import('../../models/ExpenseModel').ExpenseType>} expenses
+ * @param {boolean} actual
  * @return {JSX.Element}
  * @constructor
  */
@@ -17,7 +18,7 @@ export default function Section({
                                     name,
                                     expLimit,
                                     expenses = [],
-                                    actual = false
+                                    actual = false,
                                 }) {
     const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
 
