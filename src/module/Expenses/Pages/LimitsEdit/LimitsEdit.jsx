@@ -7,9 +7,9 @@ import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
 
 export default function LimitsEdit({
-                                         user_id,
-                                         primaryEntityType
-                                     }) {
+                                       user_id,
+                                       primaryEntityType
+                                   }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
     const navigate = useNavigate()
@@ -17,7 +17,6 @@ export default function LimitsEdit({
     const [sections, setSections] = useState(null)
     const [section_id, setSectionId] = useState(null)
     const [limitValue, setLimitValue] = useState(0)
-
 
 
     useEffect(() => {
@@ -29,19 +28,20 @@ export default function LimitsEdit({
             .catch(console.error)
     }, [controller])
 
-    useEffect(() =>{
-        controller.limitModel.getFromIndex('section_id', section_id)
-            .then((limit)=>{
-                console.log('limit -> ', limit)
-                if (limit){
-                    setLimitValue(limit.value)
-                }else {
-                    setLimitValue(0)
-                }
-            })
-            .catch(console.error)
+    useEffect(() => {
+        if (section_id) {
+            controller.limitModel.getFromIndex('section_id', section_id)
+                .then((limit) => {
+                    console.log('limit -> ', limit)
+                    if (limit) {
+                        setLimitValue(limit.value)
+                    } else {
+                        setLimitValue(0)
+                    }
+                })
+                .catch(console.error)
+        }
     }, [section_id])
-
 
 
     function handler() {
@@ -49,9 +49,9 @@ export default function LimitsEdit({
             controller.limitModel.getFromIndex('section_id', section_id)
                 .then(limit => {
                     console.log('limit -> ', limit)
-                    if (limit){
+                    if (limit) {
                         controller.limitModel.edit({...limit, value: +limitValue})
-                    } else{
+                    } else {
                         controller.limitModel.add({
                             section_id,
                             personal: 1,
@@ -73,32 +73,36 @@ export default function LimitsEdit({
 
     return (
         <>
-            <PageHeader arrowBack title={'Редактировать лимит'}/>
-            <Container>
-                <div className='flex-wrap-gap'>
-                    {
-                        sections && !!sections.length && sections.map(
-                            ({id, title}) => (
-                                <Chip
-                                    key={id}
-                                    rounded
-                                    color={section_id === id ? 'orange' : 'grey'}
-                                    onClick={() => setSectionId(id)}
-                                >
-                                    {title}
-                                </Chip>
-                            ))
-                    }
-                </div>
-                <Input
-                    type={'text'}
-                    value={limitValue}
-                    onChange={e => setLimitValue(e.target.value)}
-                    placeholder='Название'
-                />
+            <div className='wrapper'>
+                <div className='content'>
+                    <PageHeader arrowBack title={'Редактировать лимит'}/>
+                    <Container>
+                        <div className='flex-wrap-gap'>
+                            {
+                                sections && !!sections.length && sections.map(
+                                    ({id, title}) => (
+                                        <Chip
+                                            key={id}
+                                            rounded
+                                            color={section_id === id ? 'orange' : 'grey'}
+                                            onClick={() => setSectionId(id)}
+                                        >
+                                            {title}
+                                        </Chip>
+                                    ))
+                            }
+                        </div>
+                        <Input
+                            type={'text'}
+                            value={limitValue}
+                            onChange={e => setLimitValue(e.target.value)}
+                            placeholder='Название'
+                        />
 
-            </Container>
-            <Button onClick={handler} disabled={(+limitValue) === 0 || !section_id}>Добавить</Button>
+                    </Container>
+                </div>
+            <Button className='footer' onClick={handler} disabled={(+limitValue) === 0 || !section_id}>Добавить</Button>
+            </div>
         </>
     )
 }

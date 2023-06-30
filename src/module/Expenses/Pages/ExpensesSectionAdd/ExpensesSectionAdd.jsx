@@ -39,18 +39,23 @@ export default function ExpensesActualAdd({
 
     return (
         <>
-            <PageHeader arrowBack title={'Добавить секцию'}/>
-            <Container>
-                <div className='title'>Записать расходы</div>
-                <Input
-                    type={'text'}
-                    value={sectionName}
-                    onChange={e => setSectionName(e.target.value)}
-                    placeholder='Название'
-                />
+            <div className='wrapper'>
+                <div className='content'>
+                    <PageHeader arrowBack title={'Добавить секцию'}/>
+                    <Container>
+                        <div className='title'>Записать расходы</div>
+                        <Input
+                            type={'text'}
+                            value={sectionName}
+                            onChange={e => setSectionName(e.target.value)}
+                            placeholder='Название'
+                        />
 
-            </Container>
-            <Button onClick={handler} disabled={sectionName.length === 0}>Добавить</Button>
+                    </Container>
+                </div>
+                <Button className='footer' onClick={handler} disabled={sectionName.length === 0}>Добавить</Button>
+            </div>
+
         </>
     )
 }
