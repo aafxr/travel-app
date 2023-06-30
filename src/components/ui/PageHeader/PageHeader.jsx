@@ -3,6 +3,17 @@ import {useNavigate} from 'react-router-dom'
 import clsx from "clsx";
 import st from './PageHeader.module.css'
 
+
+/**
+ * компонент добавляет заголовок и стрелку "вернуться назад"
+ * @param {boolean} arrowBack
+ * @param {string} className
+ * @param {string} title
+ * @param {JSX.Element} children
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function PageHeader({
                                        arrowBack,
                                        className,

@@ -1,7 +1,20 @@
 import React from 'react'
 import clsx from 'clsx'
-import st  from './style.module.css'
+import st  from './Chip.module.css'
+import isString from "../../../utils/validation/isString";
 
+
+/**
+ * компонент для отображения тегов / пометок
+ * @param {'orange' | 'green' | 'gray' | 'light-orange'} color
+ * @param {string} icon - url иконки
+ * @param {'left' | 'right'} iconPosition - способ расположения иконки (стиль применяется если задан icon) default = 'left'
+ * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
+ * @param {JSX.Element | string | number} children
+ * @param {string} className
+ * @param props
+ * @returns {JSX.Element}
+ */
 export default ({
     color = 'orange', // 'orange' | 'green' | 'gray' | 'light-orange'
     icon,
@@ -26,7 +39,7 @@ export default ({
     })
 
     return <div className={classes} {...props}>
-        {typeof icon === 'string' && icon.length > 0 && <img src={icon} alt="icon"/> }
+        {isString(icon) && <img src={icon} alt="icon"/> }
         {children}
     </div>
 }
