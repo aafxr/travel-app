@@ -1,10 +1,8 @@
-import isString from "./validation/isString";
-
-
 /**
+ * проверка на коректный HEX цвет пример  #Af15F0b => true
  * @param {string} color
- * @returns {boolean|*|boolean}
+ * @returns {boolean}
  */
 export default function isHexColor(color){
-    return isString(color) &&  /^#[0-9a-fA-F]{6}$/.test(color)
+    return /^#[0-9a-fA-F]{6}$/.test(color)
 }

@@ -12,7 +12,7 @@
 export default function distinctValues(arr, transformCb){
     if (Array.isArray(arr)){
         const set = new Set(arr.map(transformCb))
-        return [...set]
+        return [...set].map(i => i)
     }
     return []
 }
