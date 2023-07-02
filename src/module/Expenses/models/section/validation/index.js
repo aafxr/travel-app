@@ -11,7 +11,7 @@ import isHexColor from "../../../../../utils/isHexColor";
 
 function validatePayload(data) {
     return (
-        data.color && isHexColor(data.color)
+         isHexColor(data.color)
         && typeof data.hidden === 'number' && (data.hidden === 0 || data.hidden === 1)
         && isString(data.title)
     )

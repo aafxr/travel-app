@@ -60,8 +60,8 @@ export default class ExpensesActionController {
         this.storeName = constants.store.ACTIONS
 
         this.expensesActualModel = new Model(db, constants.store.EXPENSES_ACTUAL, expenseValidationObj)
-        this.expensesPlanedModel = new Model(db, constants.store.EXPENSES_PLANED, expenseValidationObj)
-        this.limitModel = new Model(db, constants.store.SECTION_LIMITS, limitValidationObj)
+        this.expensesPlanedModel = new Model(db, constants.store.EXPENSES_PLAN, expenseValidationObj)
+        this.limitModel = new Model(db, constants.store.LIMIT, limitValidationObj)
         this.sectionModel = new Model(db, constants.store.SECTION, sectionValidationObj)
         this.actionsModel = new Model(db, constants.store.ACTIONS, actionValidationObj)
 
@@ -210,13 +210,13 @@ export default class ExpensesActionController {
         let updated_at = Date.now()
 
         const expenses_actual = await this.expensesActualModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
-        const expenses_planed = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
+        const expenses_plan = await this.expensesPlanedModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.only(this.primary_entity_id))
 
         const total_actual = accumulate(expenses_actual, item => item.value)
-        const total_planed = accumulate(expenses_planed, item => item.value)
+        const total_planed = accumulate(expenses_plan, item => item.value)
 
         /**@type {string[]}*/
-        const sections_ids = distinctValues(expenses_planed, item => item.section_id)
+        const sections_ids = distinctValues(expenses_plan, item => item.section_id)
 
 
         const limits = []

@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext} from 'react'
 import {useParams} from "react-router-dom";
 
 import AddButton from "../../components/AddButtom/AddButton";
 
-import {ExpensesContext} from "../../components/ExpensesContextProvider";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import getReportObj from "../../utils/getReportObj";
 import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";

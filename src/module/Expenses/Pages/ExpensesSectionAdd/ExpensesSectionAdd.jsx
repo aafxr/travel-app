@@ -1,10 +1,11 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext,  useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
-import {Input, PageHeader, Chip} from "../../../../components/ui";
+import {Input, PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
-import {ExpensesContext} from "../../components/ExpensesContextProvider";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Button from "../../components/Button/Button";
 import createId from "../../../../utils/createId";
+import constants from "../../db/constants";
 
 export default function ExpensesActualAdd({
                                               user_id,
@@ -18,14 +19,22 @@ export default function ExpensesActualAdd({
 
     function handler() {
         if (user_id) {
-            controller.sectionModel.add({
+            const data = {
                 title: sectionName,
                 color: '#52CF37',
                 hidden: 0,
                 primary_entity_id,
                 id: createId(user_id)
+            }
+
+            controller.write({
+                storeName: constants.store.SECTION,
+                action: 'add',
+                user_id,
+                data
             })
-                .then(() => {
+                .then((res) => {
+                    console.log('Ответ ', res)
                     console.log('section created ', sectionName)
                 })
                 .catch(console.error)

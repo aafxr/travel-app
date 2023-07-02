@@ -2,10 +2,11 @@ import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
-import {ExpensesContext} from "../../components/ExpensesContextProvider";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Button from "../../components/Button/Button";
 
 import createId from "../../../../utils/createId";
+import constants from "../../db/constants";
 
 export default function ExpensesAdd({
                                         user_id,
@@ -27,7 +28,11 @@ export default function ExpensesAdd({
 
 
     useEffect(() => {
-        controller.sectionModel.get('all')
+        controller.read({
+            storeName: constants.store.SECTION,
+            action: 'get',
+            query: 'all'
+        })
             .then(s => {
                 s && setSections(s)
                 console.log(s)
@@ -37,8 +42,7 @@ export default function ExpensesAdd({
 
     function handler() {
         if (user_id && primaryEntityType) {
-            const type = isPlan ? 'expensesPlanedModel' : 'expensesActualModel'
-            controller[type].add({
+            const data = {
                 user_id,
                 primary_entity_type: primaryEntityType,
                 primary_entity_id,
@@ -51,8 +55,17 @@ export default function ExpensesAdd({
                 datetime: new Date().toISOString(),
                 created_at: new Date().toISOString(),
                 id: createId(user_id)
+            }
+
+            const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
+            controller.write({
+                storeName,
+                action: 'edit',
+                user_id,
+                data
             })
-                .then(() => {
+                .then((res) => {
+                    console.log('Ответ ', res)
                     console.log('Расход добавлен ', expName)
                 })
                 .catch(console.error)

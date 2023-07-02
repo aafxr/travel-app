@@ -1,9 +1,9 @@
 const constants = {
     store:{
         SECTION: 'section',
-        SECTION_LIMITS: 'section_limit',
+        LIMIT: 'limit',
         EXPENSES_ACTUAL: 'expenses_actual',
-        EXPENSES_PLANED: 'expenses_planed',
+        EXPENSES_PLAN: 'expenses_plan',
         ACTIONS: 'expensesActions'
     },
     indexes:{

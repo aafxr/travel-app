@@ -8,7 +8,7 @@ const schema = {
       indexes: [],
     },
     {
-      name: 'section_limit',
+      name: 'limit',
       key: 'id',
       indexes: ['section_id', 'personal','primary_entity_id'],
     },
@@ -18,7 +18,7 @@ const schema = {
       indexes: ['user_id', 'primary_entity_id', 'section_id'],
     },
     {
-      name: 'expenses_planed',
+      name: 'expenses_plan',
       key: 'id',
       indexes: ['user_id', 'primary_entity_id', 'section_id'],
     },

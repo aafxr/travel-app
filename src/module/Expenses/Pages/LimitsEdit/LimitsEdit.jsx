@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import {ExpensesContext} from "../../components/ExpensesContextProvider";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Container from "../../components/Container/Container";
 import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
+import constants from "../../db/constants";
 
 export default function LimitsEdit({
                                        user_id,
@@ -20,7 +21,11 @@ export default function LimitsEdit({
 
 
     useEffect(() => {
-        controller.sectionModel.get('all')
+        controller.read({
+            storeName: constants.store.SECTION,
+            action: 'get',
+            query: 'all'
+        })
             .then(s => {
                 s && setSections(s)
                 console.log(s)
@@ -30,7 +35,11 @@ export default function LimitsEdit({
 
     useEffect(() => {
         if (section_id) {
-            controller.limitModel.getFromIndex('section_id', section_id)
+            controller.read({
+                storeName: constants.store.LIMIT,
+                index: constants.indexes.SECTION_ID,
+                query: section_id
+            })
                 .then((limit) => {
                     console.log('limit -> ', limit)
                     if (limit) {
@@ -46,18 +55,36 @@ export default function LimitsEdit({
 
     function handler() {
         if (user_id) {
-            controller.limitModel.getFromIndex('section_id', section_id)
+            controller.read({
+                storeName: constants.store.LIMIT,
+                index: constants.indexes.SECTION_ID,
+                query: section_id
+            })
                 .then(limit => {
                     console.log('limit -> ', limit)
                     if (limit) {
-                        controller.limitModel.edit({...limit, value: +limitValue})
+                        const data = {...limit, value: +limitValue}
+                        controller.write({
+                            storeName: constants.store.LIMIT,
+                            action: 'edit',
+                            user_id,
+                            data
+                        })
                     } else {
-                        controller.limitModel.add({
+                        const data = {
                             section_id,
                             personal: 1,
                             value: +limitValue,
                             primary_entity_id,
                             id: createId(user_id)
+                        }
+
+
+                        controller.write({
+                            storeName: constants.store.LIMIT,
+                            action: 'add',
+                            user_id,
+                            data
                         })
                             .catch(console.error)
                     }
@@ -101,7 +128,8 @@ export default function LimitsEdit({
 
                     </Container>
                 </div>
-            <Button className='footer' onClick={handler} disabled={(+limitValue) === 0 || !section_id}>Добавить</Button>
+                <Button className='footer' onClick={handler}
+                        disabled={(+limitValue) === 0 || !section_id}>Добавить</Button>
             </div>
         </>
     )

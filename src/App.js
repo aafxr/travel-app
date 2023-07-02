@@ -8,7 +8,7 @@ import ExpensesSectionAdd from "./module/Expenses/Pages/ExpensesSectionAdd/Expen
 
 import Main from "./module/Main";
 import ExpensesLayout from "./module/Expenses/layouts/ExpensesLayout";
-import ExpensesContextProvider from "./module/Expenses/components/ExpensesContextProvider";
+import ExpensesContextProvider from "./module/Expenses/contextProvider/ExpensesContextProvider";
 
 
 function App() {
