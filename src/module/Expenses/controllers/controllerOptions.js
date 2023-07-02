@@ -75,50 +75,59 @@ export function onUpdate(primary_entity_id){
         }
 
 
+        const expenses_actual = await controller.read({
+            storeName: constants.store.EXPENSES_ACTUAL,
+            index: constants.indexes.PRIMARY_ENTITY_ID,
+            query: IDBKeyRange.only(primary_entity_id)
+        })
+
+        const expenses_plan = await controller.read({
+            storeName: constants.store.EXPENSES_PLAN,
+            index: constants.indexes.PRIMARY_ENTITY_ID,
+            query: IDBKeyRange.only(primary_entity_id)
+        })
+
         if (!isActionAfterUpdate) {
-            const expenses_actual = await controller.read({
-                storeName: constants.store.EXPENSES_ACTUAL,
-                index: constants.indexes.PRIMARY_ENTITY_ID,
-                query: IDBKeyRange.only(primary_entity_id)
-            })
-
-            const expenses_plan = await controller.read({
-                storeName: constants.store.EXPENSES_PLAN,
-                index: constants.indexes.PRIMARY_ENTITY_ID,
-                query: IDBKeyRange.only(primary_entity_id)
-            })
-
 
             total.total_actual += accumulate(expenses_actual, item => item.value)
             total.total_planed += accumulate(expenses_plan, item => item.value)
 
-            /**@type {string[]}*/
-            const sections_ids = distinctValues(expenses_plan, item => item.section_id)
 
-
-            const limits = []
-            for (const section_id of sections_ids) {
-                const section = await controller.read({
-                    storeName: constants.store.SECTION,
-                    action: 'get',
-                    id: section_id
-                })
-
-                const limit = await controller.read({
-                    storeName: constants.store.LIMIT,
-                    index: constants.indexes.SECTION_ID,
-                    query: section_id
-                })
-
-                limit && limits.push(
-                    {
-                        section_id,
-                        title: section.title,
-                        value: limit.value
-                    }
-                )
-            }
         }
+
+        /**@type {string[]}*/
+        const sections_ids = distinctValues(expenses_plan, item => item.section_id)
+
+        console.log('sections_ids => ',sections_ids)
+
+        const limits = []
+        for (const section_id of sections_ids) {
+            const section = await controller.read({
+                storeName: constants.store.SECTION,
+                action: 'get',
+                id: section_id
+            })
+
+            console.log('section => ', section)
+
+            const limit = await controller.read({
+                storeName: constants.store.LIMIT,
+                index: constants.indexes.SECTION_ID,
+                query: section_id
+            })
+
+            console.log('limit => ', limit)
+
+            limit && limits.push(
+                {
+                    section_id,
+                    title: section.title,
+                    value: limit.value
+                }
+            )
+        }
+
+        total.limits = limits
 
         total.updated_at = Date.now()
         localStorage.setItem(constants.TOTAL_EXPENSES, JSON.stringify(total))
