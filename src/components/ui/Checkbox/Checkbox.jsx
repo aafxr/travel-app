@@ -6,37 +6,48 @@ import clsx from "clsx";
 /**
  * @param {JSX.Element} children
  * @param {string} className
+ * @param {boolean} checked
  * @param {boolean} left - default = right сторона с которой отображается гконка
  * @param {function} [onChange]
  * @param props
  * @returns {JSX.Element}
  * @constructor
  */
-export default function Checkbox({children, className, left, onChange,...props}){
-    const [checked, setChecked] = useState(false)
+export default function Checkbox({
+                                     children,
+                                     className = '',
+                                     checked = false,
+                                     left,
+                                     onChange,
+                                     ...props
+                                 }) {
+    const [checkedState, setChecked] = useState(checked)
 
     const styles = clsx({
         [st.checkbox]: true,
-        [st.checked]: checked,
+        [st.checked]: checkedState,
         [st.left]: left,
         [st.right]: !left,
-        className
+        [className]: true,
     })
 
-    function handler(e){
+    function handler(e) {
         setChecked(e.target.checked)
-        onChange && onChange(e.target.checked)
+        onChange && onChange(e)
     }
 
-    return(
+    return (
         <div className={styles}>
             <label {...props} >
-                <input type="checkbox" checked={checked} onChange={handler} hidden />
+                <input type="checkbox" checked={checkedState} onChange={handler} hidden/>
                 {children}
             </label>
             <div className={st.dot}>
-                {!checked && <img className={clsx('img-abs', st.circle)} src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>}
-                {checked && <img className={clsx('img-abs', st.mark)} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'} alt="dot"/>}
+                {!checkedState && <img className={clsx('img-abs', st.circle)}
+                                       src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>}
+                {checkedState &&
+                    <img className={clsx('img-abs', st.mark)} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}
+                         alt="dot"/>}
             </div>
         </div>
     )

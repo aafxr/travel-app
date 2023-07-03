@@ -3,10 +3,9 @@ import st from './Input.module.css'
 import clsx from "clsx";
 
 export default function Input(props){
-const styles = clsx(st.input, props.className)
+const styles = clsx(st.inputContainer, props.className)
 
-
-    return <div className={st.inputContainer}>
-        <input {...props} className={styles}/>
+    return <div className={styles}>
+        <input {...props} className={st.input}/>
     </div>
 }
