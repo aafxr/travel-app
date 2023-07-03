@@ -1,11 +1,12 @@
 import React from "react";
-import st from './Button.css'
 import clsx from "clsx";
+
+import  './Button.css'
 
 export default function Button({className, children, ...props}){
 
-    return <div className='expenses-btn-container'>
-        <button {...props} className={clsx('expenses-btn', className)} >
+    return <div className={clsx('expenses-btn-container', className)}>
+        <button {...props} className='expenses-btn' >
             {children || ''}
         </button>
     </div>

@@ -7,25 +7,28 @@
     font-weight: 600;
 }
 
+.sectionTitle ~ *{
+    font-size: 1.250rem;
+}
+
 .sectionSubtitle{
-    margin-top: 5px;
-    margin-bottom: 16px;
     font-size: 0.75rem;
     color: var(--color-grey);
 }
 
 .sectionItem{
-    margin: 12px 0;
+    margin: 11px 0 0;
     font-size: 0.875rem;
     font-weight: 600;
 }
 
 .sectionItem  span{
+    line-height: 1;
     font-size: 0.75rem;
     color: var(--color-grey);
 }
 
-.expensesList > *{
+.expensesList:not(:last-child) > *{
     border-bottom: 2px solid var(--color-grey-light);
 }
 

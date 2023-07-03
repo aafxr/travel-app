@@ -10,6 +10,8 @@ import st from './Section.module.css'
  * @param {string} name имя секции расходов
  * @param {number} expLimit
  * @param {Array.<import('../../models/ExpenseModel').ExpenseType>} expenses
+ * @param {string} user_id
+ * @param {boolean} personal
  * @param {boolean} actual
  * @return {JSX.Element}
  * @constructor
@@ -18,39 +20,54 @@ export default function Section({
                                     name,
                                     expLimit,
                                     expenses = [],
+                                    user_id,
+                                    personal = false,
                                     actual = false,
                                 }) {
     const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
 
-    const personalExpenses = expenses
-        .filter(item => item.personal === 1)
+    const personalExpenses = expenses.filter(item => item.personal === 1 && user_id === item.user_id)
+
+    const expensesList = personal ? personalExpenses: expenses
+
+    const totalPersonalExpenses = personalExpenses
         .reduce((acc, item) => acc + item.value, 0)
 
-    const persent = personalExpenses / expLimit
-    const color = persent < 0.45 ? 'green' : persent > 0.82 ? 'red' : 'yellow'
+    const percent = (totalPersonalExpenses / expLimit) || 0
+    const color = percent < 0.45 ? '#52CF37' : percent > 0.82 ? '#FF0909' : '#E3CD00'
+
+    let balance = expLimit - totalPersonalExpenses
+    balance < 0 && (balance = 0)
 
     return (
         <div className={st.expensesList}>
-
-            <div className={st.section}>
+            <div className='expenses-pt-20 expenses-pb-20'>
                 <div className={clsx('flex-between')}>
                     <div className={st.sectionTitle}>{name}</div>
-                    <div className={st.sectionTitle}>{sectionTotalExpenses}</div>
+                    <div className={st.sectionTitle}>{sectionTotalExpenses} ₽</div>
                 </div>
                 {
                     !!actual && (
                         <>
-                            <Line value={personalExpenses / expLimit} color={color}/>
-                            <div className={'flex-between'}>
-                                <div className={st.sectionSubtitle}>Лимит {expLimit} ₽</div>
-                                <div className={st.sectionSubtitle}>Осталось {expLimit - personalExpenses} ₽</div>
-                            </div>
+                            <Line value={percent} color={color}/>
+                            {
+                                !!expLimit && (
+                                    <div className={'flex-between'}>
+                                        <div className={st.sectionSubtitle}>Лимит {expLimit} ₽</div>
+                                        <div className={st.sectionSubtitle}>Осталось {balance} ₽</div>
+                                    </div>
+                                )
+                            }
                         </>
                     )
                 }
                 {
-                    !!expenses.length && expenses.map(
-                        item => <SectionItem key={item.id} {...item}/>
+                    !!expensesList.length && (
+                        expensesList
+                            .map(
+                                item => <SectionItem key={item.id} {...item}/>
+                            )
+
                     )
                 }
             </div>
