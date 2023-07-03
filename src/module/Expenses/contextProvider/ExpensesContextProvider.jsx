@@ -5,25 +5,14 @@ import ActionController from "../../../actionController/ActionController";
 import schema from "../db/schema";
 import options, {onUpdate} from '../controllers/controllerOptions'
 
+import '../css/Expenses.css'
+
 export const ExpensesContext = createContext(null)
 
 export default function ExpensesContextProvider({user_id}) {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
     const [controller, setController] = useState(null)
-
-    // useEffect(() => {
-    //     new LocalDB(
-    //         schema,
-    //         {
-    //             onReady: (db) => {
-    //                 console.log(db)
-    //                 setDbReady(true)
-    //                 setController(new ExpensesActionController(db, user_id, '123'))
-    //             },
-    //             onError: console.error
-    //         })
-    // }, [])
 
     useEffect(() => {
         const c = new ActionController(schema, {

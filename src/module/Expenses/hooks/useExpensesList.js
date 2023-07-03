@@ -27,45 +27,44 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
     //получаем все секции для лимитов поездки
     useEffect(() => {
         async function getSections() {
-            if (limits.length) {
-                const res = []
-                for (const limit of limits) {
-                    const sec = await controller.read({
-                        storeName: constants.store.SECTION,
-                        action: 'get',
-                        id: limit.section_id
-                    })
+            const set = new Set()
+            expenses.forEach(item => set.add(item[constants.indexes.SECTION_ID]))
 
-                    sec && res.push(sec)
-                }
-                setSections(res)
+            const sectionList = [...set]
+
+            const res = []
+            for (const section_id of sectionList) {
+                const sec = await controller.read({
+                    storeName: constants.store.SECTION,
+                    action: 'get',
+                    id: section_id
+                })
+
+                sec && res.push(sec)
             }
+            setSections(res)
         }
 
         getSections().catch(console.error)
 
-    }, [limits])
+    }, [expenses])
 
 
     //получаем все расходы за поездку
     useEffect(() => {
         const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-        if (sections && sections.length) {
-            controller.read({
-                storeName,
-                index: constants.indexes.PRIMARY_ENTITY_ID,
-                query: IDBKeyRange.only(primary_entity_id)
-            })
-                .then(setExpenses)
-                .catch(console.error)
-        }
-    }, [sections])
-
+        controller.read({
+            storeName,
+            index: constants.indexes.PRIMARY_ENTITY_ID,
+            query: IDBKeyRange.only(primary_entity_id)
+        })
+            .then(setExpenses)
+            .catch(console.error)
+    }, [controller])
 
     if (
         !sections.length
-        || !limits.length
         || !expenses.length
     ) {
         return {}

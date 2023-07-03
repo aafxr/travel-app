@@ -98,8 +98,6 @@ export function onUpdate(primary_entity_id){
         /**@type {string[]}*/
         const sections_ids = distinctValues(expenses_plan, item => item.section_id)
 
-        console.log('sections_ids => ',sections_ids)
-
         const limits = []
         for (const section_id of sections_ids) {
             const section = await controller.read({
@@ -108,15 +106,11 @@ export function onUpdate(primary_entity_id){
                 id: section_id
             })
 
-            console.log('section => ', section)
-
             const limit = await controller.read({
                 storeName: constants.store.LIMIT,
                 index: constants.indexes.SECTION_ID,
                 query: section_id
             })
-
-            console.log('limit => ', limit)
 
             limit && limits.push(
                 {

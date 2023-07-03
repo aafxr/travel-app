@@ -1,0 +1,32 @@
+.expenses-wrapper{
+    padding-top: 12px;
+    height: 100%;
+}
+
+.expenses-summ{
+    margin-top: 4px;
+}
+
+.expenses-section{
+    margin-top: 20px;
+}
+
+.expenses-checkbox{
+    margin-top: 1rem;
+}
+
+.expenses-pb-20{
+    padding-bottom: 20px;
+}
+
+.expenses-pt-20{
+    padding-top: 20px;
+}
+
+.expenses-mt-20{
+    margin-top: 20px;
+}
+
+.expenses-mt-20{
+    margin-bottom: 20px;
+}
