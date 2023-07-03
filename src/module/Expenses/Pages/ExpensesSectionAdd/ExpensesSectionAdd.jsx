@@ -7,6 +7,9 @@ import Button from "../../components/Button/Button";
 import createId from "../../../../utils/createId";
 import constants from "../../db/constants";
 
+import '../../css/Expenses.css'
+
+
 export default function ExpensesActualAdd({
                                               user_id,
                                               primaryEntityType

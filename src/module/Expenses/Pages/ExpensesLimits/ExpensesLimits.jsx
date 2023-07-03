@@ -11,6 +11,7 @@ import useExpensesList from "../../hooks/useExpensesList";
 import getReportObj from "../../utils/getReportObj";
 
 import '../../css/Expenses.css'
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 
 export default function ExpensesLimits({
                                           user_id,
@@ -27,7 +28,8 @@ export default function ExpensesLimits({
     }, [])
 
     const report = sections && limits && expenses && getReportObj(sections, limits, expenses) || []
-    console.log(report)
+
+
 
     return (
         <div>
@@ -36,7 +38,7 @@ export default function ExpensesLimits({
                 {
                     report && !!report.length
                         ? report.map(item => (
-                            <Section key={item.id} {...item} user_id={user_id} actual personal/>
+                            <Section key={item.id} {...item} user_id={user_id} actual />
                         ))
                         : <div>{noDataMessage}</div>
                 }

@@ -7,6 +7,9 @@ import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
 import constants from "../../db/constants";
 
+import '../../css/Expenses.css'
+
+
 export default function LimitsEdit({
                                        user_id,
                                        primaryEntityType
@@ -17,7 +20,7 @@ export default function LimitsEdit({
 
     const [sections, setSections] = useState(null)
     const [section_id, setSectionId] = useState(null)
-    const [limitValue, setLimitValue] = useState(0)
+    const [limitValue, setLimitValue] = useState('')
 
 
     useEffect(() => {
@@ -28,7 +31,6 @@ export default function LimitsEdit({
         })
             .then(s => {
                 s && setSections(s)
-                console.log(s)
             })
             .catch(console.error)
     }, [controller])
@@ -103,8 +105,8 @@ export default function LimitsEdit({
             <div className='wrapper'>
                 <div className='content'>
                     <PageHeader arrowBack title={'Редактировать лимит'}/>
-                    <Container>
-                        <div className='flex-wrap-gap'>
+                    <Container className='expenses-pt-20'>
+                        <div className='flex-gap-row'>
                             {
                                 sections && !!sections.length && sections.map(
                                     ({id, title}) => (
@@ -120,10 +122,11 @@ export default function LimitsEdit({
                             }
                         </div>
                         <Input
+                            className='expenses-mt-20'
                             type={'text'}
-                            value={limitValue}
-                            onChange={e => setLimitValue(e.target.value)}
-                            placeholder='Название'
+                            value={limitValue || ''}
+                            onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
+                            placeholder='Лимит'
                         />
 
                     </Container>

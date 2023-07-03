@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import AddButton from "../../components/AddButtom/AddButton";
@@ -9,6 +9,9 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 import useExpensesList from "../../hooks/useExpensesList";
 
+import '../../css/Expenses.css'
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+
 
 export default function ExpensesPlan({
                                          user_id,
@@ -18,25 +21,29 @@ export default function ExpensesPlan({
     const {controller} = useContext(ExpensesContext)
     const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id)
 
-    if (!limits || !expenses || !limits)
-        return <div>Loading...</div>
 
-    const report = sections.length && limits.length && expenses.length && getReportObj(sections, limits, expenses) || []
-    console.log(report)
+    const [noDataMessage, setNoDataMessage] = useState('')
+
+    useEffect(() => {
+        setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
+    }, [])
+
+    const report = sections && expenses && getReportObj(sections, limits, expenses) || []
+
 
 
     return (
-        <>
-            <div>
+        <div>
+            <Container className='expenses-pt-20'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Записать расходы</AddButton>
-                <Container>
-                    {
-                        !!report.length && report.map(item => (
-                            <Section key={item.id} {...item} />
+                {
+                    report && !!report.length
+                        ? report.map(item => (
+                            <Section key={item.id} {...item} user_id={user_id}  />
                         ))
-                    }
-                </Container>
-            </div>
-        </>
+                        : <div>{noDataMessage}</div>
+                }
+            </Container>
+        </div>
     )
 }

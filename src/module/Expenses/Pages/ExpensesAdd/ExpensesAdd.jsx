@@ -1,12 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
-import {Input, PageHeader, Chip} from "../../../../components/ui";
-import Container from "../../components/Container/Container";
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import Button from "../../components/Button/Button";
+import clsx from "clsx";
 
 import createId from "../../../../utils/createId";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
+
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+import {Input, PageHeader, Chip} from "../../../../components/ui";
+import Container from "../../components/Container/Container";
+import Button from "../../components/Button/Button";
+
 import constants from "../../db/constants";
+
+import '../../css/Expenses.css'
 
 export default function ExpensesAdd({
                                         user_id,
@@ -18,7 +24,7 @@ export default function ExpensesAdd({
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
-    const [expSum, setExpSum] = useState(0)
+    const [expSum, setExpSum] = useState('')
 
     const [sections, setSections] = useState(null)
     const [section_id, setSectionId] = useState(null)
@@ -35,7 +41,6 @@ export default function ExpensesAdd({
         })
             .then(s => {
                 s && setSections(s)
-                console.log(s)
             })
             .catch(console.error)
     }, [controller])
@@ -77,11 +82,11 @@ export default function ExpensesAdd({
     }
 
     return (
-        <>
-            <div className='wrapper'>
-                <div className='content'>
-                    <PageHeader arrowBack title={isPlan ? 'Добавить плановые расходы' : 'Добавить текущие расходы'}/>
-                    <Container>
+        <div className='wrapper'>
+            <div className='content'>
+                <div className='expenses-wrapper'>
+                    <PageHeader arrowBack title={'Добавить расходы'}/>
+                    <Container className='bb-2-grey expenses-pb-20'>
                         <div className='title'>Записать расходы</div>
                         <Input
                             type={'text'}
@@ -90,12 +95,13 @@ export default function ExpensesAdd({
                             placeholder='Название'
                         />
                         <Input
-                            type={'number'}
+                            className={'expenses-summ'}
+                            type={'text'}
                             value={expSum}
-                            onChange={e => setExpSum(e.target.value)}
+                            onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
                             placeholder='Сумма'
                         />
-                        <div className='flex-wrap-gap'>
+                        <div className={clsx('flex-gap-row', 'expenses-section')}>
                             {
                                 sections && !!sections.length && sections.map(
                                     ({id, title}) => (
@@ -110,16 +116,14 @@ export default function ExpensesAdd({
                                     ))
                             }
                         </div>
-                        <label>
-                            <input type="checkbox" checked={personal} onChange={e => setPersonal(e.target.checked)}/>
-                            Личные
-                        </label>
+                        <Checkbox className='expenses-checkbox' checked={personal}
+                                  onChange={e => setPersonal(e.target.checked)} left>Личные</Checkbox>
                     </Container>
                 </div>
-
-                <Button className='footer' onClick={handler}
-                        disabled={!section_id || !expName || !expSum}>Добавить</Button>
             </div>
-        </>
+
+            <Button className='footer' onClick={handler}
+                    disabled={!section_id || !expName || !expSum}>Добавить</Button>
+        </div>
     )
 }
