@@ -244,7 +244,10 @@ export default class ActionController {
 
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant]) {
-                        const res = await this.model[entity][actionVariant](parsedData);
+                        const res = await this.model[entity][actionVariant](parsedData)
+                            .catch(err => {
+                                throw err
+                            })
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
                         console.log('Action result:  ', res);
@@ -282,12 +285,17 @@ export default class ActionController {
      * @param {ControllerPayloadType} payload
      */
     write(payload) {
-        if (this.modelNames.includes(payload.storeName)) {
-            /**@type{ActionType}*/
-            const action = this.createAction(payload)
-            return this.actionHandler(action)
-        } else {
-            this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
+        try {
+            if (this.modelNames.includes(payload.storeName)) {
+                /**@type{ActionType}*/
+                const action = this.createAction(payload)
+                return this.actionHandler(action)
+            } else {
+                this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
+                return Promise.resolve(null)
+            }
+        } catch (err) {
+            this._errorMessage(err)
             return Promise.resolve(null)
         }
     }
@@ -304,9 +312,15 @@ export default class ActionController {
             try {
                 if (actions.includes(action)) {
                     return this.model[storeName][action](id || query)
+                        .catch(err => {
+                            throw err
+                        })
                 }
                 if (index) {
                     return this.model[storeName].getFromIndex(index, query)
+                        .catch(err => {
+                            throw err
+                        })
                 }
                 return Promise.resolve(null)
             } catch (err) {

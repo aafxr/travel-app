@@ -120,15 +120,9 @@ export class LocalDB {
                         return db.getFromIndex(storeName, indexName, query);
                     });
             }
-            return Promise.reject(
-                new Error(
-                    `[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`
-                )
-            );
+            throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }
-        return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
-        );
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
     /**
@@ -145,9 +139,7 @@ export class LocalDB {
                     return db.add(storeName, payload);
                 })
         }
-        return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
-        );
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
     /**
@@ -164,9 +156,7 @@ export class LocalDB {
                     return db.put(storeName, payload);
                 });
         }
-        return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
-        );
+            throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
     /**
@@ -184,8 +174,6 @@ export class LocalDB {
                     return db.delete(storeName, key);
                 });
         }
-        return Promise.reject(
-            new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
-        );
+            throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 }
