@@ -1,6 +1,6 @@
 const schema = {
   dbname: 'expenses',
-  version: 3,
+  version: 5,
   stores: [
     {
       name: 'section',

@@ -9,7 +9,6 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
 
     const isPlan = expensesType === 'plan'
 
-
     //получаем все лимиты на поездку
     useEffect(() => {
         if (controller) {
@@ -18,7 +17,7 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
                 index: constants.indexes.PRIMARY_ENTITY_ID,
                 query: IDBKeyRange.only(primary_entity_id)
             })
-                .then(items => setLimits(items))
+                .then(items => items && setLimits(items))
                 .catch(console.error)
         }
     }, [controller])
@@ -29,25 +28,23 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
         async function getSections() {
             const set = new Set()
 
-            if (!expenses.length){
-                return
+            if (expenses && Array.isArray(expenses)) {
+                expenses.forEach(item => set.add(item[constants.indexes.SECTION_ID]))
+
+                const sectionList = [...set]
+
+                const res = []
+                for (const section_id of sectionList) {
+                    const sec = await controller.read({
+                        storeName: constants.store.SECTION,
+                        action: 'get',
+                        id: section_id
+                    })
+
+                    sec && res.push(sec)
+                }
+                setSections(res)
             }
-
-            expenses.forEach(item => set.add(item[constants.indexes.SECTION_ID]))
-
-            const sectionList = [...set]
-
-            const res = []
-            for (const section_id of sectionList) {
-                const sec = await controller.read({
-                    storeName: constants.store.SECTION,
-                    action: 'get',
-                    id: section_id
-                })
-
-                sec && res.push(sec)
-            }
-            setSections(res)
         }
 
         getSections().catch(console.error)
@@ -64,7 +61,11 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
             index: constants.indexes.PRIMARY_ENTITY_ID,
             query: IDBKeyRange.only(primary_entity_id)
         })
-            .then(setExpenses)
+            .then(items => {
+                if (items){
+                    Array.isArray(items) ? setExpenses(items) : setExpenses([items])
+                }
+            })
             .catch(console.error)
     }, [controller])
 

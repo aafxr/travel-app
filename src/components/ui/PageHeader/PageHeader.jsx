@@ -2,6 +2,7 @@ import React from "react";
 import {useLocation, useNavigate} from 'react-router-dom'
 import clsx from "clsx";
 import st from './PageHeader.module.css'
+import isString from "../../../utils/validation/isString";
 
 
 /**
@@ -9,6 +10,7 @@ import st from './PageHeader.module.css'
  * @param {boolean} arrowBack
  * @param {string} className
  * @param {string} title
+ * @param {string} to
  * @param {JSX.Element} children
  * @param props
  * @returns {JSX.Element}
@@ -18,6 +20,7 @@ export default function PageHeader({
                                        arrowBack,
                                        className,
                                        title,
+                                       to,
                                        children,
                                        ...props
                                    }) {
@@ -34,15 +37,9 @@ export default function PageHeader({
 
 
     function backHandler() {
-        // const parts = pathname.split('/')
-        //
-        // const p1 = parts.pop()
-        // if (p1 || p1 === '') {
-        //     const p2 = parts.pop()
-        //     p2 && navigate(parts.join('/') + '/')
-        // } else {
-        // }
-            navigate(-1)
+        isString(to)
+            ? navigate(to)
+            : navigate(-1)
     }
 
     return (

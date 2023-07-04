@@ -17,7 +17,9 @@ export default function ExpensesContextProvider({user_id}) {
     useEffect(() => {
         const c = new ActionController(schema, {
             ...options,
-            onReady: () => setDbReady(true),
+            onReady: () => {
+                setDbReady(true)
+            },
             onError: console.error
         })
 

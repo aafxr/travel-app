@@ -28,6 +28,7 @@ export default function ExpensesPlan({
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
 
+
     const report = sections && expenses && getReportObj(sections, limits, expenses) || []
 
 
