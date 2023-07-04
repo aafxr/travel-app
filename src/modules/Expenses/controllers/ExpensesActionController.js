@@ -1,6 +1,6 @@
 import constants from "../db/constants";
 import distinctValues from "../../../utils/distinctValues";
-import Model from "../../../model/Model";
+import Model from "../../../models/Model";
 
 import expenseValidationObj from '../models/expenses/validation'
 import limitValidationObj from '../models/limit/validation'

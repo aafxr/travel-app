@@ -1,16 +1,16 @@
 import {Routes, Route, Outlet, Link, Navigate} from "react-router-dom";
 
-import ExpensesPlan from "./module/Expenses/Pages/ExpensesPlan/ExpensesPlan";
-import ExpensesAdd from "./module/Expenses/Pages/ExpensesAdd/ExpensesAdd";
-import ExpensesLimits from "./module/Expenses/Pages/ExpensesLimits/ExpensesLimits";
-import LimitsEdit from "./module/Expenses/Pages/LimitsEdit/LimitsEdit";
-import ExpensesSectionAdd from "./module/Expenses/Pages/ExpensesSectionAdd/ExpensesSectionAdd";
+import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
+import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
+import ExpensesLimits from "./modules/Expenses/Pages/ExpensesLimits/ExpensesLimits";
+import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
+import ExpensesSectionAdd from "./modules/Expenses/Pages/ExpensesSectionAdd/ExpensesSectionAdd";
 
-import Main from "./module/Main";
-import TravelAdd from "./module/Travel/Pages/TravelAdd";
-import TravelWaypoint from "./module/Travel/Pages/TravelWaypoint";
-import ExpensesLayout from "./module/Expenses/layouts/ExpensesLayout";
-import ExpensesContextProvider from "./module/Expenses/contextProvider/ExpensesContextProvider";
+import Main from "./modules/Main";
+import TravelAdd from "./modules/Travel/Pages/TravelAdd";
+import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
+import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
+import ExpensesContextProvider from "./modules/Expenses/contextProvider/ExpensesContextProvider";
 
 
 function App() {

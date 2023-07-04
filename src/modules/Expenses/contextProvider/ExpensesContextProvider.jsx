@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
-import ActionController from "../../../actionController/ActionController";
+import ActionController from "../../../controllers/ActionController";
 import schema from "../db/schema";
 import options, {onUpdate} from '../controllers/controllerOptions'
 

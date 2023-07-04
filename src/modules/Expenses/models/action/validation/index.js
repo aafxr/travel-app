@@ -33,7 +33,7 @@ function validatePayload(data) {
 
 
 /**
- * @type {import('../../../../../model/Model').validateObj}
+ * @type {import('../../../../../models/Model').validateObj}
  */
 export default {
     add: validatePayload,

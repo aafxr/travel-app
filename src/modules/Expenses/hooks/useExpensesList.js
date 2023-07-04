@@ -28,6 +28,11 @@ export default function useExpensesList(controller, primary_entity_id, expensesT
     useEffect(() => {
         async function getSections() {
             const set = new Set()
+
+            if (!expenses.length){
+                return
+            }
+
             expenses.forEach(item => set.add(item[constants.indexes.SECTION_ID]))
 
             const sectionList = [...set]

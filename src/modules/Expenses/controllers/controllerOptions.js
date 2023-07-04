@@ -1,4 +1,4 @@
-import Model from "../../../model/Model";
+import Model from "../../../models/Model";
 
 import limitValidationObj from '../models/limit/validation'
 import expensesValidationObj from '../models/expenses/validation'
@@ -13,8 +13,8 @@ import isString from "../../../utils/validation/isString";
 
 /**
  *
- * @param {import('../../../actionController/ActionController').ControllerPayloadType} payload
- * @returns {import('../../../actionController/ActionController').ActionType}
+ * @param {import('../../../controllers/ActionController').ControllerPayloadType} payload
+ * @returns {import('../../../controllers/ActionController').ActionType}
  */
 function createAction(payload) {
     const {storeName, user_id, action, data} = payload
@@ -46,8 +46,8 @@ const totalDefault = {
 export function onUpdate(primary_entity_id){
     /**
      *
-     * @param {import('../../../actionController/ActionController').ActionController} controller
-     * @param {import('../../../actionController/ActionController').ActionType} [action]
+     * @param {import('../../../controllers/ActionController').ActionController} controller
+     * @param {import('../../../controllers/ActionController').ActionType} [action]
      */
     return async function (controller, action) {
         let total = JSON.parse(localStorage.getItem(constants.TOTAL_EXPENSES)) || totalDefault
@@ -129,7 +129,7 @@ export function onUpdate(primary_entity_id){
 }
 
 
-/**@type{import('../../../actionController/ActionController').OptionsType} */
+/**@type{import('../../../controllers/ActionController').OptionsType} */
 const options = {
     models: {
         limit: (db) => new Model(db, constants.store.LIMIT, limitValidationObj),
