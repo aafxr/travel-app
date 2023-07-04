@@ -10,9 +10,16 @@ import Section from "../../components/Section/Section";
 import useExpensesList from "../../hooks/useExpensesList";
 
 import '../../css/Expenses.css'
-import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+import useSections from "../../hooks/useSections";
 
 
+/**
+ * страница отображает плановые расходы  пользователя
+ * @param {string} user_id
+ * @param {string} primaryEntityType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ExpensesPlan({
                                          user_id,
                                          primaryEntityType
@@ -21,13 +28,16 @@ export default function ExpensesPlan({
     const {controller} = useContext(ExpensesContext)
     const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id)
 
+    const sec = useSections(controller)
+
+    console.log('sec',sec)
+
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
     useEffect(() => {
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
-
 
     const report = sections && expenses && getReportObj(sections, limits, expenses) || []
 

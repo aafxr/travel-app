@@ -7,12 +7,12 @@ import st from './Section.module.css'
 
 /**
  *
- * @param {string} name имя секции расходов
- * @param {number} expLimit
+ * @param {string} name - имя секции расходов
+ * @param {number} limit - лимит расходов поьзователя
  * @param {Array.<import('../../models/ExpenseModel').ExpenseType>} expenses
  * @param {string} user_id
  * @param {boolean} personal
- * @param {boolean} actual
+ * @param {boolean} line
  * @return {JSX.Element}
  * @constructor
  */

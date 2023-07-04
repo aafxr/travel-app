@@ -21,11 +21,51 @@ import isError from "../utils/isError";
  * @typedef {string | number | IDBKeyRange} PayloadType
  */
 
+
+/**
+ * @description Model позволяет работать с отдельным хранилищем в бд
+ *
+ *
+ * ================================================
+ *
+ * Параметры:
+ *
+ * db экзепляр бд LocalDB
+ *
+ * ============
+ *
+ * storeName имя хранилища с которым буде работать данная Model (напирмер бд Expenses хранилище Limits)
+ *
+ * ============
+ *
+ * validation функция или обект для валидации записываемых в хранилище данных
+ *
+ * если функция вызывается на все методы где данные записываются в бд
+ *
+ * если Объект валидация вызываеться для каждого метода для которого указанна
+ *
+ * ================================================
+ *
+ * Методы Model:
+ *
+ * add
+ *
+ * get
+ *
+ * getFormIndex
+ *
+ * edit
+ *
+ * remove
+ *
+ * все методы возвращают промис с результатом операции. Результат операции зависит от query (id или IDBKeyRange)
+ *
+ */
 export default class Model {
 
 
     /**
-     * сущность Model позволяет работать с отдельным хранилищем (storeName)
+     * Model позволяет работать с отдельным хранилищем (storeName)
      * @param {import('../db').LocalDB} db - локальная база данных (indexeddb)
      * @param {string} storeName - имя хранилища
      * @param {validateCallback | validateObj}validation

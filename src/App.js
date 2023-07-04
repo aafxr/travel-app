@@ -20,7 +20,7 @@ function App() {
             <Route path={'/'} element={<Main/>}/>
             <Route path={'/travel/:travelCode/add/'} element={<TravelAdd/>}/>
             <Route path={'/travel/:travelCode/add/:pointNumber'} element={<TravelWaypoint/>}/>
-            <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesContextProvider />}>
+            <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesContextProvider user_id={'12'} />}>
                 <Route element={<ExpensesLayout  user_id={'12'} />}>
                     <Route path={'plan/'} element={<ExpensesPlan  user_id={'12'} />}/>
                     <Route path={'limits/'} element={<ExpensesLimits user_id={'12'} />}/>

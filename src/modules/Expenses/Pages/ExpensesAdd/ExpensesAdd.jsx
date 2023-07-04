@@ -14,6 +14,17 @@ import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
 
+
+/**
+ * страница жобавления расходов
+ *
+ * в зависимости от expensesType добавляются либо плановые либо текущие
+ * @param {string} user_id
+ * @param {string} primaryEntityType
+ * @param {'actual' | 'plan'} expensesType - default =  actual
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ExpensesAdd({
                                         user_id,
                                         primaryEntityType,

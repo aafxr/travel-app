@@ -12,8 +12,8 @@ import isString from "../../../utils/validation/isString";
 
 
 /**
- *
- * @param {import('../../../controllers/ActionController').ControllerPayloadType} payload
+ * возвращает action для новой записи в бд
+ * @param {import('../../../controllers/ActionController').ControllerPayloadType} payload должен содержать: storeName, user_id, action, data
  * @returns {import('../../../controllers/ActionController').ActionType}
  */
 function createAction(payload) {
@@ -129,7 +129,19 @@ export function onUpdate(primary_entity_id){
 }
 
 
-/**@type{import('../../../controllers/ActionController').OptionsType} */
+/**
+ * @description эти опции используются при создании экземпляра ActionController
+ *
+ *
+ * models - объект ключи которого должны совпадать с именем хранидищ в бд
+ * значения -> функции, которые должны возвращать экзепляр Model
+ *
+ * storeName - имя хранилища для записи не синхронизированных action
+ *
+ * newAction - функция, должна возвращать action на основе переданной в контроллер информации из методов read, write
+ *
+ * @type{import('../../../controllers/ActionController').OptionsType}
+ */
 const options = {
     models: {
         limit: (db) => new Model(db, constants.store.LIMIT, limitValidationObj),

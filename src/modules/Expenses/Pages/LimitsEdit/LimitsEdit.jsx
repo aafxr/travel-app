@@ -10,6 +10,13 @@ import constants from "../../db/constants";
 import '../../css/Expenses.css'
 
 
+/**
+ * страница редактиррования лимитов
+ * @param {string} user_id
+ * @param {string} primaryEntityType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function LimitsEdit({
                                        user_id,
                                        primaryEntityType

@@ -39,6 +39,41 @@ function init({dbname, version, stores}) {
     });
 }
 
+
+/**
+ * @description LocalDB в качестве параметров принимает схему бд (имя бд - dbname / версию / описание хранилищ),
+ *
+ *
+ * вторым параметром принимат объект с колбэками:
+ *
+ * onReady вызывается когда бд создана
+ *
+ * onError вызывается если при создании бд возникла ошибка
+ *
+ * ==================================================
+ *
+ * методы LocalDB:
+ *
+ * addElement       ринимает имя хранилища и query => возвращает id добавленного объекта
+ *
+ * ============
+ *
+ * getElement       ринимает имя хранилища и query => вернет undefined если нет объектов удовлетворяющих query
+ *
+ * ============
+ *
+ * editElement      принимает имя хранилища и query => перезаписывает объекты  удовлетворяющих query
+ *
+ * ============
+ *
+ * getFromIndex     принимает имя хранилища имя индекса и query => вернет undefined если нет подходящего запросу объекта
+ * или обяект / массив объектов в зависимости от query
+ *
+ * =================================================
+ *
+ * если query instanceof IDBKeyRange методы описаные выше (кроме addElement) будут работать с объектами, которые подходят
+ * под условия IDBKeyRange
+ */
 export class LocalDB {
     /**
      *  создает объект для работы с конкретной базой данных (например Expenses)
@@ -66,6 +101,7 @@ export class LocalDB {
      * проверяет наличие зранилищя в бд
      * @param {String} storeName        имя хранилища в бд
      * @returns {StoreInfo | undefined} StoreInfo | undefined
+     * @private
      */
     getStoreInfo(storeName) {
         return this.stores.find((item) => item.name === storeName);
@@ -76,6 +112,7 @@ export class LocalDB {
      * @param {Array.<String> }indexes массив с инфо о всех хранилищах в бд
      * @param {string} index           index из текущего store
      * @returns {boolean}
+     * @private
      */
     isIndexProp(indexes, index) {
         return indexes.includes(index);

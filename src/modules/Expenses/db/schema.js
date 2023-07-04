@@ -1,3 +1,14 @@
+/**
+ * @description - описание структуры бд Expenses
+ *
+ *
+ * dbname - имя бд
+ *
+ * version - версия
+ *
+ * stores - набор объектов описывающих storage в бд
+ *
+ */
 const schema = {
   dbname: 'expenses',
   version: 5,

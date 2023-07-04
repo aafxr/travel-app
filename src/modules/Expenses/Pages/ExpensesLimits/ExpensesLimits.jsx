@@ -11,12 +11,19 @@ import useExpensesList from "../../hooks/useExpensesList";
 import getReportObj from "../../utils/getReportObj";
 
 import '../../css/Expenses.css'
-import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 
+
+/**
+ * страница отображает текущие расходы с лимитами пользователя (если указаны)
+ * @param {string} user_id
+ * @param {string} primaryEntityType
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ExpensesLimits({
-                                          user_id,
-                                          primaryEntityType
-                                      }) {
+                                           user_id,
+                                           primaryEntityType
+                                       }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
     const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id, 'actual')

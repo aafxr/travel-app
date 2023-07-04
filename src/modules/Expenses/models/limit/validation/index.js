@@ -19,6 +19,7 @@ function validatePayload(data) {
 
 
 /**
+ * @description объект валидации limit
  * @type {import('../../../../../models/Model').validateObj}
  */
 export default {

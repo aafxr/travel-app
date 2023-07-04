@@ -28,8 +28,9 @@ export default function Checkbox({
         [st.checked]: checkedState,
         [st.left]: left,
         [st.right]: !left,
-        [className]: true,
-    })
+    },
+        className
+    )
 
     function handler(e) {
         setChecked(e.target.checked)

@@ -7,10 +7,10 @@ import isString from "../../../utils/validation/isString";
 
 /**
  * компонент добавляет заголовок и стрелку "вернуться назад"
- * @param {boolean} arrowBack
+ * @param {boolean} arrowBack - true добавляет стрелочку назад <-
  * @param {string} className
- * @param {string} title
- * @param {string} to
+ * @param {string} title - заголовок
+ * @param {string} to - url на который перенаправляется пользователь при клике либо назад
  * @param {JSX.Element} children
  * @param props
  * @returns {JSX.Element}
@@ -31,8 +31,8 @@ export default function PageHeader({
         st['page-header'],
         {
             [st.arrowBack]: !!arrowBack,
-            [className]: true
-        }
+        },
+        className
     )
 
 
