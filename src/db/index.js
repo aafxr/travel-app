@@ -2,9 +2,9 @@ import {openDB} from 'idb';
 
 /**
  * @typedef {object} StoreInfo
- * @property {string} name имя хранилища (store) в бд
- * @property {string} [key] (optional) (primary key) ключ по которому осуществляется поиск в store
- * @property {Array.<String>} indexes массив индексов по которым будем искать в store
+ * @property {string} name              имя хранилища (store) в бд
+ * @property {string} [key]             (optional) (primary key) ключ по которому осуществляется поиск в store
+ * @property {Array.<String>} indexes   массив индексов по которым будем искать в store
  */
 
 /**
@@ -19,7 +19,7 @@ import {openDB} from 'idb';
  * @param {string} dbname                                имя создаваемой базы данных
  * @param {number} version                               версия базы дынных
  * @param {Array.<StoreInfo>} stores                     массив с инфо о всех хранилищах в бд
- * @returns {Promise<IDBPDatabase<unknown>>}    возвращает Promise с объектом db
+ * @returns {Promise<IDBPDatabase<unknown>>}             возвращает Promise с объектом db
  */
 function init({dbname, version, stores}) {
     return openDB(dbname, version, {
@@ -28,7 +28,7 @@ function init({dbname, version, stores}) {
                 if (!db.objectStoreNames.contains(storeInfo.name)) {
                     const store = db.createObjectStore(storeInfo.name, {
                         keyPath: storeInfo.key,
-                        autoIncrement: true,
+                        // autoIncrement: true,
                     });
                     storeInfo.indexes.forEach(function (indexName) {
                         store.createIndex(indexName, indexName, {});
@@ -43,11 +43,11 @@ export class LocalDB {
     /**
      *  создает объект для работы с конкретной базой данных (например Expenses)
      *  @constructor
-     * @param {string} dbname    имя бд
-     * @param {number} version   версия бд
-     * @param {Array.<StoreInfo>} stores массив с инфо о всех хранилищах в бд
-     * @param {function} [onReady] вызывается если бд откылась без ошибок
-     * @param {function} [onError] вызывается если бд откылась с ошибок
+     * @param {string} dbname               имя бд
+     * @param {number} version              версия бд
+     * @param {Array.<StoreInfo>} stores    массив с инфо о всех хранилищах в бд
+     * @param {function} [onReady]          вызывается если бд откылась без ошибок
+     * @param {function} [onError]          вызывается если бд откылась с ошибок
      */
     constructor({dbname, version, stores}, {onReady, onError}) {
         this.dbname = dbname;
@@ -84,8 +84,8 @@ export class LocalDB {
     /**
      * поиск объекта в store по переданным параметрам query
      * @param {String} storeName                     массив с инфо о всех хранилищах в бд
-     * @param {String | Number | IDBKeyRange} query параметры поиска
-     * @returns {Promise<any | undefined>}       возвращает Promise с резултатом поиска либо с ошибкой
+     * @param {String | Number | IDBKeyRange} query  параметры поиска
+     * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getElement(storeName, query) {
         const storeInfo = this.getStoreInfo(storeName);
@@ -105,20 +105,17 @@ export class LocalDB {
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
-     * @returns {Promise<any>}      Promise с результатом поиска либо ошибкой
+     * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
-    getFromIndex(storeName, indexName, query) {
+    async getFromIndex(storeName, indexName, query) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
-                return openDB(this.dbname, this.version)
-                    .then((db) => {
-                        if (query === 'all')
-                            return db.getAllFromIndex(storeName, indexName);
-                        if (query instanceof IDBKeyRange)
-                            return db.getAllFromIndex(storeName, indexName, query);
-                        return db.getFromIndex(storeName, indexName, query);
-                    });
+                const db = await openDB(this.dbname, this.version)
+
+                if (query === 'all')
+                    return await db.getAllFromIndex(storeName, indexName);
+                return await db.getFromIndex(storeName, indexName, query);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }
@@ -131,13 +128,11 @@ export class LocalDB {
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>}   Promise с результатом добавления либо ошибкой
      */
-    addElement(storeName, payload) {
+    async addElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version)
-                .then((db) => {
-                    return db.add(storeName, payload);
-                })
+            const db = await openDB(this.dbname, this.version)
+            return await db.add(storeName, payload);
         }
         throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
@@ -148,32 +143,30 @@ export class LocalDB {
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>} Promise с результатом обовления либо ошибкой
      */
-    editElement(storeName, payload) {
+    async editElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version)
-                .then((db) => {
-                    return db.put(storeName, payload);
-                });
+            const db = await openDB(this.dbname, this.version)
+            return await db.put(storeName, payload);
         }
-            throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
     /**
      * удаляет объект из хранилище
      * @param {string} storeName         имя хранилища
      * @param {string} key               ключ удаляемого объекта
-     * @returns {Promise<never>|Promise<void>}
+     * @returns {Promise<void>}
      */
-    removeElement(storeName, key) {
+    async removeElement(storeName, key) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            return openDB(this.dbname, this.version)
-                .then((db) => {
-                    if (key === 'all') return db.clear(storeName);
-                    return db.delete(storeName, key);
-                });
+            const db = await openDB(this.dbname, this.version)
+            if (key === 'all') {
+                return await db.clear(storeName);
+            }
+            return await db.delete(storeName, key);
         }
-            throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 }

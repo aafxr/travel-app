@@ -1,13 +1,13 @@
-import Model from '../model/Model';
-import constants from '../module/Expenses/db/constants';
-import actionValidationObj from '../module/Expenses/models/action/validation';
+import Model from '../models/Model';
+import constants from '../modules/Expenses/db/constants';
+import actionValidationObj from '../modules/Expenses/models/action/validation';
 import {LocalDB} from '../db';
 import isString from '../utils/validation/isString';
 
 /**
  * @callback CB
  * @param {import('../db').LocalDB}
- * @returns {import('../model/Model').default}
+ * @returns {import('../models/Model').default}
  */
 
 /**
