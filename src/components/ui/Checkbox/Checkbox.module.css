@@ -1,43 +1,37 @@
 .checkbox {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
     padding: 13px 0;
 
 }
 
 .checkbox label {
-    display: flex;
-    align-items: center;
     color: var(--color-text);
-
     cursor: pointer;
 }
 
 .checkbox.left label {
-    padding-left: 32px;
+    padding-left: 0.5rem;
 }
 
 .checkbox.right label {
-    padding-right: 32px;
+    padding-right: 0.5rem;
     justify-content: flex-start;
 }
 
-
 .dot {
-    position: absolute;
-    top: 50%;
+    flex: 0 0 auto;
+    position: relative;
     width: 24px;
     height: 24px;
-    transform: translateY(-50%);
 }
 
-.checkbox.left .dot {
-    left: 0;
+.checkbox.left{
+    flex-direction: row-reverse;
+    justify-content: flex-end;
 }
-
-.checkbox.right .dot {
-    right: 0;
-}
-
 
 .checkbox .mark {
     visibility: hidden;
