@@ -26,7 +26,7 @@ export default function ExpensesPlan({
                 <h2 style={{fontWeight: '900'}}>
                     <b>Опции</b>
                 </h2>
-                <Link to={`/travel/123/expenses/limits/`} style={{color: 'green'}}>Список лимитов</Link>
+                <Link to={`/travel/123/expenses/`} style={{color: 'green'}}>Список лимитов</Link>
                 <Link to={`/travel/123/expenses/limit/123`} style={{color: 'green'}}>Редактировать лимит</Link>
                 <Link to={`/travel/123/expenses/plan/`} style={{color: 'green'}}>План расходов</Link>
                 <Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>
