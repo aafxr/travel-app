@@ -1,0 +1,25 @@
+.travel{
+    padding-top: 12px;
+}
+
+.travel-link{
+    position: relative;
+    padding: 8px 8px 8px 32px;
+}
+
+.travel-link .icon{
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    left: 0;
+
+}
+
+.travel-destination{
+    justify-content: stretch;
+    width: 100%;
+}
+
+.travel-destination-input{
+    flex: 0 0 100%;
+}
