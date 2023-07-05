@@ -33,12 +33,12 @@ export default function Checkbox({
     )
 
     function handler(e) {
-        setChecked(e.target.checked)
-        onChange && onChange(e)
+        setChecked(prev => !prev)
+        onChange && onChange(!checked)
     }
 
     return (
-        <div className={styles}>
+        <div className={styles} onClick={() => setChecked(prev => !prev)}>
             <label {...props} >
                 <input type="checkbox" checked={checkedState} onChange={handler} hidden/>
                 {children}

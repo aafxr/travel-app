@@ -20,7 +20,7 @@ import '../../css/Expenses.css'
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ExpensesLimits({
+export default function Expenses({
                                            user_id,
                                            primaryEntityType
                                        }) {
