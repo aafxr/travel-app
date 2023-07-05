@@ -1,14 +1,20 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
-import {Chip, Input, PageHeader} from "../../../../components/ui";
+
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
+import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
 import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
+
+import useExpenses from "../../hooks/useExpenses";
+import useSections from "../../hooks/useSections";
+
+import useLimit from "../../hooks/useLimit";
+
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
-
 
 /**
  * страница редактиррования лимитов
@@ -25,85 +31,59 @@ export default function LimitsEdit({
     const {controller} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
-    const [sections, setSections] = useState(null)
+    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, 'plan')
+    const [sections, updateSections] = useSections(controller)
     const [section_id, setSectionId] = useState(null)
+    const [minLimit, limit, limitObj] = useLimit(controller, expenses, section_id, user_id)
     const [limitValue, setLimitValue] = useState('')
 
+    const [message, setMessage] = useState('')
 
     useEffect(() => {
-        controller.read({
-            storeName: constants.store.SECTION,
-            action: 'get',
-            query: 'all'
-        })
-            .then(s => {
-                s && setSections(s)
-            })
-            .catch(console.error)
+        if (controller) {
+            updateExpenses()
+            updateSections()
+        }
     }, [controller])
 
     useEffect(() => {
-        if (section_id) {
-            controller.read({
-                storeName: constants.store.LIMIT,
-                index: constants.indexes.SECTION_ID,
-                query: section_id
-            })
-                .then((limit) => {
-                    console.log('limit -> ', limit)
-                    if (limit) {
-                        setLimitValue(limit.value)
-                    } else {
-                        setLimitValue(0)
-                    }
-                })
-                .catch(console.error)
-        }
-    }, [section_id])
+        setLimitValue(limit)
+    }, [limit])
 
 
     function handler() {
+        if (+limitValue < minLimit){
+            setMessage(`Лимит должен быть больше ${minLimit}`)
+            return
+        }
+
         if (user_id) {
-            controller.read({
-                storeName: constants.store.LIMIT,
-                index: constants.indexes.SECTION_ID,
-                query: section_id
-            })
-                .then(limit => {
-                    console.log('limit -> ', limit)
-                    if (limit) {
-                        const data = {...limit, value: +limitValue}
-                        controller.write({
-                            storeName: constants.store.LIMIT,
-                            action: 'edit',
-                            user_id,
-                            data
-                        })
-                    } else {
-                        const data = {
-                            section_id,
-                            personal: 1,
-                            value: +limitValue,
-                            primary_entity_id,
-                            id: createId(user_id)
-                        }
-
-
-                        controller.write({
-                            storeName: constants.store.LIMIT,
-                            action: 'add',
-                            user_id,
-                            data
-                        })
-                            .catch(console.error)
-                    }
-                    console.log('limit создан')
+            if (limitObj) {
+                controller.write({
+                    storeName: constants.store.LIMIT,
+                    action: 'edit',
+                    user_id,
+                    data: {...limitObj, value: +limitValue}
                 })
-
-            navigate('/')
+            } else {
+                controller.write({
+                    storeName: constants.store.LIMIT,
+                    action: 'add',
+                    user_id,
+                    data: {
+                        section_id,
+                        personal: 1,
+                        value: +limitValue,
+                        primary_entity_id,
+                        id: createId(user_id)
+                    }
+                })
+                    .catch(console.error)
+            }
         } else {
             console.warn('need add user_id')
         }
+        navigate('/')
     }
 
 
@@ -113,33 +93,38 @@ export default function LimitsEdit({
                 <div className='content'>
                     <PageHeader arrowBack title={'Редактировать лимит'}/>
                     <Container className='expenses-pt-20'>
-                        <div className='flex-gap-row'>
-                            {
-                                sections && !!sections.length && sections.map(
-                                    ({id, title}) => (
-                                        <Chip
-                                            key={id}
-                                            rounded
-                                            color={section_id === id ? 'orange' : 'grey'}
-                                            onClick={() => setSectionId(id)}
-                                        >
-                                            {title}
-                                        </Chip>
-                                    ))
-                            }
+                        <div className='column gap-1'>
+                            <div className='flex-gap-row'>
+                                {
+                                    sections && !!sections.length && sections.map(
+                                        ({id, title}) => (
+                                            <Chip
+                                                key={id}
+                                                rounded
+                                                color={section_id === id ? 'orange' : 'grey'}
+                                                onClick={() => setSectionId(id)}
+                                            >
+                                                {title}
+                                            </Chip>
+                                        )
+                                    )
+                                }
+                            </div>
+                            <div className='column gap-0.25'>
+                                <Input
+                                    value={limitValue}
+                                    onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
+                                    type={'text'}
+                                    placeholder='Лимит'
+                                />
+                                {!!message && <div className='expenses-message'>{message}</div>}
+                            </div>
                         </div>
-                        <Input
-                            className='expenses-mt-20'
-                            type={'text'}
-                            value={limitValue || ''}
-                            onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
-                            placeholder='Лимит'
-                        />
 
                     </Container>
                 </div>
-                <Button className='footer' onClick={handler}
-                        disabled={(+limitValue) === 0 || !section_id}>Добавить</Button>
+                <Button className='footer'
+                        onClick={handler}>Добавить</Button>{/*disabled={(+limitValue) === 0 || !section_id}*/}
             </div>
         </>
     )
