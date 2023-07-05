@@ -1,32 +1,46 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import constants from "../db/constants";
 
 /**
  * возвращает список секций
  * @param {import('../../../controllers/ActionController').ActionController} controller
  * @param {string} primary_entity_id
- * @param {string} user_id
- * @returns {Array}
+ * @param {Array.<string>} sectionIdList массив id секций
+ * @returns {Array.<import('../models/LimitType').LimitType>}
  */
-export default function useLimits(controller, primary_entity_id, user_id) {
+export default function useLimits(controller, primary_entity_id, sectionIdList) {
     const [limits, setLimits] = useState([])
 
-    useEffect(() => {
-        if (controller) {
-            controller.read({
-                storeName: constants.store.LIMIT,
-                index: constants.indexes.PRIMARY_ENTITY_ID,
-                query: IDBKeyRange.only(primary_entity_id)
-            })
-                .then(item => {
-                    if (item) {
-                        let limitList = Array.isArray(item) ? item : [item]
-                        limitList = limitList.filter(l => l && l.user_id === user_id)
-                        setLimits(limitList)
-                    }
+    const update = useCallback(() => {
+        async function limitsFromArray(arr) {
+            const result = []
+            for (const id of arr) {
+                await controller.read({
+                    storeName: constants.store.LIMIT,
+                    index: constants.indexes.SECTION_ID,
+                    query: id
                 })
+                    .then(item => item && result.push(item))
+            }
+            return result
         }
-    }, [])
 
-    return limits
+
+        if (controller) {
+            if (sectionIdList) {
+                limitsFromArray(sectionIdList)
+                    .then(setLimits)
+            } else {
+                controller.read({
+                    storeName: constants.store.LIMIT,
+                    index: constants.indexes.PRIMARY_ENTITY_ID,
+                    query: IDBKeyRange.only(primary_entity_id)
+                })
+                    .then(items => items && setLimits(Array.isArray(items) ? items : [items]))
+            }
+        }
+    }, [controller, sectionIdList])
+
+
+    return [limits, update]
 }
