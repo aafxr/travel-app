@@ -6,11 +6,12 @@ import AddButton from "../../components/AddButtom/AddButton";
 import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
-import useExpensesList from "../../hooks/useExpensesList";
-
-import getReportObj from "../../utils/getReportObj";
 
 import '../../css/Expenses.css'
+import useExpenses from "../../hooks/useExpenses";
+import useSections from "../../hooks/useSections";
+import distinctValues from "../../../../utils/distinctValues";
+import useLimits from "../../hooks/useLimits";
 
 
 /**
@@ -21,21 +22,31 @@ import '../../css/Expenses.css'
  * @constructor
  */
 export default function Expenses({
-                                           user_id,
-                                           primaryEntityType
-                                       }) {
+                                     user_id,
+                                     primaryEntityType
+                                 }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
-    const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id, 'actual')
+
+    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "actual")
+    const sectionList = distinctValues(expenses, exp => exp.section_id)
+    const [sections, updateSections] = useSections(controller, sectionList)
+    const [limits, updateLimits] = useLimits(controller, primary_entity_id, sectionList)
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
     useEffect(() => {
+        controller && (window.controller = controller)
+        updateExpenses()
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
 
-    const report = sections && limits && expenses && getReportObj(sections, limits, expenses) || []
-
+    useEffect(() => {
+        if (expenses && expenses.length) {
+            updateSections()
+            updateLimits()
+        }
+    }, [expenses])
 
 
     return (
@@ -43,9 +54,16 @@ export default function Expenses({
             <Container className='expenses-pt-20'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {
-                    report && !!report.length
-                        ? report.map(item => (
-                            <Section key={item.id} {...item} user_id={user_id} actual />
+                    sections && !!sections.length
+                        ? sections.map(section => (
+                            <Section
+                                key={section.id}
+                                section={section}
+                                expenses={expenses.filter(e => e.section_id === section.id)}
+                                sectionLimit={(limits.find(l => l.section_id === section.id) || null)}
+                                user_id={user_id}
+                                line
+                            />
                         ))
                         : <div>{noDataMessage}</div>
                 }

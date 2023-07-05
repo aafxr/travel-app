@@ -7,9 +7,9 @@ import st from './Section.module.css'
 
 /**
  *
- * @param {string} name - имя секции расходов
- * @param {number} limit - лимит расходов поьзователя
- * @param {Array.<import('../../models/ExpenseModel').ExpenseType>} expenses
+ * @param {import('../../models/SectionType').SectionType} section - имя секции расходов
+ * @param {import('../../models/LimitType').LimitType | null} sectionLimit - лимит расходов поьзователя
+ * @param {Array.<import('../../models/ExpenseType').ExpenseType>} expenses
  * @param {string} user_id
  * @param {boolean} personal
  * @param {boolean} line
@@ -17,13 +17,16 @@ import st from './Section.module.css'
  * @constructor
  */
 export default function Section({
-                                    name,
-                                    expLimit,
+                                    section,
+                                    sectionLimit,
                                     expenses = [],
                                     user_id,
                                     personal = false,
-                                    actual = false,
+                                    line = false,
                                 }) {
+    const title = section.title
+    const limit = sectionLimit ? sectionLimit.value : 0
+
     const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
 
     const personalExpenses = expenses.filter(item => item.personal === 1 && user_id === item.user_id)
@@ -33,27 +36,27 @@ export default function Section({
     const totalPersonalExpenses = personalExpenses
         .reduce((acc, item) => acc + item.value, 0)
 
-    const percent = (totalPersonalExpenses / expLimit) || 0
+    const percent = (totalPersonalExpenses / limit) || 0
     const color = percent < 0.45 ? '#52CF37' : percent > 0.82 ? '#FF0909' : '#E3CD00'
 
-    let balance = expLimit - totalPersonalExpenses
+    let balance = limit - totalPersonalExpenses
     balance < 0 && (balance = 0)
 
     return (
         <div className={st.expensesList}>
             <div className='expenses-pt-20 expenses-pb-20'>
                 <div className={clsx('flex-between')}>
-                    <div className={st.sectionTitle}>{name}</div>
+                    <div className={st.sectionTitle}>{title}</div>
                     <div className={st.sectionTitle}>{sectionTotalExpenses} ₽</div>
                 </div>
                 {
-                    !!actual && (
+                    !!line && (
                         <>
                             <Line value={percent} color={color}/>
                             {
-                                !!expLimit && (
+                                !!limit && (
                                     <div className={'flex-between'}>
-                                        <div className={st.sectionSubtitle}>Лимит {expLimit} ₽</div>
+                                        <div className={st.sectionSubtitle}>Лимит {limit} ₽</div>
                                         <div className={st.sectionSubtitle}>Осталось {balance} ₽</div>
                                     </div>
                                 )
@@ -81,7 +84,7 @@ const month = ['январь', 'февраль', 'март', 'апрель', 'м
 
 
 /**
- * @param {import('../../models/ExpenseModel').ExpenseType} expense
+ * @param {import('../../models/ExpenseType').ExpenseType} expense
  * @return {JSX.Element}
  * @constructor
  */

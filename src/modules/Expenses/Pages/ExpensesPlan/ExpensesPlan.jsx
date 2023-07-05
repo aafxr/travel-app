@@ -4,14 +4,14 @@ import {useParams} from "react-router-dom";
 import AddButton from "../../components/AddButtom/AddButton";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import getReportObj from "../../utils/getReportObj";
 import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
-import useExpensesList from "../../hooks/useExpensesList";
 
 import '../../css/Expenses.css'
 import useSections from "../../hooks/useSections";
 import useLimits from "../../hooks/useLimits";
+import useExpenses from "../../hooks/useExpenses";
+import distinctValues from "../../../../utils/distinctValues";
 
 
 /**
@@ -27,33 +27,42 @@ export default function ExpensesPlan({
                                      }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)
-    const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id)
 
-    const sec = useSections(controller)
-    const lim = useLimits(controller,primary_entity_id)
-
-    console.log('sec',sec)
-    console.log('lim',lim)
+    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "plan")
+    const sectionList = distinctValues(expenses, exp => exp.section_id)
+    const [sections, updateSections] = useSections(controller, sectionList)
+    const [limits, updateLimits] = useLimits(controller, primary_entity_id, sectionList)
 
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
     useEffect(() => {
+        updateExpenses()
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
 
-    const report = sections && expenses && getReportObj(sections, limits, expenses) || []
-
+    useEffect(() => {
+        if (expenses && expenses.length) {
+            updateSections()
+            updateLimits()
+        }
+    }, [expenses])
 
 
     return (
         <div>
             <Container className='expenses-pt-20'>
-                <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Записать расходы</AddButton>
+                <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
-                    report && !!report.length
-                        ? report.map(item => (
-                            <Section key={item.id} {...item} user_id={user_id}  />
+                    sections && !!sections.length
+                        ? sections.map(section => (
+                            <Section
+                                key={section.id}
+                                section={section}
+                                expenses={expenses.filter(e => e.section_id === section.id)}
+                                sectionLimit={(limits.find(l => l.section_id === section.id) || null)}
+                                user_id={user_id}
+                            />
                         ))
                         : <div>{noDataMessage}</div>
                 }
