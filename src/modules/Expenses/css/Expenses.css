@@ -30,3 +30,8 @@
 .expenses-mt-20{
     margin-bottom: 20px;
 }
+
+.expenses-message{
+    font-size: 0.7rem;
+    color: var(--color-grey);
+}

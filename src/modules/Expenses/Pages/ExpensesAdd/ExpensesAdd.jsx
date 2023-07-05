@@ -97,38 +97,41 @@ export default function ExpensesAdd({
             <div className='content'>
                 <div className='expenses-wrapper'>
                     <PageHeader arrowBack title={'Добавить расходы'}/>
-                    <Container className='bb-2-grey expenses-pb-20'>
-                        <div className='title'>Записать расходы</div>
-                        <Input
-                            type={'text'}
-                            value={expName}
-                            onChange={e => setExpName(e.target.value)}
-                            placeholder='Название'
-                        />
-                        <Input
-                            className={'expenses-summ'}
-                            type={'text'}
-                            value={expSum}
-                            onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
-                            placeholder='Сумма'
-                        />
-                        <div className={clsx('flex-gap-row', 'expenses-section')}>
-                            {
-                                sections && !!sections.length && sections.map(
-                                    ({id, title}) => (
-                                        <Chip
-                                            key={id}
-                                            rounded
-                                            color={section_id === id ? 'orange' : 'grey'}
-                                            onClick={() => setSectionId(id)}
-                                        >
-                                            {title}
-                                        </Chip>
-                                    ))
-                            }
+                    <Container className='bb-2-grey'>
+                        <div className='column gap-1'>
+                            <div className='title'>Записать расходы</div>
+                            <div className='column gap-0.25'>
+                                <Input
+                                    type={'text'}
+                                    value={expName}
+                                    onChange={e => setExpName(e.target.value)}
+                                    placeholder='Название'
+                                />
+                                <Input
+                                    type={'text'}
+                                    value={expSum}
+                                    onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
+                                    placeholder='Сумма'
+                                />
+                            </div>
+                            <div className={clsx('flex-gap-row')}>
+                                {
+                                    sections && !!sections.length && sections.map(
+                                        ({id, title}) => (
+                                            <Chip
+                                                key={id}
+                                                rounded
+                                                color={section_id === id ? 'orange' : 'grey'}
+                                                onClick={() => setSectionId(id)}
+                                            >
+                                                {title}
+                                            </Chip>
+                                        ))
+                                }
+                            </div>
+                            <Checkbox checked={personal}
+                                      onChange={e => setPersonal(e)} left >Личные</Checkbox>
                         </div>
-                        <Checkbox className='expenses-checkbox' checked={personal}
-                                  onChange={e => setPersonal(e)} left>Личные</Checkbox>
                     </Container>
                 </div>
             </div>

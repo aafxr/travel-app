@@ -33,24 +33,26 @@ export default function TravelAdd() {
             </PageHeader>
 
                     <Container className='column'>
-                        <Link className='travel-link' to={'*'}>
-                            <div className='icon'>
-                                <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
-                            </div>
-                            Указать на карте
-                        </Link>
-                        <Link className='travel-link' to={'*'}>
-                            <div className='icon'>
-                                <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/navigation.svg'} alt="navigation"/>
-                            </div>
-                            Текущее местоположение
-                        </Link>
-                        <Link className='travel-link' to={'*'}>
-                            Москва
-                        </Link>
-                        <Link className='travel-link' to={'*'}>
-                            Санкт-Петербург
-                        </Link>
+                        <div className='column gap'>
+                            <Link className='travel-link' to={'*'}>
+                                <div className='icon'>
+                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
+                                </div>
+                                Указать на карте
+                            </Link>
+                            <Link className='travel-link' to={'*'}>
+                                <div className='icon'>
+                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/navigation.svg'} alt="navigation"/>
+                                </div>
+                                Текущее местоположение
+                            </Link>
+                            <Link className='travel-link' to={'*'}>
+                                Москва
+                            </Link>
+                            <Link className='travel-link' to={'*'}>
+                                Санкт-Петербург
+                            </Link>
+                        </div>
                     </Container>
 
                 </div>

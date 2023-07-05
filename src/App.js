@@ -2,7 +2,7 @@ import {Routes, Route, Outlet, Link, Navigate} from "react-router-dom";
 
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
-import ExpensesLimits from "./modules/Expenses/Pages/ExpensesLimits/ExpensesLimits";
+import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import ExpensesSectionAdd from "./modules/Expenses/Pages/ExpensesSectionAdd/ExpensesSectionAdd";
 
@@ -22,8 +22,8 @@ function App() {
             <Route path={'/travel/:travelCode/add/:pointNumber'} element={<TravelWaypoint/>}/>
             <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesContextProvider user_id={'12'} />}>
                 <Route element={<ExpensesLayout  user_id={'12'} />}>
+                    <Route index element={<Expenses user_id={'12'} />}/>
                     <Route path={'plan/'} element={<ExpensesPlan  user_id={'12'} />}/>
-                    <Route path={'limits/'} element={<ExpensesLimits user_id={'12'} />}/>
                 </Route>
                 <Route path={'limit/:sectionId/'} element={<LimitsEdit  user_id={'12'} />}/>
                 <Route path={'add'} element={<ExpensesAdd user_id={'12'} primaryEntityType={'travel'}/>}/>

@@ -55,7 +55,6 @@ export default function ExpensesContextProvider({user_id}) {
                 action:'get',
                 query: 'all'
             })
-            console.log('SectionList ', sectionList)
 
             if (!sectionList.length){
                 for (const sectionName of sections){

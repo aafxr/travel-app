@@ -33,7 +33,7 @@ export default function ExpensesPlan({
                 <Link to={`/travel/123/expenses/plan/add/`} style={{color: 'green'}} >Добавить план расходов</Link>
                 <Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>
                 <Link to={`/travel/44/add/`} >Новый маршрут</Link>
-                <Link to={`/travel/44/add/1/`} >Направление</Link>
+                <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
         </div>
         </>
     )

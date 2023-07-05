@@ -107,7 +107,7 @@ export default class ExpensesActionController {
      * @private
      */
     async _limitHandler(data) {
-        /**@type {import('../models/LimitModel').LimitType}*/
+        /**@type {import('../models/LimitType').LimitType}*/
         const limitData = JSON.parse(data.data)
         if (!limitData){
             throw new Error('data not correct')
@@ -136,7 +136,7 @@ export default class ExpensesActionController {
     }
 
     async _expanseActualHandler(data) {
-        /**@type {import('../models/ExpenseModel').ExpenseType}*/
+        /**@type {import('../models/ExpenseType').ExpenseType}*/
         const actualData = JSON.parse(data.data)
         const isAfter = this._isActionAfterUpdate(data)
 
@@ -164,7 +164,7 @@ export default class ExpensesActionController {
     }
 
     async _expansePlanedHandler(data) {
-        /**@type {import('../models/ExpenseModel').ExpenseType}*/
+        /**@type {import('../models/ExpenseType').ExpenseType}*/
         const planedData = JSON.parse(data.data)
         const isAfter = this._isActionAfterUpdate(data)
 
