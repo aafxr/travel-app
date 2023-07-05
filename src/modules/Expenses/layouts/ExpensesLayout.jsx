@@ -20,7 +20,7 @@ export default function ExpensesLayout() {
             <PageHeader arrowBack title={'Бюджет'} to='/'/>
             <div className='content-stretch'>
                 <Tab name={'Планы'} to={`/travel/${travelCode}/expenses/plan/`}/>
-                <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/limits/`}/>
+                <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/`}/>
             </div>
             <Outlet/>
         </div>

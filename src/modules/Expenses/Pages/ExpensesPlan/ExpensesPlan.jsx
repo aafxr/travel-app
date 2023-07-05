@@ -11,6 +11,7 @@ import useExpensesList from "../../hooks/useExpensesList";
 
 import '../../css/Expenses.css'
 import useSections from "../../hooks/useSections";
+import useLimits from "../../hooks/useLimits";
 
 
 /**
@@ -29,8 +30,10 @@ export default function ExpensesPlan({
     const {limits, expenses, sections} = useExpensesList(controller, primary_entity_id)
 
     const sec = useSections(controller)
+    const lim = useLimits(controller,primary_entity_id)
 
     console.log('sec',sec)
+    console.log('lim',lim)
 
 
     const [noDataMessage, setNoDataMessage] = useState('')

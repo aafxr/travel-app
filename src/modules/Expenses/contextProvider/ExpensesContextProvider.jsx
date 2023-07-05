@@ -16,7 +16,7 @@ import createId from "../../../utils/createId";
  */
 export const ExpensesContext = createContext(null)
 
-const sections = ['Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
+const sections = ['Прочие расходы','Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
 /**
  * обертка для молуля Expenses
  *

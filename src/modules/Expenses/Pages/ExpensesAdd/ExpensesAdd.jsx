@@ -86,7 +86,7 @@ export default function ExpensesAdd({
                 })
                 .catch(console.error)
 
-            navigate('/')
+            navigate(-1)
         } else {
             console.warn('need add user_id & primaryEntityType')
         }
@@ -128,7 +128,7 @@ export default function ExpensesAdd({
                             }
                         </div>
                         <Checkbox className='expenses-checkbox' checked={personal}
-                                  onChange={e => setPersonal(e.target.checked)} left>Личные</Checkbox>
+                                  onChange={e => setPersonal(e)} left>Личные</Checkbox>
                     </Container>
                 </div>
             </div>
