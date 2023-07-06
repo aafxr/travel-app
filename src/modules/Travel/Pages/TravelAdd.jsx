@@ -14,7 +14,7 @@ export default function TravelAdd() {
     const {pathname} = useLocation()
 
 
-    function handler(){
+    function handler() {
         navigate(pathname + '1/')
     }
 
@@ -23,26 +23,29 @@ export default function TravelAdd() {
         <>
             <div className='travel wrapper'>
                 <div className='content'>
-            <PageHeader arrowBack className='travel-destination'>
-                <Input
-                    className='travel-destination-input'
-                    value={destination}
-                    onChange={e => setDestination(e.target.value)}
-                    placeholder='Куда едем?'
-                />
-            </PageHeader>
+
 
                     <Container className='column'>
+                        <PageHeader arrowBack className='travel-destination'>
+                            <Input
+                                className='travel-destination-input'
+                                value={destination}
+                                onChange={e => setDestination(e.target.value)}
+                                placeholder='Куда едем?'
+                            />
+                        </PageHeader>
                         <div className='column gap'>
                             <Link className='travel-link' to={'*'}>
                                 <div className='icon'>
-                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
+                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'}
+                                         alt="map"/>
                                 </div>
                                 Указать на карте
                             </Link>
                             <Link className='travel-link' to={'*'}>
                                 <div className='icon'>
-                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/navigation.svg'} alt="navigation"/>
+                                    <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/navigation.svg'}
+                                         alt="navigation"/>
                                 </div>
                                 Текущее местоположение
                             </Link>

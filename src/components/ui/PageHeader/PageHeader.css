@@ -5,11 +5,12 @@
 }
 
 .page-header{
-    padding: 20px 0 20px 30px;
+    padding: 20px 0 20px 0;
 }
 
 .page-header-container.arrow-back .page-header{
     margin-left: -34px;
+    padding: 20px 0 20px 30px;
 }
 
 .page-header-icon{

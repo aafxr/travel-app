@@ -31,7 +31,7 @@ export default function ExpensesAdd({
                                         expensesType = 'actual' // 'actual' | 'plan'
                                     }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller} = useContext(ExpensesContext)
+    const {controller, defaultSectionId} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
@@ -43,6 +43,11 @@ export default function ExpensesAdd({
 
     const isPlan = expensesType === 'plan'
 
+    useEffect(() => {
+        if (defaultSectionId) {
+            setSectionId(defaultSectionId)
+        }
+    }, [defaultSectionId])
 
     useEffect(() => {
         controller.read({
@@ -96,9 +101,25 @@ export default function ExpensesAdd({
         <div className='wrapper'>
             <div className='content'>
                 <div className='expenses-wrapper'>
-                    <PageHeader arrowBack title={'Добавить расходы'}/>
                     <Container className='bb-2-grey'>
+                        <PageHeader arrowBack title={'Добавить расходы'}/>
                         <div className='column gap-1'>
+                            <div className='title'>Категория</div>
+                            <div className={clsx('row flex-wrap gap-0.75 bb-2-grey expenses-pb-20')}>
+                                {
+                                    sections && !!sections.length && sections.map(
+                                        ({id, title}) => (
+                                            <Chip
+                                                key={id}
+                                                rounded
+                                                color={section_id === id ? 'orange' : 'grey'}
+                                                onClick={() => setSectionId(id)}
+                                            >
+                                                {title}
+                                            </Chip>
+                                        ))
+                                }
+                            </div>
                             <div className='title'>Записать расходы</div>
                             <div className='column gap-0.25'>
                                 <Input
@@ -114,23 +135,9 @@ export default function ExpensesAdd({
                                     placeholder='Сумма'
                                 />
                             </div>
-                            <div className={clsx('flex-gap-row')}>
-                                {
-                                    sections && !!sections.length && sections.map(
-                                        ({id, title}) => (
-                                            <Chip
-                                                key={id}
-                                                rounded
-                                                color={section_id === id ? 'orange' : 'grey'}
-                                                onClick={() => setSectionId(id)}
-                                            >
-                                                {title}
-                                            </Chip>
-                                        ))
-                                }
-                            </div>
+
                             <Checkbox checked={personal}
-                                      onChange={e => setPersonal(e)} left >Личные</Checkbox>
+                                      onChange={e => setPersonal(e)} left>Личные</Checkbox>
                         </div>
                     </Container>
                 </div>

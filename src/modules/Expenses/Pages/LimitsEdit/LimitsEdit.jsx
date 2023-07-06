@@ -40,7 +40,7 @@ export default function LimitsEdit({
 
     const [limitObj, setLimitObj] = useState(null)
 
-    const [section_id, setSectionId] = useState( null)
+    const [section_id, setSectionId] = useState(null)
     const [limitValue, setLimitValue] = useState('')
 
     const [message, setMessage] = useState('')
@@ -132,10 +132,10 @@ export default function LimitsEdit({
         <>
             <div className='wrapper'>
                 <div className='content'>
-                    <PageHeader arrowBack title={'Редактировать лимит'}/>
-                    <Container className='expenses-pt-20'>
+                    <Container>
+                        <PageHeader arrowBack title={'Редактировать лимит'}/>
                         <div className='column gap-1'>
-                            <div className='flex-gap-row'>
+                            <div className='row gap-0.75'>
                                 {
                                     sections && !!sections.length && sections.map(
                                         ({id, title}) => (

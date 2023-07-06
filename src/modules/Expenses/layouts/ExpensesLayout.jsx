@@ -1,7 +1,8 @@
 import React from 'react'
-import {Outlet, useParams} from "react-router-dom";
+import {Outlet, useLocation, useParams} from "react-router-dom";
 
 import {PageHeader, Tab} from "../../../components/ui";
+import Container from "../components/Container/Container";
 
 
 /**
@@ -13,11 +14,16 @@ import {PageHeader, Tab} from "../../../components/ui";
  */
 export default function ExpensesLayout() {
     const {travelCode} = useParams()
+    const {pathname} = useLocation()
+
+    const title = pathname.endsWith('plan/') ? 'Планы' : 'Текущие расходы'
 
 
     return (
         <div className='expenses-wrapper'>
-            <PageHeader arrowBack title={'Бюджет'} to='/'/>
+            <Container>
+                <PageHeader arrowBack title={title} to='/'/>
+            </Container>
             <div className='content-stretch'>
                 <Tab name={'Планы'} to={`/travel/${travelCode}/expenses/plan/`}/>
                 <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/`}/>

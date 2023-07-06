@@ -1,4 +1,4 @@
-import React, {useContext,  useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import {Input, PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
@@ -53,8 +53,8 @@ export default function ExpensesActualAdd({
         <>
             <div className='wrapper'>
                 <div className='content'>
-                    <PageHeader arrowBack title={'Добавить секцию'}/>
                     <Container>
+                        <PageHeader arrowBack title={'Добавить секцию'}/>
                         <div className='title'>Записать расходы</div>
                         <Input
                             type={'text'}
