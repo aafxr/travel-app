@@ -1,5 +1,5 @@
 .pageHeader-container{
-    padding: 13px 20px 13px;
+    padding: 24px 20px 13px;
 
 }
 
@@ -10,13 +10,9 @@
     align-items: center;
 }
 
-.page-header img{
-    position: absolute;
-    left: 0;
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-
+.page-header-icon{
+    position: relative;
+    flex: 0 0 24px;
     cursor: pointer;
 
 }
