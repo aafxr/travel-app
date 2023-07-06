@@ -17,7 +17,7 @@ import useSections from "../hooks/useSections";
  */
 export const ExpensesContext = createContext(null)
 
-const sections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
+const defaultSections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
 /**
  * обертка для молуля Expenses
  *
@@ -59,8 +59,9 @@ export default function ExpensesContextProvider({user_id}) {
                 query: 'all'
             })
 
+
             if (!sectionList.length) {
-                for (const sectionName of sections) {
+                for (const sectionName of defaultSections) {
                     const data = {
                         title: sectionName,
                         color: '#52CF37',
@@ -75,6 +76,7 @@ export default function ExpensesContextProvider({user_id}) {
                         user_id,
                         data
                     })
+                        .then(console.log)
                 }
             }
         }
