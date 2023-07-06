@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import constants from "../db/constants";
 
 /**
- * возвращает список секций
+ * возвращает список секций или пустой массив
  * @param {import('../../../controllers/ActionController').ActionController} controller
  * @param {string} primary_entity_id
  * @param {Array.<string>} sectionIdList массив id секций

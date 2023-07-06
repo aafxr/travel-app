@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useMemo, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
@@ -15,6 +15,8 @@ import useLimit from "../../hooks/useLimit";
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
+import useLimits from "../../hooks/useLimits";
+import distinctValues from "../../../../utils/distinctValues";
 
 /**
  * страница редактиррования лимитов
@@ -32,27 +34,60 @@ export default function LimitsEdit({
     const navigate = useNavigate()
 
     const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, 'plan')
-    const [sections, updateSections] = useSections(controller)
+    const sectionsList = distinctValues(expenses, e => e.section_id)
+    const [sections, updateSections] = useSections(controller, sectionsList)
+    const [limits, updateLimits] = useLimits(controller, primary_entity_id, sectionsList)
+
+    const [limitObj, setLimitObj] = useState(null)
+
     const [section_id, setSectionId] = useState(null)
-    const [minLimit, limit, limitObj] = useLimit(controller, expenses, section_id, user_id)
     const [limitValue, setLimitValue] = useState('')
 
     const [message, setMessage] = useState('')
 
+    const minLimit = useMemo(() => {
+        if (expenses && expenses.length && section_id) {
+            return expenses
+                .filter(e => e.section_id === section_id)
+                .reduce((acc, e) => e.value + acc, 0)
+        }
+        return 0
+    }, [expenses, section_id])
+
+
+    //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
         if (controller) {
             updateExpenses()
-            updateSections()
         }
     }, [controller])
 
+    //получаем все секции и лимиты в зависимости от наличия расходов
     useEffect(() => {
-        setLimitValue(limit)
-    }, [limit])
+        if (expenses && expenses.length) {
+            updateSections()
+            updateLimits()
+        }
+    }, [expenses])
 
 
+    // если в бд уже был записан лимит записываем его в limitObj (либо null)
+    useEffect(() => {
+        if (section_id && limits && limits.length) {
+            const limit = limits.find(l => l.section_id === section_id)
+            limit ? setLimitObj(limit) : setLimitObj(null)
+        }
+    }, [section_id])
+
+
+    useEffect(() => {
+        limitObj ? setLimitValue(limitObj.value) : setLimitValue(minLimit)
+    }, [minLimit, limitObj])
+
+
+    // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
     function handler() {
-        if (+limitValue < minLimit){
+        if (+limitValue < minLimit) {
             setMessage(`Лимит должен быть больше ${minLimit}`)
             return
         }
