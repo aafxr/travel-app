@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from 'react'
+import React, {createContext, useCallback, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import ActionController from "../../../controllers/ActionController";
@@ -8,6 +8,7 @@ import options, {onUpdate} from '../controllers/controllerOptions'
 import '../css/Expenses.css'
 import constants from "../db/constants";
 import createId from "../../../utils/createId";
+import useSections from "../hooks/useSections";
 
 
 /**
@@ -16,7 +17,7 @@ import createId from "../../../utils/createId";
  */
 export const ExpensesContext = createContext(null)
 
-const sections = ['Прочие расходы','Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
+const sections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
 /**
  * обертка для молуля Expenses
  *
@@ -28,10 +29,12 @@ const sections = ['Прочие расходы','Перелет', 'Отель', 
 export default function ExpensesContextProvider({user_id}) {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
-    const [controller, setController] = useState(null)
+    const [state, setState] = useState({})
+
+    const [sections, updateSections] = useSections(state.controller)
 
     useEffect(() => {
-        const c = new ActionController(schema, {
+        const controller = new ActionController(schema, {
             ...options,
             onReady: () => {
                 setDbReady(true)
@@ -39,25 +42,25 @@ export default function ExpensesContextProvider({user_id}) {
             onError: console.error
         })
 
-        c.onUpdate = onUpdate(primary_entity_id)
+        controller.onUpdate = onUpdate(primary_entity_id)
 
-        setController(c)
+        setState({...state, controller})
     }, [])
 
 
-
+    // добавлени дефолтных секций
     useEffect(() => {
-        async function addDefaultSections(){
-            if (!controller) return
+        async function addDefaultSections() {
+            if (!state.controller) return
 
-            const sectionList = await controller.read({
+            const sectionList = await state.controller.read({
                 storeName: constants.store.SECTION,
-                action:'get',
+                action: 'get',
                 query: 'all'
             })
 
-            if (!sectionList.length){
-                for (const sectionName of sections){
+            if (!sectionList.length) {
+                for (const sectionName of sections) {
                     const data = {
                         title: sectionName,
                         color: '#52CF37',
@@ -66,9 +69,9 @@ export default function ExpensesContextProvider({user_id}) {
                         id: createId(user_id)
                     }
 
-                    await controller.write({
+                    await state.controller.write({
                         storeName: constants.store.SECTION,
-                        action:'add',
+                        action: 'add',
                         user_id,
                         data
                     })
@@ -76,15 +79,24 @@ export default function ExpensesContextProvider({user_id}) {
             }
         }
 
+        updateSections()
         addDefaultSections()
-    }, [controller])
+    }, [state.controller])
+
+    useEffect(() => {
+        if (sections && sections.length) {
+            const section = sections.find(s => s.title === 'Прочие расходы')
+            const defaultSectionId = section ? section.id : null
+            setState({...state, defaultSectionId})
+        }
+    }, [sections])
+
 
     if (!dbReady) {
         return <div>Loading...</div>
     }
-
     return (
-        <ExpensesContext.Provider value={{controller}}>
+        <ExpensesContext.Provider value={state}>
             <Outlet/>
         </ExpensesContext.Provider>
     )
