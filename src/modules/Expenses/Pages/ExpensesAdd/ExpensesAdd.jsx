@@ -41,11 +41,15 @@ export default function ExpensesAdd({
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(false)
 
+    const [placeholder, setPlaceholder] = useState('Название')
+
     const isPlan = expensesType === 'plan'
+
 
     useEffect(() => {
         if (defaultSectionId) {
             setSectionId(defaultSectionId)
+            setPlaceholder('Прочие расходы')
         }
     }, [defaultSectionId])
 
@@ -63,27 +67,26 @@ export default function ExpensesAdd({
 
     function handler() {
         if (user_id && primaryEntityType) {
-            const data = {
-                user_id,
-                primary_entity_type: primaryEntityType,
-                primary_entity_id,
-                entity_type: '####',
-                entity_id: '####',
-                title: expName,
-                value: Number(expSum),
-                personal: personal ? 1 : 0,
-                section_id,
-                datetime: new Date().toISOString(),
-                created_at: new Date().toISOString(),
-                id: createId(user_id)
-            }
-
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
+
             controller.write({
                 storeName,
                 action: 'edit',
                 user_id,
-                data
+                data: {
+                    user_id,
+                    primary_entity_type: primaryEntityType,
+                    primary_entity_id,
+                    entity_type: '####',
+                    entity_id: '####',
+                    title: expName,
+                    value: Number(expSum),
+                    personal: personal ? 1 : 0,
+                    section_id,
+                    datetime: new Date().toISOString(),
+                    created_at: new Date().toISOString(),
+                    id: createId(user_id)
+                }
             })
                 .then((res) => {
                     console.log('Ответ ', res)
@@ -97,6 +100,11 @@ export default function ExpensesAdd({
         }
     }
 
+    function onChipSelect(section) {
+        setSectionId(section.id)
+        setPlaceholder(section.title)
+    }
+
     return (
         <div className='wrapper'>
             <div className='content'>
@@ -108,14 +116,15 @@ export default function ExpensesAdd({
                             <div className={clsx('row flex-wrap gap-0.75 bb-2-grey expenses-pb-20')}>
                                 {
                                     sections && !!sections.length && sections.map(
-                                        ({id, title}) => (
+                                        (section) => (
                                             <Chip
-                                                key={id}
+                                                key={section.id}
                                                 rounded
-                                                color={section_id === id ? 'orange' : 'grey'}
-                                                onClick={() => setSectionId(id)}
+                                                color={section_id === section.id ? 'orange' : 'grey'}
+                                                onClick={() => onChipSelect(section)}
+                                                pointer={section_id !== section.id}
                                             >
-                                                {title}
+                                                {section.title}
                                             </Chip>
                                         ))
                                 }
@@ -126,7 +135,7 @@ export default function ExpensesAdd({
                                     type={'text'}
                                     value={expName}
                                     onChange={e => setExpName(e.target.value)}
-                                    placeholder='Название'
+                                    placeholder={placeholder}
                                 />
                                 <Input
                                     type={'text'}

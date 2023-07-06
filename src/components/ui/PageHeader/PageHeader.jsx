@@ -1,7 +1,7 @@
 import React from "react";
 import {useLocation, useNavigate} from 'react-router-dom'
 import clsx from "clsx";
-import st from './PageHeader.css'
+import './PageHeader.css'
 import isString from "../../../utils/validation/isString";
 
 

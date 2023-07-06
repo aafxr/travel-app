@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
-import st from './Tab.module.css'
 import {useLocation, useNavigate} from "react-router-dom";
+import './Tab.css'
 
 
 /**
@@ -22,11 +22,11 @@ export default function Tab({
     const {pathname} = useLocation()
     const navigate = useNavigate()
     const styles = clsx(
-        st.tab,
+        'tab',
         {
-            [st.active]: pathname === to,
-            className
-        }
+            ['active']: pathname === to,
+        },
+        className
     )
 
     function clickHandler(){

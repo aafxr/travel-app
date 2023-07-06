@@ -1,5 +1,5 @@
 import React from "react";
-import st from './Line.module.css'
+import './Line.css'
 
 
 /**
@@ -10,9 +10,9 @@ import st from './Line.module.css'
  */
 export default function Line({value, color}){
 
-    return <div className={st.line}>
+    return <div className={'line'}>
         <div
-            className={st.front}
+            className={'line-front'}
             style={{
                 width: value * 100 + '%',
                 backgroundColor: color

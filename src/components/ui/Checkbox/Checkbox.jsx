@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import st from './Checkbox.module.css'
+import './Checkbox.css'
 import clsx from "clsx";
 
 
@@ -24,10 +24,10 @@ export default function Checkbox({
     const [checkedState, setChecked] = useState(checked)
 
     const styles = clsx({
-        [st.checkbox]: true,
-        [st.checked]: checkedState,
-        [st.left]: left,
-        [st.right]: !left,
+        ['checkbox']: true,
+        ['checked']: checkedState,
+        ['left']: left,
+        ['right']: !left,
     },
         className
     )
@@ -43,11 +43,11 @@ export default function Checkbox({
                 <input type="checkbox" checked={checkedState} onChange={handler} hidden/>
                 {children}
             </label>
-            <div className={st.dot}>
-                {!checkedState && <img className={clsx('img-abs', st.circle)}
+            <div className={'checkbox-dot'}>
+                {!checkedState && <img className={clsx('img-abs', 'circle')}
                                        src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>}
                 {checkedState &&
-                    <img className={clsx('img-abs', st.mark)} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}
+                    <img className={clsx('img-abs', 'mark')} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}
                          alt="dot"/>}
             </div>
         </div>

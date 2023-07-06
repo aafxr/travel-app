@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Line from "../Line/Line";
 
-import st from './Section.module.css'
+import './Section.css'
 
 
 /**
@@ -43,11 +43,11 @@ export default function Section({
     balance < 0 && (balance = 0)
 
     return (
-        <div className={st.expensesList}>
+        <div className='expenses-list'>
             <div className='expenses-pt-20 expenses-pb-20'>
-                <div className={clsx('flex-between')}>
-                    <div className={st.sectionTitle}>{title}</div>
-                    <div className={st.sectionTitle}>{sectionTotalExpenses} ₽</div>
+                <div className='flex-between'>
+                    <div className='section-title'>{title}</div>
+                    <div className='section-title'>{sectionTotalExpenses} ₽</div>
                 </div>
                 {
                     !!line && (
@@ -56,8 +56,8 @@ export default function Section({
                             {
                                 !!limit && (
                                     <div className={'flex-between'}>
-                                        <div className={st.sectionSubtitle}>Лимит {limit} ₽</div>
-                                        <div className={st.sectionSubtitle}>Осталось {balance} ₽</div>
+                                        <div className='sectionsubtitle'>Лимит {limit} ₽</div>
+                                        <div className='sectionsubtitle'>Осталось {balance} ₽</div>
                                     </div>
                                 )
                             }
@@ -98,7 +98,7 @@ function SectionItem(expense) {
 
 
     return (
-        <div className={clsx(st.sectionItem, 'flex-between')}>
+        <div className={clsx('section-item', 'flex-between')}>
             <div>
                 <div>
                     {title || ''} <span>{entity_type || ''}</span>

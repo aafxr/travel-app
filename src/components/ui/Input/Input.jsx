@@ -1,14 +1,14 @@
 import React from "react";
 import clsx from "clsx";
 
-import st from './Input.module.css'
+import './Input.css'
 
 function Input(props, ref) {
-    const styles = clsx(st.inputContainer, props.className)
+    const styles = clsx('input-container', props.className)
 
     return (
         <div className={styles}>
-            <input ref={ref} {...props} className={st.input}/>
+            <input ref={ref} {...props} className='input'/>
         </div>
     )
 }

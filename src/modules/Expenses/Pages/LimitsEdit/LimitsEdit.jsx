@@ -10,8 +10,6 @@ import Button from "../../components/Button/Button";
 import useExpenses from "../../hooks/useExpenses";
 import useSections from "../../hooks/useSections";
 
-import useLimit from "../../hooks/useLimit";
-
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'

@@ -53,7 +53,7 @@ export default function ExpensesActualAdd({
         <>
             <div className='wrapper'>
                 <div className='content'>
-                    <Container>
+                    <Container className='column gap-1'>
                         <PageHeader arrowBack title={'Добавить секцию'}/>
                         <div className='title'>Записать расходы</div>
                         <Input

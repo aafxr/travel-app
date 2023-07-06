@@ -2,33 +2,33 @@
     padding: 20px 0;
 }
 
-.sectionTitle{
+.section-title{
     font-size: 1.125rem;
     font-weight: 600;
 }
 
-.sectionTitle ~ *{
+.section-title ~ *{
     font-size: 1.250rem;
 }
 
-.sectionSubtitle{
+.section-subtitle{
     font-size: 0.75rem;
     color: var(--color-grey);
 }
 
-.sectionItem{
+.section-item{
     margin: 11px 0 0;
     font-size: 0.875rem;
     font-weight: 600;
 }
 
-.sectionItem  span{
+.section-item  span{
     line-height: 1;
     font-size: 0.75rem;
     color: var(--color-grey);
 }
 
-.expensesList:not(:last-child) > *{
+.expenses-list:not(:last-child) > *{
     border-bottom: 2px solid var(--color-grey-light);
 }
 
