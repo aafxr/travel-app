@@ -27,12 +27,14 @@ export default function TravelAdd() {
 
                     <Container className='column'>
                         <PageHeader arrowBack className='travel-destination'>
-                            <Input
-                                className='travel-destination-input'
-                                value={destination}
-                                onChange={e => setDestination(e.target.value)}
-                                placeholder='Куда едем?'
-                            />
+                            <div className='w-full'>
+                                <Input
+                                    className='travel-destination-input'
+                                    value={destination}
+                                    onChange={e => setDestination(e.target.value)}
+                                    placeholder='Куда едем?'
+                                />
+                            </div>
                         </PageHeader>
                         <div className='column gap'>
                             <Link className='travel-link' to={'*'}>
