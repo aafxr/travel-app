@@ -1,7 +1,7 @@
 import React from "react";
 import {useLocation, useNavigate} from 'react-router-dom'
 import clsx from "clsx";
-import st from './PageHeader.module.css'
+import st from './PageHeader.css'
 import isString from "../../../utils/validation/isString";
 
 
@@ -28,9 +28,9 @@ export default function PageHeader({
     const {pathname} = useLocation()
 
     const styles = clsx(
-        st['page-header'],
+        'page-header-container gap-0.25',
         {
-            [st.arrowBack]: !!arrowBack,
+            'arrow-back': !!arrowBack,
         },
         className
     )
@@ -43,13 +43,18 @@ export default function PageHeader({
     }
 
     return (
-        <div className={st['pageHeader-container']}>
-            <div className={styles} {...props}>
-                {!!arrowBack &&
-                    <img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back" onClick={backHandler}/>}
-                {!!title && <div className={st.title}>{title}</div>}
-                {children}
-            </div>
+        <div className={styles} {...props}>
+            {!!arrowBack &&
+                    <div className='page-header-icon' onClick={backHandler}>
+                        <img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back"/>
+                    </div>
+            }
+            {!!title &&
+                <div className='page-header w-full'>
+                    <div className='title-bold center'>{title}</div>
+                </div>
+            }
+            {children}
         </div>
     )
 }

@@ -1,34 +1,23 @@
-.pageHeader-container{
-    padding: 24px 20px 13px;
-
+.page-header-container{
+    position: relative;
+    display: flex;
+    justify-content: stretch;
 }
 
 .page-header{
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 20px 0 20px 30px;
+}
+
+.page-header-container.arrow-back .page-header{
+    margin-left: -34px;
 }
 
 .page-header-icon{
     position: relative;
     flex: 0 0 24px;
+    display: flex;
+    align-items: center;
     cursor: pointer;
 
-}
-
-.page-header.arrowBack{
-    padding-left: 34px;
-}
-
-.page-header > *{
-    flex: 0 0;
-}
-
-.title{
-    /*flex: 0 1;*/
-    font-weight: 700;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
