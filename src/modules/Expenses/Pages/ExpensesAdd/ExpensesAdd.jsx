@@ -31,7 +31,7 @@ export default function ExpensesAdd({
                                         expensesType = 'actual' // 'actual' | 'plan'
                                     }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, defaultSection, sections} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
@@ -75,10 +75,7 @@ export default function ExpensesAdd({
                     id: createId(user_id)
                 }
             })
-                .then((res) => {
-                    console.log('Ответ ', res)
-                    console.log('Расход добавлен ', expName)
-                })
+                .then((res) => console.log('Ответ ', res))
                 .catch(console.error)
 
             navigate(-1)
@@ -116,7 +113,6 @@ export default function ExpensesAdd({
                                         ))
                                 }
                             </div>
-                            <div className='title'>Записать расходы</div>
                             <div className='column gap-0.25'>
                                 <Input
                                     type={'text'}

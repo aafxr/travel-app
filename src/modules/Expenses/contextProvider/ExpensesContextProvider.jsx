@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useEffect, useState} from 'react'
+import React, {createContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import ActionController from "../../../controllers/ActionController";
@@ -18,6 +18,25 @@ import useLimits from "../hooks/useLimits";
  */
 export const ExpensesContext = createContext(null)
 
+
+/**
+ * @typedef {Object} ExpensesContextState
+ * @property {controller: import('../../../controllers/ActionController').ActionController| null} controller
+ * @property {import('../models/SectionType').SectionType | null} defaultSection
+ * @property {Array.<import('../models/SectionType').SectionType> | []} sections
+ * @property {Array.<import('../models/LimitType').LimitType> | []} limits
+ */
+
+/**
+ * @type ExpensesContextState
+ */
+const defaultState = {
+    controller: null,
+    defaultSection: null,
+    limits: [],
+    sections: []
+}
+
 const defaultSections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
 /**
  * обертка для молуля Expenses
@@ -30,7 +49,7 @@ const defaultSections = ['Прочие расходы', 'Перелет', 'От�
 export default function ExpensesContextProvider({user_id}) {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
-    const [state, setState] = useState({})
+    const [state, setState] = useState(defaultState)
 
     const [sections, updateSections] = useSections(state.controller)
     const [limits, updateLimits] = useLimits(state.controller, primary_entity_id)
@@ -44,7 +63,7 @@ export default function ExpensesContextProvider({user_id}) {
             onError: console.error
         })
 
-        controller.onUpdate = onUpdate(primary_entity_id)
+        controller.onUpdate = onUpdate(primary_entity_id, user_id)
 
         setState({...state, controller})
 
@@ -52,14 +71,14 @@ export default function ExpensesContextProvider({user_id}) {
     }, [])
 
     useEffect(() => {
-        if (state.controller){
+        if (state.controller) {
             updateSections()
             updateLimits()
 
             state.controller.subscribe(constants.store.SECTION, updateSections)
-            state.controller.subscribe(constants.store.LIMIT,  updateLimits)
+            state.controller.subscribe(constants.store.LIMIT, updateLimits)
 
-            return () =>{
+            return () => {
                 state.controller.unsubscribe(constants.store.SECTION, updateSections)
                 state.controller.unsubscribe(constants.store.LIMIT, updateLimits)
             }
@@ -108,12 +127,12 @@ export default function ExpensesContextProvider({user_id}) {
         if (sections && sections.length) {
             const section = sections.find(s => s.title === 'Прочие расходы')
             const defaultSection = section ? section : null
-            setState({...state,sections, defaultSection})
+            setState({...state, sections, defaultSection})
         }
     }, [sections])
 
     useEffect(() => {
-        if (limits && limits.length){
+        if (limits && limits.length) {
             setState({...state, limits})
         }
     }, [limits])

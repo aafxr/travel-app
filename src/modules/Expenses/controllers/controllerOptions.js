@@ -43,7 +43,7 @@ const totalDefault = {
 }
 
 
-export function onUpdate(primary_entity_id){
+export function onUpdate(primary_entity_id, user_id){
     /**
      *
      * @param {import('../../../controllers/ActionController').ActionController} controller
@@ -78,22 +78,22 @@ export function onUpdate(primary_entity_id){
         const expenses_actual = await controller.read({
             storeName: constants.store.EXPENSES_ACTUAL,
             index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: IDBKeyRange.only(primary_entity_id)
+            query: 'all'
         })
 
         const expenses_plan = await controller.read({
             storeName: constants.store.EXPENSES_PLAN,
             index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: IDBKeyRange.only(primary_entity_id)
+            query: 'all'
         })
 
         if (!isActionAfterUpdate) {
-
-            total.total_actual += accumulate(expenses_actual, item => item.value)
-            total.total_planed += accumulate(expenses_plan, item => item.value)
-
-
+            total.total_actual = accumulate(expenses_actual, item => item.value)
+            total.total_planed = accumulate(expenses_plan, item => item.value)
         }
+
+        const limitsObj = {}
+        expenses_plan.forEach(e => limitsObj[e.section_id] ? limitsObj[e.section_id] += e.value : limitsObj[e.section_id] = e.value)
 
         /**@type {string[]}*/
         const sections_ids = distinctValues(expenses_plan, item => item.section_id)
@@ -106,11 +106,27 @@ export function onUpdate(primary_entity_id){
                 id: section_id
             })
 
-            const limit = await controller.read({
+            let limit = await controller.read({
                 storeName: constants.store.LIMIT,
                 index: constants.indexes.SECTION_ID,
                 query: section_id
             })
+
+            if (limit && limitsObj[section_id] && limit.value < limitsObj[section_id]){
+                await controller.write({
+                    storeName: constants.store.LIMIT,
+                    action: 'edit',
+                    index: constants.indexes.SECTION_ID,
+                    user_id,
+                    data: {...limit, value: limitsObj[section_id]}
+                })
+
+                limit = await controller.read({
+                    storeName: constants.store.LIMIT,
+                    index: constants.indexes.SECTION_ID,
+                    query: section_id
+                })
+            }
 
             limit && limits.push(
                 {

@@ -24,7 +24,7 @@ export default function Section({
                                     personal = false,
                                     line = false,
                                 }) {
-    const title = section.title
+    const title = section ? section.title : ''
     const limit = sectionLimit ? sectionLimit.value : 0
 
     const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
@@ -56,8 +56,8 @@ export default function Section({
                             {
                                 !!limit && (
                                     <div className={'flex-between'}>
-                                        <div className='sectionsubtitle'>Лимит {limit} ₽</div>
-                                        <div className='sectionsubtitle'>Осталось {balance} ₽</div>
+                                        <div className='section-subtitle'>Лимит {limit} ₽</div>
+                                        <div className='section-subtitle'>Осталось {balance} ₽</div>
                                     </div>
                                 )
                             }
