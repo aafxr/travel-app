@@ -35,11 +35,27 @@ import isString from '../utils/validation/isString';
 
 /**
  * @typedef {object} Payload
+ * @property {string} storeName
  * @property {string} [id]
  * @property {string} [index]
- * @property {ActionVariant} [action]
- * @property {string} storeName
  * @property {string | number | IDBKeyRange} [query]
+ * @property {ActionVariant} [action]
+ * @property {*} data
+ */
+
+/**
+ * @typedef {object} ReadPayloadType
+ * @property {string} storeName
+ * @property {string} [id]
+ * @property {string} [index]
+ * @property {string | number | IDBKeyRange} [query]
+ */
+
+/**
+ * @typedef {object} WritePayloadType
+ * @property {string} storeName
+ * @property {ActionVariant} action
+ * @property {string} user_id
  * @property {*} data
  */
 
@@ -126,8 +142,8 @@ export default class ActionController {
     /**
      * подписка на событие
      * @param {string} modelName
-     * @param {ActionVariant} actionVariant
      * @param {function} subscription
+     * @param {ActionVariant} [actionVariant]
      */
     subscribe(modelName, subscription, actionVariant) {
         if (!actionVariant) {
@@ -137,13 +153,13 @@ export default class ActionController {
         } else if (
             this.modelNames.includes(modelName) &&
             this.subscriptions[modelName] &&
-            this.subscriptions[modelName][ActionVariant]
+            this.subscriptions[modelName][actionVariant]
         ) {
             this.subscriptions[modelName][actionVariant].push(subscription);
         } else {
             this._errorMessage(
                 new Error(
-                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${ActionVariant}`
+                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${actionVariant}`
                 )
             );
         }
@@ -154,7 +170,7 @@ export default class ActionController {
      * подписка на событие
      * @param {string} modelName
      * @param {function} subscription
-     * @param {ActionVariant} actionVariant
+     * @param {ActionVariant} [actionVariant]
      */
     unsubscribe(modelName, subscription, actionVariant) {
         if (!actionVariant) {
@@ -166,15 +182,15 @@ export default class ActionController {
         } else if (
             this.modelNames.includes(modelName) &&
             this.subscriptions[modelName] &&
-            this.subscriptions[modelName][ActionVariant]
+            this.subscriptions[modelName][actionVariant]
         ) {
             this.subscriptions[modelName][actionVariant] = this.subscriptions[
                 modelName
-                ][ActionVariant].filter((sub) => sub !== subscription);
+                ][actionVariant].filter((sub) => sub !== subscription);
         } else {
             this._errorMessage(
                 new Error(
-                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${ActionVariant}`
+                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${actionVariant}`
                 )
             );
         }
@@ -188,6 +204,7 @@ export default class ActionController {
     set onUpdate(cb) {
         if (typeof cb === 'function') {
             this.update = cb
+            this.update(this)
         }
     }
 
@@ -272,7 +289,6 @@ export default class ActionController {
     _subscriptionsCall(action, data) {
         const {action: actionVariant, entity} = action;
         if (this.model[entity] && this.model[entity][actionVariant]) {
-            console.log(this.subscriptions)
             this.subscriptions[entity][actionVariant].forEach((sub) =>
                 sub(data)
             );
@@ -282,7 +298,7 @@ export default class ActionController {
 
     /**
      *
-     * @param {ControllerPayloadType} payload
+     * @param {WritePayloadType} payload
      */
     write(payload) {
         try {
@@ -303,7 +319,7 @@ export default class ActionController {
 
     /**
      *
-     * @param {ControllerPayloadType} payload
+     * @param {ReadPayloadType} payload
      */
     read(payload) {
         const {storeName, action, index, id, query} = payload
