@@ -8,5 +8,6 @@
     "parserOptions": {
         "ecmaVersion": 2017,
         "sourceType": "module"
-    }
+    },
+    "extends": ["react-app", "react-app/jest"]
 }
