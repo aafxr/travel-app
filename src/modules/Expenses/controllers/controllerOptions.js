@@ -95,21 +95,20 @@ export function onUpdate(primary_entity_id, user_id){
         const limitsObj = {}
         expenses_plan.forEach(e => limitsObj[e.section_id] ? limitsObj[e.section_id] += e.value : limitsObj[e.section_id] = e.value)
 
-        /**@type {string[]}*/
-        const sections_ids = distinctValues(expenses_plan, item => item.section_id)
+        let limitsExpenses = await controller.read({
+            storeName: constants.store.LIMIT,
+            index: constants.indexes.PRIMARY_ENTITY_ID,
+            query: 'all'
+        })
 
         const limits = []
-        for (const section_id of sections_ids) {
+        for (let limit of limitsExpenses) {
+            const section_id = limit.section_id
+
             const section = await controller.read({
                 storeName: constants.store.SECTION,
                 action: 'get',
                 id: section_id
-            })
-
-            let limit = await controller.read({
-                storeName: constants.store.LIMIT,
-                index: constants.indexes.SECTION_ID,
-                query: section_id
             })
 
             if (limit && limitsObj[section_id] && limit.value < limitsObj[section_id]){

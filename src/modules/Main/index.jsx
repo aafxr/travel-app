@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import {Link, useParams} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
-import Checkbox from "../../components/ui/Checkbox/Checkbox";
 import Container from "../Expenses/components/Container/Container";
+import DatePicker from "../../components/DatePicker/DatePicker";
 
 export default function ExpensesPlan({
                                          user_id,
@@ -35,7 +35,9 @@ export default function ExpensesPlan({
                     <Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>
                     <Link to={`/travel/44/add/`}>Новый маршрут</Link>
                     <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
+                    <DatePicker />
                 </div>
+
             </Container>
         </>
     )

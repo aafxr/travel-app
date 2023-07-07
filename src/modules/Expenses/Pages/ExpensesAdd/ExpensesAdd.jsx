@@ -110,7 +110,8 @@ export default function ExpensesAdd({
                                             >
                                                 {section.title}
                                             </Chip>
-                                        ))
+                                        )
+                                    )
                                 }
                             </div>
                             <div className='column gap-0.25'>
