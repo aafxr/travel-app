@@ -5,7 +5,7 @@ import constants from "../db/constants";
  * возвращает список секций или пустой массив
  * @param {import('../../../controllers/ActionController').ActionController} controller
  * @param {string} primary_entity_id
- * @param {Array.<string>} sectionIdList массив id секций
+ * @param {Array.<string>} [sectionIdList] массив id секций
  * @returns {Array.<import('../models/LimitType').LimitType>}
  */
 export default function useLimits(controller, primary_entity_id, sectionIdList) {
@@ -34,12 +34,12 @@ export default function useLimits(controller, primary_entity_id, sectionIdList) 
                 controller.read({
                     storeName: constants.store.LIMIT,
                     index: constants.indexes.PRIMARY_ENTITY_ID,
-                    query: IDBKeyRange.only(primary_entity_id)
+                    query: 'all'
                 })
                     .then(items => items && setLimits(Array.isArray(items) ? items : [items]))
             }
         }
-    }, [controller, sectionIdList])
+    }, [controller,primary_entity_id, sectionIdList])
 
 
     return [limits, update]

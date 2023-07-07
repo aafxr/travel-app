@@ -28,13 +28,10 @@ export default function LimitsEdit({
                                        primaryEntityType
                                    }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, defaultSectionId} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, 'plan')
-    const sectionsList = distinctValues(expenses, e => e.section_id, [defaultSectionId])
-    const [sections, updateSections] = useSections(controller, sectionsList)
-    const [limits, updateLimits] = useLimits(controller, primary_entity_id, sectionsList)
 
     const [limitObj, setLimitObj] = useState(null)
 
@@ -61,18 +58,10 @@ export default function LimitsEdit({
     }, [controller])
 
     useEffect(() => {
-        if (defaultSectionId) {
-            setSectionId(defaultSectionId)
+        if (defaultSection) {
+            setSectionId(defaultSection.id)
         }
-    }, [defaultSectionId])
-
-    //получаем все секции и лимиты в зависимости от наличия расходов
-    useEffect(() => {
-        if (expenses && expenses.length) {
-            updateSections()
-            updateLimits()
-        }
-    }, [expenses])
+    }, [defaultSection])
 
 
     // если в бд уже был записан лимит записываем его в limitObj (либо null)
@@ -81,7 +70,7 @@ export default function LimitsEdit({
             const limit = limits.find(l => l.section_id === section_id)
             limit ? setLimitObj(limit) : setLimitObj(null)
         }
-    }, [section_id])
+    }, [section_id, limits])
 
 
     useEffect(() => {

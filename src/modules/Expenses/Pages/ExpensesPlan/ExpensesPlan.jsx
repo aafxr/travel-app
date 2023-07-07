@@ -26,13 +26,10 @@ export default function ExpensesPlan({
                                          primaryEntityType
                                      }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller} = useContext(ExpensesContext)
+    const {controller, sections, limits} = useContext(ExpensesContext)
 
     const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "plan")
     const sectionList = distinctValues(expenses, exp => exp.section_id)
-    const [sections, updateSections] = useSections(controller, sectionList)
-    const [limits, updateLimits] = useLimits(controller, primary_entity_id, sectionList)
-
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
@@ -41,13 +38,6 @@ export default function ExpensesPlan({
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
 
-    useEffect(() => {
-        if (expenses && expenses.length) {
-            updateSections()
-            updateLimits()
-        }
-    }, [expenses])
-
 
     return (
         <div>
@@ -55,7 +45,9 @@ export default function ExpensesPlan({
                 <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
                     sections && !!sections.length
-                        ? sections.map(section => (
+                        ? sections
+                            .filter(s => sectionList.includes(s.id))
+                            .map(section => (
                             <Section
                                 key={section.id}
                                 section={section}

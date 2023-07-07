@@ -9,6 +9,7 @@ import '../css/Expenses.css'
 import constants from "../db/constants";
 import createId from "../../../utils/createId";
 import useSections from "../hooks/useSections";
+import useLimits from "../hooks/useLimits";
 
 
 /**
@@ -32,6 +33,7 @@ export default function ExpensesContextProvider({user_id}) {
     const [state, setState] = useState({})
 
     const [sections, updateSections] = useSections(state.controller)
+    const [limits, updateLimits] = useLimits(state.controller, primary_entity_id)
 
     useEffect(() => {
         const controller = new ActionController(schema, {
@@ -45,7 +47,24 @@ export default function ExpensesContextProvider({user_id}) {
         controller.onUpdate = onUpdate(primary_entity_id)
 
         setState({...state, controller})
+
+
     }, [])
+
+    useEffect(() => {
+        if (state.controller){
+            updateSections()
+            updateLimits()
+
+            state.controller.subscribe(constants.store.SECTION, updateSections)
+            state.controller.subscribe(constants.store.LIMIT,  updateLimits)
+
+            return () =>{
+                state.controller.unsubscribe(constants.store.SECTION, updateSections)
+                state.controller.unsubscribe(constants.store.LIMIT, updateLimits)
+            }
+        }
+    }, [state.controller])
 
 
     // добавлени дефолтных секций
@@ -88,10 +107,16 @@ export default function ExpensesContextProvider({user_id}) {
     useEffect(() => {
         if (sections && sections.length) {
             const section = sections.find(s => s.title === 'Прочие расходы')
-            const defaultSectionId = section ? section.id : null
-            setState({...state, defaultSectionId})
+            const defaultSection = section ? section : null
+            setState({...state,sections, defaultSection})
         }
     }, [sections])
+
+    useEffect(() => {
+        if (limits && limits.length){
+            setState({...state, limits})
+        }
+    }, [limits])
 
 
     if (!dbReady) {

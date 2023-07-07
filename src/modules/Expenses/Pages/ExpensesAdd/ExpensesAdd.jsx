@@ -31,13 +31,12 @@ export default function ExpensesAdd({
                                         expensesType = 'actual' // 'actual' | 'plan'
                                     }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, defaultSectionId} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
 
-    const [sections, setSections] = useState(null)
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(false)
 
@@ -47,23 +46,11 @@ export default function ExpensesAdd({
 
 
     useEffect(() => {
-        if (defaultSectionId) {
-            setSectionId(defaultSectionId)
+        if (defaultSection) {
+            setSectionId(defaultSection.id)
             setPlaceholder('Прочие расходы')
         }
-    }, [defaultSectionId])
-
-    useEffect(() => {
-        controller.read({
-            storeName: constants.store.SECTION,
-            action: 'get',
-            query: 'all'
-        })
-            .then(s => {
-                s && setSections(s)
-            })
-            .catch(console.error)
-    }, [controller])
+    }, [defaultSection])
 
     function handler() {
         if (user_id && primaryEntityType) {
@@ -141,7 +128,7 @@ export default function ExpensesAdd({
                                     type={'text'}
                                     value={expSum}
                                     onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
-                                    placeholder='Сумма'
+                                    placeholder='Сумма расходов'
                                 />
                             </div>
 
