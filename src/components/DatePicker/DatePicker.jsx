@@ -3,27 +3,42 @@ import React, {useEffect, useState} from "react";
 import './DatePicker.css'
 import daysRange from "./daysRange";
 import clsx from "clsx";
+import dayMonthYear from "./dayMonthYear";
 
 const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 const monthName = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
 
 export default function DatePicker() {
     const [date, setDate] = useState(new Date())
-    const month = date.getUTCMonth()
-    const {daysArray, start, end, current} = daysRange(new Date())
+
+    const {daysArray, start, end, current} = daysRange(date)
+    const {d, m, y, wd} = dayMonthYear(date)
+    console.log(daysArray)
 
     const [selectedDay, setSelectedDay] = useState(current)
 
+
     useEffect(() => {
-        if (current){
+        if (current) {
             setSelectedDay(current)
         }
     }, [date, current])
 
+
+    function onDaySelect(day) {
+        console.log(daysArray[current], daysArray[day], current - day)
+        if (day < start || day > end) {
+            const newDate = new Date(date.setDate(date.getDate() - (current - day)))
+            console.log(newDate.toLocaleDateString())
+            setDate(newDate)
+        }
+        // setSelectedDay(day)
+    }
+
     return (
         <div className='date-picker-container column gap-0.5'>
             <div className='date-picker-header'>
-                <div className='date-picker-month'>{monthName[month]}</div>
+                <div className='date-picker-month'>{monthName[m]}</div>
             </div>
             <div className='page-header-content column'>
                 <div className='flex-between'>
@@ -45,7 +60,7 @@ export default function DatePicker() {
                                         'selected': i === selectedDay && i >= start && i <= end
                                     }
                                 )}
-                                onClick={() => setSelectedDay(i)}
+                                onClick={() => onDaySelect(i)}
                             >
                                 {d}
                             </div>

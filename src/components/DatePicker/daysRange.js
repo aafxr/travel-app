@@ -9,7 +9,7 @@ export default function daysRange(year, month, day, weekDay){
 
     if (isString(year) || year instanceof Date){
         const date = year instanceof Date ? year: Date.parse(year)
-        m = date.getUTCMonth() + 1
+        m = date.getUTCMonth()
         d = date.getUTCDate();
         y = date.getUTCFullYear();
         wd = date.getDay()
@@ -22,9 +22,8 @@ export default function daysRange(year, month, day, weekDay){
     const daysInThisMonth = daysInMonth(y, m, d)
 
 
-    const days = daysInMonth(y, m)
-
-    const daysFromPrevMonth = 7 - (d - wd) % 7 - 1
+    const delta = Math.abs(d - wd) % 7
+    const daysFromPrevMonth = delta === 0 ? 0 : 6 - delta
     const startDay = daysInPrevMonth - daysFromPrevMonth
 
     const arr = new Array(42)
