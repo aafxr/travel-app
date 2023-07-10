@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useState} from 'react'
+import React, {createContext, useContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import ActionController from "../../../controllers/ActionController";
@@ -10,6 +10,7 @@ import constants from "../db/constants";
 import createId from "../../../utils/createId";
 import useSections from "../hooks/useSections";
 import useLimits from "../hooks/useLimits";
+import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 
 
 /**
@@ -54,6 +55,8 @@ export default function ExpensesContextProvider({user_id}) {
     const [sections, updateSections] = useSections(state.controller)
     const [limits, updateLimits] = useLimits(state.controller, primary_entity_id)
 
+    const {worker} = useContext(WorkerContext)
+
     useEffect(() => {
         const controller = new ActionController(schema, {
             ...options,
@@ -69,6 +72,34 @@ export default function ExpensesContextProvider({user_id}) {
 
 
     }, [])
+
+
+    useEffect(() => {
+        function workerMessageHandler(e) {
+            console.log('[ExpensesContextProvider] message from worker', e.data)
+        }
+
+        worker && worker.addEventListener('message', workerMessageHandler)
+
+        return () => worker && worker.removeEventListener('message', workerMessageHandler)
+
+    }, [worker])
+
+
+    useEffect(() => {
+        if (worker && state.controller) {
+            const controller = state.controller
+
+
+            controller.onSendData = (action) => worker.postMessage(
+                JSON.stringify({
+                    module: 'expenses',
+                    data: action
+                })
+            )
+        }
+    }, [state.controller, worker])
+
 
     useEffect(() => {
         if (state.controller) {

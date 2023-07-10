@@ -7,7 +7,6 @@ import sectionValidationObj from '../models/section/validation'
 import constants from "../db/constants";
 import createId from "../../../utils/createId";
 import accumulate from "../../../utils/accumulate";
-import distinctValues from "../../../utils/distinctValues";
 import isString from "../../../utils/validation/isString";
 
 
@@ -25,7 +24,7 @@ function createAction(payload) {
             data: JSON.stringify(data),
             entity: storeName,
             datetime: new Date().toISOString(),
-            synced: 1,
+            synced: 0,
             uid: createId(user_id)
         }
     } else {

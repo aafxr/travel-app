@@ -86,6 +86,7 @@ import isString from '../utils/validation/isString';
  * @property {CreateAction} newAction
  * @property {function} onReady
  * @property {function} onError
+ * @property {function} onSendData
  */
 
 
@@ -114,8 +115,8 @@ export default class ActionController {
             actionValidationObj
         );
 
-        this.update = options.onUpdate || (() => {
-        })
+        this.update = options.onUpdate || (() => {})
+        this.send = options.onSendData || (() => {})
 
         !options.newAction && console.warn('[ActionController] you need to specify a function "newAction"')
         /**@returns {ActionType} */
@@ -208,6 +209,22 @@ export default class ActionController {
         }
     }
 
+    set onSendData(cb) {
+        if (typeof cb === 'function') {
+            this.send = cb
+            this.actionsModel.get('all')
+                .then(actions => {
+                    if(actions ){
+                        if (Array.isArray(actions)){
+                            actions.forEach(a => this.send(a))
+                        }else{
+                            this.send(actions)
+                        }
+                    }
+                })
+        }
+    }
+
 
     /**
      * выводит сообщение в консоль
@@ -269,9 +286,12 @@ export default class ActionController {
                         this._subscriptionsCall(action, res)
                         console.log('Action result:  ', res);
                     }
+                    await this.actionsModel.remove(action.id)
                 } else {
                     //действия если не синхронизированно
-                    this.actionsModel.edit(action)
+                    await this.actionsModel.edit(action)
+
+                    this.send(action)
                 }
             }
         } catch (err) {
