@@ -7,14 +7,12 @@ import 'react-day-picker/dist/style.css';
 import './DatePicker.css'
 
 
-function DatePicker({multy, onSelect}, ref) {
-    const [range, setRange] = useState(undefined);
+function DatePicker({multy, onSelect,date, from, to}, ref) {
+    const [range, setRange] = useState(multy? {from, to} : date);
 
     function selectHandler(data) {
         setRange(data)
         onSelect && onSelect(data)
-        console.log(data)
-
     }
 
     function deleteHandler() {
@@ -26,12 +24,16 @@ function DatePicker({multy, onSelect}, ref) {
         const fromMidnight = now % (1000 * 60 * 60 * 24)
         const date = new Date(now - fromMidnight)
         if (multy) {
-            setRange({
+            const days ={
                 from: date,
                 to: date
-            })
+            }
+
+            setRange(days)
+            onSelect && onSelect(days)
         } else {
             setRange(date)
+            onSelect && onSelect(date)
         }
     }
 
