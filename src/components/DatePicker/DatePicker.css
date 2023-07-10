@@ -1,0 +1,58 @@
+.rdp {
+    --rdp-cell-size: 35px;
+    --rdp-accent-color: var(--color-blue);
+    --rdp-background-color: var(--color-secondary);
+    /* Switch to dark colors for dark themes */
+    --rdp-accent-color-dark: #3003e1;
+    --rdp-background-color-dark: #180270;
+    /* Outline border for focused elements */
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    /* Outline border for focused and selected elements */
+    --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
+
+    margin: 0;
+
+}
+
+.date-picker{
+    display: inline-block;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid var(--color-grey-light);
+    box-shadow: 0 0 16px rgba(205,205,205, .7);
+}
+
+.date-picker-footer{
+    color: var(--color-blue);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.date-picker-footer > * {
+    transition: var(--tr-all);
+}
+
+.date-picker-footer > *:hover {
+    transform: scale(1.05);
+}
+
+/*.rdp-day_range_end.rdp-day_range_start, .rdp-day{*/
+/*    !*border-radius: unset;*!*/
+/*}*/
+
+/*.rdp-day_range_end, .rdp-day_range_start, .rdp-day_range_middle{*/
+/*    border-top: 2px solid var(--color-primary);*/
+/*    border-bottom: 2px solid var(--color-primary);*/
+/*}*/
+
+/*.rdp-day_range_start{*/
+/*    border-left: 2px solid var(--color-primary);*/
+/*}*/
+
+/*.rdp-day_range_end{*/
+/*    border-right: 2px solid var(--color-primary);*/
+/*}*/
+
+/*.rdp-day_range_middle{*/
+/*    opacity: .9;*/
+/*}*/
