@@ -4,8 +4,8 @@ import {Outlet} from "react-router-dom";
 
 export const WorkerContext = createContext(null)
 
-export default function WorkerConextProvider() {
-    const [worker, setWorker] = useState()
+export default function WorkerContextProvider() {
+    const [worker, setWorker] = useState(null)
 
 
     useEffect(() => {
@@ -14,6 +14,7 @@ export default function WorkerConextProvider() {
 
             if (w){
                 setWorker(w)
+                w.onerror = console.error
             }
 
         }
@@ -21,7 +22,7 @@ export default function WorkerConextProvider() {
 
 
     return (
-        <WorkerContext.Provider value={worker} >
+        <WorkerContext.Provider value={{worker}} >
             <Outlet />
         </WorkerContext.Provider>
     )
