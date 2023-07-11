@@ -307,6 +307,7 @@ export default class ActionController {
      * @private
      */
     _subscriptionsCall(action, data) {
+        console.log(this.subscriptions)
         const {action: actionVariant, entity} = action;
         if (this.model[entity] && this.model[entity][actionVariant]) {
             this.subscriptions[entity][actionVariant].forEach((sub) =>

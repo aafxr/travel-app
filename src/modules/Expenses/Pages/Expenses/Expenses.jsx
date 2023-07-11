@@ -12,6 +12,7 @@ import useExpenses from "../../hooks/useExpenses";
 import useSections from "../../hooks/useSections";
 import distinctValues from "../../../../utils/distinctValues";
 import useLimits from "../../hooks/useLimits";
+import constants from "../../db/constants";
 
 
 /**
@@ -33,10 +34,18 @@ export default function Expenses({
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
+
     useEffect(() => {
-        controller && (window.controller = controller)
         updateExpenses()
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
+    }, [])
+
+
+    useEffect(() => {
+        if (controller) {
+            controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+        }
+        return () => controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
     }, [])
 
 
@@ -49,15 +58,15 @@ export default function Expenses({
                         ? sections
                             .filter(s => sectionList.includes(s.id))
                             .map(section => (
-                            <Section
-                                key={section.id}
-                                section={section}
-                                expenses={expenses.filter(e => e.section_id === section.id)}
-                                sectionLimit={(limits.find(l => l.section_id === section.id) || null)}
-                                user_id={user_id}
-                                line
-                            />
-                        ))
+                                <Section
+                                    key={section.id}
+                                    section={section}
+                                    expenses={expenses.filter(e => e.section_id === section.id)}
+                                    sectionLimit={(limits.find(l => l.section_id === section.id) || null)}
+                                    user_id={user_id}
+                                    line
+                                />
+                            ))
                         : <div>{noDataMessage}</div>
                 }
             </Container>

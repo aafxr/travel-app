@@ -7,5 +7,8 @@ onmessage = function(e){
     const data = JSON.parse(e.data)
 
     console.log('[worker] ', data)
-    postMessage('from ' + data.module)
+    setTimeout(()=>{
+        data.data.synced = 1
+        postMessage(data.data)
+    }, 5000)
 }

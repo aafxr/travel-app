@@ -12,6 +12,7 @@ import useSections from "../../hooks/useSections";
 import useLimits from "../../hooks/useLimits";
 import useExpenses from "../../hooks/useExpenses";
 import distinctValues from "../../../../utils/distinctValues";
+import constants from "../../db/constants";
 
 
 /**
@@ -37,6 +38,14 @@ export default function ExpensesPlan({
         updateExpenses()
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
     }, [])
+
+
+    useEffect(() => {
+        if (controller) {
+            controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+        }
+        return () => controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+    }, [controller])
 
 
     return (
