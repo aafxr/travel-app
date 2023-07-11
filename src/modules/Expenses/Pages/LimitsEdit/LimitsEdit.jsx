@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
@@ -28,6 +28,7 @@ export default function LimitsEdit({
                                        primaryEntityType
                                    }) {
     const {travelCode: primary_entity_id} = useParams()
+    const {pathname} = useLocation()
     const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
@@ -39,6 +40,11 @@ export default function LimitsEdit({
     const [limitValue, setLimitValue] = useState('')
 
     const [message, setMessage] = useState('')
+
+    const url = pathname.split('/')
+    url.pop()
+    url.pop()
+    const backUrl = url.join('/') + '/'
 
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
@@ -120,20 +126,22 @@ export default function LimitsEdit({
             <div className='wrapper'>
                 <div className='content'>
                     <Container>
-                        <PageHeader arrowBack title={'Редактировать лимит'}/>
+                        <PageHeader arrowBack title={'Редактировать лимит'} to={backUrl}/>
                         <div className='column gap-1'>
                             <div className='row gap-0.75'>
                                 {
                                     sections && !!sections.length && sections.map(
                                         ({id, title}) => (
-                                            <Chip
-                                                key={id}
-                                                rounded
-                                                color={section_id === id ? 'orange' : 'grey'}
-                                                onClick={() => setSectionId(id)}
-                                            >
-                                                {title}
-                                            </Chip>
+                                            <Link to={`/travel/${primary_entity_id}/expenses/limit/${id}`} >
+                                                <Chip
+                                                    key={id}
+                                                    rounded
+                                                    color={section_id === id ? 'orange' : 'grey'}
+                                                    onClick={() => setSectionId(id)}
+                                                >
+                                                    {title}
+                                                </Chip>
+                                            </Link>
                                         )
                                     )
                                 }

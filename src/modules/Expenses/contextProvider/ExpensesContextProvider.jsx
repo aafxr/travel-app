@@ -38,7 +38,8 @@ const defaultState = {
     sections: []
 }
 
-const defaultSections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
+// const defaultSections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
+// let writing = false
 /**
  * обертка для молуля Expenses
  *
@@ -74,22 +75,16 @@ export default function ExpensesContextProvider({user_id}) {
     }, [])
 
 
-    useEffect(() => {
-        function workerMessageHandler(e) {
-            console.log('[ExpensesContextProvider] message from worker', e.data)
-            state.controller.actionHandler(e.data).catch(console.error)
-        }
-
-        worker && worker.addEventListener('message', workerMessageHandler)
-
-        return () => worker && worker.removeEventListener('message', workerMessageHandler)
-
-    }, [worker])
-
 
     useEffect(() => {
         if (worker && state.controller) {
             const controller = state.controller
+
+            function workerMessageHandler(e) {
+                state.controller && state.controller.actionHandler(e.data).catch(console.error)
+            }
+
+            worker && worker.addEventListener('message', workerMessageHandler)
 
 
             controller.onSendData = (action) => worker.postMessage(
@@ -98,7 +93,10 @@ export default function ExpensesContextProvider({user_id}) {
                     data: action
                 })
             )
+
+        return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
+
     }, [state.controller, worker])
 
 
@@ -123,21 +121,26 @@ export default function ExpensesContextProvider({user_id}) {
         async function addDefaultSections() {
             if (!state.controller) return
 
-            const sectionList = await state.controller.read({
-                storeName: constants.store.SECTION,
-                action: 'get',
-                query: 'all'
-            })
+            console.log('=========================addDefaultSections=========================')
 
+            // const sectionList = await state.controller.read({
+            //     storeName: constants.store.SECTION,
+            //     action: 'get',
+            //     query: 'all'
+            // })
 
-            if (!sectionList.length) {
-                for (const sectionName of defaultSections) {
+            const response = await fetch('https://api.travelerapp.ru/expenses/getSections/')
+            const {result: sectionList} = await response.json()
+
+            if (sectionList.length) {
+
+                for (const section of sectionList) {
+                    console.log(section)
                     const data = {
-                        title: sectionName,
+                        ...section,
                         color: '#52CF37',
                         hidden: 1,
                         primary_entity_id,
-                        id: createId(user_id)
                     }
 
                     await state.controller.write({
@@ -152,7 +155,7 @@ export default function ExpensesContextProvider({user_id}) {
         }
 
         updateSections()
-        addDefaultSections()
+        addDefaultSections().then(()=> console.log('sections fetching done'))
     }, [state.controller])
 
     useEffect(() => {

@@ -3,6 +3,7 @@ import clsx from "clsx";
 import Line from "../Line/Line";
 
 import './Section.css'
+import {Link, useParams} from "react-router-dom";
 
 
 /**
@@ -24,6 +25,8 @@ export default function Section({
                                     personal = false,
                                     line = false,
                                 }) {
+    const {travelCode: primary_entity_id} = useParams()
+
     const title = section ? section.title : ''
     const limit = sectionLimit ? sectionLimit.value : 0
 
@@ -31,7 +34,7 @@ export default function Section({
 
     const personalExpenses = expenses.filter(item => item.personal === 1 && user_id === item.user_id)
 
-    const expensesList = personal ? personalExpenses: expenses
+    const expensesList = personal ? personalExpenses : expenses
 
     const totalPersonalExpenses = personalExpenses
         .reduce((acc, item) => acc + item.value, 0)
@@ -45,10 +48,12 @@ export default function Section({
     return (
         <div className='expenses-list'>
             <div className='expenses-pt-20 expenses-pb-20'>
-                <div className='flex-between'>
-                    <div className='section-title'>{title}</div>
-                    <div className='section-title'>{sectionTotalExpenses} ₽</div>
-                </div>
+                <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}`}>
+                    <div className='flex-between'>
+                        <div className='section-title'>{title}</div>
+                        <div className='section-title'>{sectionTotalExpenses} ₽</div>
+                    </div>
+                </Link>
                 {
                     !!line && (
                         <>

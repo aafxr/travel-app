@@ -42,9 +42,9 @@ export default function ExpensesPlan({
 
     useEffect(() => {
         if (controller) {
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+            controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
         }
-        return () => controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+        return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
 
 

@@ -14,6 +14,7 @@ function validatePayload(data) {
          isHexColor(data.color)
         && typeof data.hidden === 'number' && (data.hidden === 0 || data.hidden === 1)
         && isString(data.title)
+        && isString(data.id)
     )
 }
 

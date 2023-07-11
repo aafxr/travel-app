@@ -30,7 +30,7 @@ function validatePayload(data) {
         && isString(data.primary_entity_type)
         && isString(data.primary_entity_id)
         && isString(data.entity_type)
-        && isString(data.entity_id)
+        && typeof data.entity_id === "string"
         && isString(data.title)
         && isPositiveNumber(data.value)
         && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)

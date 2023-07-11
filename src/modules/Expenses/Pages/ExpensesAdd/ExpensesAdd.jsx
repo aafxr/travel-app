@@ -13,6 +13,7 @@ import Button from "../../components/Button/Button";
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
+import updateLimit from "../../utils/updateLimit";
 
 
 /**
@@ -40,7 +41,6 @@ export default function ExpensesAdd({
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(false)
 
-    const [placeholder, setPlaceholder] = useState('Название')
 
     const isPlan = expensesType === 'plan'
 
@@ -48,7 +48,6 @@ export default function ExpensesAdd({
     useEffect(() => {
         if (defaultSection) {
             setSectionId(defaultSection.id)
-            setPlaceholder('Прочие расходы')
         }
     }, [defaultSection])
 
@@ -64,7 +63,7 @@ export default function ExpensesAdd({
                     user_id,
                     primary_entity_type: primaryEntityType,
                     primary_entity_id,
-                    entity_type: '####',
+                    entity_type: '',
                     entity_id: '####',
                     title: expName,
                     value: Number(expSum),
@@ -75,8 +74,8 @@ export default function ExpensesAdd({
                     id: createId(user_id)
                 }
             })
-                .then((res) => console.log('Ответ ', res))
-                .catch(console.error)
+
+            updateLimit(controller, section_id, user_id)
 
             navigate(-1)
         } else {
@@ -86,7 +85,6 @@ export default function ExpensesAdd({
 
     function onChipSelect(section) {
         setSectionId(section.id)
-        setPlaceholder(section.title)
     }
 
     return (
@@ -114,19 +112,23 @@ export default function ExpensesAdd({
                                     )
                                 }
                             </div>
-                            <div className='column gap-0.25'>
-                                <Input
-                                    type={'text'}
-                                    value={expName}
-                                    onChange={e => setExpName(e.target.value)}
-                                    placeholder={placeholder}
-                                />
-                                <Input
-                                    type={'text'}
-                                    value={expSum}
-                                    onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
-                                    placeholder='Сумма расходов'
-                                />
+                            <div className='column gap-1'>
+                                <div className='column gap-0.25'>
+                                    <div className='title'>На что потратили:</div>
+                                    <Input
+                                        type={'text'}
+                                        value={expName}
+                                        onChange={e => setExpName(e.target.value)}
+                                    />
+                                </div>
+                                <div className='column gap-0.25'>
+                                    <div className='title'>Сумма расходов:</div>
+                                    <Input
+                                        type={'text'}
+                                        value={expSum}
+                                        onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
+                                    />
+                                </div>
                             </div>
 
                             <Checkbox checked={personal}
