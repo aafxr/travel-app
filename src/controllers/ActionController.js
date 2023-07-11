@@ -149,12 +149,13 @@ export default class ActionController {
     subscribe(modelName, subscription, actionVariant) {
         if (!actionVariant) {
             actions.forEach((a) =>
-                this.subscriptions[modelName][a].push(subscription)
+                !this.subscriptions[modelName][a].includes(subscription) && this.subscriptions[modelName][a].push(subscription)
             );
         } else if (
-            this.modelNames.includes(modelName) &&
-            this.subscriptions[modelName] &&
-            this.subscriptions[modelName][actionVariant]
+            this.modelNames.includes(modelName)
+            && this.subscriptions[modelName]
+            && this.subscriptions[modelName][actionVariant]
+            && !this.subscriptions[modelName][actionVariant].includes(subscription)
         ) {
             this.subscriptions[modelName][actionVariant].push(subscription);
         } else {

@@ -1,6 +1,6 @@
-import React from 'react'
-import {Link, useParams} from "react-router-dom";
-import { PageHeader} from "../../components/ui";
+import React, {useEffect} from 'react'
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
 import DatePicker from "../../components/DatePicker/DatePicker";
@@ -11,7 +11,14 @@ export default function ExpensesPlan({
                                          primary_entity_id
                                      }) {
     const params = useParams()
+    const navigate = useNavigate()
 
+
+    useEffect(() => {
+        navigate('/travel/123/expenses/')
+    })
+
+    return null
 
     return (
         <>
@@ -38,7 +45,7 @@ export default function ExpensesPlan({
                     <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
 
                 </div>
-                    <DatePicker multy onSelect={console.log}/>
+                <DatePicker multy onSelect={console.log}/>
 
 
             </Container>

@@ -15,7 +15,6 @@ export default function useExpenses(controller, primary_entity_id, type = 'plan'
 
     const update = useCallback(() => {
         if (controller){
-            console.log('useExpenses')
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
             controller.read({
                 storeName,
