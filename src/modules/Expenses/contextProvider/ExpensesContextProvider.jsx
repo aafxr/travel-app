@@ -77,7 +77,7 @@ export default function ExpensesContextProvider({user_id}) {
     useEffect(() => {
         function workerMessageHandler(e) {
             console.log('[ExpensesContextProvider] message from worker', e.data)
-            state.controller.actionHandler(e.data)
+            state.controller.actionHandler(e.data).catch(console.error)
         }
 
         worker && worker.addEventListener('message', workerMessageHandler)
