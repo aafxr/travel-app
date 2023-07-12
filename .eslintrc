@@ -1,9 +1,10 @@
 {
     "ignorePatterns": [
-        "Expenses.js"
+        "*.test.{js,jsx}"
     ],
     "rules": {
-        "prefer-rest-params": "off"
+        "prefer-rest-params": "off",
+        "testing-library/no-node-access": "off"
     },
     "parserOptions": {
         "ecmaVersion": 2017,
