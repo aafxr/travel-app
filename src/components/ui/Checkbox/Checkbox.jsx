@@ -13,37 +13,37 @@ import clsx from "clsx";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function Checkbox({
+ function Checkbox({
                                      children,
                                      className = '',
                                      checked = false,
                                      left,
                                      onChange,
                                      ...props
-                                 }) {
+                                 }, ref ) {
     const [checkedState, setChecked] = useState(checked)
 
     const styles = clsx({
-        ['checkbox']: true,
-        ['checked']: checkedState,
-        ['left']: left,
-        ['right']: !left,
-    },
+            ['checkbox']: true,
+            ['checked']: checkedState,
+            ['left']: left,
+            ['right']: !left,
+        },
         className
     )
 
     function handler(e) {
         setChecked(prev => !prev)
-        onChange && onChange(!checked)
+        onChange && onChange(!checkedState)
     }
 
     return (
-        <div className={styles} onClick={() => setChecked(prev => !prev)}>
-            <label {...props} >
-                <input type="checkbox" checked={checkedState} onChange={handler} hidden/>
+        <div className={styles} onClick={handler}>
+            <input ref={ref} type="checkbox" checked={checkedState} onChange={handler} hidden/>
+            <label>
                 {children}
             </label>
-            <div className={'checkbox-dot'}>
+            <div role='img' className={'checkbox-dot'}>
                 {!checkedState && <img className={clsx('img-abs', 'circle')}
                                        src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>}
                 {checkedState &&
@@ -53,3 +53,5 @@ export default function Checkbox({
         </div>
     )
 }
+
+export default React.forwardRef(Checkbox)

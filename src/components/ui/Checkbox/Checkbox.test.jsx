@@ -1,16 +1,16 @@
 import {render, screen} from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import Checkbox from "./Checkbox";
 
-test('loads and displays greeting', async () => {
+test('Checked Checkbox should display img with mark class', async () => {
     // ARRANGE
-    render(<Checkbox left >test checkbox</Checkbox>)
+    const result  = render(<Checkbox left checked>test checkbox</Checkbox>)
 
-    // ACT
-    await userEvent.click(screen.getByText('test checkbox'))
-    await screen.findByRole('heading')
+    const {container} = result
 
     // ASSERT
-    expect(screen.getByRole('heading')).toHaveTextContent('hello there')
-    expect(screen.getByRole('button')).toBeDisabled()
+    expect(container.getElementsByClassName('checkbox-dot').length).toBe(1)
+    expect(container.getElementsByTagName('img').length).toBe(1)
+    expect(container.querySelectorAll('.left').length).toBe(1)
+    expect(container.querySelectorAll('.mark').length).toBe(1)
+
 })
