@@ -21,14 +21,14 @@ import updateLimit from "../../utils/updateLimit";
  *
  * в зависимости от expensesType добавляются либо плановые либо текущие
  * @param {string} user_id
- * @param {string} primaryEntityType
+ * @param {string} primary_entity_type
  * @param {'actual' | 'plan'} expensesType - default =  actual
  * @returns {JSX.Element}
  * @constructor
  */
 export default function ExpensesAdd({
                                         user_id,
-                                        primaryEntityType,
+                                        primary_entity_type,
                                         expensesType = 'actual' // 'actual' | 'plan'
                                     }) {
     const {travelCode: primary_entity_id} = useParams()
@@ -52,7 +52,7 @@ export default function ExpensesAdd({
     }, [defaultSection])
 
     function handler() {
-        if (user_id && primaryEntityType) {
+        if (user_id && primary_entity_type) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
             controller.write({
@@ -61,10 +61,10 @@ export default function ExpensesAdd({
                 user_id,
                 data: {
                     user_id,
-                    primary_entity_type: primaryEntityType,
+                    primary_entity_type: primary_entity_type,
                     primary_entity_id,
                     entity_type: '',
-                    entity_id: '####',
+                    entity_id: '',
                     title: expName,
                     value: Number(expSum),
                     personal: personal ? 1 : 0,
@@ -75,11 +75,11 @@ export default function ExpensesAdd({
                 }
             })
 
-            updateLimit(controller, section_id, user_id)
+            isPlan && updateLimit(controller,primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {
-            console.warn('need add user_id & primaryEntityType')
+            console.warn('need add user_id & primary_entity_type')
         }
     }
 

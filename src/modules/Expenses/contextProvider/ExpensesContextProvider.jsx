@@ -123,19 +123,12 @@ export default function ExpensesContextProvider({user_id}) {
 
             console.log('=========================addDefaultSections=========================')
 
-            // const sectionList = await state.controller.read({
-            //     storeName: constants.store.SECTION,
-            //     action: 'get',
-            //     query: 'all'
-            // })
-
             const response = await fetch('https://api.travelerapp.ru/expenses/getSections/')
             const {result: sectionList} = await response.json()
 
             if (sectionList.length) {
 
                 for (const section of sectionList) {
-                    console.log(section)
                     const data = {
                         ...section,
                         color: '#52CF37',
@@ -145,17 +138,16 @@ export default function ExpensesContextProvider({user_id}) {
 
                     await state.controller.write({
                         storeName: constants.store.SECTION,
-                        action: 'add',
+                        action: 'edit',
                         user_id,
                         data
                     })
-                        .then(console.log)
                 }
             }
         }
 
         updateSections()
-        addDefaultSections().then(()=> console.log('sections fetching done'))
+        addDefaultSections()
     }, [state.controller])
 
     useEffect(() => {

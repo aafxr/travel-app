@@ -12,7 +12,7 @@ import '../../css/Expenses.css'
 
 export default function ExpensesActualAdd({
                                               user_id,
-                                              primaryEntityType
+                                              primary_entity_type
                                           }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller} = useContext(ExpensesContext)

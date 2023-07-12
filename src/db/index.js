@@ -25,15 +25,18 @@ function init({dbname, version, stores}) {
     return openDB(dbname, version, {
         upgrade(db) {
             stores.forEach(function (storeInfo) {
-                if (!db.objectStoreNames.contains(storeInfo.name)) {
-                    const store = db.createObjectStore(storeInfo.name, {
-                        keyPath: storeInfo.key,
-                        // autoIncrement: true,
-                    });
-                    storeInfo.indexes.forEach(function (indexName) {
-                        store.createIndex(indexName, indexName, {});
-                    });
+
+                if (db.objectStoreNames.contains(storeInfo.name)) {
+                    db.deleteObjectStore(storeInfo.name)
                 }
+
+                const store = db.createObjectStore(storeInfo.name, {
+                    keyPath: storeInfo.key,
+                });
+
+                storeInfo.indexes.forEach(function (indexName) {
+                    store.createIndex(indexName, indexName, {});
+                });
             });
         },
     });

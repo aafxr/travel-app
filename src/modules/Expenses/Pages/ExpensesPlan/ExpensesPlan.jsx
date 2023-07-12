@@ -18,13 +18,13 @@ import constants from "../../db/constants";
 /**
  * страница отображает плановые расходы  пользователя
  * @param {string} user_id
- * @param {string} primaryEntityType
+ * @param {string} primary_entity_type
  * @returns {JSX.Element}
  * @constructor
  */
 export default function ExpensesPlan({
                                          user_id,
-                                         primaryEntityType
+                                         primary_entity_type
                                      }) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller, sections, limits} = useContext(ExpensesContext)

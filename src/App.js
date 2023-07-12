@@ -29,10 +29,10 @@ function App() {
                             <Route index element={<Expenses user_id={'12'}/>}/>
                             <Route path={'plan/'} element={<ExpensesPlan user_id={'12'}/>}/>
                         </Route>
-                        <Route path={'limit/:sectionId/'} element={<LimitsEdit user_id={'12'}/>}/>
-                        <Route path={'add'} element={<ExpensesAdd user_id={'12'} primaryEntityType={'travel'}/>}/>
+                        <Route path={'limit/:sectionId/'} element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
+                        <Route path={'add'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
                         <Route path={'plan/add/'}
-                               element={<ExpensesAdd user_id={'12'} primaryEntityType={'travel'}
+                               element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}
                                                      expensesType={'plan'}/>}/>
                         <Route path={'section/add/'} element={<ExpensesSectionAdd user_id={'12'}/>}/>
                     </Route>

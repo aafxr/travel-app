@@ -285,7 +285,6 @@ export default class ActionController {
                             })
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
-                        console.log('Action result:  ', res);
                     }
                     await this.actionsModel.remove(action.id)
                 } else {
@@ -308,7 +307,6 @@ export default class ActionController {
      * @private
      */
     _subscriptionsCall(action, data) {
-        console.log(this.subscriptions)
         const {action: actionVariant, entity} = action;
         if (this.model[entity] && this.model[entity][actionVariant]) {
             this.subscriptions[entity][actionVariant].forEach((sub) =>

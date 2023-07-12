@@ -7,7 +7,7 @@ import DatePicker from "../../components/DatePicker/DatePicker";
 
 export default function ExpensesPlan({
                                          user_id,
-                                         primaryEntityType,
+                                         primary_entity_type,
                                          primary_entity_id
                                      }) {
     const params = useParams()

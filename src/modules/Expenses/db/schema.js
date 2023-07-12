@@ -11,7 +11,7 @@
  */
 const schema = {
   dbname: 'expenses',
-  version: 5,
+  version: 9,
   stores: [
     {
       name: 'section',
@@ -21,7 +21,7 @@ const schema = {
     {
       name: 'limit',
       key: 'id',
-      indexes: ['section_id', 'personal','primary_entity_id'],
+      indexes: ['section_id', 'personal','primary_entity_id', "user_id"],
     },
     {
       name: 'expenses_actual',

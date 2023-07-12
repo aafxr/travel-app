@@ -14,6 +14,8 @@ function validatePayload(data) {
         && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
         && isPositiveNumber(data.value)
         && isString(data.primary_entity_id)
+        && isString(data.user_id)
+        && isString(data.primary_entity_type)
     )
 }
 

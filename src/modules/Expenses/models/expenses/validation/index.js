@@ -15,7 +15,7 @@ import isString from "../../../../../utils/validation/isString";
 // datetime
 // created_at
 
-const primaryEntityType = [
+const primary_entity_type = [
     'travel',
 ]
 
@@ -29,8 +29,8 @@ function validatePayload(data) {
         isString(data.user_id)
         && isString(data.primary_entity_type)
         && isString(data.primary_entity_id)
-        && isString(data.entity_type)
-        && typeof data.entity_id === "string"
+        && (data.entity_type ? isString(data.entity_type) : true)
+        && (data.entity_id ? isString(data.entity_id) : true)
         && isString(data.title)
         && isPositiveNumber(data.value)
         && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
