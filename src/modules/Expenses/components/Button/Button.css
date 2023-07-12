@@ -1,4 +1,4 @@
-.expenses-btn-container{
+.footer-btn-container{
     position: relative;
     padding: 10px 20px;
     background-color: var(--color-secondary);
@@ -8,20 +8,25 @@
 .expenses-btn{
     padding: 16px 0;
     width: 100%;
-    color: var(--color-secondary);
     font-weight: 700;
     border-radius: 8px;
-    background-color: var(--color-primary);
     border: none;
 
     overflow: hidden;
     transition: var(--tr-all);
     cursor: pointer;
+
+    color: var(--color-grey);
+    background-color: var(--color-primary-light);
+}
+
+.expenses-btn.active{
+    color: var(--color-secondary);
+    background-color: var(--color-primary);
+
 }
 
 .expenses-btn:disabled{
-    color: var(--color-grey);
-    background-color: var(--color-primary-light);
     cursor: default;
     pointer-events: none;
 }

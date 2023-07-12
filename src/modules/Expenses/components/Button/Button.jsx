@@ -12,11 +12,9 @@ import  './Button.css'
  * @returns {JSX.Element}
  * @constructor
  */
-export default function Button({className, children, ...props}){
+export default function Button({className, children, active = true, ...props}){
 
-    return <div className={clsx('expenses-btn-container', className)}>
-        <button {...props} className='expenses-btn' >
+    return <button {...props} className={clsx('expenses-btn', active && 'active', className)} >
             {children || ''}
         </button>
-    </div>
 }
