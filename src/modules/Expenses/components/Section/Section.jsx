@@ -32,17 +32,15 @@ export default function Section({
 
     const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
 
-    const personalExpenses = expenses.filter(item => item.personal === 1 && user_id === item.user_id)
+    // const expensesList = personal ? personalExpenses : expenses
 
-    const expensesList = personal ? personalExpenses : expenses
-
-    const totalPersonalExpenses = personalExpenses
+    const totalExpenses = expenses
         .reduce((acc, item) => acc + item.value, 0)
 
-    const percent = (totalPersonalExpenses / limit) || 0
+    const percent = (totalExpenses / limit) || 0
     const color = percent < 0.45 ? '#52CF37' : percent > 0.82 ? '#FF0909' : '#E3CD00'
 
-    let balance = limit - totalPersonalExpenses
+    let balance = limit - totalExpenses
     balance < 0 && (balance = 0)
 
     return (
@@ -57,7 +55,7 @@ export default function Section({
                 {
                     !!line && (
                         <>
-                            <Line value={percent} color={color}/>
+                            <Line value={limit ? percent: 0} color={color}/>
                             {
                                 !!limit && (
                                     <div className={'flex-between'}>
@@ -70,8 +68,8 @@ export default function Section({
                     )
                 }
                 {
-                    !!expensesList.length && (
-                        expensesList
+                    !!expenses.length && (
+                        expenses
                             .map(
                                 item => <SectionItem key={item.id} {...item}/>
                             )
