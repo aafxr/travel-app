@@ -28,7 +28,7 @@ export default function LimitsEdit({
                                        user_id,
                                        primary_entity_type
                                    }) {
-    const {travelCode: primary_entity_id} = useParams()
+    const {travelCode: primary_entity_id, sectionId} = useParams()
     const {pathname} = useLocation()
     const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
@@ -72,7 +72,7 @@ export default function LimitsEdit({
 
     useEffect(() => {
         if (defaultSection) {
-            setSectionId(defaultSection.id)
+            setSectionId(sectionId || defaultSection.id)
         }
     }, [defaultSection])
 
@@ -175,8 +175,9 @@ export default function LimitsEdit({
 
                     </Container>
                 </div>
-                <Button className='footer'
-                        onClick={handler}>Добавить</Button>{/*disabled={(+limitValue) === 0 || !section_id}*/}
+                <div className='footer-btn-container'>
+                    <Button className='footer' onClick={handler}>Добавить</Button>
+                </div>
             </div>
         </>
     )

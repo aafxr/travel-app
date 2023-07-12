@@ -65,7 +65,9 @@ export default function ExpensesActualAdd({
 
                     </Container>
                 </div>
-                <Button className='footer' onClick={handler} disabled={sectionName.length === 0}>Добавить</Button>
+                <div className='footer-btn-container'>
+                    <Button className='footer' onClick={handler} disabled={sectionName.length === 0}>Добавить</Button>
+                </div>
             </div>
 
         </>

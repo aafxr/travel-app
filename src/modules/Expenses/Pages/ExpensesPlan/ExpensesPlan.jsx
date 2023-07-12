@@ -8,11 +8,13 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
-import useSections from "../../hooks/useSections";
-import useLimits from "../../hooks/useLimits";
 import useExpenses from "../../hooks/useExpenses";
-import distinctValues from "../../../../utils/distinctValues";
 import constants from "../../db/constants";
+import useToBottomHeight from "../../hooks/useToBottomHeight";
+import Button from "../../components/Button/Button";
+import useFilteredExpenses from "../../hooks/useFilteredExpenses";
+
+import {filterType, local} from "../../static/vars";
 
 
 /**
@@ -30,9 +32,12 @@ export default function ExpensesPlan({
     const {controller, sections, limits} = useContext(ExpensesContext)
 
     const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "plan")
-    const sectionList = distinctValues(expenses, exp => exp.section_id)
 
     const [noDataMessage, setNoDataMessage] = useState('')
+
+    const [filter, setFilter] = useState('all')
+
+    const ref = useToBottomHeight()
 
     useEffect(() => {
         updateExpenses()
@@ -47,25 +52,34 @@ export default function ExpensesPlan({
         return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
 
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, sections, filter, user_id)
+
 
     return (
-        <div>
-            <Container className='expenses-pt-20'>
+        <div ref={ref} className='wrapper'>
+            <Container className='expenses-pt-20 content'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
                     sections && !!sections.length
                         ? sections
                             .filter(s => sectionList.includes(s.id))
                             .map(section => (
-                            <Section
-                                key={section.id}
-                                section={section}
-                                expenses={expenses.filter(e => e.section_id === section.id)}
-                                sectionLimit={(limits.find(l => l.section_id === section.id) || null)}
-                                user_id={user_id}
-                            />
-                        ))
+                                <Section
+                                    key={section.id}
+                                    section={section}
+                                    expenses={filteredExpenses.filter(e => e.section_id === section.id)}
+                                    sectionLimit={filter !== 'all' ? (limitsList.find(l => l.section_id === section.id) || null): null}
+                                    user_id={user_id}
+                                />
+                            ))
                         : <div>{noDataMessage}</div>
+                }
+            </Container>
+            <Container className='footer footer-btn-container flex-between gap-1'>
+                {
+                    filterType.map(f => (
+                        <Button key={f} className='center' active={f === filter} onClick={() => setFilter(f)}>{local[f]}</Button>
+                    ))
                 }
             </Container>
         </div>

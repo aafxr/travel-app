@@ -75,7 +75,7 @@ export default function ExpensesAdd({
                 }
             })
 
-            isPlan && updateLimit(controller,primary_entity_type, primary_entity_id, section_id, user_id, personal)
+            isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {
@@ -138,8 +138,10 @@ export default function ExpensesAdd({
                 </div>
             </div>
 
-            <Button className='footer' onClick={handler}
-                    disabled={!section_id || !expName || !expSum}>Добавить</Button>
+            <div className='footer-btn-container'>
+                <Button className='footer' onClick={handler}
+                        disabled={!section_id || !expName || !expSum}>Добавить</Button>
+            </div>
         </div>
     )
 }
