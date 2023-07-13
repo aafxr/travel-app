@@ -3,8 +3,11 @@ import distinctValues from "../../../utils/distinctValues";
 
 
 
-export default function useFilteredExpenses(expenses, limits, sections, filter, user_id){
+export default function useFilteredExpenses(expenses, limits, filter, user_id){
     const filteredExpenses = useMemo(() => {
+        if (!expenses || !expenses.length){
+            return []
+        }
         if (filter === 'personal') {
             return expenses.filter(e => e.user_id === user_id && e.personal === 1)
         } else if (filter === 'common') {
@@ -18,6 +21,9 @@ export default function useFilteredExpenses(expenses, limits, sections, filter, 
     const sectionList = distinctValues(filteredExpenses, exp => exp.section_id)
 
     const limitsList = useMemo(function (){
+        if (!expenses || !expenses.length){
+            return []
+        }
         if (filter === 'personal') {
             return limits
                 .filter(l =>  l.user_id === user_id && l.personal === 1 )
@@ -29,8 +35,7 @@ export default function useFilteredExpenses(expenses, limits, sections, filter, 
         } else {
             return []
         }
-    }, [limits, filter])
-
+    }, [limits, filter, expenses])
     return {
         filteredExpenses,
         sectionList,

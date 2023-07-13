@@ -52,7 +52,7 @@ export default function ExpensesPlan({
         return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, sections, filter, user_id)
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 
 
     return (

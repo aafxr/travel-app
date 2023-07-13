@@ -34,25 +34,23 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const [filter, setFilter] = useState(defaultFilterValue)
 
+    console.log(filter)
+
     const ref = useToBottomHeight()
 
 
     useEffect(() => {
-        updateExpenses()
-        setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-    }, [])
-
-
-    useEffect(() => {
         if (controller) {
+            updateExpenses()
+            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
             controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
         }
         return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
     }, [])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, sections, filter, user_id)
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits,  filter, user_id)
 
-
+    console.log(filter)
     return (
         <div ref={ref} className='wrapper'>
             <Container className='expenses-pt-20 content'>
