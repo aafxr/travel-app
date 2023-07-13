@@ -16,6 +16,10 @@
     color: var(--color-grey);
 }
 
+.section-subtitle.red{
+    color: var(--color-danger);
+}
+
 .section-item{
     margin: 11px 0 0;
     font-size: 0.875rem;

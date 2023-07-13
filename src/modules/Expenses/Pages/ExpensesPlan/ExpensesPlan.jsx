@@ -11,10 +11,9 @@ import '../../css/Expenses.css'
 import useExpenses from "../../hooks/useExpenses";
 import constants from "../../db/constants";
 import useToBottomHeight from "../../hooks/useToBottomHeight";
-import Button from "../../components/Button/Button";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
-
-import {filterType, local} from "../../static/vars";
+import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
+import {defaultFilterValue, EXPENSES_FILTER} from "../../static/vars";
 
 
 /**
@@ -35,7 +34,8 @@ export default function ExpensesPlan({
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
-    const [filter, setFilter] = useState('all')
+    const [filter, setFilter] = useState(defaultFilterValue)
+
 
     const ref = useToBottomHeight()
 
@@ -68,20 +68,15 @@ export default function ExpensesPlan({
                                     key={section.id}
                                     section={section}
                                     expenses={filteredExpenses.filter(e => e.section_id === section.id)}
-                                    sectionLimit={filter !== 'all' ? (limitsList.find(l => l.section_id === section.id) || null): null}
+                                    sectionLimit={filter !== 'all' ? (limitsList.find(l => l.section_id === section.id) || null) : null}
                                     user_id={user_id}
                                 />
                             ))
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <Container className='footer footer-btn-container flex-between gap-1'>
-                {
-                    filterType.map(f => (
-                        <Button key={f} className='center' active={f === filter} onClick={() => setFilter(f)}>{local[f]}</Button>
-                    ))
-                }
-            </Container>
+            <ExpensesFilterVariant value={filter} onChange={setFilter}/>
+
         </div>
     )
 }

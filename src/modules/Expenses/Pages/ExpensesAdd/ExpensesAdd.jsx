@@ -114,7 +114,7 @@ export default function ExpensesAdd({
                             </div>
                             <div className='column gap-1'>
                                 <div className='column gap-0.25'>
-                                    <div className='title'>На что потратили:</div>
+                                    <div className='title'>На что планируете потратить:</div>
                                     <Input
                                         type={'text'}
                                         value={expName}

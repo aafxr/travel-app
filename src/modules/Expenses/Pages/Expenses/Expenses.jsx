@@ -9,12 +9,11 @@ import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
 import useExpenses from "../../hooks/useExpenses";
-import distinctValues from "../../../../utils/distinctValues";
 import constants from "../../db/constants";
-import Button from "../../components/Button/Button";
-import useToBottomHeight from "../../hooks/useToBottomHeight";
 
-import {filterType, local} from "../../static/vars";
+import useFilteredExpenses from "../../hooks/useFilteredExpenses";
+import {defaultFilterValue} from "../../static/vars";
+import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
 
 /**
@@ -32,9 +31,7 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
-    const [filter, setFilter] = useState('all')
-
-    const ref = useToBottomHeight()
+    const [filter, setFilter] = useState(defaultFilterValue)
 
 
     useEffect(() => {
@@ -50,34 +47,12 @@ export default function Expenses({user_id, primary_entity_type}) {
         return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
     }, [])
 
-    const filteredExpenses = useMemo(() => {
-        if (filter === 'personal') {
-            return expenses.filter(e => e.user_id === user_id && e.personal === 1)
-        } else if (filter === 'common') {
-            return expenses.filter(e => e.personal === 0)
-        } else {
-            return expenses
-        }
-    }, [expenses, filter])
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, sections, filter, user_id)
 
-
-    const sectionList = distinctValues(filteredExpenses, exp => exp.section_id)
-
-    const limitsList = useMemo(function () {
-        if (filter === 'personal') {
-            return limits
-                .filter(l => l.user_id === user_id && l.personal === 1)
-                .filter(l => sectionList.includes(l.section_id))
-        } else {
-            return limits
-                .filter(l => l.personal === 0)
-                .filter(l => sectionList.includes(l.section_id))
-        }
-    }, [limits, filter])
 
     return (
-        <div ref={ref} className='wrapper'>
-            <Container className='expenses-pt-20 content'>
+        <div >
+            <Container className='expenses-pt-20'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {
                     sectionList && !!sectionList.length
@@ -96,14 +71,7 @@ export default function Expenses({user_id, primary_entity_type}) {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-
-            <Container className='footer footer-btn-container flex-between gap-1'>
-                {
-                    filterType.map(f => (
-                        <Button key={f} className='center' active={f === filter} onClick={() => setFilter(f)}>{local[f]}</Button>
-                    ))
-                }
-            </Container>
+            <ExpensesFilterVariant value={filter} onChange={setFilter} />
         </div>
     )
 }

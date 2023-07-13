@@ -11,6 +11,7 @@ import createId from "../../../utils/createId";
 import useSections from "../hooks/useSections";
 import useLimits from "../hooks/useLimits";
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
+import useDefaultSection from "../hooks/useDefaultSections";
 
 
 /**
@@ -88,10 +89,7 @@ export default function ExpensesContextProvider({user_id}) {
 
 
             controller.onSendData = (action) => worker.postMessage(
-                JSON.stringify({
-                    module: 'expenses',
-                    data: action
-                })
+                JSON.stringify(action)
             )
 
         return () => worker && worker.removeEventListener('message', workerMessageHandler)
@@ -116,39 +114,7 @@ export default function ExpensesContextProvider({user_id}) {
     }, [state.controller])
 
 
-    // добавлени дефолтных секций
-    useEffect(() => {
-        async function addDefaultSections() {
-            if (!state.controller) return
-
-            console.log('=========================addDefaultSections=========================')
-
-            const response = await fetch('https://api.travelerapp.ru/expenses/getSections/')
-            const {result: sectionList} = await response.json()
-
-            if (sectionList.length) {
-
-                for (const section of sectionList) {
-                    const data = {
-                        ...section,
-                        color: '#52CF37',
-                        hidden: 1,
-                        primary_entity_id,
-                    }
-
-                    await state.controller.write({
-                        storeName: constants.store.SECTION,
-                        action: 'edit',
-                        user_id,
-                        data
-                    })
-                }
-            }
-        }
-
-        updateSections()
-        addDefaultSections()
-    }, [state.controller])
+    useDefaultSection(state.controller, primary_entity_id, user_id)
 
     useEffect(() => {
         if (sections && sections.length) {

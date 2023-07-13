@@ -1,24 +1,29 @@
-.page-header-container{
+.page-header-container {
     position: relative;
     display: flex;
-    justify-content: stretch;
+    flex-direction: row
 }
 
-.page-header{
-    padding: 20px 0 20px 0;
+.page-header {
+    flex: 1;
 }
 
-.page-header-container.arrow-back .page-header{
-    margin-left: -34px;
-    padding: 20px 0 20px 30px;
+.page-header-icon, .page-header-placeholder {
+    position: relative;
+    flex: none;
+    width: var(--x);
+    height: var(--x);
 }
 
 .page-header-icon{
-    position: relative;
-    flex: 0 0 24px;
-    display: flex;
-    align-items: center;
     cursor: pointer;
+}
 
+.page-header-icon img{
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 

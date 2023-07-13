@@ -19,6 +19,8 @@ export default function ExpensesLayout() {
     const title = pathname.endsWith('plan/') ? 'Планы' : 'Текущие расходы'
 
 
+
+
     return (
         <div className='expenses-wrapper'>
             <Container>
@@ -29,6 +31,7 @@ export default function ExpensesLayout() {
                 <Tab name={'Планы'} to={`/travel/${travelCode}/expenses/plan/`}/>
             </div>
             <Outlet/>
+
         </div>
     )
 }

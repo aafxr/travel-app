@@ -1,8 +1,10 @@
 import React from "react";
 import {useLocation, useNavigate} from 'react-router-dom'
 import clsx from "clsx";
-import './PageHeader.css'
+
 import isString from "../../../utils/validation/isString";
+
+import './PageHeader.css'
 
 
 /**
@@ -45,16 +47,17 @@ export default function PageHeader({
     return (
         <div className={styles} {...props}>
             {!!arrowBack &&
-                    <div className='page-header-icon' onClick={backHandler}>
-                        <img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back"/>
-                    </div>
+                <div className='page-header-icon' onClick={backHandler}>
+                    <img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back"/>
+                </div>
             }
             {!!title &&
-                <div className='page-header w-full'>
-                    <div className='title-bold center'>{title}</div>
+                <div className='page-header center title-bold'>
+                    {title}
                 </div>
             }
             {children}
+            {!!arrowBack && <div className='page-header-placeholder'/>}
         </div>
     )
 }

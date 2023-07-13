@@ -1,6 +1,7 @@
 @import url('./reset.css');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 @import "./colors.css";
+@import "./size.css";
 @import "./transition.css";
 
 html, body {

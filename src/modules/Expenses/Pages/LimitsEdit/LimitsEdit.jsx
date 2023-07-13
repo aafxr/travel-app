@@ -88,7 +88,7 @@ export default function LimitsEdit({
                 )
             limit ? setLimitObj(limit) : setLimitObj(null)
         }
-    }, [section_id, limits,  personal])
+    }, [section_id, limits, personal])
 
 
     useEffect(() => {
@@ -118,7 +118,7 @@ export default function LimitsEdit({
                     user_id,
                     data: {
                         section_id,
-                        personal: personal ? 1: 0,
+                        personal: personal ? 1 : 0,
                         value: +limitValue,
                         user_id,
                         primary_entity_id,
@@ -169,7 +169,8 @@ export default function LimitsEdit({
                                     />
                                     {!!message && <div className='expenses-message'>{message}</div>}
                                 </div>
-                                <Checkbox onChange={() => setPersonal(!personal)} checked={personal} left> Личный лимит</Checkbox>
+                                <Checkbox onChange={() => setPersonal(!personal)} checked={personal} left> Личный
+                                    лимит</Checkbox>
                             </div>
                         </div>
 

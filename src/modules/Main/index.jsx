@@ -45,8 +45,7 @@ export default function ExpensesPlan({
                     <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
 
                 </div>
-                <DatePicker multy onSelect={console.log}/>
-
+                {/*<DatePicker multy onSelect={console.log}/>*/}
 
             </Container>
         </>

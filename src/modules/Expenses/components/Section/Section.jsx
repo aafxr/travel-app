@@ -38,10 +38,9 @@ export default function Section({
         .reduce((acc, item) => acc + item.value, 0)
 
     const percent = (totalExpenses / limit) || 0
-    const color = percent < 0.45 ? '#52CF37' : percent > 0.82 ? '#FF0909' : '#E3CD00'
+    const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
 
     let balance = limit - totalExpenses
-    balance < 0 && (balance = 0)
 
     return (
         <div className='expenses-list'>
@@ -55,12 +54,17 @@ export default function Section({
                 {
                     !!line && (
                         <>
-                            <Line value={limit ? percent: 0} color={color}/>
+                            <Line value={limit ? percent : 0} color={color}/>
                             {
                                 !!limit && (
                                     <div className={'flex-between'}>
                                         <div className='section-subtitle'>Лимит {limit} ₽</div>
-                                        <div className='section-subtitle'>Осталось {balance} ₽</div>
+                                        {
+                                            balance >= 0
+                                                ? <div className='section-subtitle'>Осталось: {balance} ₽</div>
+                                                : <div className='section-subtitle red'>Перерасход: {Math.abs(balance)} ₽</div>
+                                        }
+
                                     </div>
                                 )
                             }
@@ -83,7 +87,7 @@ export default function Section({
 }
 
 
-const month = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+const month = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 
 
 /**
@@ -97,7 +101,7 @@ function SectionItem(expense) {
     let time = new Date(datetime)
     Number.isNaN(time)
         ? time = '--/--'
-        : time = time.getDay() + ' ' + month[time.getMonth()]
+        : time = time.getUTCDate() + ' ' + month[time.getMonth()]
 
 
     return (
