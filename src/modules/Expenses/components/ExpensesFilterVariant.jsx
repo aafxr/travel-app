@@ -2,9 +2,10 @@ import {EXPENSES_FILTER, filterType, local} from "../static/vars";
 import Button from "./Button/Button";
 import Container from "./Container/Container";
 import React from "react";
+import clsx from "clsx";
 
 
-export default function ExpensesFilterVariant({value, onChange}){
+export default function ExpensesFilterVariant({value, onChange, className}){
     function setExpensesFilter(variant) {
         if (filterType.includes(variant)) {
             onChange(variant)
@@ -13,7 +14,7 @@ export default function ExpensesFilterVariant({value, onChange}){
     }
 
     return (
-        <Container className='footer-btn-container flex-between gap-1'>
+        <Container className={clsx('footer-btn-container flex-between gap-1', className)}>
         {
             filterType.map(f => (
                 <Button key={f} className='center' active={f === value}

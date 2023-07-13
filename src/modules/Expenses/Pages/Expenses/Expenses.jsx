@@ -71,7 +71,7 @@ export default function Expenses({user_id, primary_entity_type}) {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant value={filter} onChange={setFilter} />
+            <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter} />
         </div>
     )
 }

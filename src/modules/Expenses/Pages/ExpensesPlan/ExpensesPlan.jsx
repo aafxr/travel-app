@@ -75,7 +75,7 @@ export default function ExpensesPlan({
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant value={filter} onChange={setFilter}/>
+            <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter}/>
 
         </div>
     )
