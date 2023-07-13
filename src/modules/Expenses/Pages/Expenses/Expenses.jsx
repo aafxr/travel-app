@@ -14,6 +14,7 @@ import constants from "../../db/constants";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
+import useToBottomHeight from "../../hooks/useToBottomHeight";
 
 
 /**
@@ -33,6 +34,8 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const [filter, setFilter] = useState(defaultFilterValue)
 
+    const ref = useToBottomHeight()
+
 
     useEffect(() => {
         updateExpenses()
@@ -51,8 +54,8 @@ export default function Expenses({user_id, primary_entity_type}) {
 
 
     return (
-        <div >
-            <Container className='expenses-pt-20'>
+        <div ref={ref} className='wrapper'>
+            <Container className='expenses-pt-20 content'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {
                     sectionList && !!sectionList.length
