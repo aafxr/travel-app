@@ -34,10 +34,6 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const [filter, setFilter] = useState(defaultFilterValue)
 
-    console.log(filter)
-
-    const ref = useToBottomHeight()
-
 
     useEffect(() => {
         if (controller) {
@@ -50,9 +46,9 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits,  filter, user_id)
 
-    console.log(filter)
+
     return (
-        <div ref={ref} className='wrapper'>
+        < >
             <Container className='expenses-pt-20 content'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {
@@ -73,6 +69,6 @@ export default function Expenses({user_id, primary_entity_type}) {
                 }
             </Container>
             <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter} />
-        </div>
+        </>
     )
 }

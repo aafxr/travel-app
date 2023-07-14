@@ -37,8 +37,6 @@ export default function ExpensesPlan({
     const [filter, setFilter] = useState(defaultFilterValue)
 
 
-    const ref = useToBottomHeight()
-
     useEffect(() => {
         updateExpenses()
         setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
@@ -56,7 +54,7 @@ export default function ExpensesPlan({
 
 
     return (
-        <div ref={ref} className='wrapper'>
+        <>
             <Container className='expenses-pt-20 content'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
@@ -77,6 +75,6 @@ export default function ExpensesPlan({
             </Container>
             <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter}/>
 
-        </div>
+        </>
     )
 }

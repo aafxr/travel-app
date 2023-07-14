@@ -1,0 +1,20 @@
+.swiper-container{
+    position: relative;
+}
+
+.swiper-button img{
+    position: relative;
+    fill: var(--color-primary);
+    stroke: var(--color-primary);
+    color: var(--color-primary);
+    width: var(--x);
+    height: var(--x);
+    z-index: 1;
+}
+
+.swipe-item{
+    position: relative;
+    background-color: var(--color-primary);
+    width: 100%;
+    z-index: 2;
+}

@@ -5,7 +5,7 @@ import React from "react";
 import clsx from "clsx";
 
 
-export default function ExpensesFilterVariant({value, onChange, className}){
+export default function ExpensesFilterVariant({value , onChange, className}){
     function setExpensesFilter(variant) {
         if (filterType.includes(variant)) {
             onChange(variant)

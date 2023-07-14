@@ -4,6 +4,7 @@ import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
 import DatePicker from "../../components/DatePicker/DatePicker";
+import Swipe from "../../components/ui/Swipe/Swipe";
 
 export default function ExpensesPlan({
                                          user_id,
@@ -15,10 +16,14 @@ export default function ExpensesPlan({
 
 
     useEffect(() => {
-        navigate('/travel/123/expenses/')
+        if (process.env.NODE_ENV === 'production') {
+            navigate('/travel/123/expenses/')
+        }
     })
 
-    return null
+    if (process.env.NODE_ENV === 'production') {
+        return null
+    }
 
     return (
         <>
@@ -46,6 +51,7 @@ export default function ExpensesPlan({
 
                 </div>
                 {/*<DatePicker multy onSelect={console.log}/>*/}
+                <Swipe ></Swipe>
 
             </Container>
         </>

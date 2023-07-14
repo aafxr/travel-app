@@ -13,16 +13,15 @@ export default function useLimits(controller, primary_entity_id, sectionIdList) 
 
     const update = useCallback(() => {
         async function limitsFromArray(arr) {
-            const result = []
-            for (const id of arr) {
-                await controller.read({
+                let items = await controller.read({
                     storeName: constants.store.LIMIT,
-                    index: constants.indexes.SECTION_ID,
-                    query: id
+                    index: constants.indexes.PRIMARY_ENTITY_ID,
+                    query: 'all'
                 })
-                    .then(item => item && result.push(item))
-            }
-            return result
+
+            items = Array.isArray(items) ? items : [items]
+
+            return items.filter(l => arr.includes(l.section_id))
         }
 
 

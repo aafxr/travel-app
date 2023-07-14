@@ -3,6 +3,7 @@ import constants from '../modules/Expenses/db/constants';
 import actionValidationObj from '../modules/Expenses/models/action/validation';
 import {LocalDB} from '../db';
 import isString from '../utils/validation/isString';
+import ErrorReport from "./ErrorReport";
 
 /**
  * @callback CB
@@ -115,8 +116,10 @@ export default class ActionController {
             actionValidationObj
         );
 
-        this.update = options.onUpdate || (() => {})
-        this.send = options.onSendData || (() => {})
+        this.update = options.onUpdate || (() => {
+        })
+        this.send = options.onSendData || (() => {
+        })
 
         !options.newAction && console.warn('[ActionController] you need to specify a function "newAction"')
         /**@returns {ActionType} */
@@ -215,10 +218,10 @@ export default class ActionController {
             this.send = cb
             this.actionsModel.get('all')
                 .then(actions => {
-                    if(actions ){
-                        if (Array.isArray(actions)){
+                    if (actions) {
+                        if (Array.isArray(actions)) {
                             actions.forEach(a => this.send(a))
-                        }else{
+                        } else {
                             this.send(actions)
                         }
                     }
@@ -234,6 +237,7 @@ export default class ActionController {
      */
     _errorMessage(err) {
         console.error(err);
+        ErrorReport.sendError(err).catch(console.error)
     }
 
 
@@ -276,13 +280,11 @@ export default class ActionController {
             if (this.isActionValid(action)) {
                 const {action: actionVariant, synced, entity, data} = action;
                 const parsedData = JSON.parse(data);
-
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant]) {
                         const res = await this.model[entity][actionVariant](parsedData)
-                            .catch(err => {
-                                throw err
-                            })
+                        // if(entity === 'limit')
+                        //     debugger
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
                     }
@@ -342,18 +344,18 @@ export default class ActionController {
      * @param {ReadPayloadType} payload
      */
     read(payload) {
-        const {storeName, action, index, id, query} = payload
+        const {storeName, index, id, query} = payload
 
         if (this.modelNames.includes(payload.storeName)) {
             try {
-                if (actions.includes(action)) {
-                    return this.model[storeName][action](id || query)
+
+                if (index) {
+                    return this.model[storeName].getFromIndex(index, query)
                         .catch(err => {
                             throw err
                         })
-                }
-                if (index) {
-                    return this.model[storeName].getFromIndex(index, query)
+                } else  {
+                    return this.model[storeName]['get'](id || query)
                         .catch(err => {
                             throw err
                         })
@@ -366,5 +368,18 @@ export default class ActionController {
             this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
             return Promise.resolve(null)
         }
+    }
+
+
+    /**
+     * возвра
+     * @param storeName
+     * @returns {*|null}
+     */
+    getStoreModel(storeName){
+        if (this.modelNames.includes(storeName)){
+            return this.model[storeName]
+        }
+        return null
     }
 }

@@ -132,7 +132,8 @@ export class LocalDB {
         if (storeInfo) {
             const db = await openDB(this.dbname, this.version)
             if (query === 'all') {
-                return await db.getAll(storeName);
+                const res = await db.getAll(storeName)
+                return Array.isArray(res) ? res : [res];
             }
             return await db.get(storeName, query);
         }
@@ -153,8 +154,11 @@ export class LocalDB {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 const db = await openDB(this.dbname, this.version)
 
-                if (query === 'all')
-                    return await db.getAllFromIndex(storeName, indexName);
+                if (query === 'all'){
+                    const res = await db.getAllFromIndex(storeName, indexName)
+                    return Array.isArray(res) ? res : [res];
+                }
+
                 return await db.getFromIndex(storeName, indexName, query);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)

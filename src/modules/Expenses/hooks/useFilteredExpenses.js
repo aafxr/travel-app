@@ -36,6 +36,7 @@ export default function useFilteredExpenses(expenses, limits, filter, user_id){
             return []
         }
     }, [limits, filter, expenses])
+
     return {
         filteredExpenses,
         sectionList,

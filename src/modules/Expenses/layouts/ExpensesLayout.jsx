@@ -22,7 +22,7 @@ export default function ExpensesLayout() {
 
 
     return (
-        <div className='expenses-wrapper'>
+        <div className='expenses-wrapper wrapper'>
             <Container>
                 <PageHeader arrowBack title={title} to='/'/>
             </Container>

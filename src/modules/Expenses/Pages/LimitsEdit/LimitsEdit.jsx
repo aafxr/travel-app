@@ -8,14 +8,12 @@ import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
 
 import useExpenses from "../../hooks/useExpenses";
-import useSections from "../../hooks/useSections";
 
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
-import useLimits from "../../hooks/useLimits";
-import distinctValues from "../../../../utils/distinctValues";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+import {defaultFilterValue} from "../../static/vars";
 
 /**
  * страница редактиррования лимитов
@@ -36,7 +34,7 @@ export default function LimitsEdit({
     const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, 'plan')
 
     const [limitObj, setLimitObj] = useState(null)
-    const [personal, setPersonal] = useState(false)
+    const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
 
     const [section_id, setSectionId] = useState(null)
     const [limitValue, setLimitValue] = useState('')
@@ -97,14 +95,14 @@ export default function LimitsEdit({
 
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
-    function handler() {
+    function handler(_) {
         if (+limitValue < minLimit) {
             setMessage(`Лимит должен быть больше ${minLimit}`)
             return
         }
 
         if (user_id) {
-            if (limitObj) {
+            if (limitObj ) {
                 controller.write({
                     storeName: constants.store.LIMIT,
                     action: 'edit',
@@ -176,8 +174,8 @@ export default function LimitsEdit({
 
                     </Container>
                 </div>
-                <div className='footer-btn-container'>
-                    <Button className='footer' onClick={handler}>Добавить</Button>
+                <div className='footer-btn-container footer' >
+                    <Button onMouseUp={() => handler()}>Добавить</Button>
                 </div>
             </div>
         </>

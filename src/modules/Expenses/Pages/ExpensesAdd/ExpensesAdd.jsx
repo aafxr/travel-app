@@ -14,6 +14,7 @@ import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
 import updateLimit from "../../utils/updateLimit";
+import {defaultFilterValue} from "../../static/vars";
 
 
 /**
@@ -39,7 +40,7 @@ export default function ExpensesAdd({
     const [expSum, setExpSum] = useState('')
 
     const [section_id, setSectionId] = useState(null)
-    const [personal, setPersonal] = useState(false)
+    const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
 
 
     const isPlan = expensesType === 'plan'
@@ -138,8 +139,8 @@ export default function ExpensesAdd({
                 </div>
             </div>
 
-            <div className='footer-btn-container'>
-                <Button className='footer' onClick={handler}
+            <div className='footer-btn-container footer'>
+                <Button onClick={handler}
                         disabled={!section_id || !expName || !expSum}>Добавить</Button>
             </div>
         </div>

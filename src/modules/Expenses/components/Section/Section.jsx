@@ -42,6 +42,7 @@ export default function Section({
 
     let balance = limit - totalExpenses
 
+
     return (
         <div className='expenses-list'>
             <div className='expenses-pt-20 expenses-pb-20'>
@@ -99,9 +100,11 @@ function SectionItem(expense) {
     const {datetime, value, title, entity_type} = expense
 
     let time = new Date(datetime)
+    let minutes = time.getMinutes().toString()
+    minutes = minutes.length < 2 ? 0 + minutes : minutes
     Number.isNaN(time)
         ? time = '--/--'
-        : time = time.getUTCDate() + ' ' + month[time.getMonth()]
+        : time = time.getUTCDate() + ' ' + month[time.getMonth()]  + ' ' + time.getHours() + ':' + minutes
 
 
     return (

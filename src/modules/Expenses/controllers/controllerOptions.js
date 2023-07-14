@@ -8,6 +8,7 @@ import constants from "../db/constants";
 import createId from "../../../utils/createId";
 import accumulate from "../../../utils/accumulate";
 import isString from "../../../utils/validation/isString";
+import toArray from "../../../utils/toArray";
 
 
 /**
@@ -42,7 +43,7 @@ const totalDefault = {
 }
 
 
-export function onUpdate(primary_entity_id, user_id){
+export function onUpdate(primary_entity_id, user_id) {
     /**
      *
      * @param {import('../../../controllers/ActionController').ActionController} controller
@@ -91,8 +92,58 @@ export function onUpdate(primary_entity_id, user_id){
             total.total_planed = accumulate(expenses_plan, item => item.value)
         }
 
-        const limitsObj = {}
-        expenses_plan.forEach(e => limitsObj[e.section_id] ? limitsObj[e.section_id] += e.value : limitsObj[e.section_id] = e.value)
+        const limitsObj = {
+            personal: {},
+            common: {}
+        }
+
+        //подсчет запланированных персональных расходов
+        expenses_plan
+            .filter(e => e.personal === 1 && e.user_id === user_id)
+            .forEach(e => limitsObj.personal[e.section_id] ? limitsObj.personal[e.section_id] += e.value : limitsObj.personal[e.section_id] = e.value)
+
+        //подсчет запланированных общих расходов
+        expenses_plan
+            .filter(e => e.personal === 0)
+            .forEach(e => limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value : limitsObj.common[e.section_id] = e.value)
+
+        const limitsModel = controller.getStoreModel(constants.store.LIMIT)
+        const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, 'all'))
+
+        const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
+        const commonLimits = allTravelLimits.filter(l =>l.personal === 0).map(l => l.section_id)
+
+        const personalExistingSections = Object.keys(limitsObj.personal)
+        const commonExistingSections = Object.keys(limitsObj.common)
+
+        for (const s of personalExistingSections) {
+            if(!personalLimits.includes(s)){
+                await limitsModel.edit({
+                    id: createId(user_id),
+                    section_id: s,
+                    value: 0,
+                    primary_entity_id,
+                    primary_entity_type: 'travel',
+                    personal: 1,
+                    user_id
+                })
+            }
+        }
+
+        for (const s of commonExistingSections) {
+            if(!commonLimits.includes(s)){
+                await limitsModel.edit({
+                    id: createId(user_id),
+                    section_id: s,
+                    value: 0,
+                    primary_entity_id,
+                    primary_entity_type: 'travel',
+                    personal: 0,
+                    user_id
+                })
+            }
+        }
+
 
         let limitsExpenses = await controller.read({
             storeName: constants.store.LIMIT,
@@ -100,9 +151,15 @@ export function onUpdate(primary_entity_id, user_id){
             query: 'all'
         })
 
+
+
         const limits = []
         for (let limit of limitsExpenses) {
             const section_id = limit.section_id
+
+            const isPersonal = limit.user_id === user_id && limit.personal === 1
+
+            const maxLimitPlan = isPersonal ? limitsObj.personal[section_id] : limitsObj.common[section_id]
 
             const section = await controller.read({
                 storeName: constants.store.SECTION,
@@ -110,23 +167,19 @@ export function onUpdate(primary_entity_id, user_id){
                 id: section_id
             })
 
-            if (limit && limitsObj[section_id] && limit.value < limitsObj[section_id]){
+            if (limitsObj[section_id] && limit.value < maxLimitPlan) {
                 await controller.write({
                     storeName: constants.store.LIMIT,
                     action: 'edit',
-                    index: constants.indexes.SECTION_ID,
+                    id: limit.id,
                     user_id,
-                    data: {...limit, value: limitsObj[section_id]}
+                    data: {...limit, value: maxLimitPlan}
                 })
 
-                limit = await controller.read({
-                    storeName: constants.store.LIMIT,
-                    index: constants.indexes.SECTION_ID,
-                    query: section_id
-                })
+                limit.value = maxLimitPlan
             }
 
-            limit && limits.push(
+            !isPersonal && limits.push(
                 {
                     section_id,
                     title: section.title,

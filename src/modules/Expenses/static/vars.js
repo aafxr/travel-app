@@ -7,4 +7,4 @@ export const local = {
 }
 
 export const EXPENSES_FILTER = 'EXPENSES_FILTER'
-export const defaultFilterValue = localStorage.getItem(EXPENSES_FILTER) || 'all'
+export const defaultFilterValue = () => localStorage.getItem(EXPENSES_FILTER) || 'all'
