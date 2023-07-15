@@ -2,19 +2,39 @@
     position: relative;
 }
 
+.swiper-controls{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.swiper-button{
+    width: calc(var(--x) * 2);
+    background-color: var(--color-primary-light);
+    cursor: pointer
+}
+
+.swiper-button.danger{
+    background-color: var(--color-danger);
+}
+.swiper-button.success{
+    background-color: var(--color-success);
+}
+
 .swiper-button img{
-    position: relative;
     fill: var(--color-primary);
     stroke: var(--color-primary);
     color: var(--color-primary);
     width: var(--x);
     height: var(--x);
-    z-index: 1;
 }
 
 .swipe-item{
     position: relative;
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary);
     width: 100%;
+    transition: transform .3s;
     z-index: 2;
 }

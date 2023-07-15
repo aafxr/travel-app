@@ -20,8 +20,11 @@
     color: var(--color-danger);
 }
 
+.section-items{
+    margin-top: 10px;
+}
+
 .section-item{
-    margin: 11px 0 0;
     font-size: 0.875rem;
     font-weight: 600;
 }

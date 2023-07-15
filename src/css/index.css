@@ -11,6 +11,7 @@ html, body {
     font-size: 16px;
     line-height: 140%;
     height: 100vh;
+    overflow-x: hidden;
 }
 
 *, *::after, *::before {

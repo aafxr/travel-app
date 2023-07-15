@@ -2,8 +2,10 @@ import React from "react";
 import clsx from "clsx";
 import Line from "../Line/Line";
 
+import {Link, useNavigate, useParams} from "react-router-dom";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
+
 import './Section.css'
-import {Link, useParams} from "react-router-dom";
 
 
 /**
@@ -17,7 +19,7 @@ import {Link, useParams} from "react-router-dom";
  * @return {JSX.Element}
  * @constructor
  */
-export default function Section({
+ function Section({
                                     section,
                                     sectionLimit,
                                     expenses = [],
@@ -45,7 +47,7 @@ export default function Section({
 
     return (
         <div className='expenses-list'>
-            <div className='expenses-pt-20 expenses-pb-20'>
+            <div >
                 <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
@@ -74,10 +76,14 @@ export default function Section({
                 }
                 {
                     !!expenses.length && (
-                        expenses
-                            .map(
-                                item => <SectionItem key={item.id} {...item}/>
-                            )
+                        <div className='section-items column gap-0.5'>
+                            {
+                                expenses
+                                    .map(
+                                        item => <SectionItem key={item.id} {...item} isPlan={line}/>
+                                    )
+                            }
+                        </div>
 
                     )
                 }
@@ -97,27 +103,43 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * @constructor
  */
 function SectionItem(expense) {
-    const {datetime, value, title, entity_type} = expense
+    const {datetime, value, title, entity_type, id,primary_entity_id, isPlan} = expense
+    const navigate = useNavigate();
 
     let time = new Date(datetime)
     let minutes = time.getMinutes().toString()
     minutes = minutes.length < 2 ? 0 + minutes : minutes
     Number.isNaN(time)
         ? time = '--/--'
-        : time = time.getUTCDate() + ' ' + month[time.getMonth()]  + ' ' + time.getHours() + ':' + minutes
+        : time = time.getUTCDate() + ' ' + month[time.getMonth()] + ' ' + time.getHours() + ':' + minutes
+
+    const editRoute = isPlan
+        ? `/travel/${primary_entity_id}/expenses/plan/edit/${id}/`
+        : `/travel/${primary_entity_id}/expenses/edit/${id}/`
+
+    const removeRoute = isPlan
+        ? `/travel/${primary_entity_id}/expenses/plan/remove/${id}/`
+        : `/travel/${primary_entity_id}/expenses/remove/${id}/`
 
 
     return (
-        <div className={clsx('section-item', 'flex-between')}>
-            <div>
+        <Swipe
+            onClick={() => navigate(editRoute)}
+            onRemove={() => navigate(removeRoute)}
+        >
+            <div className={clsx('section-item', 'flex-between')}>
                 <div>
-                    {title || ''} <span>{entity_type || ''}</span>
+                    <div>
+                        {title || ''} <span>{entity_type || ''}</span>
+                    </div>
+                    <span>{time}</span>
                 </div>
-                <span>{time}</span>
-            </div>
 
-            <div>{value} ₽</div>
-        </div>
+                <div>{value} ₽</div>
+            </div>
+        </Swipe>
     )
 
 }
+
+export default React.memo(Section)

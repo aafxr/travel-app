@@ -49,7 +49,7 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     return (
         < >
-            <Container className='expenses-pt-20 content'>
+            <Container className='expenses-pt-20 content column gap-1'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {
                     sectionList && !!sectionList.length

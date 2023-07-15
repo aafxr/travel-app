@@ -51,7 +51,7 @@ export default function ExpensesPlan({
 
                 </div>
                 {/*<DatePicker multy onSelect={console.log}/>*/}
-                <Swipe ></Swipe>
+                <Swipe ><div style={{height: '100px'}}></div></Swipe>
 
             </Container>
         </>

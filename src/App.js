@@ -1,4 +1,4 @@
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route, Navigate, useParams, useLocation} from "react-router-dom";
 
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
@@ -16,7 +16,9 @@ import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 
 
 function App() {
+    const {pathname} = useLocation()
 
+    console.log(pathname)
     return (
         <ErrorBoundary>
             <Routes>
@@ -29,15 +31,16 @@ function App() {
                             <Route index element={<Expenses user_id={'12'}/>}/>
                             <Route path={'plan/'} element={<ExpensesPlan user_id={'12'}/>}/>
                         </Route>
-                        <Route path={'limit/:sectionId/'} element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
-                        <Route path={'add'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
+                        <Route path={'limit/:sectionId/'}
+                               element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
+                        <Route path={'add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
                         <Route path={'plan/add/'}
                                element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}
                                                      expensesType={'plan'}/>}/>
-                        <Route path={'section/add/'} element={<ExpensesSectionAdd user_id={'12'}/>}/>
+                        {/*<Route path={'section/add/'} element={<ExpensesSectionAdd user_id={'12'}/>}/>*/}
                     </Route>
-                    <Route path={'*'} element={<Navigate to={'/'} replace={true}/>}/>
                 </Route>
+                <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
         </ErrorBoundary>
     );
