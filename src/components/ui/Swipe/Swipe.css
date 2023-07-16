@@ -29,6 +29,7 @@
     color: var(--color-primary);
     width: var(--x);
     height: var(--x);
+    object-fit: contain;
 }
 
 .swipe-item{

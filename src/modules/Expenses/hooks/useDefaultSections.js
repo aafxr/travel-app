@@ -1,14 +1,13 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import constants from "../db/constants";
 
 export default function useDefaultSection(controller, primary_entity_id, user_id){
+    const [errorMessage, setErrorMessage] = useState('')
+
     // добавлени дефолтных секций
     useEffect(() => {
         async function addDefaultSections() {
             if (!controller) return
-
-            console.log('=========================addDefaultSections=========================')
-
             const response = await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getSections/')
             // console.log('server actions ',  await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getActions/'))
             const {result: sectionList} = await response.json()
@@ -33,6 +32,8 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
             }
         }
 
-        addDefaultSections()
+        addDefaultSections().catch(() => setErrorMessage("Отсутствует подключение к интернету"))
     }, [controller])
+
+    return errorMessage
 }

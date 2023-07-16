@@ -14,7 +14,6 @@ import constants from "../../db/constants";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
-import useToBottomHeight from "../../hooks/useToBottomHeight";
 
 
 /**

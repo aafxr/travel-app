@@ -1,10 +1,9 @@
-import {Routes, Route, Navigate, useParams, useLocation} from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
 
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
-import ExpensesSectionAdd from "./modules/Expenses/Pages/ExpensesSectionAdd/ExpensesSectionAdd";
 
 import Main from "./modules/Main";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd";
@@ -13,12 +12,12 @@ import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import ExpensesContextProvider from "./modules/Expenses/contextProvider/ExpensesContextProvider";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
+import ExpensesEdit from "./modules/Expenses/Pages/ExpensesEdit/ExpensesEdit";
+import ExpensesRemove from "./modules/Expenses/Pages/ExpensesRemove/ExpensesRemove";
 
 
 function App() {
-    const {pathname} = useLocation()
 
-    console.log(pathname)
     return (
         <ErrorBoundary>
             <Routes>
@@ -26,18 +25,18 @@ function App() {
                     <Route path={'/'} element={<Main/>}/>
                     <Route path={'/travel/:travelCode/add/'} element={<TravelAdd/>}/>
                     <Route path={'/travel/:travelCode/add/:pointNumber'} element={<TravelWaypoint/>}/>
-                    <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesContextProvider user_id={'12'}/>}>
+                    <Route  element={<ExpensesContextProvider user_id={'12'}/>}>
                         <Route element={<ExpensesLayout user_id={'12'}/>}>
-                            <Route index element={<Expenses user_id={'12'}/>}/>
-                            <Route path={'plan/'} element={<ExpensesPlan user_id={'12'}/>}/>
+                            <Route path={'/travel/:travelCode/expenses/'} element={<Expenses user_id={'12'}/>}/>
+                            <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan user_id={'12'}/>}/>
                         </Route>
-                        <Route path={'limit/:sectionId/'}
-                               element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
-                        <Route path={'add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
-                        <Route path={'plan/add/'}
-                               element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}
-                                                     expensesType={'plan'}/>}/>
-                        {/*<Route path={'section/add/'} element={<ExpensesSectionAdd user_id={'12'}/>}/>*/}
+                        <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
+                        <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'} expensesType={'plan'}/>}/>
+                        <Route path={'/travel/:travelCode/expenses/edit/:expensesCode/'} element={<ExpensesEdit user_id={'12'} primary_entity_type={'travel'} />}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/edit/:expensesCode/'} element={<ExpensesEdit user_id={'12'} primary_entity_type={'travel'} expensesType={'plan'}/>}/>
+                        <Route path={'/travel/:travelCode/expenses/remove/:expensesCode/'} element={<ExpensesRemove user_id={'12'} primary_entity_type={'travel'} />}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/remove/:expensesCode/'} element={<ExpensesRemove user_id={'12'} primary_entity_type={'travel'} expensesType={'plan'}/>}/>
                     </Route>
                 </Route>
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>

@@ -1,6 +1,5 @@
 import constants from "../modules/Expenses/db/constants";
 
-console.log('=========worker=========')
 
 const actionsBlackList = [constants.store.SECTION, constants.store.LIMIT]
 onmessage = function (e) {

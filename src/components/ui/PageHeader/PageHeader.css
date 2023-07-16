@@ -1,7 +1,8 @@
 .page-header-container {
     position: relative;
     display: flex;
-    flex-direction: row
+    flex-direction: row;
+    padding: 0.5rem 0;
 }
 
 .page-header {

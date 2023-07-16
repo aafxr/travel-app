@@ -39,8 +39,7 @@ const defaultState = {
     sections: []
 }
 
-// const defaultSections = ['Прочие расходы', 'Перелет', 'Отель', 'Музей', 'Архитектура', 'Экскурсия', 'Природа']
-// let writing = false
+
 /**
  * обертка для молуля Expenses
  *
@@ -58,6 +57,8 @@ export default function ExpensesContextProvider({user_id}) {
     const [limits, updateLimits] = useLimits(state.controller, primary_entity_id)
 
     const {worker} = useContext(WorkerContext)
+
+    useDefaultSection(state.controller, primary_entity_id, user_id)
 
 
     useEffect(() => {
@@ -115,7 +116,6 @@ export default function ExpensesContextProvider({user_id}) {
     }, [state.controller])
 
 
-    useDefaultSection(state.controller, primary_entity_id, user_id)
 
     useEffect(() => {
         if (sections && sections.length) {

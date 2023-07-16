@@ -1,9 +1,10 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import {useSwipeable} from "react-swipeable";
+import clsx from "clsx";
+
+import useOutside from "../../../hooks/useOutside";
 
 import './Swipe.css'
-import useOutside from "../../../hooks/useOutside";
-import clsx from "clsx";
 
 const defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
 
@@ -20,8 +21,7 @@ export default function Swipe({children, className, onClick, onRemove, onConfirm
             }
         },
         onTap(e) {
-            e.event.stopPropagation()
-            onClick && onClick()
+            handleClick(e.event)
             setMarginLeft(0)
         },
         onSwipedLeft(e) {
@@ -47,9 +47,20 @@ export default function Swipe({children, className, onClick, onRemove, onConfirm
         onRemove && onRemove()
     }
 
+    function handleClick(e) {
+        e.stopPropagation()
+        onClick && onClick()
+    }
+
+
+    const styles = clsx(
+        'swiper-container',
+        className
+    )
+
 
     return (
-        <div ref={ref} className={clsx('swiper-container', className)}>
+        <div ref={ref} className={styles}>
             <div className='swiper-controls flex-between'>
                 <div className='swiper-button center' onClick={handleConfirm}>
                     <img src={process.env.PUBLIC_URL + '/icons/check.svg'} alt="check"/>
@@ -61,7 +72,7 @@ export default function Swipe({children, className, onClick, onRemove, onConfirm
             <div
                 className='swipe-item'
                 {...handlers}
-                onClick={e => e.stopPropagation()}
+                onClick={handleClick}
                 style={{
                     transform: `translateX(${marginLeft}px)`,
                 }}

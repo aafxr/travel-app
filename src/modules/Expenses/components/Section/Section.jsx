@@ -80,7 +80,7 @@ import './Section.css'
                             {
                                 expenses
                                     .map(
-                                        item => <SectionItem key={item.id} {...item} isPlan={line}/>
+                                        item => <SectionItem key={item.id} {...item} isPlan={!line}/>
                                     )
                             }
                         </div>

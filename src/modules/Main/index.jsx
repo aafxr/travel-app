@@ -1,9 +1,8 @@
 import React, {useEffect} from 'react'
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
-import DatePicker from "../../components/DatePicker/DatePicker";
 import Swipe from "../../components/ui/Swipe/Swipe";
 
 export default function ExpensesPlan({
@@ -11,7 +10,6 @@ export default function ExpensesPlan({
                                          primary_entity_type,
                                          primary_entity_id
                                      }) {
-    const params = useParams()
     const navigate = useNavigate()
 
 
@@ -19,7 +17,7 @@ export default function ExpensesPlan({
         if (process.env.NODE_ENV === 'production') {
             navigate('/travel/123/expenses/')
         }
-    })
+    },[])
 
     if (process.env.NODE_ENV === 'production') {
         return null
@@ -40,7 +38,7 @@ export default function ExpensesPlan({
                     <h2 style={{fontWeight: '900'}}>
                         <b>Опции</b>
                     </h2>
-                    <Link to={`/travel/123/expenses/`} style={{color: 'green'}}>Список лимитов</Link>
+                    <Link to={`/travel/123/expenses/`} style={{color: 'green'}}>Список расходов</Link>
                     <Link to={`/travel/123/expenses/limit/123`} style={{color: 'green'}}>Редактировать лимит</Link>
                     <Link to={`/travel/123/expenses/plan/`} style={{color: 'green'}}>План расходов</Link>
                     <Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>
