@@ -33,7 +33,7 @@ export default function ExpensesAdd({
                                         expensesType = 'actual' // 'actual' | 'plan'
                                     }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')

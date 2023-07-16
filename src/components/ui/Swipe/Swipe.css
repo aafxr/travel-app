@@ -32,6 +32,11 @@
     object-fit: contain;
 }
 
+.swiper-container.small .swiper-button img{
+    width: calc(var(--x) / 2);
+    height: calc(var(--x) / 2);
+}
+
 .swipe-item{
     position: relative;
     background-color: var(--color-secondary);

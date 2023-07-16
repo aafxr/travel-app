@@ -126,6 +126,7 @@ function SectionItem(expense) {
         <Swipe
             onClick={() => navigate(editRoute)}
             onRemove={() => navigate(removeRoute)}
+            small
         >
             <div className={clsx('section-item', 'flex-between')}>
                 <div>

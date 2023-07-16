@@ -19,7 +19,7 @@ onmessage = function (e) {
             .then(console.log)
             .catch(console.error)
     }
-
+    console.log('=======worker=======')
     data.synced = 1
     postMessage(data)
 }

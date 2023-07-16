@@ -55,7 +55,7 @@ export function onUpdate(primary_entity_id, user_id) {
 
         if (action) {
             const actionTime = Date.parse(action.datetime) || Number.MIN_SAFE_INTEGER
-            total.updated_at > actionTime && (isActionAfterUpdate = false)
+            total.updated_at < actionTime && (isActionAfterUpdate = false)
         } else {
             isActionAfterUpdate = false
         }

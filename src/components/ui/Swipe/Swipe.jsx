@@ -9,7 +9,7 @@ import './Swipe.css'
 const defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
 
 
-export default function Swipe({children, className, onClick, onRemove, onConfirm, marginMax, ...props}) {
+export default function Swipe({children, className, onClick, onRemove, onConfirm, marginMax, small, ...props}) {
     const [marginLeft, setMarginLeft] = useState(0)
     const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
     const handlers = useSwipeable({
@@ -55,6 +55,9 @@ export default function Swipe({children, className, onClick, onRemove, onConfirm
 
     const styles = clsx(
         'swiper-container',
+        {
+            'small': small,
+        },
         className
     )
 
