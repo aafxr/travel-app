@@ -22,10 +22,10 @@ export default (initialIsVisible, cb) => {
     }, []);
 
     useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
+        document.addEventListener('mousedown', handleClickOutside, true);
 
         return () => {
-            document.removeEventListener('click', handleClickOutside, true);
+            document.removeEventListener('mousedown', handleClickOutside, true);
         };
     });
 

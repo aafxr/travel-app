@@ -283,8 +283,7 @@ export default class ActionController {
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant]) {
                         const res = await this.model[entity][actionVariant](parsedData)
-                        // if(entity === 'limit')
-                        //     debugger
+
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
                     }

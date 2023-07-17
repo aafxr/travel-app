@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
@@ -7,13 +7,14 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 
-import '../../css/Expenses.css'
 import useExpenses from "../../hooks/useExpenses";
 import constants from "../../db/constants";
 
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
+
+import '../../css/Expenses.css'
 
 
 /**
@@ -47,7 +48,7 @@ export default function Expenses({user_id, primary_entity_type}) {
 
 
     return (
-        < >
+        <>
             <Container className='expenses-pt-20 content column gap-1'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/add/`}>Записать расходы</AddButton>
                 {

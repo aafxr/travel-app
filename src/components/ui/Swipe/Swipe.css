@@ -10,6 +10,16 @@
     z-index: 1;
 }
 
+.swiper-button:first-child{
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+}
+
+.swiper-button:last-child{
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
 .swiper-button{
     width: calc(var(--x) * 2);
     background-color: var(--color-primary-light);
@@ -18,18 +28,25 @@
 
 .swiper-button.danger{
     background-color: var(--color-danger);
+    color: var(--color-secondary);
+    stroke: var(--color-secondary);
 }
 .swiper-button.success{
     background-color: var(--color-success);
 }
 
-.swiper-button img{
-    fill: var(--color-primary);
-    stroke: var(--color-primary);
-    color: var(--color-primary);
+.swiper-button div{
     width: var(--x);
     height: var(--x);
-    object-fit: contain;
+    background-color: var(--color-secondary);
+}
+
+.checkmark-svg{
+    mask: url(../../../../public/icons/check.svg) no-repeat center;
+}
+
+.trash-svg{
+    mask: url(../../../../public/icons/trash.svg) no-repeat center;
 }
 
 .swiper-container.small .swiper-button img{

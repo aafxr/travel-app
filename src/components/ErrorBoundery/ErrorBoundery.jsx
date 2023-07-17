@@ -24,8 +24,8 @@ export default class ErrorBoundary extends React.Component {
 
         // Можно также сохранить информацию об ошибке в соответствующую службу журнала ошибок
         console.log('boundary catch')
-        console.log(error)
-        console.log(errorInfo)
+        // console.log(error)
+        // console.log(errorInfo)
         // logErrorToMyService(error, errorInfo);
 
     }

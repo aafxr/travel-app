@@ -4,6 +4,7 @@ import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
 import Swipe from "../../components/ui/Swipe/Swipe";
+import Alerts from "../../components/ui/Alerts/Alerts";
 
 export default function ExpensesPlan({
                                          user_id,
@@ -50,6 +51,8 @@ export default function ExpensesPlan({
                 </div>
                 {/*<DatePicker multy onSelect={console.log}/>*/}
                 <Swipe ><div style={{height: '100px'}}></div></Swipe>
+
+                <Alerts  count={3}/>
 
             </Container>
         </>

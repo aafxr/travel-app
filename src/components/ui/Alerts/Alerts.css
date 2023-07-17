@@ -1,0 +1,76 @@
+.alert-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.alert-item {
+    position: relative;
+    padding: 0.5rem;
+
+    border-radius: 5px;
+    background-color: var(--color-primary-light);
+    animation: var(--alert-animation-duration) alert-animation;
+}
+
+.alert-item.success,
+.alert-line,
+.close-svg {
+    background-color: var(--color-success);
+}
+
+.alert-item.warning,
+.alert-line,
+.close-svg {
+    background-color: var(--color-warning);
+}
+
+.alert-item.danger,
+.alert-line,
+.close-svg {
+    background-color: var(--color-danger);
+}
+
+.close-svg {
+    opacity: .7;
+    mask: url("../../../../public/icons/close.svg") no-repeat center;
+    cursor: pointer
+}
+
+.alert-line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    animation: var(--alert-animation-duration) alert-line-animation;
+}
+
+
+@keyframes alert-animation {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    10%, 90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes alert-line-animation {
+    0%, 10% {
+        width: 100%;
+    }
+    90%, 100% {
+        width: 0;
+    }
+}

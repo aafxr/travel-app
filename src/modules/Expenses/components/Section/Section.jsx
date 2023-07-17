@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import clsx from "clsx";
 import Line from "../Line/Line";
 
@@ -6,6 +6,8 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 import './Section.css'
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
+import constants from "../../db/constants";
 
 
 /**
@@ -19,14 +21,14 @@ import './Section.css'
  * @return {JSX.Element}
  * @constructor
  */
- function Section({
-                                    section,
-                                    sectionLimit,
-                                    expenses = [],
-                                    user_id,
-                                    personal = false,
-                                    line = false,
-                                }) {
+function Section({
+                     section,
+                     sectionLimit,
+                     expenses = [],
+                     user_id,
+                     personal = false,
+                     line = false,
+                 }) {
     const {travelCode: primary_entity_id} = useParams()
 
     const title = section ? section.title : ''
@@ -47,7 +49,7 @@ import './Section.css'
 
     return (
         <div className='expenses-list'>
-            <div >
+            <div>
                 <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
@@ -103,7 +105,7 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * @constructor
  */
 function SectionItem(expense) {
-    const {datetime, value, title, entity_type, id,primary_entity_id, isPlan} = expense
+    const {datetime, value, title, entity_type, id, primary_entity_id, isPlan} = expense
     const navigate = useNavigate();
 
     let time = new Date(datetime)
@@ -122,10 +124,18 @@ function SectionItem(expense) {
         : `/travel/${primary_entity_id}/expenses/remove/${id}/`
 
 
+
+    function handleRemoveExpense() {
+        const isConfirm = window.confirm(`Удалить расход: ${title}`)
+        isConfirm && navigate(removeRoute)
+    }
+
+
     return (
         <Swipe
             onClick={() => navigate(editRoute)}
-            onRemove={() => navigate(removeRoute)}
+            onRemove={handleRemoveExpense}
+            rightButton
             small
         >
             <div className={clsx('section-item', 'flex-between')}>

@@ -45,6 +45,8 @@ export default function ExpensesAdd({
 
     const isPlan = expensesType === 'plan'
 
+    const expNameTitle = isPlan ? 'На что планируете потратить:' : 'На что потратили:'
+
 
     useEffect(() => {
         if (defaultSection) {
@@ -115,7 +117,7 @@ export default function ExpensesAdd({
                             </div>
                             <div className='column gap-1'>
                                 <div className='column gap-0.25'>
-                                    <div className='title'>На что планируете потратить:</div>
+                                    <div className='title'>{expNameTitle}</div>
                                     <Input
                                         type={'text'}
                                         value={expName}
