@@ -6,7 +6,6 @@ import React, {useContext, useEffect, useState} from "react";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {useNavigate, useParams} from "react-router-dom";
 import constants from "../../db/constants";
-import updateLimit from "../../utils/updateLimit";
 import clsx from "clsx";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
@@ -39,11 +38,12 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
 
 
     function handler() {
+        console.log(expense , user_id , primary_entity_type)
         if (expense && user_id && primary_entity_type
             && (
                 expense.title !== expName
                 || expense.value !== +expSum
-                || (expense.personal === 1) !== personal
+                || expense.personal  !== (personal ? 1: 0)
                 || expense.section_id !== section_id
             )
 
@@ -63,7 +63,7 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
                 }
             })
 
-            isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
+            // isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {

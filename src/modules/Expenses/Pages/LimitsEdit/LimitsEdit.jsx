@@ -14,6 +14,7 @@ import constants from "../../db/constants";
 import '../../css/Expenses.css'
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**
  * страница редактиррования лимитов
@@ -27,7 +28,7 @@ export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
     const {travelCode: primary_entity_id, sectionId} = useParams()
-    const {pathname} = useLocation()
+
     const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
@@ -41,10 +42,7 @@ export default function LimitsEdit({
 
     const [message, setMessage] = useState('')
 
-    const url = pathname.split('/')
-    url.pop()
-    url.pop()
-    const backUrl = url.join('/') + '/'
+
 
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
@@ -98,6 +96,10 @@ export default function LimitsEdit({
     function handler(_) {
         if (+limitValue < minLimit) {
             setMessage(`Лимит должен быть больше ${minLimit}`)
+            pushAlertMessage({
+                type: 'warning',
+                message: `Лимит должен быть больше ${minLimit}`
+            })
             return
         }
 
@@ -129,7 +131,7 @@ export default function LimitsEdit({
         } else {
             console.warn('need add user_id')
         }
-        navigate(backUrl || '/')
+        navigate(-1)
     }
 
 
@@ -138,9 +140,9 @@ export default function LimitsEdit({
             <div className='wrapper'>
                 <div className='content'>
                     <Container>
-                        <PageHeader arrowBack title={'Редактировать лимит'} to={backUrl}/>
+                        <PageHeader arrowBack title={'Редактировать лимит'} />
                         <div className='column gap-1'>
-                            <div className='row gap-0.75'>
+                            <div className='row flex-wrap gap-0.75'>
                                 {
                                     sections && !!sections.length && sections.map(
                                         ({id, title}) => (

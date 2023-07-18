@@ -46,7 +46,7 @@ export default function Swipe({
             if (Math.abs(marginLeft) < marginThreshold) {
                 setMarginLeft(0)
             } else if (marginLeft > marginThreshold) {
-                leftButton && onConfirm()
+                leftButton && onConfirm && onConfirm()
                 setMarginLeft(0)
             }
         },

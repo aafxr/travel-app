@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React from "react";
 import clsx from "clsx";
 import Line from "../Line/Line";
 
@@ -6,14 +6,11 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 import './Section.css'
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import constants from "../../db/constants";
-
 
 /**
  *
  * @param {import('../../models/SectionType').SectionType} section - имя секции расходов
- * @param {import('../../models/LimitType').LimitType | null} sectionLimit - лимит расходов поьзователя
+ * @param {function} sectionLimit - лимит расходов поьзователя
  * @param {Array.<import('../../models/ExpenseType').ExpenseType>} expenses
  * @param {string} user_id
  * @param {boolean} personal
@@ -32,11 +29,9 @@ function Section({
     const {travelCode: primary_entity_id} = useParams()
 
     const title = section ? section.title : ''
-    const limit = sectionLimit ? sectionLimit.value : 0
+    let limit = sectionLimit(section)
+    limit =  limit ? limit.value : 0
 
-    const sectionTotalExpenses = expenses.reduce((acc, item) => acc + item.value, 0) || 0
-
-    // const expensesList = personal ? personalExpenses : expenses
 
     const totalExpenses = expenses
         .reduce((acc, item) => acc + item.value, 0)
@@ -50,10 +45,10 @@ function Section({
     return (
         <div className='expenses-list'>
             <div>
-                <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}`}>
+                <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}/`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
-                        <div className='section-title'>{sectionTotalExpenses} ₽</div>
+                        <div className='section-title'>{totalExpenses} ₽</div>
                     </div>
                 </Link>
                 {
@@ -122,7 +117,6 @@ function SectionItem(expense) {
     const removeRoute = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/remove/${id}/`
         : `/travel/${primary_entity_id}/expenses/remove/${id}/`
-
 
 
     function handleRemoveExpense() {

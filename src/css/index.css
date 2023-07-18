@@ -72,6 +72,11 @@ a{
     height: 100%;
 }
 
+.column-revers{
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .column{
     display: flex;
     flex-direction: column;

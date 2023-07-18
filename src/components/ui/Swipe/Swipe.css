@@ -1,13 +1,16 @@
 .swiper-container{
     position: relative;
+    overflow: hidden;
 }
 
 .swiper-controls{
     position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    height: calc(100% - 2px);
     z-index: 1;
+    overflow: hidden;
 }
 
 .swiper-button:first-child{

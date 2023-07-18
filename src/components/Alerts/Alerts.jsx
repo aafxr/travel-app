@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 
 import './Alerts.css'
-import Container from "../../../modules/Expenses/components/Container/Container";
+import Container from "../../modules/Expenses/components/Container/Container";
 import clsx from "clsx";
 
 const ALERT_EVENT_NAME = 'alert-message'
@@ -32,7 +32,7 @@ export function pushAlertMessage(payload) {
 window.newAlert = pushAlertMessage
 
 
-export default function Alerts({count = 1}) {
+export default function Alerts({count = 1, maxAlertsCount = 10}) {
     const activeAlerts = useRef(0)
     const [isEmpty, setIsEmpty] = useState(true)
 
@@ -47,7 +47,7 @@ export default function Alerts({count = 1}) {
             activeAlerts.current += 1
             appendAlert(type, message)
         } else {
-            alertsQueue.current.push(detail)
+            alertsQueue.current.length < maxAlertsCount && alertsQueue.current.push(detail)
             isEmpty && setIsEmpty(false)
         }
     }, [])
@@ -103,7 +103,7 @@ export default function Alerts({count = 1}) {
     return (
         <div
             ref={ref}
-            className='alert-container column gap-1'
+            className='alert-container column-revers gap-1'
             onAnimationEnd={handleRemoveAlert}
             onClick={handleRemoveAlert}
         />

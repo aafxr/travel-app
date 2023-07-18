@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
@@ -44,8 +44,27 @@ export default function Expenses({user_id, primary_entity_type}) {
         return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
     }, [])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits,  filter, user_id)
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 
+
+    const sectionLimit = function (section) {
+        if (filter !== 'all') {
+            return limitsList.find(l => l.section_id === section.id) || null
+        } else {
+            const value = limitsList
+                .filter(l => (
+                    l.section_id === section.id
+                    && (l.personal === 0 || l.user_id === user_id)
+                ))
+                .map(l => l.value)
+                .reduce((acc, l) => acc + l, 0)
+
+            return {
+                id: Date.now(),
+                value
+            }
+        }
+    }
 
     return (
         <>
@@ -60,7 +79,7 @@ export default function Expenses({user_id, primary_entity_type}) {
                                     key={section.id}
                                     section={section}
                                     expenses={filteredExpenses.filter(e => e.section_id === section.id)}
-                                    sectionLimit={filter !== 'all' ? (limitsList.find(l => l.section_id === section.id) || null): null}
+                                    sectionLimit={sectionLimit}
                                     user_id={user_id}
                                     line
                                 />
@@ -68,7 +87,7 @@ export default function Expenses({user_id, primary_entity_type}) {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter} />
+            <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter}/>
         </>
     )
 }

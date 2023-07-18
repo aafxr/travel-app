@@ -14,6 +14,8 @@ import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 import ExpensesEdit from "./modules/Expenses/Pages/ExpensesEdit/ExpensesEdit";
 import ExpensesRemove from "./modules/Expenses/Pages/ExpensesRemove/ExpensesRemove";
+import Alerts from "./components/Alerts/Alerts";
+import React from "react";
 
 
 function App() {
@@ -43,6 +45,7 @@ function App() {
                 </Route>
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
+            <Alerts  count={3}/>
         </ErrorBoundary>
     );
 }

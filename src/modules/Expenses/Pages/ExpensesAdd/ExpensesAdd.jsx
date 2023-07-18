@@ -13,7 +13,6 @@ import Button from "../../components/Button/Button";
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
-import updateLimit from "../../utils/updateLimit";
 import {defaultFilterValue} from "../../static/vars";
 
 
@@ -78,7 +77,7 @@ export default function ExpensesAdd({
                 }
             })
 
-            isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
+            // isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {

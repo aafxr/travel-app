@@ -2,7 +2,6 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    bottom: 20px;
     left: 20px;
 
     pointer-events: none;
@@ -66,7 +65,7 @@
     width: calc(var(--x) / 4);
     height: calc(var(--x) / 4);
     opacity: .7;
-    mask: url("../../../../public/icons/close.svg") no-repeat center;
+    mask: url("../../../public/icons/close.svg") no-repeat center;
     cursor: pointer;
     pointer-events: all;
 }
@@ -83,15 +82,16 @@
 @keyframes alert-animation {
     0% {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(-10px);
     }
     10%, 90% {
         opacity: 1;
         transform: translateY(0);
     }
     100% {
+
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(10px);
     }
 }
 

@@ -87,6 +87,7 @@ export function onUpdate(primary_entity_id, user_id) {
             query: 'all'
         })
 
+
         if (!isActionAfterUpdate) {
             total.total_actual = accumulate(expenses_actual, item => item.value)
             total.total_planed = accumulate(expenses_plan, item => item.value)
@@ -107,17 +108,18 @@ export function onUpdate(primary_entity_id, user_id) {
             .filter(e => e.personal === 0)
             .forEach(e => limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value : limitsObj.common[e.section_id] = e.value)
 
+
         const limitsModel = controller.getStoreModel(constants.store.LIMIT)
         const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, 'all'))
 
         const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
-        const commonLimits = allTravelLimits.filter(l =>l.personal === 0).map(l => l.section_id)
+        const commonLimits = allTravelLimits.filter(l => l.personal === 0).map(l => l.section_id)
 
         const personalExistingSections = Object.keys(limitsObj.personal)
         const commonExistingSections = Object.keys(limitsObj.common)
 
         for (const s of personalExistingSections) {
-            if(!personalLimits.includes(s)){
+            if (!personalLimits.includes(s)) {
                 await limitsModel.edit({
                     id: createId(user_id),
                     section_id: s,
@@ -131,7 +133,7 @@ export function onUpdate(primary_entity_id, user_id) {
         }
 
         for (const s of commonExistingSections) {
-            if(!commonLimits.includes(s)){
+            if (!commonLimits.includes(s)) {
                 await limitsModel.edit({
                     id: createId(user_id),
                     section_id: s,
@@ -151,8 +153,6 @@ export function onUpdate(primary_entity_id, user_id) {
             query: 'all'
         })
 
-
-
         const limits = []
         for (let limit of limitsExpenses) {
             const section_id = limit.section_id
@@ -163,7 +163,6 @@ export function onUpdate(primary_entity_id, user_id) {
 
             const section = await controller.read({
                 storeName: constants.store.SECTION,
-                action: 'get',
                 id: section_id
             })
 

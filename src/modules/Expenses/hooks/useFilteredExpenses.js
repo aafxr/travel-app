@@ -12,8 +12,8 @@ export default function useFilteredExpenses(expenses, limits, filter, user_id){
             return expenses.filter(e => e.user_id === user_id && e.personal === 1)
         } else if (filter === 'common') {
             return expenses.filter(e => e.personal === 0)
-        } else {
-            return expenses
+        } else if (filter === 'all') {
+            return expenses.filter(e => e.personal === 0 || e.user_id === user_id)
         }
     }, [expenses, filter])
 
@@ -33,7 +33,7 @@ export default function useFilteredExpenses(expenses, limits, filter, user_id){
                 .filter(l => l.personal === 0 )
                 .filter(l => sectionList.includes(l.section_id))
         } else {
-            return []
+            return limits
         }
     }, [limits, filter, expenses])
 
