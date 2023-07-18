@@ -1,12 +1,46 @@
 .select{
     --select-height:20px;
+    --select-padding:10px;
 
+    position: relative;
+    padding-right: 4px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: max-height .3s;
 }
 
-.select-item{
+.select.border{
+    border: 2px solid var(--color-grey);
+}
 
+.select-header{
+    align-items: stretch;
+}
+
+.select-item,
+.select-value,
+.select-chevron{
+    padding:  var(--select-padding);
+    height: calc(var(--select-padding) * 2 + var(--select-height));
+    background-color: var(--color-secondary);
 }
 
 .select-value{
+    flex: 1;
+}
 
+.select-item{
+    max-width: calc(100% - 4px - var(--select-height));
+}
+
+.select-chevron{
+    flex: none;
+    background:  url("../../../../public/icons/chevron_down.svg") center no-repeat;
+    background-size: contain;
+    transform: rotate(0);
+    transition: transform .3s;
+}
+
+.select.active .select-chevron{
+    transform: rotate(-180deg);
 }
