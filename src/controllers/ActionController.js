@@ -279,7 +279,7 @@ export default class ActionController {
         try {
             if (this.isActionValid(action)) {
                 const {action: actionVariant, synced, entity, data} = action;
-                const parsedData = JSON.parse(data);
+                const parsedData =data;
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant]) {
                         const res = await this.model[entity][actionVariant](parsedData)

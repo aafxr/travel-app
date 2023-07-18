@@ -22,7 +22,7 @@ function createAction(payload) {
         return {
             id: createId(user_id),
             action: action,
-            data: JSON.stringify(data),
+            data: data,
             entity: storeName,
             datetime: new Date().toISOString(),
             synced: 0,

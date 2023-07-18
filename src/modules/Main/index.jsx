@@ -5,6 +5,7 @@ import Container from "../Expenses/components/Container/Container";
 
 import Swipe from "../../components/ui/Swipe/Swipe";
 import Alerts from "../../components/Alerts/Alerts";
+import Select from "../../components/ui/Select/Select";
 
 export default function ExpensesPlan({
                                          user_id,
@@ -49,9 +50,8 @@ export default function ExpensesPlan({
                     <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
 
                 </div>
-                {/*<DatePicker multy onSelect={console.log}/>*/}
-                <Swipe ><div style={{height: '100px'}}></div></Swipe>
 
+                <Select options={['AFN','RUB','KZT','USD', 'EUR']} defaultValue={'RUB'} />
 
             </Container>
         </>

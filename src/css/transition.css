@@ -1,4 +1,4 @@
 :root{
-    --tr-all: all .3s aese;
+    --tr-all: all 2s aese;
     --alert-animation-duration: 6s;
 }
