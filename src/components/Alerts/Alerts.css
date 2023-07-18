@@ -14,32 +14,61 @@
     padding: 0.5rem;
 
     border-radius: 5px;
-    background-color: var(--color-primary-light);
+    background-color: transparent;
     animation: var(--alert-animation-duration) alert-animation;
+    overflow: hidden;
 }
 
-.alert-item.success,
-.alert-line,
-.close-svg {
+.alert-item::before,
+.alert-item::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-secondary);
+    z-index: -1;
+}
+
+.alert-item::after{
+    opacity: .3;
+    background-color: var(--color-primary);
+}
+
+.alert-item.info .alert-line,
+.alert-item.info .close-svg {
+    background-color: var(--color-primary);
+}
+
+.alert-item.success::after,
+.alert-item.success .alert-line,
+.alert-item.success .close-svg {
     background-color: var(--color-success);
 }
 
-.alert-item.warning,
-.alert-line,
-.close-svg {
+.alert-item.warning::after,
+.alert-item.warning .alert-line,
+.alert-item.warning .close-svg {
     background-color: var(--color-warning);
 }
 
-.alert-item.danger,
-.alert-line,
-.close-svg {
+.alert-item.danger::after,
+.alert-item.danger .alert-line,
+.alert-item.danger .close-svg {
     background-color: var(--color-danger);
 }
 
 .close-svg {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    width: calc(var(--x) / 4);
+    height: calc(var(--x) / 4);
     opacity: .7;
     mask: url("../../../../public/icons/close.svg") no-repeat center;
-    cursor: pointer
+    cursor: pointer;
+    pointer-events: all;
 }
 
 .alert-line {
