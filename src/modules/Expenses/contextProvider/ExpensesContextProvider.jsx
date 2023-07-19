@@ -1,15 +1,17 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
-import ActionController from "../../../controllers/ActionController";
-import schema from "../db/schema";
-import options, {onUpdate} from '../controllers/controllerOptions'
-
-import constants from "../db/constants";
 import useSections from "../hooks/useSections";
 import useLimits from "../hooks/useLimits";
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 import useDefaultSection from "../hooks/useDefaultSections";
+
+import ActionController from "../../../controllers/ActionController";
+import options, {onUpdate} from '../controllers/controllerOptions'
+import schema from "../db/schema";
+
+import constants from "../db/constants";
+
 import '../css/Expenses.css'
 
 
@@ -72,30 +74,35 @@ export default function ExpensesContextProvider({user_id}) {
         controller.onUpdate = onUpdate(primary_entity_id, user_id)
 
         setState({...state, controller})
-
-
     }, [])
-
 
 
     useEffect(() => {
         if (worker && state.controller) {
             const controller = state.controller
 
-            function workerMessageHandler(e) {
-                state.controller && state.controller.actionHandler(e.data).catch(console.error)
+            async function workerMessageHandler(e) {
+                console.log(e.data)
+                const actions = Array.isArray(e.data) ? e.data : [e.data]
+                if (state.controller) {
+                    for (const action of actions){
+                        console.log(action)
+                        action.synced = action.synced ? 1 : 0
+                        await state.controller.actionHandler(e.data)
+                    }
+                    console.log('workerMessageHandler   done')
+                }
             }
 
             worker && worker.addEventListener('message', workerMessageHandler)
 
-
-            controller.onSendData = (action) => worker.postMessage(
-                JSON.stringify(action)
-            )
-
-        return () => worker && worker.removeEventListener('message', workerMessageHandler)
+            controller.onSendData = (action) => {
+                worker.postMessage(
+                    JSON.stringify([action])
+                )
+            }
+            return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
-
     }, [state.controller, worker])
 
 
@@ -115,7 +122,6 @@ export default function ExpensesContextProvider({user_id}) {
     }, [state.controller])
 
 
-
     useEffect(() => {
         if (sections && sections.length) {
             const section = sections.find(s => s.title === 'Прочие расходы')
@@ -123,6 +129,7 @@ export default function ExpensesContextProvider({user_id}) {
             setState({...state, sections, defaultSection})
         }
     }, [sections])
+
 
     useEffect(() => {
         if (limits && limits.length) {
@@ -132,7 +139,7 @@ export default function ExpensesContextProvider({user_id}) {
 
 
     if (!dbReady) {
-        return <div>Loading...</div>
+        return null//<div>Loading...</div>
     }
     return (
         <ExpensesContext.Provider value={state}>

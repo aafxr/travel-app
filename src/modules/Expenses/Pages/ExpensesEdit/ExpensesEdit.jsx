@@ -1,23 +1,31 @@
+import React, {useContext, useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import clsx from "clsx";
+
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
 import Button from "../../components/Button/Button";
-import useExpense from "../../hooks/useExpense";
-import React, {useContext, useEffect, useState} from "react";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import {useNavigate, useParams} from "react-router-dom";
-import constants from "../../db/constants";
-import clsx from "clsx";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
-import {defaultFilterValue} from "../../static/vars";
+import Select from "../../../../components/ui/Select/Select";
+
+import useExpense from "../../hooks/useExpense";
+
+import {currency, defaultFilterValue} from "../../static/vars";
+import constants from "../../db/constants";
+
+
+
 
 export default function ExpensesEdit({user_id, primary_entity_type, expensesType = 'plan'}) {
     const {controller, sections} = useContext(ExpensesContext)
-    const {travelCode: primary_entity_id, expenseCode} = useParams()
+    const {expenseCode} = useParams()
     const navigate = useNavigate()
 
     const expense = useExpense(controller, expenseCode, expensesType)
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
+    const [expCurr, setExpCurr] = useState(currency[0])
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
 
@@ -26,25 +34,26 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
     const expNameTitle = isPlan ? 'На что планируете потратить:' : 'На что потратили:'
 
 
-
     useEffect(() => {
         if (expense) {
+            const cur = currency.find(cr => cr.code === expense.currency)
             setExpName(expense.title)
             setExpSum(expense.value.toString())
             setSectionId(expense.section_id)
             setPersonal(expense.personal === 1)
+            expense.currency && setExpCurr(cur)
         }
     }, [expense])
 
 
     function handler() {
-        console.log(expense , user_id , primary_entity_type)
-        if (expense && user_id && primary_entity_type
+        if (expense && user_id
             && (
                 expense.title !== expName
                 || expense.value !== +expSum
                 || expense.personal  !== (personal ? 1: 0)
                 || expense.section_id !== section_id
+                || expense.currency !== expCurr.code
             )
 
         ) {
@@ -59,11 +68,10 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
                     personal: personal ? 1 : 0,
                     title: expName,
                     value: +expSum,
+                    currency: expCurr.code,
                     section_id
                 }
             })
-
-            // isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {
@@ -71,6 +79,11 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
         }
     }
 
+
+    function handleCurrencyChange(c){
+        const value = currency.find(cr => cr.symbol === c)
+        value && setExpCurr(value)
+    }
 
     return (
         <div className='wrapper'>
@@ -86,7 +99,7 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
                                         key={section.id}
                                         rounded
                                         color={section_id === section.id ? 'orange' : 'grey'}
-                                        onClick={() => setSectionId(section)}
+                                        onClick={() => setSectionId(section.id)}
                                         pointer={section_id !== section.id}
                                     >
                                         {section.title}
@@ -106,11 +119,21 @@ export default function ExpensesEdit({user_id, primary_entity_type, expensesType
                         </div>
                         <div className='column gap-0.25'>
                             <div className='title'>Сумма расходов:</div>
-                            <Input
-                                type={'text'}
-                                value={expSum}
-                                onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
-                            />
+                            <div className='relative column'>
+                                <Input
+                                    className='expenses-currency-value'
+                                    type={'text'}
+                                    value={expSum}
+                                    onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
+                                />
+                                <Select
+                                    className='expenses-currency'
+                                    value={expCurr ? expCurr.symbol : ''}
+                                    defaultValue={currency[0].symbol}
+                                    options={currency.map(c => c.symbol)}
+                                    onChange={handleCurrencyChange}
+                                />
+                            </div>
                         </div>
                     </div>
 

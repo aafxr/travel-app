@@ -9,7 +9,6 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
         async function addDefaultSections() {
             if (!controller) return
             const response = await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getSections/')
-            // console.log('server actions ',  await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getActions/'))
             const {result: sectionList} = await response.json()
 
             if (sectionList.length) {

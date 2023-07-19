@@ -9,11 +9,12 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
 import Button from "../../components/Button/Button";
+import Select from "../../../../components/ui/Select/Select";
 
+import {defaultFilterValue, currency} from "../../static/vars";
 import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
-import {defaultFilterValue} from "../../static/vars";
 
 
 /**
@@ -37,6 +38,7 @@ export default function ExpensesAdd({
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
+    const [expCurr, setExpCurr] = useState(currency[0])
 
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -69,6 +71,7 @@ export default function ExpensesAdd({
                     entity_id: '',
                     title: expName,
                     value: Number(expSum),
+                    currency: expCurr.code,
                     personal: personal ? 1 : 0,
                     section_id,
                     datetime: new Date().toISOString(),
@@ -77,7 +80,6 @@ export default function ExpensesAdd({
                 }
             })
 
-            // isPlan && updateLimit(controller, primary_entity_type, primary_entity_id, section_id, user_id, personal)
 
             navigate(-1)
         } else {
@@ -87,6 +89,11 @@ export default function ExpensesAdd({
 
     function onChipSelect(section) {
         setSectionId(section.id)
+    }
+
+    function handleCurrencyChange(c){
+        const value = currency.find(cr => cr.symbol === c)
+        value && setExpCurr(value)
     }
 
     return (
@@ -105,7 +112,7 @@ export default function ExpensesAdd({
                                                 key={section.id}
                                                 rounded
                                                 color={section_id === section.id ? 'orange' : 'grey'}
-                                                onClick={() => onChipSelect(section)}
+                                                onClick={() => onChipSelect(section.id)}
                                                 pointer={section_id !== section.id}
                                             >
                                                 {section.title}
@@ -117,19 +124,31 @@ export default function ExpensesAdd({
                             <div className='column gap-1'>
                                 <div className='column gap-0.25'>
                                     <div className='title'>{expNameTitle}</div>
-                                    <Input
-                                        type={'text'}
-                                        value={expName}
-                                        onChange={e => setExpName(e.target.value)}
-                                    />
+                                    <div className='expenses-input'>
+                                        <Input
+                                            type={'text'}
+                                            value={expName}
+                                            onChange={e => setExpName(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
                                 <div className='column gap-0.25'>
                                     <div className='title'>Сумма расходов:</div>
-                                    <Input
-                                        type={'text'}
-                                        value={expSum}
-                                        onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
-                                    />
+                                    <div className='relative column'>
+                                        <Input
+                                            className='expenses-currency-value'
+                                            type={'text'}
+                                            value={expSum}
+                                            onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
+                                        />
+                                        <Select
+                                            className='expenses-currency'
+                                            value={expCurr ? expCurr.symbol : ''}
+                                            defaultValue={currency[0].symbol}
+                                            options={currency.map(c => c.symbol)}
+                                            onChange={handleCurrencyChange}
+                                        />
+                                    </div>
                                 </div>
                             </div>
 

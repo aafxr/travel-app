@@ -48,9 +48,6 @@ flex: 1;
     overflow-y: auto;
 }
 
-/*.select-item{*/
-/*    position: relative;*/
-/*}*/
 
 .select-item span{
     flex: none;

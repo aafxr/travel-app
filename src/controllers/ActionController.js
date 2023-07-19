@@ -237,7 +237,7 @@ export default class ActionController {
      */
     _errorMessage(err) {
         console.error(err);
-        ErrorReport.sendError(err).catch(console.error)
+        ErrorReport.sendError(new Error('[ActionController] ' + err)).catch(console.error)
     }
 
 
@@ -250,22 +250,22 @@ export default class ActionController {
 
         if (!isString(action.uid)) {
             isValid = false;
-            console.error('[Action validation] uid ', action.uid);
+            console.warn('[Action validation] uid ', action.uid);
         }
 
         if (!actions.includes(action.action)) {
             isValid = false;
-            console.error('[Action validation] action ', action.action);
+            console.warn('[Action validation] action ', action.action);
         }
 
         if (!this.modelNames.includes(action.entity)) {
             isValid = false;
-            console.error('[Action validation] entity ', action.entity);
+            console.warn('[Action validation] entity ', action.entity);
         }
 
         if (Number.isNaN(Date.parse(action.datetime))) {
             isValid = false;
-            console.error('[Action validation] entity ', action.datetime);
+            console.warn('[Action validation] entity ', action.datetime);
         }
 
         return isValid;
@@ -279,10 +279,9 @@ export default class ActionController {
         try {
             if (this.isActionValid(action)) {
                 const {action: actionVariant, synced, entity, data} = action;
-                const parsedData =data;
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant]) {
-                        const res = await this.model[entity][actionVariant](parsedData)
+                        const res = await this.model[entity][actionVariant](data)
 
                         this.update(this, action)
                         this._subscriptionsCall(action, res)

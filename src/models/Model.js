@@ -1,6 +1,7 @@
 import {LocalDB} from "../db";
 import isString from "../utils/validation/isString";
 import isError from "../utils/isError";
+import {ca} from "date-fns/locale";
 
 /**
  * @typedef {function} validateCallback
@@ -80,10 +81,9 @@ export default class Model {
             typeof validation === 'function' && (this.validateCB = validation)
             typeof validation === 'object' && (this.validateObj = validation)
         } else {
-            throw new Error('[Model] Some of args in constructor not correct')
+            throw new Error('[Model.constructor] Some of args in constructor not correct')
         }
     }
-
 
 
     /**
@@ -93,11 +93,11 @@ export default class Model {
      * @returns {boolean}
      * @private
      */
-    _validate(data, methodType){
-        if (this.validateCB){
+    _validate(data, methodType) {
+        if (this.validateCB) {
             return !!this.validateCB(data)
-        } else if(this.validateObj && this.validateObj[methodType]){
-            return !! this.validateObj[methodType](data)
+        } else if (this.validateObj && this.validateObj[methodType]) {
+            return !!this.validateObj[methodType](data)
         }
         return true;
     }
@@ -107,8 +107,8 @@ export default class Model {
      * @param {*} data
      * @private
      */
-    _notCorrectDataMessage(data){
-        console.error(`[Model] Received data is not correct: `, data)
+    _notCorrectDataMessage(data) {
+        console.warn(`[Model] Received data is not correct: `, data)
     }
 
 
@@ -117,7 +117,7 @@ export default class Model {
      * @returns {*}
      * @private
      */
-    _printErrorMessage(err){
+    _printErrorMessage(err) {
         console.error('[Model] DB error ', err)
         return err
     }
@@ -128,13 +128,17 @@ export default class Model {
      * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
-    async add(payload){
-        if(this._validate(payload, 'add')){
-            const res = await this.db.addElement(this.storeName, payload)
-            return isError(res) ? this._printErrorMessage(res) && undefined : res
+    async add(payload) {
+        try {
+            if (this._validate(payload, 'add')) {
+                const res = await this.db.addElement(this.storeName, payload)
+                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            }
+            this._notCorrectDataMessage(payload)
+            return undefined
+        } catch (err) {
+            throw new Error(`[Model.add/${this.storeName}] ` + err)
         }
-        this._notCorrectDataMessage(payload)
-        return undefined
     }
 
 
@@ -143,13 +147,17 @@ export default class Model {
      * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
-    async edit(payload){
-        if (this._validate(payload, 'edit')){
-            const res = await this.db.editElement(this.storeName, payload)
-            return isError(res) ? this._printErrorMessage(res) && undefined : res
+    async edit(payload) {
+        try {
+            if (this._validate(payload, 'edit')) {
+                const res = await this.db.editElement(this.storeName, payload)
+                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            }
+            this._notCorrectDataMessage(payload)
+            return undefined
+        } catch (err) {
+            throw new Error(`[Model.edit/${this.storeName}] ` + err)
         }
-        this._notCorrectDataMessage(payload)
-        return undefined
     }
 
 
@@ -158,13 +166,17 @@ export default class Model {
      * @param {PayloadType} query
      * @returns {Promise<undefined|*>}
      */
-    async get(query){
-        if (this._validate(query, 'get')){
-            const res = await this.db.getElement(this.storeName, query)
-            return isError(res) ? this._printErrorMessage(res) && undefined : res
+    async get(query) {
+        try {
+            if (this._validate(query, 'get')) {
+                const res = await this.db.getElement(this.storeName, query)
+                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            }
+            this._notCorrectDataMessage(query)
+            return undefined
+        } catch (err) {
+            throw new Error(`[Model.get/${this.storeName}] ` + err)
         }
-        this._notCorrectDataMessage(query)
-        return undefined
     }
 
 
@@ -174,13 +186,17 @@ export default class Model {
      * @param {PayloadType} query
      * @returns {Promise<undefined|*>}
      */
-    async getFromIndex(indexName, query){
-        if (this._validate(query, 'getFromIndex')){
-            const res = await this.db.getFromIndex(this.storeName,indexName, query)
-            return isError(res) ? this._printErrorMessage(res) && undefined : res
+    async getFromIndex(indexName, query) {
+        try {
+            if (this._validate(query, 'getFromIndex')) {
+                const res = await this.db.getFromIndex(this.storeName, indexName, query)
+                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            }
+            this._notCorrectDataMessage(query)
+            return undefined
+        } catch (err) {
+            throw new Error(`[Model.getFromIndex/${this.storeName}] ` + err)
         }
-        this._notCorrectDataMessage(query)
-        return undefined
     }
 
 
@@ -189,12 +205,16 @@ export default class Model {
      * @param {PayloadType} query
      * @returns {Promise<*|undefined|void>}
      */
-    async remove(query){
-        if (this._validate(query, 'remove')){
-            const res = await this.db.removeElement(this.storeName, query)
-            return isError(res) ? this._printErrorMessage(res) && undefined : res
+    async remove(query) {
+        try {
+            if (this._validate(query, 'remove')) {
+                const res = await this.db.removeElement(this.storeName, query)
+                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            }
+            this._notCorrectDataMessage(query)
+            return undefined
+        } catch (err) {
+            throw new Error(`[Model.remove/${this.storeName}] ` + err)
         }
-        this._notCorrectDataMessage(query)
-        return undefined
     }
 }

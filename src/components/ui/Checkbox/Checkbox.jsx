@@ -13,14 +13,14 @@ import clsx from "clsx";
  * @returns {JSX.Element}
  * @constructor
  */
- function Checkbox({
-                                     children,
-                                     className = '',
-                                     checked = false,
-                                     left,
-                                     onChange,
-                                     ...props
-                                 }, ref ) {
+function Checkbox({
+                      children,
+                      className = '',
+                      checked = false,
+                      left,
+                      onChange,
+                      ...props
+                  }, ref) {
     const [checkedState, setChecked] = useState(checked)
 
     const styles = clsx({
@@ -45,10 +45,12 @@ import clsx from "clsx";
             </label>
             <div role='img' className={'checkbox-dot'}>
                 {!checkedState && <img className={clsx('img-abs', 'circle')}
-                                       src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>}
+                                       src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>
+                }
                 {checkedState &&
                     <img className={clsx('img-abs', 'mark')} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}
-                         alt="dot"/>}
+                         alt="dot"/>
+                }
             </div>
         </div>
     )
