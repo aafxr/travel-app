@@ -1,48 +1,68 @@
-import React, {useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import clsx from "clsx";
 
-import './Select.css'
 import useOutside from "../../../hooks/useOutside";
 
+import './Select.css'
 
-function Select({defaultValue = '', options, className, size = 4, border, ...props}, ref) {
-    const [selected, setSelected] = useState(defaultValue)
+
+function Select({
+                    defaultValue = '',
+                    value,
+                    options,
+                    className,
+                    size = 4,
+                    border,
+                    onChange,
+                    ...props},
+                ref) {
+    const selected = value || defaultValue
     const [active, setActive] = useState(false)
     const {ref: selectMainRef} = useOutside(active, setActive.bind(this, () => false))
+    const headerRef = useRef()
 
-    function onSelectHandler(value) {
+    useEffect(() => {
+        if (selectMainRef.current && headerRef.current) {
+            selectMainRef.current.style.maxHeight = headerRef.current
+                ? headerRef.current.getBoundingClientRect().height * (active ? size + 1 : 1) + 'px'
+                : '0'
+        }
+    }, [selectMainRef.current, headerRef.current, active])
+
+    function onSelectHandler(value, e) {
+        e.stopPropagation()
         if (active) {
-            setSelected(value)
+            // setSelected(value)
             setActive(!active)
+            onChange && onChange(value)
         }
     }
 
-    const selectStyle = {
-        maxHeight: `calc( (var(--select-padding) * 2 + var(--select-height)) * ${active ? size + 1 : 1})`,
-    }
-
     const selectClasses = clsx(
-        'select column',
+        className,
+        'select column hide-scroll',
         {
             'active': active,
             'border': border
         },
-        className
     )
 
 
     return (
-        <div ref={selectMainRef} className={selectClasses}
-             style={selectStyle}
-        >
-            <div className='select-header flex-between' onClick={() => setActive(!active)}>
-                <div className='select-value center'>
+        <div ref={selectMainRef} className={selectClasses}>
+            <div ref={headerRef} className='select-header flex-between' onClick={() => setActive(!active)}>
+                <div className='select-value'>
                     {selected || ''}
                 </div>
                 <div className='select-chevron'/>
             </div>
-            <select ref={ref} value={selected} onChange={() => {
-            }} {...props} hidden>
+            <select
+                ref={ref}
+                value={selected}
+                onChange={(e) => e.stopPropagation()}
+                hidden
+                {...props}
+            >
                 {
                     options && options.length && options.map(o => (
                         <option key={o} value={o}>{o}</option>
@@ -50,15 +70,25 @@ function Select({defaultValue = '', options, className, size = 4, border, ...pro
                 }
             </select>
 
-            {
-                options && options.length && options.map(o => (
-                    <div key={o} className={clsx('select-item center', {'selected': selected === o})}
-                         onClick={() => onSelectHandler(o)}
-                    >
-                        {o}
-                    </div>
-                ))
-            }
+            <div
+                className='select-options column hide-scroll'
+                style={{
+                    height: 100 * size / (size + 1) + '%'
+                }}
+            >
+                {
+                    options && options.length && options.map(o => (
+                        <div
+                            key={o}
+                            className={clsx('select-item', {'selected': selected === o})}
+                            onClick={(e) => onSelectHandler(o, e)}
+                        >
+                            {o}
+                            <span/>
+                        </div>
+                    ))
+                }
+            </div>
         </div>
     )
 }

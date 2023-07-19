@@ -1,12 +1,17 @@
 .select{
-    --select-height:20px;
+    --select-icon-width:20px;
     --select-padding:10px;
 
     position: relative;
     padding-right: 4px;
     border-radius: var(--border-radius);
     overflow: hidden;
-    transition: max-height .3s;
+    transition: max-height .3s, box-shadow .3s;
+    z-index: 5;
+}
+
+.select.active{
+    box-shadow: var(--box-shadoe);
 }
 
 .select.border{
@@ -14,14 +19,19 @@
 }
 
 .select-header{
+    flex: none;
     align-items: stretch;
+    cursor: pointer;
 }
 
 .select-item,
 .select-value,
 .select-chevron{
-    padding:  var(--select-padding);
-    height: calc(var(--select-padding) * 2 + var(--select-height));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding:  var(--select-padding) 0 var(--select-padding) var(--select-padding);
     background-color: var(--color-secondary);
 }
 
@@ -30,11 +40,26 @@
 }
 
 .select-item{
-    max-width: calc(100% - 4px - var(--select-height));
+    cursor: pointer;
+}
+
+.select-options{
+flex: 1;
+    overflow-y: auto;
+}
+
+/*.select-item{*/
+/*    position: relative;*/
+/*}*/
+
+.select-item span{
+    flex: none;
+    width: var(--select-icon-width);
 }
 
 .select-chevron{
     flex: none;
+    width: var(--select-icon-width);
     background:  url("../../../../public/icons/chevron_down.svg") center no-repeat;
     background-size: contain;
     transform: rotate(0);
