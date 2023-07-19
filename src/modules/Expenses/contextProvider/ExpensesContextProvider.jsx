@@ -86,9 +86,9 @@ export default function ExpensesContextProvider({user_id}) {
                 const actions = Array.isArray(e.data) ? e.data : [e.data]
                 if (state.controller) {
                     for (const action of actions){
-                        console.log(action)
                         action.synced = action.synced ? 1 : 0
-                        await state.controller.actionHandler(e.data)
+                        console.log(action)
+                        await state.controller.actionHandler(action)
                     }
                     console.log('workerMessageHandler   done')
                 }

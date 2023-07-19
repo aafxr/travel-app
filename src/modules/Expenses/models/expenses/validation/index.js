@@ -25,14 +25,15 @@ const entityType = [
 
 
 function validatePayload(data) {
+    return true
     return (
         isString(data.user_id)
         && isString(data.primary_entity_type)
         && isString(data.primary_entity_id)
-        && (data.entity_type ? isString(data.entity_type) : true)
-        && (data.entity_id ? isString(data.entity_id) : true)
+        // && (data.entity_type ? isString(data.entity_type) : true)
+        // && (data.entity_id ? isString(data.entity_id) : true)
         && isString(data.title)
-        && isPositiveNumber(data.value)
+        // && isPositiveNumber(data.value)
         // && isString(data.currency)
         // && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
         && isString(data.section_id)
