@@ -25,22 +25,76 @@ const entityType = [
 
 
 function validatePayload(data) {
-    return true
-    return (
-        isString(data.user_id)
-        && isString(data.primary_entity_type)
-        && isString(data.primary_entity_id)
+    let valid = true
+
+    if(!isString(data.user_id)){
+        valid = false
+        console.warn('user_id')
+    }
+    if(!isString(data.primary_entity_type)){
+        valid = false
+        console.warn('primary_entity_type')
+    }
+    if(!isString(data.primary_entity_id)){
+        valid = false
+        console.warn('primary_entity_id')
+    }
+    if(!(data.entity_type ? isString(data.entity_type) : true)){
+        valid = false
+        console.warn('entity_type')
+    }
+    if(!(data.entity_id ? isString(data.entity_id) : true)){
+        valid = false
+        console.warn('entity_id')
+    }
+    if(!isPositiveNumber(data.value)){
+        valid = false
+        console.warn('value')
+    }
+
+    if(!isString(data.title)){
+        valid = false
+        console.warn('title ',data.title)
+    }
+    if(!(typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1))){
+        valid = false
+        console.warn('personal ', data.personal)
+    }
+    if(!isString(data.section_id)){
+        valid = false
+        console.warn('section_id')
+    }
+    if(Number.isNaN(Date.parse(data.datetime))){
+        valid = false
+        console.warn('datetime')
+    }
+    if(Number.isNaN(Date.parse(data.created_at))){
+        valid = false
+        console.warn('created_at')
+    }
+
+return valid
+
+
+
+
+
+
+    // return (
+        // isString(data.user_id)
+        // && isString(data.primary_entity_type)
+        // && isString(data.primary_entity_id)
         // && (data.entity_type ? isString(data.entity_type) : true)
         // && (data.entity_id ? isString(data.entity_id) : true)
-        && isString(data.title)
+        // && isString(data.title)
         // && isPositiveNumber(data.value)
         // && isString(data.currency)
         // && typeof data.personal === 'number' && (data.personal === 0 || data.personal === 1)
-        && isString(data.section_id)
-        && !Number.isNaN(Date.parse(data.datetime))
-        && !Number.isNaN(Date.parse(data.created_at))
+        // && isString(data.section_id)
+        // && !Number.isNaN(Date.parse(data.datetime))
+        // && !Number.isNaN(Date.parse(data.created_at))
 
-    )
+    // )
 }
 
 

@@ -40,7 +40,7 @@ const defaultState = {
     sections: []
 }
 
-
+let registrWorkerListener = false
 /**
  * обертка для молуля Expenses
  *
@@ -82,19 +82,26 @@ export default function ExpensesContextProvider({user_id}) {
             const controller = state.controller
 
             async function workerMessageHandler(e) {
-                console.log(e.data)
-                const actions = Array.isArray(e.data) ? e.data : [e.data]
-                if (state.controller) {
-                    for (const action of actions){
+                console.log("receive =>   ", e.data)
+                if (e.data && e.data.entity !== 'section' && e.data.entity !== 'limit' && state.controller) {
+                    let actions = Array.isArray(e.data) ? e.data : [e.data]
+                    actions = actions.filter(a => !!a)
+                    for (const action of actions) {
                         action.synced = action.synced ? 1 : 0
-                        console.log(action)
+                        action.data.value = +action.data.value
+                        action.data.personal = +action.data.personal
                         await state.controller.actionHandler(action)
                     }
-                    console.log('workerMessageHandler   done')
+                }else{
+                    await state.controller.actionHandler(e.data)
                 }
             }
 
-            worker && worker.addEventListener('message', workerMessageHandler)
+            if (worker && !registrWorkerListener) {
+                worker.addEventListener('message', workerMessageHandler)
+                registrWorkerListener = true
+
+            }
 
             controller.onSendData = (action) => {
                 worker.postMessage(
