@@ -30,7 +30,7 @@ function Section({
 
     const title = section ? section.title : ''
     let limit = sectionLimit(section)
-    limit =  limit ? limit.value : 0
+    limit = limit ? limit.value : 0
 
 
     const totalExpenses = expenses

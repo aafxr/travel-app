@@ -3,16 +3,18 @@ import {actionsBlackList} from "../modules/Expenses/static/vars";
 
 console.log('====worker=====')
 
-// setInterval(async () => {
-//     const response = await fetch (process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
-//     const expensesActions = await response.json()
-//
-//     console.log('worker receive ', expensesActions)
-//     if(expensesActions.ok && expensesActions.result){
-//         postMessage(expensesActions.result)
-//     }
-//
-// }, 10000)
+setTimeout(async () => {
+    const response = await fetch (process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
+    const expensesActions = await response.json()
+
+
+
+    console.log('worker receive ', expensesActions)
+    // if(expensesActions.ok && expensesActions.result){
+    //     postMessage(expensesActions.result)
+    // }
+
+}, 2000)
 
 
 

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 
@@ -16,6 +16,7 @@ import '../../css/Expenses.css'
 import useExpense from "../../hooks/useExpense";
 import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 
 /**
@@ -46,12 +47,14 @@ export default function ExpensesAdd({
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
 
-    const expense = useExpense(controller, expenseCode, expensesType)
+    const inputNameRef = useRef()
+    const inputSumRef = useRef()
 
+    const expense = useExpense(controller, expenseCode, expensesType)
 
     const isPlan = expensesType === 'plan'
 
-    const expNameTitle = isPlan ? 'На что планируете потратить:' : 'На что потратили:'
+    const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
 
 
@@ -75,7 +78,7 @@ export default function ExpensesAdd({
 
 
     function onChipSelect(section) {
-        setSectionId(section.id)
+        setSectionId(section)
     }
 
     function handleCurrencyChange(c) {
@@ -84,12 +87,21 @@ export default function ExpensesAdd({
     }
 
     function handleExpense(){
+        if (!expName ){
+            pushAlertMessage({type: 'warning', message: 'Укажите ' + expNameTitle.toLowerCase()})
+            inputNameRef.current?.focus()
+            return
+        }
+        if (!expSum){
+            pushAlertMessage({type: 'warning', message: 'Укажите сумму'})
+            inputSumRef.current?.focus()
+            return
+        }
         edit
             ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate, expense)
             : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate)
 
     }
-
 
     return (
         <div className='wrapper'>
@@ -121,6 +133,7 @@ export default function ExpensesAdd({
                                     <div className='title'>{expNameTitle}</div>
                                     <div className='expenses-input'>
                                         <Input
+                                            ref={inputNameRef}
                                             type={'text'}
                                             value={expName}
                                             onChange={e => setExpName(e.target.value)}
@@ -131,6 +144,7 @@ export default function ExpensesAdd({
                                     <div className='title'>Сумма расходов:</div>
                                     <div className='relative column'>
                                         <Input
+                                            ref={inputSumRef}
                                             className='expenses-currency-value'
                                             type={'text'}
                                             value={expSum}
@@ -155,8 +169,7 @@ export default function ExpensesAdd({
             </div>
 
             <div className='footer-btn-container footer'>
-                <Button onClick={handleExpense}
-                        disabled={!section_id || !expName || !expSum}>{buttonTitle}</Button>
+                <Button onClick={handleExpense} >{buttonTitle}</Button>
             </div>
         </div>
     )

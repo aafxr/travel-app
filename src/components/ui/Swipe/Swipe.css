@@ -24,6 +24,7 @@
 }
 
 .swiper-button{
+    position: relative;
     width: calc(var(--x) * 2);
     background-color: var(--color-primary-light);
     cursor: pointer

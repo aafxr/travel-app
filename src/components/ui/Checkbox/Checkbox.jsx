@@ -44,13 +44,8 @@ function Checkbox({
                 {children}
             </label>
             <div role='img' className={'checkbox-dot'}>
-                {!checkedState && <img className={clsx('img-abs', 'circle')}
-                                       src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>
-                }
-                {checkedState &&
-                    <img className={clsx('img-abs', 'mark')} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}
-                         alt="dot"/>
-                }
+                <img className={clsx('img-abs', 'circle')} src={process.env.PUBLIC_URL + '/icons/checkbox-circle.svg'} alt="dot"/>
+                <img className={clsx('img-abs', 'mark')} src={process.env.PUBLIC_URL + '/icons/checkbox-mark.svg'}  alt="dot"/>
             </div>
         </div>
     )

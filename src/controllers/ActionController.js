@@ -281,7 +281,7 @@ export default class ActionController {
                 const {action: actionVariant, synced, entity, data} = action;
                 if (synced) {
                     if (this.model[entity] && this.model[entity][actionVariant] && data) {
-                        const res = await this.model[entity][actionVariant](actionVariant==='remove' ?data.id : data)
+                        const res = await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
                     }
@@ -350,7 +350,7 @@ export default class ActionController {
                         .catch(err => {
                             throw err
                         })
-                } else  {
+                } else {
                     return this.model[storeName]['get'](id || query)
                         .catch(err => {
                             throw err
@@ -372,9 +372,27 @@ export default class ActionController {
      * @param storeName
      * @returns {*|null}
      */
-    getStoreModel(storeName){
-        if (this.modelNames.includes(storeName)){
-            return this.model[storeName]
+    getStoreModel(storeName) {
+        if (this.modelNames.includes(storeName)) {
+            // return this.model[storeName]
+
+            return new Proxy(this.model[storeName], {
+                get(target, prop, receiver) {
+                    if (target[prop]) {
+                        if (typeof target[prop] === 'function') {
+                            try {
+                                console.log('this   ===>   ', this)
+                                return target[prop].bind(target)
+                            } catch (err) {
+                                ErrorReport.sendError(err).catch(console.error)
+                                console.error(err)
+                            }
+                        } else {
+                            return target[prop]
+                        }
+                    }
+                }
+            })
         }
         return null
     }

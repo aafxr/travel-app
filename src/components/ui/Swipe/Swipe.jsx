@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, Children} from "react";
 import {useSwipeable} from "react-swipeable";
 import clsx from "clsx";
 
@@ -25,19 +25,20 @@ const defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue(
  * @constructor
  */
 export default function Swipe({
-                                  children,
-                                  className,
-                                  onClick,
-                                  onRemove,
-                                  onConfirm,
-                                  marginMax,
-                                  small,
-                                  leftButton,
-                                  rightButton,
-                                  multy = false
-                              }) {
+                   children,
+                   className,
+                   onClick,
+                   onRemove,
+                   onConfirm,
+                   marginMax,
+                   small,
+                   leftButton,
+                   rightButton,
+                   multy = false
+               }) {
     const [marginLeft, setMarginLeft] = useState(0)
     const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
+
 
     const max = (marginMax || defaultMargin)
     const marginThreshold = max * 8 / 10;
@@ -97,6 +98,7 @@ export default function Swipe({
     }
 
     function handleClick(e) {
+        e.stopPropagation()
         onClick && onClick()
     }
 
@@ -132,5 +134,4 @@ export default function Swipe({
             </div>
         </div>
     )
-
 }

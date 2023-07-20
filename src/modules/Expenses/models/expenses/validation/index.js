@@ -107,8 +107,5 @@ export default {
     edit: validatePayload,
     get: validateDBQuery,
     getFromIndex: validateDBQuery,
-    remove: (value) => {
-        debugger
-        return isString(value)
-    }
+    remove: isString
 }
