@@ -52,7 +52,6 @@ export default function Swipe({
             }
         },
         onSwiping(e) {
-            console.log(max - e.deltaX, e.deltaX)
             if (e.dir === 'Left') {
                 rightButton && setMarginLeft(-Math.min(e.absX, marginMax || defaultMargin))
                 marginLeft > 0 && max - e.absX > 0 && setMarginLeft(0)
