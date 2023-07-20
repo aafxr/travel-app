@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 
-import createId from "../../../../utils/createId";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
@@ -12,9 +11,11 @@ import Button from "../../components/Button/Button";
 import Select from "../../../../components/ui/Select/Select";
 
 import {defaultFilterValue, currency} from "../../static/vars";
-import constants from "../../db/constants";
 
 import '../../css/Expenses.css'
+import useExpense from "../../hooks/useExpense";
+import handleEditExpense from "./handleEditExpense";
+import handleAddExpense from "./handleAddExpense";
 
 
 /**
@@ -24,15 +25,17 @@ import '../../css/Expenses.css'
  * @param {string} user_id
  * @param {string} primary_entity_type
  * @param {'actual' | 'plan'} expensesType - default =  actual
+ * @param {boolean} edit - default =  false
  * @returns {JSX.Element}
  * @constructor
  */
 export default function ExpensesAdd({
                                         user_id,
                                         primary_entity_type,
-                                        expensesType = 'actual' // 'actual' | 'plan'
+                                        expensesType = 'actual', // 'actual' | 'plan'
+                                        edit = false
                                     }) {
-    const {travelCode: primary_entity_id} = useParams()
+    const {travelCode: primary_entity_id, expenseCode} = useParams()
     const {controller, defaultSection, sections} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
@@ -43,10 +46,13 @@ export default function ExpensesAdd({
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
 
+    const expense = useExpense(controller, expenseCode, expensesType)
+
 
     const isPlan = expensesType === 'plan'
 
     const expNameTitle = isPlan ? 'На что планируете потратить:' : 'На что потратили:'
+    const buttonTitle = edit ? 'Сохранить' : 'Добавить'
 
 
     useEffect(() => {
@@ -55,46 +61,35 @@ export default function ExpensesAdd({
         }
     }, [defaultSection])
 
-    function handler() {
-        if (user_id && primary_entity_type) {
-            const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-            controller.write({
-                storeName,
-                action: 'edit',
-                user_id,
-                data: {
-                    user_id,
-                    primary_entity_type: primary_entity_type,
-                    primary_entity_id,
-                    entity_type: '',
-                    entity_id: '',
-                    title: expName,
-                    value: Number(expSum),
-                    currency: expCurr.code,
-                    personal: personal ? 1 : 0,
-                    section_id,
-                    datetime: new Date().toISOString(),
-                    created_at: new Date().toISOString(),
-                    id: createId(user_id)
-                }
-            })
-
-
-            navigate(-1)
-        } else {
-            console.warn('need add user_id & primary_entity_type')
+    useEffect(() => {
+        if (expense) {
+            const cur = currency.find(cr => cr.code === expense.currency)
+            setExpName(expense.title)
+            setExpSum(expense.value.toString())
+            setSectionId(expense.section_id)
+            setPersonal(expense.personal === 1)
+            expense.currency && setExpCurr(cur)
         }
-    }
+    }, [expense])
+
 
     function onChipSelect(section) {
         setSectionId(section.id)
     }
 
-    function handleCurrencyChange(c){
+    function handleCurrencyChange(c) {
         const value = currency.find(cr => cr.symbol === c)
         value && setExpCurr(value)
     }
+
+    function handleExpense(){
+        edit
+            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate, expense)
+            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate)
+
+    }
+
 
     return (
         <div className='wrapper'>
@@ -160,8 +155,8 @@ export default function ExpensesAdd({
             </div>
 
             <div className='footer-btn-container footer'>
-                <Button onClick={handler}
-                        disabled={!section_id || !expName || !expSum}>Добавить</Button>
+                <Button onClick={handleExpense}
+                        disabled={!section_id || !expName || !expSum}>{buttonTitle}</Button>
             </div>
         </div>
     )
