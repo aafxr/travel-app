@@ -208,9 +208,9 @@ export default class Model {
     async remove(query) {
         try {
             if (this._validate(query, 'remove')) {
-                const res = await this.db.removeElement(this.storeName, query)
-                return isError(res) ? this._printErrorMessage(res) && undefined : res
+                return  await this.db.removeElement(this.storeName, query)
             }
+            debugger
             this._notCorrectDataMessage(query)
             return undefined
         } catch (err) {

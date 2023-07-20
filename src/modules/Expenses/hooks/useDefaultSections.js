@@ -1,7 +1,9 @@
 import {useEffect, useState} from "react";
 import constants from "../db/constants";
+import {ca} from "date-fns/locale";
+import ErrorReport from "../../../controllers/ErrorReport";
 
-export default function useDefaultSection(controller, primary_entity_id, user_id){
+export default function useDefaultSection(controller, primary_entity_id, user_id) {
     const [errorMessage, setErrorMessage] = useState('')
 
     // добавлени дефолтных секций
@@ -21,12 +23,21 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
                         primary_entity_id,
                     }
 
-                    await controller.write({
-                        storeName: constants.store.SECTION,
-                        action: 'edit',
-                        user_id,
-                        data
-                    })
+                    const sectionModel = controller.getStoreModel(constants.store.SECTION)
+
+                    try {
+                        await sectionModel.edit(data)
+                    } catch (err) {
+                        await ErrorReport.sendError(err)
+                        console.error(err)
+                    }
+
+                    // await controller.write({
+                    //     storeName: constants.store.SECTION,
+                    //     action: 'edit',
+                    //     user_id,
+                    //     data
+                    // })
                 }
             }
         }

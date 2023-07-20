@@ -1,20 +1,21 @@
 import constants from "../modules/Expenses/db/constants";
+import {actionsBlackList} from "../modules/Expenses/static/vars";
 
 console.log('====worker=====')
 
-setTimeout(async () => {
-    const response = await fetch (process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
-    const expensesActions = await response.json()
+// setInterval(async () => {
+//     const response = await fetch (process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
+//     const expensesActions = await response.json()
+//
+//     console.log('worker receive ', expensesActions)
+//     if(expensesActions.ok && expensesActions.result){
+//         postMessage(expensesActions.result)
+//     }
+//
+// }, 10000)
 
-    console.log('worker receive ', expensesActions)
-    if(expensesActions.ok && expensesActions.result){
-        postMessage(expensesActions.result)
-    }
-
-}, 2000)
 
 
-const actionsBlackList = [constants.store.SECTION, constants.store.LIMIT]
 onmessage = function (e) {
 
     const data = JSON.parse(e.data)
@@ -24,7 +25,7 @@ onmessage = function (e) {
 
         data.filter(d => !actionsBlackList.includes(d.entity) ? expensesActions.push(d) : rest.push(d) )
 
-        if (expensesActions.length ) {
+        if (expensesActions.length && process.env.NODE_ENV === 'production') {
             console.log('=========отправка на сервер=========')
             console.log(expensesActions)
             fetch(process.env.REACT_APP_SERVER_URL + '/expenses/addActions/', {

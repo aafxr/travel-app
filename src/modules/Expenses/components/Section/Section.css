@@ -25,6 +25,7 @@
 }
 
 .section-item{
+    align-items: stretch;
     padding: 0 10px;
     font-size: 0.875rem;
     font-weight: 600;

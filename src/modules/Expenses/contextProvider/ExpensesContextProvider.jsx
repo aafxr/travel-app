@@ -13,6 +13,7 @@ import schema from "../db/schema";
 import constants from "../db/constants";
 
 import '../css/Expenses.css'
+import {actionsBlackList, actionsWhiteList, actionswhiteList} from "../static/vars";
 
 
 /**
@@ -82,18 +83,18 @@ export default function ExpensesContextProvider({user_id}) {
             const controller = state.controller
 
             async function workerMessageHandler(e) {
-                console.log("receive =>   ", e.data)
-                if (e.data && e.data.entity !== 'section' && e.data.entity !== 'limit' && state.controller) {
-                    let actions = Array.isArray(e.data) ? e.data : [e.data]
-                    actions = actions.filter(a => !!a)
+                let actions = Array.isArray(e.data) ? e.data : [e.data]
+                actions = actions.filter(a => !!a.data)
+
+                if (state.controller) {
                     for (const action of actions) {
-                        action.synced = action.synced ? 1 : 0
-                        action.data.value = +action.data.value
-                        action.data.personal = +action.data.personal
+                        action.synced = action.synced ? 1: 0
+                        if (actionsWhiteList.includes(action.entity)) {
+                            action.data.value = +action.data.value
+                            action.data.personal = +action.data.personal
+                        }
                         await state.controller.actionHandler(action)
                     }
-                }else{
-                    await state.controller.actionHandler(e.data)
                 }
             }
 
@@ -120,10 +121,12 @@ export default function ExpensesContextProvider({user_id}) {
 
             state.controller.subscribe(constants.store.SECTION, updateSections)
             state.controller.subscribe(constants.store.LIMIT, updateLimits)
+            state.controller.subscribe(constants.store.EXPENSES_PLAN, updateLimits)
 
             return () => {
                 state.controller.unsubscribe(constants.store.SECTION, updateSections)
                 state.controller.unsubscribe(constants.store.LIMIT, updateLimits)
+                state.controller.unsubscribe(constants.store.EXPENSES_PLAN, updateLimits)
             }
         }
     }, [state.controller])

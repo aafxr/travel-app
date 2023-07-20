@@ -280,17 +280,15 @@ export default class ActionController {
             if (this.isActionValid(action)) {
                 const {action: actionVariant, synced, entity, data} = action;
                 if (synced) {
-                    if (this.model[entity] && this.model[entity][actionVariant]) {
-                        const res = await this.model[entity][actionVariant](data)
-
+                    if (this.model[entity] && this.model[entity][actionVariant] && data) {
+                        const res = await this.model[entity][actionVariant](actionVariant==='remove' ?data.id : data)
                         this.update(this, action)
                         this._subscriptionsCall(action, res)
                     }
-                    await this.actionsModel.remove(action.id)
+                    await this.actionsModel.remove(action.uid)
                 } else {
                     //действия если не синхронизированно
                     await this.actionsModel.edit(action)
-
                     this.send(action)
                 }
             }

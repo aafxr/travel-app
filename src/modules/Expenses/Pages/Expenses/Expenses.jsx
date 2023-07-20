@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react'
+import React, { useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
@@ -45,6 +45,7 @@ export default function Expenses({user_id, primary_entity_type}) {
     }, [])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
+
 
 
     const sectionLimit = function (section) {

@@ -12,7 +12,6 @@ import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import ExpensesContextProvider from "./modules/Expenses/contextProvider/ExpensesContextProvider";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
-import ExpensesEdit from "./modules/Expenses/Pages/ExpensesEdit/ExpensesEdit";
 import ExpensesRemove from "./modules/Expenses/Pages/ExpensesRemove/ExpensesRemove";
 import Alerts from "./components/Alerts/Alerts";
 import React from "react";
@@ -35,11 +34,11 @@ function App() {
                         <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit user_id={'12'} primary_entity_type={'travel'}/>}/>
 
                         <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'}/>}/>
-                        <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesEdit user_id={'12'} primary_entity_type={'travel'} expensesType='actual' />}/>
+                        <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'} expensesType='actual' edit />}/>
                         <Route path={'/travel/:travelCode/expenses/remove/:expenseCode/'} element={<ExpensesRemove user_id={'12'} primary_entity_type={'travel'} expensesType='actual' />}/>
 
                         <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'} expensesType={'plan'}/>}/>
-                        <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesEdit user_id={'12'} primary_entity_type={'travel'} />}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd user_id={'12'} primary_entity_type={'travel'} edit />}/>
                         <Route path={'/travel/:travelCode/expenses/plan/remove/:expenseCode/'} element={<ExpensesRemove user_id={'12'} primary_entity_type={'travel'} />}/>
                     </Route>
                 </Route>
