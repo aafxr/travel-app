@@ -38,11 +38,12 @@ export default function Swipe({
                               }) {
     const [marginLeft, setMarginLeft] = useState(0)
     const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
+
+    const max = (marginMax || defaultMargin)
+    const marginThreshold = max * 8 / 10;
+
     const handlers = useSwipeable({
         onSwiped() {
-            const max = (marginMax || defaultMargin)
-            const marginThreshold = max * 8 / 10;
-
             if (Math.abs(marginLeft) < marginThreshold) {
                 setMarginLeft(0)
             } else if (marginLeft > marginThreshold) {
@@ -51,10 +52,13 @@ export default function Swipe({
             }
         },
         onSwiping(e) {
+            console.log(max - e.deltaX, e.deltaX)
             if (e.dir === 'Left') {
-                (rightButton || marginLeft > 0) && setMarginLeft(-Math.min(e.absX, marginMax || defaultMargin))
+                rightButton && setMarginLeft(-Math.min(e.absX, marginMax || defaultMargin))
+                marginLeft > 0 && max - e.absX > 0 && setMarginLeft(0)
             } else if (e.dir === 'Right') {
-                (leftButton || marginLeft < 0) && setMarginLeft(Math.min(e.absX, marginMax || defaultMargin))
+                leftButton && setMarginLeft(Math.min(e.absX, marginMax || defaultMargin))
+                marginLeft < 0 && max - e.absX > 0 && setMarginLeft(0)
             }
         },
         onTap(e) {
@@ -62,15 +66,9 @@ export default function Swipe({
             setMarginLeft(0)
         },
         onSwipedLeft(e) {
-            const max = (marginMax || defaultMargin)
-            const marginThreshold = max * 8 / 10;
-
             rightButton && setMarginLeft(e.absX > marginThreshold ? -max : 0)
         },
         onSwipedRight(e) {
-            const max = (marginMax || defaultMargin)
-            const marginThreshold = max * 8 / 10;
-
             leftButton && setMarginLeft(e.absX > marginThreshold ? max : 0)
         },
     })
