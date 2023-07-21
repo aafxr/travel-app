@@ -4,6 +4,7 @@ import actionValidationObj from '../modules/Expenses/models/action/validation';
 import {LocalDB} from '../db';
 import isString from '../utils/validation/isString';
 import ErrorReport from "./ErrorReport";
+import toArray from "../utils/toArray";
 
 /**
  * @callback CB
@@ -273,23 +274,26 @@ export default class ActionController {
 
     /**
      * принимает и обрабаиывает события
-     * @param {ActionType} action
+     * @param {ActionType} actions
      */
-    async actionHandler(action) {
+    async actionHandler(actions) {
         try {
-            if (this.isActionValid(action)) {
-                const {action: actionVariant, synced, entity, data} = action;
-                if (synced) {
-                    if (this.model[entity] && this.model[entity][actionVariant] && data) {
-                        const res = await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
-                        this.update(this, action)
-                        this._subscriptionsCall(action, res)
+            actions = toArray(actions)
+            for (const action of actions) {
+                if (this.isActionValid(action)) {
+                    const {action: actionVariant, synced, entity, data} = action;
+                    if (synced) {
+                        if (this.model[entity] && this.model[entity][actionVariant] && data) {
+                            const res = await this.model[entity][actionVariant]( data)
+                            this.update(this, action)
+                            this._subscriptionsCall(action, res)
+                        }
+                        await this.actionsModel.remove(action.uid)
+                    } else {
+                        //действия если не синхронизированно
+                        await this.actionsModel.edit(action)
+                        this.send(action)
                     }
-                    await this.actionsModel.remove(action.uid)
-                } else {
-                    //действия если не синхронизированно
-                    await this.actionsModel.edit(action)
-                    this.send(action)
                 }
             }
         } catch (err) {

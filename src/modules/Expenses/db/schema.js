@@ -11,7 +11,7 @@
  */
 const schema = {
   dbname: 'expenses',
-  version: 9,
+  version: 10,
   stores: [
     {
       name: 'section',
@@ -35,7 +35,7 @@ const schema = {
     },
     {
       name: 'expensesActions',
-      key: 'id',
+      key: 'uid',
       indexes: ['synced', 'entity', 'action'],
     },
   ],

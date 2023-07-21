@@ -14,6 +14,7 @@ import constants from "../db/constants";
 
 import '../css/Expenses.css'
 import {actionsBlackList, actionsWhiteList, actionswhiteList} from "../static/vars";
+import toArray from "../../../utils/toArray";
 
 
 /**
@@ -83,7 +84,7 @@ export default function ExpensesContextProvider({user_id}) {
             const controller = state.controller
 
             async function workerMessageHandler(e) {
-                let actions = Array.isArray(e.data) ? e.data : [e.data]
+                let actions = toArray(e.data)
                 actions = actions.filter(a => !!a.data)
 
                 if (state.controller) {
