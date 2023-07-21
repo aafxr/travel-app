@@ -4,7 +4,8 @@
     ],
     "rules": {
         "prefer-rest-params": "off",
-        "testing-library/no-node-access": "off"
+        "testing-library/no-node-access": "off",
+        "no-useless-computed-key": "off"
     },
     "parserOptions": {
         "ecmaVersion": 2017,
