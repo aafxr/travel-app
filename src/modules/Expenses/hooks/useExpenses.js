@@ -1,5 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import constants from "../db/constants";
+import toArray from "../../../utils/toArray";
 
 
 /**
@@ -9,19 +10,19 @@ import constants from "../db/constants";
  * @param {'plan' | 'actual'} type default = plan
  * @returns {Array.<import('../models/ExpenseType').ExpenseType>}
  */
-export default function useExpenses(controller, primary_entity_id, type = 'plan'){
+export default function useExpenses(controller, primary_entity_id, type = 'plan') {
     const [expenses, setExpenses] = useState([])
-    const isPlan =  type === 'plan'
+    const isPlan = type === 'plan'
 
     const update = useCallback(() => {
-        if (controller){
+        if (controller) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
             controller.read({
                 storeName,
                 index: constants.indexes.PRIMARY_ENTITY_ID,
                 query: 'all'
             })
-                .then(item => item && Array.isArray(item) ? setExpenses(item) : setExpenses([item]))
+                .then(item => setExpenses(toArray(item)))
         }
     }, [controller, primary_entity_id])
 

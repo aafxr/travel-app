@@ -46,7 +46,8 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 
-
+    // console.log(sections)
+    // console.log({filteredExpenses, limitsList, sectionList})
 
     const sectionLimit = function (section) {
         if (filter !== 'all') {
