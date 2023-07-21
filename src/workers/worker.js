@@ -14,7 +14,7 @@ setTimeout(async () => {
         postMessage(expensesActions.result)
     }
 
-}, 2000)
+}, 10000)
 
 
 
