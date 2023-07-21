@@ -10,9 +10,9 @@ setTimeout(async () => {
 
 
     console.log('worker receive ', expensesActions)
-    // if(expensesActions.ok && expensesActions.result){
-    //     postMessage(expensesActions.result)
-    // }
+    if(expensesActions.ok && expensesActions.result){
+        postMessage(expensesActions.result)
+    }
 
 }, 2000)
 
