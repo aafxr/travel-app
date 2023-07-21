@@ -381,7 +381,6 @@ export default class ActionController {
                     if (target[prop]) {
                         if (typeof target[prop] === 'function') {
                             try {
-                                console.log('this   ===>   ', this)
                                 return target[prop].bind(target)
                             } catch (err) {
                                 ErrorReport.sendError(err).catch(console.error)
