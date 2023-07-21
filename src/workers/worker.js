@@ -3,7 +3,7 @@ import {actionsBlackList} from "../modules/Expenses/static/vars";
 
 console.log('====worker=====')
 
-setTimeout(async () => {
+setInterval(async () => {
     const response = await fetch (process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
     const expensesActions = await response.json()
 
