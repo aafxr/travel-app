@@ -1,8 +1,8 @@
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
 import Button from "../../components/Button/Button";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {useContext, useEffect} from "react";
+import { useNavigate, useParams} from "react-router-dom";
+import {useContext} from "react";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import constants from "../../db/constants";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -16,9 +16,6 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
     const {controller} = useContext(ExpensesContext)
     const expense = useExpense(controller, expenseCode, expensesType)
 
-    useEffect(() => {
-
-    }, [])
 
     function handleRemove(){
         if (controller && expense) {
@@ -27,7 +24,7 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
             controller.write({
                 storeName,
                 action: 'remove',
-                data: expense,
+                data: expense[0],
                 user_id
             })
                 .then(() => {
