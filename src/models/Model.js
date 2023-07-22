@@ -91,9 +91,8 @@ export default class Model {
      * @param {*} data
      * @param {'add' | 'edit' | 'get' | 'getFromIndex' | 'remove'} methodType
      * @returns {boolean}
-     * @private
      */
-    _validate(data, methodType) {
+    validate(data, methodType) {
         if (this.validateCB) {
             return !!this.validateCB(data)
         } else if (this.validateObj && this.validateObj[methodType]) {
@@ -130,8 +129,8 @@ export default class Model {
      */
     async add(payload) {
         try {
-            if (this._validate(payload, 'add')) {
-                const res = await this.db.addElement(this.storeName, payload)
+            if (this.validate(payload, 'add')) {
+                const res = await this.db.editElement(this.storeName, payload)
                 return isError(res) ? this._printErrorMessage(res) && undefined : res
             }
             this._notCorrectDataMessage(payload)
@@ -149,9 +148,8 @@ export default class Model {
      */
     async edit(payload) {
         try {
-            if (this._validate(payload, 'edit')) {
-                const res = await this.db.editElement(this.storeName, payload)
-                return isError(res) ? this._printErrorMessage(res) && undefined : res
+            if (this.validate(payload, 'edit')) {
+                return await this.db.editElement(this.storeName, payload)
             }
             this._notCorrectDataMessage(payload)
             return undefined
@@ -168,7 +166,7 @@ export default class Model {
      */
     async get(query) {
         try {
-            if (this._validate(query, 'get')) {
+            if (this.validate(query, 'get')) {
                 const res = await this.db.getElement(this.storeName, query)
                 return isError(res) ? this._printErrorMessage(res) && undefined : res
             }
@@ -188,7 +186,7 @@ export default class Model {
      */
     async getFromIndex(indexName, query) {
         try {
-            if (this._validate(query, 'getFromIndex')) {
+            if (this.validate(query, 'getFromIndex')) {
                 const res = await this.db.getFromIndex(this.storeName, indexName, query)
                 return isError(res) ? this._printErrorMessage(res) && undefined : res
             }
@@ -207,10 +205,9 @@ export default class Model {
      */
     async remove(query) {
         try {
-            if (this._validate(query, 'remove')) {
+            if (this.validate(query, 'remove')) {
                 return  await this.db.removeElement(this.storeName, query)
             }
-            debugger
             this._notCorrectDataMessage(query)
             return undefined
         } catch (err) {

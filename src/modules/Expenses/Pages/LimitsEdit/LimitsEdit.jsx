@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
@@ -7,7 +7,6 @@ import Container from "../../components/Container/Container";
 import createId from "../../../../utils/createId";
 import Button from "../../components/Button/Button";
 
-import useExpenses from "../../hooks/useExpenses";
 
 import constants from "../../db/constants";
 
@@ -15,6 +14,7 @@ import '../../css/Expenses.css'
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import updateExpenses from "../../helpers/updateExpenses";
 
 /**
  * страница редактиррования лимитов
@@ -32,7 +32,7 @@ export default function LimitsEdit({
     const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
-    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, 'plan')
+    const [expenses, setExpenses] = useState([])
 
     const [limitObj, setLimitObj] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -56,26 +56,22 @@ export default function LimitsEdit({
                 .reduce((acc, e) => e.value + acc, 0)
         }
         return 0
-    }, [expenses, section_id, personal])
+    }, [expenses, section_id, personal, user_id])
 
 
     //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
-        if (controller) {
-            updateExpenses()
-        }
+        controller && updateExpenses(controller, primary_entity_id, 'plan').then(setExpenses)
     }, [controller])
 
     useEffect(() => {
-        if (defaultSection) {
-            setSectionId(sectionId || defaultSection.id)
-        }
+            defaultSection && setSectionId(sectionId || defaultSection.id)
     }, [defaultSection])
 
 
     // если в бд уже был записан лимит записываем его в limitObj (либо null)
     useEffect(() => {
-        if (section_id && limits && limits.length) {
+        if (section_id && limits.length) {
             const limit = limits
                 .filter(l => l.section_id === section_id)
                 .find(l => personal

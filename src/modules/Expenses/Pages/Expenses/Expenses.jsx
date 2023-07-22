@@ -7,7 +7,6 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 
-import useExpenses from "../../hooks/useExpenses";
 import constants from "../../db/constants";
 
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
@@ -15,6 +14,7 @@ import {defaultFilterValue} from "../../static/vars";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
 import '../../css/Expenses.css'
+import updateExpenses from "../../helpers/updateExpenses";
 
 
 /**
@@ -28,7 +28,7 @@ export default function Expenses({user_id, primary_entity_type}) {
     const {travelCode: primary_entity_id} = useParams()
     const {controller, sections, limits} = useContext(ExpensesContext)
 
-    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "actual")
+    const [expenses, setExpenses] = useState([])
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
@@ -37,17 +37,15 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     useEffect(() => {
         if (controller) {
-            updateExpenses()
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+            updateExpenses(controller, primary_entity_id, "actual").then(setExpenses)
+            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "actual")))
         }
-        return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
-    }, [])
+        // return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
+    }, [controller])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 
-    // console.log(sections)
-    // console.log({filteredExpenses, limitsList, sectionList})
 
     const sectionLimit = function (section) {
         if (filter !== 'all') {

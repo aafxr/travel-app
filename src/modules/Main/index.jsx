@@ -3,8 +3,6 @@ import {Link, useNavigate} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
-import Swipe from "../../components/ui/Swipe/Swipe";
-import Alerts from "../../components/Alerts/Alerts";
 import Select from "../../components/ui/Select/Select";
 
 export default function ExpensesPlan({
@@ -19,7 +17,7 @@ export default function ExpensesPlan({
         if (process.env.NODE_ENV === 'production') {
             navigate('/travel/123/expenses/')
         }
-    },[])
+    },[navigate])
 
     if (process.env.NODE_ENV === 'production') {
         return null

@@ -9,17 +9,6 @@ import isString from "../../../../../utils/validation/isString";
 import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
 
 
-const entityType = [
-    'limit',
-    'expenses_actual',
-    'expenses_plan'
-]
-
-const actionType = [
-    'add',
-    'edit',
-    'remove'
-]
 
 function validatePayload(data) {
     return (

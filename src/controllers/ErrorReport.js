@@ -24,7 +24,9 @@ class ErrorReport {
                 headers: {
                     "Content-Type": "application/json;charset=utf-8"
                 },
-                body: error.toString()
+                body: JSON.stringify({
+                    error: error.toString()
+                })
             }).catch(console.error)
         }
     }
@@ -41,7 +43,9 @@ class ErrorReport {
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"
                     },
-                    body: error.toString()
+                    body: JSON.stringify({
+                        error: error.toString()
+                    })
                 }).catch(console.error)
 
                 localStorage.setItem(CRITICAL_ERROR, JSON.stringify(null))

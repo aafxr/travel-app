@@ -120,8 +120,7 @@ function SectionItem(expense) {
 
 
     function handleRemoveExpense() {
-        const isConfirm = window.confirm(`Удалить расход: ${title}`)
-        isConfirm && navigate(removeRoute)
+        navigate(removeRoute)
     }
 
 

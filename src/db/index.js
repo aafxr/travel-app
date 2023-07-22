@@ -135,7 +135,7 @@ export class LocalDB {
                 const res = await db.getAll(storeName)
                 return Array.isArray(res) ? res : [res];
             }
-            return await db.get(storeName, query);
+            return await db.getAll(storeName, query);
         }
         console.error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
         return Promise.resolve();
@@ -159,7 +159,7 @@ export class LocalDB {
                     return Array.isArray(res) ? res : [res];
                 }
 
-                return await db.getFromIndex(storeName, indexName, query);
+                return await db.getAllFromIndex(storeName, indexName, query);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }

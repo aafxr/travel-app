@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import constants from "../db/constants";
-import {ca} from "date-fns/locale";
 import ErrorReport from "../../../controllers/ErrorReport";
 
 export default function useDefaultSection(controller, primary_entity_id, user_id) {

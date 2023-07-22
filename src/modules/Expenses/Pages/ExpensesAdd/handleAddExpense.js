@@ -7,7 +7,7 @@ export default function handleAddExpense(controller, isPlan, user_id, primary_en
 
         controller.write({
             storeName,
-            action: 'edit',
+            action: 'add',
             user_id,
             data: {
                 user_id,

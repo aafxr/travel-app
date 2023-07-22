@@ -1,16 +1,15 @@
-import React, {useState} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 
 import Container from "../../Expenses/components/Container/Container";
 import Button from "../../Expenses/components/Button/Button";
-import {Input, PageHeader} from "../../../components/ui";
+import { PageHeader} from "../../../components/ui";
 
 import '../css/Travel.css'
-import clsx from "clsx";
 
 
 export default function TravelWaypoint() {
-    const [destination, setDestination] = useState('')
+    // const [destination, setDestination] = useState('')
 
 
     return (

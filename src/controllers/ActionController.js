@@ -134,10 +134,7 @@ export default class ActionController {
 
         this.modelNames.forEach((mn) => {
             this.model[mn] = options.models[mn](this.db);
-            this.subscriptions[mn] = {};
-            actions.forEach((action) => {
-                this.subscriptions[mn][action] = [];
-            });
+            this.subscriptions[mn] = [];
         });
 
         this.storeName = options.storeName;
@@ -148,24 +145,14 @@ export default class ActionController {
      * подписка на событие
      * @param {string} modelName
      * @param {function} subscription
-     * @param {ActionVariant} [actionVariant]
      */
-    subscribe(modelName, subscription, actionVariant) {
-        if (!actionVariant) {
-            actions.forEach((a) =>
-                !this.subscriptions[modelName][a].includes(subscription) && this.subscriptions[modelName][a].push(subscription)
-            );
-        } else if (
-            this.modelNames.includes(modelName)
-            && this.subscriptions[modelName]
-            && this.subscriptions[modelName][actionVariant]
-            && !this.subscriptions[modelName][actionVariant].includes(subscription)
-        ) {
-            this.subscriptions[modelName][actionVariant].push(subscription);
+    subscribe(modelName, subscription) {
+        if (this.modelNames.includes(modelName)) {
+            this.subscriptions[modelName] && this.subscriptions[modelName].push(subscription)
         } else {
             this._errorMessage(
                 new Error(
-                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${actionVariant}`
+                    `[Controller.subscription] modelName or actionType not correct: ${modelName}`
                 )
             );
         }
@@ -179,20 +166,9 @@ export default class ActionController {
      * @param {ActionVariant} [actionVariant]
      */
     unsubscribe(modelName, subscription, actionVariant) {
-        if (!actionVariant) {
-            actions.forEach((a) => {
-                this.subscriptions[modelName][a] = this.subscriptions[modelName][
-                    a
-                    ].filter((sub) => sub !== subscription);
-            });
-        } else if (
-            this.modelNames.includes(modelName) &&
-            this.subscriptions[modelName] &&
-            this.subscriptions[modelName][actionVariant]
-        ) {
-            this.subscriptions[modelName][actionVariant] = this.subscriptions[
-                modelName
-                ][actionVariant].filter((sub) => sub !== subscription);
+        if (this.modelNames.includes(modelName)) {
+            this.subscriptions[modelName] = this.subscriptions[modelName]
+                .filter((sub) => sub !== subscription);
         } else {
             this._errorMessage(
                 new Error(
@@ -214,19 +190,16 @@ export default class ActionController {
         }
     }
 
+
+    /**
+     * отправляет не синхронизированные actions на сервер
+     * @param cb
+     */
     set onSendData(cb) {
         if (typeof cb === 'function') {
             this.send = cb
             this.actionsModel.get('all')
-                .then(actions => {
-                    if (actions) {
-                        if (Array.isArray(actions)) {
-                            actions.forEach(a => this.send(a))
-                        } else {
-                            this.send(actions)
-                        }
-                    }
-                })
+                .then(actions => this.send(toArray(actions)))
         }
     }
 
@@ -278,24 +251,36 @@ export default class ActionController {
      */
     async actionHandler(actions) {
         try {
-            actions = toArray(actions)
-            for (const action of actions) {
+            const actionsArr = toArray(actions)
+            const entityList = new Set(actionsArr.map(a => a.entity))
+            const actionsQueue = []
+            let isModified = false
+            for (const action of actionsArr) {
                 if (this.isActionValid(action)) {
                     const {action: actionVariant, synced, entity, data} = action;
+
                     if (synced) {
-                        if (this.model[entity] && this.model[entity][actionVariant] && data) {
-                            const res = await this.model[entity][actionVariant]( data)
-                            this.update(this, action)
-                            this._subscriptionsCall(action, res)
+                        if(this.model[entity].validate(data)){
+                            if (this.model[entity] && this.model[entity][actionVariant] && data) {
+                                await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
+                                isModified = true
+                            }
                         }
                         await this.actionsModel.remove(action.uid)
                     } else {
                         //действия если не синхронизированно
                         await this.actionsModel.edit(action)
-                        this.send(action)
+                        actionsQueue.push(action)
                     }
                 }
             }
+            if (isModified) {
+                this.update(this)
+                for (const entity of entityList.keys()) {
+                    this._subscriptionsCall(entity)
+                }
+            }
+            actionsQueue.length && this.send(actionsQueue)
         } catch (err) {
             this._errorMessage(err);
         }
@@ -304,16 +289,12 @@ export default class ActionController {
 
     /**
      * оповещает поддписчиков об изменении данных
-     * @param {ActionType} action
-     * @param {*} data
+     * @param {string} entity
      * @private
      */
-    _subscriptionsCall(action, data) {
-        const {action: actionVariant, entity} = action;
-        if (this.model[entity] && this.model[entity][actionVariant]) {
-            this.subscriptions[entity][actionVariant].forEach((sub) =>
-                sub(data)
-            );
+    _subscriptionsCall(entity) {
+        if (this.model[entity]) {
+            this.subscriptions[entity].forEach((sub) => sub());
         }
     }
 
@@ -348,7 +329,6 @@ export default class ActionController {
 
         if (this.modelNames.includes(payload.storeName)) {
             try {
-
                 if (index) {
                     return this.model[storeName].getFromIndex(index, query)
                         .catch(err => {

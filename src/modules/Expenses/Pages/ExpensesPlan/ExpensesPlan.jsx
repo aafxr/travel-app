@@ -8,12 +8,11 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
-import useExpenses from "../../hooks/useExpenses";
 import constants from "../../db/constants";
-import useToBottomHeight from "../../hooks/useToBottomHeight";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
-import {defaultFilterValue, EXPENSES_FILTER} from "../../static/vars";
+import {defaultFilterValue} from "../../static/vars";
+import updateExpenses from "../../helpers/updateExpenses";
 
 
 /**
@@ -30,7 +29,7 @@ export default function ExpensesPlan({
     const {travelCode: primary_entity_id} = useParams()
     const {controller, sections, limits} = useContext(ExpensesContext)
 
-    const [expenses, updateExpenses] = useExpenses(controller, primary_entity_id, "plan")
+    const [expenses, setExpenses] = useState([])
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
@@ -38,16 +37,12 @@ export default function ExpensesPlan({
 
 
     useEffect(() => {
-        updateExpenses()
-        setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-    }, [])
-
-
-    useEffect(() => {
         if (controller) {
-            controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
+            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
+            updateExpenses(controller, primary_entity_id, "plan").then(setExpenses)
+            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "plan")))
         }
-        return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
+        // return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)

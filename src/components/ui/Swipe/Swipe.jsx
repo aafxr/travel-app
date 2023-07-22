@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Children} from "react";
+import React, {useEffect, useState} from "react";
 import {useSwipeable} from "react-swipeable";
 import clsx from "clsx";
 
@@ -86,7 +86,7 @@ export default function Swipe({
         }
 
         return () => document.removeEventListener('touchstart', touchOutside)
-    }, [])
+    }, [multy])
 
 
     function handleConfirm() {

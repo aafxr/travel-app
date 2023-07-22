@@ -1,20 +1,21 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
-import useSections from "../hooks/useSections";
-import useLimits from "../hooks/useLimits";
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 import useDefaultSection from "../hooks/useDefaultSections";
 
 import ActionController from "../../../controllers/ActionController";
-import options, {onUpdate} from '../controllers/controllerOptions'
+import options from '../controllers/controllerOptions'
 import schema from "../db/schema";
 
 import constants from "../db/constants";
 
-import '../css/Expenses.css'
-import {actionsBlackList, actionsWhiteList, actionswhiteList} from "../static/vars";
 import toArray from "../../../utils/toArray";
+import {onUpdate} from "../controllers/onUpdate";
+import updateSections from "../helpers/updateSections";
+
+import '../css/Expenses.css'
+import updateLimits from "../helpers/updateLimits";
 
 
 /**
@@ -56,8 +57,8 @@ export default function ExpensesContextProvider({user_id}) {
     const [dbReady, setDbReady] = useState(false)
     const [state, setState] = useState(defaultState)
 
-    const [sections, updateSections] = useSections(state.controller)
-    const [limits, updateLimits] = useLimits(state.controller, primary_entity_id)
+    const [sections, setSections] = useState([])
+    const [limits, setLimits] = useState([])
 
     const {worker} = useContext(WorkerContext)
 
@@ -72,65 +73,43 @@ export default function ExpensesContextProvider({user_id}) {
             },
             onError: console.error
         })
-
         controller.onUpdate = onUpdate(primary_entity_id, user_id)
-
         setState({...state, controller})
+
+        updateSections(controller).then(setSections)
+        updateLimits(controller, primary_entity_id).then(setLimits)
+
+        controller.subscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)) )
+        controller.subscribe(constants.store.LIMIT, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+        controller.subscribe(constants.store.EXPENSES_PLAN, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+
+        return () => {
+            controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)) )
+            controller.unsubscribe(constants.store.LIMIT, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+            controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+        }
     }, [])
 
 
     useEffect(() => {
         if (worker && state.controller) {
-            const controller = state.controller
-
             async function workerMessageHandler(e) {
                 let actions = toArray(e.data)
-                actions = actions.filter(a => !!a.data)
-
                 if (state.controller) {
-                    for (const action of actions) {
-                        action.synced = action.synced ? 1: 0
-                        if (actionsWhiteList.includes(action.entity)) {
-                            action.data.value = +action.data.value
-                            action.data.personal = +action.data.personal
-                        }
-                        await state.controller.actionHandler(action)
-                    }
+                    await state.controller.actionHandler(actions)
                 }
             }
 
-            if (worker && !registrWorkerListener) {
                 worker.addEventListener('message', workerMessageHandler)
-                registrWorkerListener = true
 
-            }
-
-            controller.onSendData = (action) => {
+            state.controller.onSendData = (action) => {
                 worker.postMessage(
-                    JSON.stringify([action])
+                    JSON.stringify(toArray(action))
                 )
             }
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
     }, [state.controller, worker])
-
-
-    useEffect(() => {
-        if (state.controller) {
-            updateSections()
-            updateLimits()
-
-            state.controller.subscribe(constants.store.SECTION, updateSections)
-            state.controller.subscribe(constants.store.LIMIT, updateLimits)
-            state.controller.subscribe(constants.store.EXPENSES_PLAN, updateLimits)
-
-            return () => {
-                state.controller.unsubscribe(constants.store.SECTION, updateSections)
-                state.controller.unsubscribe(constants.store.LIMIT, updateLimits)
-                state.controller.unsubscribe(constants.store.EXPENSES_PLAN, updateLimits)
-            }
-        }
-    }, [state.controller])
 
 
     useEffect(() => {
@@ -143,10 +122,8 @@ export default function ExpensesContextProvider({user_id}) {
 
 
     useEffect(() => {
-        if (limits && limits.length) {
-            setState({...state, limits})
-        }
-    }, [limits])
+        limits.length && setState({...state, limits})
+    } , [limits])
 
 
     if (!dbReady) {

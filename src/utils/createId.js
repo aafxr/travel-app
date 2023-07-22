@@ -5,7 +5,7 @@ import isString from "./validation/isString";
  * @param {string | number} [prefix]
  * @returns {string}
  */
-export default function(prefix){
+export default function createId(prefix){
     if(prefix && isString(prefix)){
         return prefix + ':' + Date.now()
     } else {

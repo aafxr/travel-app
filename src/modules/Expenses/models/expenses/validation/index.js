@@ -15,14 +15,6 @@ import isString from "../../../../../utils/validation/isString";
 // datetime
 // created_at
 
-const primary_entity_type = [
-    'travel',
-]
-
-const entityType = [
-    'excursion',
-]
-
 
 function validatePayload(data) {
     let valid = true
