@@ -117,16 +117,12 @@ export default class ActionController {
             actionValidationObj
         );
 
-        this.update = options.onUpdate || (() => {
-        })
-        this.send = options.onSendData || (() => {
-        })
+        this.update = options.onUpdate || (() => {})
+        this.send = options.onSendData || (() => {})
 
         !options.newAction && console.warn('[ActionController] you need to specify a function "newAction"')
         /**@returns {ActionType} */
-        this.createAction = options.newAction || (() => {
-        })
-
+        this.createAction = options.newAction || (() => {})
 
         this.model = {};
         this.subscriptions = {};
@@ -138,6 +134,7 @@ export default class ActionController {
         });
 
         this.storeName = options.storeName;
+        this.onLine = navigator.onLine
     }
 
 
@@ -251,6 +248,7 @@ export default class ActionController {
      */
     async actionHandler(actions) {
         try {
+            this.onLine = navigator.onLine
             const actionsArr = toArray(actions)
             const entityList = new Set(actionsArr.map(a => a.entity))
             const actionsQueue = []
@@ -281,6 +279,7 @@ export default class ActionController {
                 }
             }
             actionsQueue.length && this.send(actionsQueue)
+            !this.onLine && this.whileOffline()
         } catch (err) {
             this._errorMessage(err);
         }
@@ -378,5 +377,22 @@ export default class ActionController {
             })
         }
         return null
+    }
+
+
+    /**
+     * метод ожидает востановления сети и отправляет накопившиеся actions на сервер
+     */
+    whileOffline(){
+        if(!this.offlineId){
+            this.offlineId = setInterval(async () => {
+                if(navigator.onLine){
+                    const actions = await this.actionsModel.get('all')
+                    this.onLine = true
+                    clearInterval(this.offlineId)
+                    await this.actionHandler(actions)
+                }
+            }, 2000)
+        }
     }
 }

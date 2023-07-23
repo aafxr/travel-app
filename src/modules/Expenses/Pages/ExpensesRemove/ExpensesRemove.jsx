@@ -11,7 +11,6 @@ import useExpense from "../../hooks/useExpense";
 export default function ExpensesRemove({user_id, primary_entity_type, expensesType = 'plan'}) {
     const {expenseCode} = useParams()
     const navigate = useNavigate()
-    // const {pathname} = useLocation()
 
     const {controller} = useContext(ExpensesContext)
     const expense = useExpense(controller, expenseCode, expensesType)
@@ -29,13 +28,7 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
             })
                 .then(() => {
                     pushAlertMessage({type: 'success', message: `Успешно удалено`})
-                    // const idx = pathname.indexOf('remove')
-
-                    // idx > -1
-                    //     ? navigate(pathname.slice(0, idx))
-                    //     :
                     navigate(-1)
-
                 })
         }
     }

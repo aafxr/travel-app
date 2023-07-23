@@ -21,8 +21,8 @@ import {openDB} from 'idb';
  * @param {Array.<StoreInfo>} stores                     массив с инфо о всех хранилищах в бд
  * @returns {Promise<IDBPDatabase<unknown>>}             возвращает Promise с объектом db
  */
-function init({dbname, version, stores}) {
-    return openDB(dbname, version, {
+async function openDataBase(dbname, version, stores) {
+    return await openDB(dbname, version, {
         upgrade(db) {
             stores.forEach(function (storeInfo) {
 
@@ -91,13 +91,9 @@ export class LocalDB {
         this.dbname = dbname;
         this.version = version;
         this.stores = stores;
-        init({dbname, version, stores})
-            .then((db) => {
-                onReady && onReady(this);
-            })
-            .catch((err) => {
-                onError && onError(err);
-            });
+        openDataBase(dbname, version, stores)
+            .then((db) => onReady && onReady(this))
+            .catch((err) => onError && onError(err));
     }
 
     /**
@@ -130,7 +126,7 @@ export class LocalDB {
     async getElement(storeName, query) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            const db = await openDB(this.dbname, this.version)
+            const db = await openDataBase(this.dbname, this.version, this.stores)
             if (query === 'all') {
                 const res = await db.getAll(storeName)
                 return Array.isArray(res) ? res : [res];
@@ -152,7 +148,7 @@ export class LocalDB {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
-                const db = await openDB(this.dbname, this.version)
+                const db = await openDataBase(this.dbname, this.version, this.stores)
 
                 if (query === 'all'){
                     const res = await db.getAllFromIndex(storeName, indexName)
@@ -175,7 +171,7 @@ export class LocalDB {
     async addElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            const db = await openDB(this.dbname, this.version)
+            const db = await openDataBase(this.dbname, this.version, this.stores)
             return await db.add(storeName, payload);
         }
         throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
@@ -190,7 +186,7 @@ export class LocalDB {
     async editElement(storeName, payload) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            const db = await openDB(this.dbname, this.version)
+            const db = await openDataBase(this.dbname, this.version, this.stores)
             return await db.put(storeName, payload);
         }
         throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
@@ -205,7 +201,7 @@ export class LocalDB {
     async removeElement(storeName, key) {
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
-            const db = await openDB(this.dbname, this.version)
+            const db = await openDataBase(this.dbname, this.version, this.stores)
             if (key === 'all') {
                 return await db.clear(storeName);
             }

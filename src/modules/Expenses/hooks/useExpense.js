@@ -20,7 +20,7 @@ export default function useExpense(controller, id, type = 'plan') {
                 storeName,
                 id
             })
-                .then(e => e && setExpense(e))
+                .then(e => e && setExpense(Array.isArray(e) ? e[0] : e))
         }
     }, [controller, id])
 

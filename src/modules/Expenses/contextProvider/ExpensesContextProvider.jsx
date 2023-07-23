@@ -43,7 +43,6 @@ const defaultState = {
     sections: []
 }
 
-let registrWorkerListener = false
 /**
  * обертка для молуля Expenses
  *
@@ -68,9 +67,7 @@ export default function ExpensesContextProvider({user_id}) {
     useEffect(() => {
         const controller = new ActionController(schema, {
             ...options,
-            onReady: () => {
-                setDbReady(true)
-            },
+            onReady: () => setDbReady(true),
             onError: console.error
         })
         controller.onUpdate = onUpdate(primary_entity_id, user_id)
@@ -79,14 +76,23 @@ export default function ExpensesContextProvider({user_id}) {
         updateSections(controller).then(setSections)
         updateLimits(controller, primary_entity_id).then(setLimits)
 
-        controller.subscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)) )
-        controller.subscribe(constants.store.LIMIT, async () => setLimits (await updateLimits(controller, primary_entity_id)))
-        controller.subscribe(constants.store.EXPENSES_PLAN, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+        controller.subscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
+        controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
+
+        controller.subscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
+        controller.subscribe(constants.store.EXPENSES_PLAN, async () => {
+            setLimits(await updateLimits(controller, primary_entity_id))
+            !sections.length && setSections(await updateSections(controller))
+        })
 
         return () => {
-            controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)) )
-            controller.unsubscribe(constants.store.LIMIT, async () => setLimits (await updateLimits(controller, primary_entity_id)))
-            controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => setLimits (await updateLimits(controller, primary_entity_id)))
+            controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
+            controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
+            controller.unsubscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
+            controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => {
+                setLimits(await updateLimits(controller, primary_entity_id))
+                !sections.length && setSections(await updateSections(controller))
+            })
         }
     }, [])
 
@@ -97,16 +103,14 @@ export default function ExpensesContextProvider({user_id}) {
                 let actions = toArray(e.data)
                 if (state.controller) {
                     await state.controller.actionHandler(actions)
+                    !sections.length && setSections(await updateSections(state.controller))
                 }
             }
 
-                worker.addEventListener('message', workerMessageHandler)
+            worker.addEventListener('message', workerMessageHandler)
 
-            state.controller.onSendData = (action) => {
-                worker.postMessage(
-                    JSON.stringify(toArray(action))
-                )
-            }
+            state.controller.onSendData = (action) => worker.postMessage(JSON.stringify(toArray(action)))
+
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
     }, [state.controller, worker])
@@ -123,11 +127,11 @@ export default function ExpensesContextProvider({user_id}) {
 
     useEffect(() => {
         limits.length && setState({...state, limits})
-    } , [limits])
+    }, [limits])
 
 
     if (!dbReady) {
-        return null//<div>Loading...</div>
+        return null
     }
     return (
         <ExpensesContext.Provider value={state}>
