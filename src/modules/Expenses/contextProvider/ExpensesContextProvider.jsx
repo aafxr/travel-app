@@ -76,7 +76,6 @@ export default function ExpensesContextProvider({user_id}) {
 
     const {worker} = useContext(WorkerContext)
 
-    useDefaultSection(state.sectionModel, primary_entity_id, user_id)
 
 
     useEffect(() => {
@@ -106,6 +105,9 @@ export default function ExpensesContextProvider({user_id}) {
             }
         )
     }, [])
+
+
+    useDefaultSection(state.sectionModel, primary_entity_id, user_id)
 
 
     useEffect(() => {
@@ -141,7 +143,6 @@ export default function ExpensesContextProvider({user_id}) {
         setState({...state, sections, limits})
     }, [sections, limits])
 
-    console.log(state)
 
 
     if (!dbReady) {

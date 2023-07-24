@@ -1,4 +1,5 @@
 import createId from "../../../utils/createId";
+import toArray from "../../../utils/toArray";
 
 
 /**
@@ -17,7 +18,7 @@ export default function createActionMessage(action, user_id, model, data) {
             entity: model.storeName,
             synced: 0,
             action,
-            data,
+            data: toArray(data),
             datetime: new Date().toISOString()
         }
     }

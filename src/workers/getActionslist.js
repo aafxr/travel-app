@@ -5,6 +5,7 @@ import constants from "../modules/Expenses/db/constants";
 import actionsValidation from "../modules/Expenses/models/action/validation";
 import ActionController from "../controllers/ActionController";
 import expensesOptions from "../modules/Expenses/controllers/controllerOptions";
+import functionDurationTest from "../utils/functionDurationTest";
 
 
 let ready = false
@@ -30,13 +31,15 @@ export default async function getActionsList() {
         console.log('Received data: ',receivedActions)
 
         if (receivedActions.ok && receivedActions.result) {
-            const actions = await actionsModel.getFromIndex(constants.indexes.SYNCED, 1)
-            const existingActions = actions.reduce((acc, a) => {
-                acc[a.uid] = a
-                return acc
-            }, {})
-            const filtered = receivedActions.result.filter(a => !existingActions[a.uid])
-            controller.actionHandler(filtered).catch(console.error)
+            functionDurationTest(async () => {
+                const actions = await actionsModel.getFromIndex(constants.indexes.SYNCED, 1)
+                const existingActions = actions.reduce((acc, a) => {
+                    acc[a.uid] = a
+                    return acc
+                }, {})
+                const filtered = receivedActions.result.filter(a => !existingActions[a.uid])
+                controller.actionHandler(filtered).catch(console.error)
+            }, '[Worker] без fetch: ')
         }
     }
 }

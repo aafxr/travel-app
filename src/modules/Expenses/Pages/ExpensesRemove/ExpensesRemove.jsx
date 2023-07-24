@@ -24,7 +24,8 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
         if (model && expense && worker) {
             model.remove(expense.id)
                 .then(() => {
-                    worker.postMessage(createActionMessage('remove', user_id, model, expense))
+                    const data = createActionMessage('remove', user_id, model, expense)
+                    worker.postMessage(JSON.stringify(data))
                 })
                 .then(() => {
                     pushAlertMessage({type: 'success', message: `Успешно удалено`})
@@ -32,6 +33,7 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
                 })
         }
     }
+
 
     return (
         <div className='wrapper'>

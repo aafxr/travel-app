@@ -15,7 +15,7 @@ export default function useExpense(expenseModel, id) {
     useEffect(() => {
         if (expenseModel && id) {
             expenseModel.get(id)
-                .then(e => setExpense(toArray(e)))
+                .then(e => setExpense(toArray(e)[0]))
         }
     }, [expenseModel, id])
 

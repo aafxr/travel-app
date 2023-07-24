@@ -23,7 +23,8 @@ export default function handleEditExpense(worker, model, isPlan, user_id, primar
             model.edit(editedExpense)
                 .then(() => {
                     onUpdate(primary_entity_id,user_id)(model)
-                    worker.postMessage(createActionMessage('edit', user_id, model, editedExpense))
+                    const data = createActionMessage('edit', user_id, model, editedExpense)
+                    worker.postMessage(JSON.stringify(data))
                     navigate(-1)
                 })
 

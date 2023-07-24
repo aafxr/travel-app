@@ -23,7 +23,6 @@ console.log('====worker=====')
 // })
 
 
-
 let getActionIntervalID
 
 if (!getActionIntervalID) {
@@ -34,27 +33,32 @@ if (!getActionIntervalID) {
 
 onmessage = function (e) {
 
-    const expensesActions = []
-    const rest = []
+    const data = JSON.parse(e.data)
+    console.log('================',data)
+    if (data.type === 'action' && data.action) {
 
-    const data = toArray(JSON.parse(e.data))
-    data.filter(d => !actionsBlackList.includes(d.entity) ? expensesActions.push(d) : rest.push(d))
+        const expensesActions = []
+        const rest = []
 
-    if (navigator.onLine) {
-        if (expensesActions.length) {
-            sendActions(expensesActions)
+
+        data.action.data.filter(d => !actionsBlackList.includes(d.entity) ? expensesActions.push(d) : rest.push(d))
+
+        if (navigator.onLine) {
+            if (expensesActions.length) {
+                sendActions(expensesActions)
+            }
+
+            if (rest.length) {
+                rest
+                    .map(d => {
+                        d.synced = 1
+                        return d
+                    })
+                postMessage(rest)
+
+            }
+        } else {
+            offlineProcessingData(expensesActions, rest)
         }
-
-        if (rest.length) {
-            rest
-                .map(d => {
-                    d.synced = 1
-                    return d
-                })
-            postMessage(rest)
-
-        }
-    } else {
-        offlineProcessingData(expensesActions, rest)
     }
 }

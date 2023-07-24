@@ -108,7 +108,7 @@ export default function LimitsEdit({
                 const editedLimit = {...limitObj, value: +limitValue}
                 model.edit(editedLimit)
                     .then(()=>{
-                        worker.postMessage(createActionMessage('edit', user_id, model, editedLimit))
+                        worker.postMessage(JSON.stringify(editedLimit))
                     })
             } else {
                 const newLimit = {
@@ -123,7 +123,8 @@ export default function LimitsEdit({
 
                 model.edit(newLimit)
                     .then(()=>{
-                        worker.postMessage(createActionMessage('add', user_id, model, newLimit))
+                        const data = createActionMessage('add', user_id, model, newLimit)
+                        worker.postMessage(JSON.stringify(data))
                     })
                     .catch(console.error)
             }
