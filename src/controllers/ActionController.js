@@ -117,12 +117,15 @@ export default class ActionController {
             actionValidationObj
         );
 
-        this.update = options.onUpdate || (() => {})
-        this.send = options.onSendData || (() => {})
+        this.update = options.onUpdate || (() => {
+        })
+        this.send = options.onSendData || (() => {
+        })
 
         !options.newAction && console.warn('[ActionController] you need to specify a function "newAction"')
         /**@returns {ActionType} */
-        this.createAction = options.newAction || (() => {})
+        this.createAction = options.newAction || (() => {
+        })
 
         this.model = {};
         this.subscriptions = {};
@@ -253,18 +256,20 @@ export default class ActionController {
             const entityList = new Set(actionsArr.map(a => a.entity))
             const actionsQueue = []
             let isModified = false
+
             for (const action of actionsArr) {
                 if (this.isActionValid(action)) {
                     const {action: actionVariant, synced, entity, data} = action;
 
-                    if (synced) {
-                        if(this.model[entity].validate(data)){
-                            if (this.model[entity] && this.model[entity][actionVariant] && data) {
-                                await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
-                                isModified = true
-                            }
+                    if (this.model[entity].validate(data)) {
+                        if (this.model[entity] && this.model[entity][actionVariant] && data) {
+                            await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
+                            isModified = true
                         }
-                        await this.actionsModel.remove(action.uid)
+                    }
+
+                    if (synced) {
+                        await this.actionsModel.edit(action)
                     } else {
                         //действия если не синхронизированно
                         await this.actionsModel.edit(action)
@@ -339,7 +344,6 @@ export default class ActionController {
                             throw err
                         })
                 }
-                return Promise.resolve(null)
             } catch (err) {
                 this._errorMessage(err)
             }
@@ -383,11 +387,12 @@ export default class ActionController {
     /**
      * метод ожидает востановления сети и отправляет накопившиеся actions на сервер
      */
-    whileOffline(){
-        if(!this.offlineId){
+    whileOffline() {
+        if (!this.offlineId) {
             this.offlineId = setInterval(async () => {
-                if(navigator.onLine){
-                    const actions = await this.actionsModel.get('all')
+                if (navigator.onLine) {
+                    const actions = await this.actionsModel.getFromIndex(constants.indexes.SYNCED, 0)
+                    console.log('Not synced actions: ', actions)
                     this.onLine = true
                     clearInterval(this.offlineId)
                     await this.actionHandler(actions)

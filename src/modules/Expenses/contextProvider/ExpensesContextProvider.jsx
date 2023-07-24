@@ -16,6 +16,7 @@ import updateSections from "../helpers/updateSections";
 
 import '../css/Expenses.css'
 import updateLimits from "../helpers/updateLimits";
+import functionDurationTest from "../../../utils/functionDurationTest";
 
 
 /**
@@ -85,15 +86,15 @@ export default function ExpensesContextProvider({user_id}) {
             !sections.length && setSections(await updateSections(controller))
         })
 
-        return () => {
-            controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
-            controller.unsubscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
-            controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => {
-                setLimits(await updateLimits(controller, primary_entity_id))
-                !sections.length && setSections(await updateSections(controller))
-            })
-        }
+        // return () => {
+        //     controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
+        //     controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
+        //     controller.unsubscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
+        //     controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => {
+        //         setLimits(await updateLimits(controller, primary_entity_id))
+        //         !sections.length && setSections(await updateSections(controller))
+        //     })
+        // }
     }, [])
 
 
@@ -102,7 +103,8 @@ export default function ExpensesContextProvider({user_id}) {
             async function workerMessageHandler(e) {
                 let actions = toArray(e.data)
                 if (state.controller) {
-                    await state.controller.actionHandler(actions)
+                    console.log('workerMessageHandler: ', e.data)
+                    functionDurationTest(state.controller.actionHandler.bind(state.controller, actions), '[Основной поток] Время обработки actions: ')
                     !sections.length && setSections(await updateSections(state.controller))
                 }
             }

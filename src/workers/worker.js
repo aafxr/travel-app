@@ -1,23 +1,19 @@
-import {actionsBlackList} from "../modules/Expenses/static/vars";
 import toArray from "../utils/toArray";
+import getActionsList from "./getActionslist";
 import {offlineProcessingData} from "./offlineProcessingData";
+
+import {actionsBlackList} from "../modules/Expenses/static/vars";
+import functionDurationTest from "../utils/functionDurationTest";
 
 console.log('====worker=====')
 
+let getActionIntervalID
 
-
-setInterval(async () => {
-    const response = await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
-    const expensesActions = await response.json()
-
-
-    console.log('worker receive ', expensesActions)
-    if (expensesActions.ok && expensesActions.result) {
-        postMessage(expensesActions.result)
-    }
-
-}, 5000)
-
+if (!getActionIntervalID) {
+    getActionIntervalID = setInterval(() => {
+        functionDurationTest(getActionsList, '[Worker] Время обработки actions: ')
+    }, 5000)
+}
 
 onmessage = function (e) {
 

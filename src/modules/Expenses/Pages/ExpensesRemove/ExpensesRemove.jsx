@@ -23,7 +23,7 @@ export default function ExpensesRemove({user_id, primary_entity_type, expensesTy
             controller.write({
                 storeName,
                 action: 'remove',
-                data: expense[0],
+                data: expense,
                 user_id
             })
                 .then(() => {
