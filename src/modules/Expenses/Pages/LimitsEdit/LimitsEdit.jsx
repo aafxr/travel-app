@@ -15,6 +15,8 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
+import {WorkerContext} from "../../../../contexts/WorkerContextProvider";
+import createActionMessage from "../../helpers/createActionMessage";
 
 /**
  * страница редактиррования лимитов
@@ -27,10 +29,11 @@ export default function LimitsEdit({
                                        user_id,
                                        primary_entity_type
                                    }) {
+    const navigate = useNavigate()
     const {travelCode: primary_entity_id, sectionId} = useParams()
 
-    const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
-    const navigate = useNavigate()
+    const {defaultSection, sections, limits, expensesPlanModel: model} = useContext(ExpensesContext)
+    const {worker} = useContext(WorkerContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -61,8 +64,9 @@ export default function LimitsEdit({
 
     //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
-        controller && updateExpenses(controller, primary_entity_id, 'plan').then(setExpenses)
-    }, [controller])
+        model && updateExpenses(model, primary_entity_id).then(setExpenses)
+    }, [model])
+
 
     useEffect(() => {
             defaultSection && setSectionId(sectionId || defaultSection.id)
@@ -101,27 +105,26 @@ export default function LimitsEdit({
 
         if (user_id) {
             if (limitObj ) {
-                controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'edit',
-                    user_id,
-                    data: {...limitObj, value: +limitValue}
-                })
+                const editedLimit = {...limitObj, value: +limitValue}
+                model.edit(editedLimit)
+                    .then(()=>{
+                        worker.postMessage(createActionMessage('edit', user_id, model, editedLimit))
+                    })
             } else {
-                controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'add',
+                const newLimit = {
+                    section_id,
+                    personal: personal ? 1 : 0,
+                    value: +limitValue,
                     user_id,
-                    data: {
-                        section_id,
-                        personal: personal ? 1 : 0,
-                        value: +limitValue,
-                        user_id,
-                        primary_entity_id,
-                        primary_entity_type,
-                        id: createId(user_id)
-                    }
-                })
+                    primary_entity_id,
+                    primary_entity_type,
+                    id: createId(user_id)
+                }
+
+                model.edit(newLimit)
+                    .then(()=>{
+                        worker.postMessage(createActionMessage('add', user_id, model, newLimit))
+                    })
                     .catch(console.error)
             }
         } else {

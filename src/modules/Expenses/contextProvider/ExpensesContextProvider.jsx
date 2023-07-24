@@ -17,6 +17,12 @@ import updateSections from "../helpers/updateSections";
 import '../css/Expenses.css'
 import updateLimits from "../helpers/updateLimits";
 import functionDurationTest from "../../../utils/functionDurationTest";
+import {LocalDB} from "../../../db";
+import Model from "../../../models/Model";
+import limitValidationObj from "../models/limit/validation";
+import expensesValidationObj from "../models/expenses/validation";
+import sectionValidationObj from "../models/section/validation";
+import ErrorReport from "../../../controllers/ErrorReport";
 
 
 /**
@@ -32,16 +38,24 @@ export const ExpensesContext = createContext(null)
  * @property {import('../models/SectionType').SectionType | null} defaultSection
  * @property {Array.<import('../models/SectionType').SectionType> | []} sections
  * @property {Array.<import('../models/LimitType').LimitType> | []} limits
+ * @property {import('../../../models/Model').default} limitModel
+ * @property {import('../../../models/Model').default} expensesActualModel
+ * @property {import('../../../models/Model').default} expensesPlanModel
+ * @property {import('../../../models/Model').default} sectionModel
  */
 
 /**
  * @type ExpensesContextState
  */
+
 const defaultState = {
-    controller: null,
     defaultSection: null,
     limits: [],
-    sections: []
+    sections: [],
+    limitModel: null,
+    expensesActualModel: null,
+    expensesPlanModel: null,
+    sectionModel: null
 }
 
 /**
@@ -62,74 +76,72 @@ export default function ExpensesContextProvider({user_id}) {
 
     const {worker} = useContext(WorkerContext)
 
-    useDefaultSection(state.controller, primary_entity_id, user_id)
+    useDefaultSection(state.sectionModel, primary_entity_id, user_id)
 
 
     useEffect(() => {
-        const controller = new ActionController(schema, {
-            ...options,
-            onReady: () => setDbReady(true),
-            onError: console.error
-        })
-        controller.onUpdate = onUpdate(primary_entity_id, user_id)
-        setState({...state, controller})
+        new LocalDB(schema, {
+                onReady(db) {
+                    const limitModel = new Model(db, constants.store.LIMIT, limitValidationObj)
+                    const expensesActualModel = new Model(db, constants.store.EXPENSES_ACTUAL, expensesValidationObj)
+                    const expensesPlanModel = new Model(db, constants.store.EXPENSES_PLAN, expensesValidationObj)
+                    const sectionModel = new Model(db, constants.store.SECTION, sectionValidationObj)
 
-        updateSections(controller).then(setSections)
-        updateLimits(controller, primary_entity_id).then(setLimits)
+                    sectionModel.get('all').then(setSections)
+                    limitModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id).then(setLimits)
 
-        controller.subscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
-        controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
+                    setState({
+                        ...state,
+                        limitModel,
+                        expensesActualModel,
+                        expensesPlanModel,
+                        sectionModel
+                    })
+                    setDbReady(true)
+                },
 
-        controller.subscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
-        controller.subscribe(constants.store.EXPENSES_PLAN, async () => {
-            setLimits(await updateLimits(controller, primary_entity_id))
-            !sections.length && setSections(await updateSections(controller))
-        })
-
-        // return () => {
-        //     controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
-        //     controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
-        //     controller.unsubscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
-        //     controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => {
-        //         setLimits(await updateLimits(controller, primary_entity_id))
-        //         !sections.length && setSections(await updateSections(controller))
-        //     })
-        // }
+                onError(err) {
+                    ErrorReport.sendError(err).catch(console.error)
+                }
+            }
+        )
     }, [])
 
 
     useEffect(() => {
-        if (worker && state.controller) {
+        if (worker && dbReady) {
             async function workerMessageHandler(e) {
-                let actions = toArray(e.data)
-                if (state.controller) {
-                    console.log('workerMessageHandler: ', e.data)
-                    functionDurationTest(state.controller.actionHandler.bind(state.controller, actions), '[Основной поток] Время обработки actions: ')
-                    !sections.length && setSections(await updateSections(state.controller))
+                let {type, storeName} = e.data
+
+                if (type === 'update') {
+                    functionDurationTest(() => {
+                        return new Promise((resolve) => {
+                            // storeName === constants.store.LIMIT &&
+                            // storeName === constants.store.SECTION &&
+                            Promise.all(
+                                [
+                                    state.limitModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id).then(setLimits),
+                                    state.sectionModel.get('all').then(setSections)
+                                ]
+                            ).then(resolve)
+                        })
+                    }, `[Основной поток {${storeName}}] Время обработки actions: `)
+                    !sections.length && state.sectionModel.get('all').then(setSections)
                 }
             }
 
             worker.addEventListener('message', workerMessageHandler)
 
-            state.controller.onSendData = (action) => worker.postMessage(JSON.stringify(toArray(action)))
-
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
-    }, [state.controller, worker])
+    }, [dbReady, worker, primary_entity_id])
 
 
     useEffect(() => {
-        if (sections && sections.length) {
-            const section = sections.find(s => s.title === 'Прочие расходы')
-            const defaultSection = section ? section : null
-            setState({...state, sections, defaultSection})
-        }
-    }, [sections])
+        setState({...state, sections, limits})
+    }, [sections, limits])
 
-
-    useEffect(() => {
-        limits.length && setState({...state, limits})
-    }, [limits])
+    console.log(state)
 
 
     if (!dbReady) {

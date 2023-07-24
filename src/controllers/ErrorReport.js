@@ -6,15 +6,15 @@ class ErrorReport {
     constructor() {
         this.isProd = process.env.NODE_ENV === 'production'
 
-        const sendReport = this.sendReport.bind(this)
-        window.addEventListener('keydown', function (e) {
-            const {key, altKey, ctrlKey, shiftKey} = e
-
-            if (ctrlKey && altKey && shiftKey && key === 'F10') {
-                const isConfirm = window.confirm("Отправить отчет о последней ошибке?")
-                isConfirm && sendReport()
-            }
-        })
+        // const sendReport = this.sendReport.bind(this)
+        // window.addEventListener('keydown', function (e) {
+        //     const {key, altKey, ctrlKey, shiftKey} = e
+        //
+        //     if (ctrlKey && altKey && shiftKey && key === 'F10') {
+        //         const isConfirm = window.confirm("Отправить отчет о последней ошибке?")
+        //         isConfirm && sendReport()
+        //     }
+        // })
     }
 
     async sendError(error) {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
@@ -15,6 +15,9 @@ import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
 import '../../css/Expenses.css'
 import updateExpenses from "../../helpers/updateExpenses";
+import createId from "../../../../utils/createId";
+import {WorkerContext} from "../../../../contexts/WorkerContextProvider";
+import {onUpdate} from "../../controllers/onUpdate";
 
 
 /**
@@ -26,7 +29,9 @@ import updateExpenses from "../../helpers/updateExpenses";
  */
 export default function Expenses({user_id, primary_entity_type}) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, sections, limits} = useContext(ExpensesContext)
+
+    const {worker} = useContext(WorkerContext)
+    const {sections, limits, expensesActualModel: model} = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -34,15 +39,27 @@ export default function Expenses({user_id, primary_entity_type}) {
 
     const [filter, setFilter] = useState(defaultFilterValue)
 
+    useEffect(() => {
+        const handleMessage = e => {
+            console.log('expenses ', e.data)
+            const {type, storeName} = e.data
+            if (storeName === model.storeName && type === 'update') {
+                updateExpenses(model, primary_entity_id).then(setExpenses)
+            }
+        }
+        worker && worker.addEventListener('message', handleMessage)
+        // worker && onUpdate(primary_entity_id,user_id)(model)
+
+        return () => worker.removeEventListener('message', handleMessage)
+    }, [worker])
+
 
     useEffect(() => {
-        if (controller) {
-            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "actual").then(setExpenses)
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "actual")))
+        if (model) {
+            setTimeout(() => setNoDataMessage('Нет расходов'), 3000)
+            updateExpenses(model, primary_entity_id).then(setExpenses)
         }
-        // return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
-    }, [controller])
+    }, [model, primary_entity_id])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 

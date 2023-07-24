@@ -15,7 +15,7 @@ export default function ExpensesActualAdd({
                                               primary_entity_type
                                           }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller} = useContext(ExpensesContext)
+    const {sectionModel} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [sectionName, setSectionName] = useState('')
@@ -30,12 +30,7 @@ export default function ExpensesActualAdd({
                 id: createId(user_id)
             }
 
-            controller.write({
-                storeName: constants.store.SECTION,
-                action: 'add',
-                user_id,
-                data
-            })
+            sectionModel.edit(data)
                 .then((res) => {
                     console.log('Ответ ', res)
                     console.log('section created ', sectionName)

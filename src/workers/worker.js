@@ -4,8 +4,25 @@ import {offlineProcessingData} from "./offlineProcessingData";
 
 import {actionsBlackList} from "../modules/Expenses/static/vars";
 import functionDurationTest from "../utils/functionDurationTest";
+import sendActions from "./sendActions";
 
 console.log('====worker=====')
+
+// let actionsModel
+// let dbReady = false
+
+// new LocalDB(schema,{
+//     onReady(db){
+//         // actionsModel = new Model(db, constants.store.ACTIONS, actionsValidation)
+//         // dbReady = true
+//     },
+//     onError(err){
+//         console.error(err)
+//         ErrorReport.sendReport(err).catch(console.error)
+//     }
+// })
+
+
 
 let getActionIntervalID
 
@@ -25,15 +42,7 @@ onmessage = function (e) {
 
     if (navigator.onLine) {
         if (expensesActions.length) {
-            fetch(process.env.REACT_APP_SERVER_URL + '/expenses/addActions/', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8"
-                },
-                body: JSON.stringify(expensesActions)
-            })
-                .then(console.log)
-                .catch(console.error)
+            sendActions(expensesActions)
         }
 
         if (rest.length) {

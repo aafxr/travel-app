@@ -14,6 +14,13 @@ root.render(
     </StrictMode>
 );
 
+const appHeight = () => {
+    const doc = document.documentElement
+    doc.style.setProperty('--1vh', `${window.innerHeight / 100}px`)
+}
+// window.addEventListener('resize', appHeight)
+appHeight()
+
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

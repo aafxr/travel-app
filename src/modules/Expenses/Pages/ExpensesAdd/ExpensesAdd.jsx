@@ -17,6 +17,8 @@ import useExpense from "../../hooks/useExpense";
 import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import hideKeyboard from "../../../../utils/hideKeyboard";
+import {WorkerContext} from "../../../../contexts/WorkerContextProvider";
 
 
 /**
@@ -36,9 +38,11 @@ export default function ExpensesAdd({
                                         expensesType = 'actual', // 'actual' | 'plan'
                                         edit = false
                                     }) {
-    const {travelCode: primary_entity_id, expenseCode} = useParams()
-    const {controller, defaultSection, sections} = useContext(ExpensesContext)
     const navigate = useNavigate()
+    const {travelCode: primary_entity_id, expenseCode} = useParams()
+
+    const {defaultSection, sections, expensesActualModel, expensesPlanModel} = useContext(ExpensesContext)
+    const {worker} = useContext(WorkerContext)
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
@@ -50,18 +54,18 @@ export default function ExpensesAdd({
     const inputNameRef = useRef()
     const inputSumRef = useRef()
 
-    const expense = useExpense(controller, expenseCode, expensesType)
-
     const isPlan = expensesType === 'plan'
+
+    const model = isPlan ? expensesPlanModel : expensesActualModel
+
+    const expense = useExpense(model, expenseCode)
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
 
 
     useEffect(() => {
-        if (defaultSection) {
-            setSectionId(defaultSection.id)
-        }
+        defaultSection && setSectionId(defaultSection.id)
     }, [defaultSection])
 
 
@@ -86,22 +90,23 @@ export default function ExpensesAdd({
         value && setExpCurr(value)
     }
 
-    function handleExpense(){
-        if (!expName ){
+    function handleExpense() {
+        if (!expName) {
             pushAlertMessage({type: 'warning', message: 'Укажите ' + expNameTitle.toLowerCase()})
             inputNameRef.current?.focus()
             return
         }
-        if (!expSum){
+        if (!expSum) {
             pushAlertMessage({type: 'warning', message: 'Укажите сумму'})
             inputSumRef.current?.focus()
             return
         }
         edit
-            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate, expense)
-            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate)
+            ? handleEditExpense(worker, model, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum, expCurr, personal, section_id, navigate, expense)
+            : handleAddExpense(worker, model, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum, expCurr, personal, section_id, navigate)
 
     }
+
 
     return (
         <div className='wrapper'>
@@ -136,6 +141,7 @@ export default function ExpensesAdd({
                                             ref={inputNameRef}
                                             type={'text'}
                                             value={expName}
+                                            onKeyUp={hideKeyboard}
                                             onChange={e => setExpName(e.target.value)}
                                         />
                                     </div>
@@ -146,8 +152,9 @@ export default function ExpensesAdd({
                                         <Input
                                             ref={inputSumRef}
                                             className='expenses-currency-value'
-                                            type={'text'}
+                                            type={'number'}
                                             value={expSum}
+                                            onKeyUp={hideKeyboard}
                                             onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
                                         />
                                         <Select
@@ -169,7 +176,7 @@ export default function ExpensesAdd({
             </div>
 
             <div className='footer-btn-container footer'>
-                <Button onClick={handleExpense} >{buttonTitle}</Button>
+                <Button onClick={handleExpense}>{buttonTitle}</Button>
             </div>
         </div>
     )

@@ -13,6 +13,8 @@ import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
 import updateExpenses from "../../helpers/updateExpenses";
+import {WorkerContext} from "../../../../contexts/WorkerContextProvider";
+import {onUpdate} from "../../controllers/onUpdate";
 
 
 /**
@@ -27,7 +29,9 @@ export default function ExpensesPlan({
                                          primary_entity_type
                                      }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, sections, limits} = useContext(ExpensesContext)
+
+    const {worker} = useContext(WorkerContext)
+    const {expensesPlanModel: model, sections, limits} = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -36,14 +40,27 @@ export default function ExpensesPlan({
     const [filter, setFilter] = useState(defaultFilterValue)
 
 
-    useEffect(() => {
-        if (controller) {
-            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "plan").then(setExpenses)
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "plan")))
+    useEffect(()=>{
+        const handleMessage =  e => {
+            const {type, storeName} = e.data
+            if (storeName === model.storeName && type === 'update'){
+                updateExpenses(model, primary_entity_id).then(setExpenses)
+            }
         }
-        // return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
-    }, [controller])
+
+        worker && worker.addEventListener('message', handleMessage)
+        // worker && onUpdate(primary_entity_id,user_id)(model)
+
+        return () => worker.removeEventListener('message', handleMessage)
+    }, [worker])
+
+
+    useEffect(() => {
+        if (model) {
+            setTimeout(() => setNoDataMessage('Нет расходов'), 3000)
+            updateExpenses(model, primary_entity_id).then(setExpenses)
+        }
+    }, [model])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
 

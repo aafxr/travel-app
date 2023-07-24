@@ -281,6 +281,14 @@ export default class ActionController {
                 this.update(this)
                 for (const entity of entityList.keys()) {
                     this._subscriptionsCall(entity)
+                    console.log({
+                        type: 'update',
+                        storeName: entity
+                    })
+                    postMessage({
+                        type: 'update',
+                        storeName: entity
+                    })
                 }
             }
             actionsQueue.length && this.send(actionsQueue)

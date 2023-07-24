@@ -3,6 +3,8 @@ import Model from "../models/Model";
 import schema from "../modules/Expenses/db/schema";
 import constants from "../modules/Expenses/db/constants";
 import actionsValidation from "../modules/Expenses/models/action/validation";
+import ActionController from "../controllers/ActionController";
+import expensesOptions from "../modules/Expenses/controllers/controllerOptions";
 
 
 let ready = false
@@ -12,6 +14,9 @@ const db = new LocalDB(schema, {
 })
 
 const actionsModel = new Model(db, constants.store.ACTIONS, actionsValidation)
+
+const controller = new ActionController(schema, expensesOptions)
+
 
 
 /**
@@ -31,7 +36,7 @@ export default async function getActionsList() {
                 return acc
             }, {})
             const filtered = receivedActions.result.filter(a => !existingActions[a.uid])
-            postMessage(filtered)
+            controller.actionHandler(filtered).catch(console.error)
         }
     }
 }

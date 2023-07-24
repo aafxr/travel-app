@@ -1,15 +1,16 @@
 import constants from "../db/constants";
-import isString from "../../../utils/validation/isString";
-import accumulate from "../../../utils/accumulate";
 import toArray from "../../../utils/toArray";
 import createId from "../../../utils/createId";
+import Model from "../../../models/Model";
+import schema from "../db/schema";
+import limitValidation from '../models/limit/validation'
 
-const totalDefault = {
-    updated_at: Date.now(),
-    limits: [],
-    total_actual: 0,
-    total_planed: 0
-}
+// const totalDefault = {
+//     updated_at: Date.now(),
+//     limits: [],
+//     total_actual: 0,
+//     total_planed: 0
+// }
 
 
 export function onUpdate(primary_entity_id, user_id) {
@@ -18,7 +19,7 @@ export function onUpdate(primary_entity_id, user_id) {
      * @param {import('../../../controllers/ActionController').ActionController} controller
      * @param {import('../../../controllers/ActionController').ActionType} [action]
      */
-    return async function (controller) {
+    return async function (model, limitsModel) {
 
         // let total = JSON.parse(localStorage.getItem(constants.TOTAL_EXPENSES)) || totalDefault
         // let isActionAfterUpdate = true
@@ -51,11 +52,7 @@ export function onUpdate(primary_entity_id, user_id) {
         //     query: 'all'
         // })
 
-        const expenses_plan = await controller.read({
-            storeName: constants.store.EXPENSES_PLAN,
-            index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: 'all'
-        })
+        const expenses_plan = await model.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
 
 
         // if (!isActionAfterUpdate) {
@@ -78,7 +75,7 @@ export function onUpdate(primary_entity_id, user_id) {
             .filter(e => e.personal === 0)
             .forEach(e => limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value : limitsObj.common[e.section_id] = e.value)
 
-        const limitsModel = controller.getStoreModel(constants.store.LIMIT)
+        // const limitsModel = new Model(schema, constants.store.LIMIT, limitValidation)
         const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.bound(primary_entity_id, primary_entity_id)))
         window.limit = limitsModel
         const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
@@ -115,11 +112,7 @@ export function onUpdate(primary_entity_id, user_id) {
         }
 
 
-        let limitsExpenses = await controller.read({
-            storeName: constants.store.LIMIT,
-            index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: primary_entity_id
-        })
+        let limitsExpenses = await model.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID,primary_entity_id)
         // const limits = []
         for (let limit of limitsExpenses) {
             const section_id = limit.section_id
@@ -134,12 +127,14 @@ export function onUpdate(primary_entity_id, user_id) {
             // })
 
             if (limitsObj[isPersonal? 'personal': 'common'][section_id] && limit.value < maxLimitPlan) {
-                console.log(await controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'edit',
-                    user_id,
-                    data: {...limit, value: maxLimitPlan}
-                }))
+                await model.edit({...limit, value: maxLimitPlan}
+                // {
+                //     storeName: constants.store.LIMIT,
+                //     action: 'edit',
+                //     user_id,
+                //     data: {...limit, value: maxLimitPlan}
+                // })
+            )
 
                 // limit.value = maxLimitPlan
             }

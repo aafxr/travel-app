@@ -6,6 +6,7 @@ import sectionValidationObj from '../models/section/validation'
 
 import constants from "../db/constants";
 import createId from "../../../utils/createId";
+import {onUpdate} from "./onUpdate";
 
 /**
  * возвращает action для новой записи в бд
@@ -54,6 +55,7 @@ const options = {
     },
     storeName: 'expensesActions',
     newAction: createAction,
+    onUpdate
 }
 
 export default options

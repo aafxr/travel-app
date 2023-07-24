@@ -1,4 +1,6 @@
 :root{
+    --1vh: 1vh;
+    --app-height: calc(var(--1vh) * 100);
     --x: 40px;
     --border-radius: 6px;
 }
