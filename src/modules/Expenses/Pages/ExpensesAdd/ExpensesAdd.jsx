@@ -17,6 +17,7 @@ import useExpense from "../../hooks/useExpense";
 import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import currencyTest from "../../../../utils/currencyTest";
 
 
 /**
@@ -97,6 +98,11 @@ export default function ExpensesAdd({
             inputSumRef.current?.focus()
             return
         }
+        if(!currencyTest(expSum)){
+            pushAlertMessage({type: 'warning', message: 'Значение лимита не корректно.'})
+            inputSumRef.current?.focus()
+            return
+        }
         edit
             ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate, expense)
             : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate)
@@ -149,7 +155,7 @@ export default function ExpensesAdd({
                                             type={'number'}
                                             min={0}
                                             value={expSum}
-                                            onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
+                                            onChange={e => setExpSum(e.target.value)}
                                         />
                                         <Select
                                             className='expenses-currency'

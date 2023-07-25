@@ -20,48 +20,11 @@ export function onUpdate(primary_entity_id, user_id) {
      */
     return async function (controller) {
 
-        // let total = JSON.parse(localStorage.getItem(constants.TOTAL_EXPENSES)) || totalDefault
-        // let isActionAfterUpdate = true
-
-        // if (action) {
-        //     const actionTime = Date.parse(action.datetime) || Number.MIN_SAFE_INTEGER
-        //     total.updated_at < actionTime && (isActionAfterUpdate = false)
-        // } else {
-        //     isActionAfterUpdate = false
-        // }
-
-        // if (action && action.data && isActionAfterUpdate) {
-        //     let actionData = action.data
-        //
-        //     isString(actionData) && (actionData = JSON.parse(action.data))
-        //
-        //     if (action.entity === 'expenses_actual') {
-        //         total.total_actual += actionData.value || 0
-        //     } else if (action.entity === 'expenses_plan') {
-        //         total.total_planed += actionData.value || 0
-        //
-        //     }
-        //
-        // }
-
-
-        // const expenses_actual = await controller.read({
-        //     storeName: constants.store.EXPENSES_ACTUAL,
-        //     index: constants.indexes.PRIMARY_ENTITY_ID,
-        //     query: 'all'
-        // })
-
         const expenses_plan = await controller.read({
             storeName: constants.store.EXPENSES_PLAN,
             index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: 'all'
+            query: primary_entity_id
         })
-
-
-        // if (!isActionAfterUpdate) {
-        //     total.total_actual = accumulate(expenses_actual, item => item.value)
-        //     total.total_planed = accumulate(expenses_plan, item => item.value)
-        // }
 
         const limitsObj = {
             personal: {},
@@ -120,7 +83,7 @@ export function onUpdate(primary_entity_id, user_id) {
             index: constants.indexes.PRIMARY_ENTITY_ID,
             query: primary_entity_id
         })
-        // const limits = []
+
         for (let limit of toArray(limitsExpenses)) {
             const section_id = limit.section_id
 
@@ -128,34 +91,14 @@ export function onUpdate(primary_entity_id, user_id) {
 
             const maxLimitPlan = isPersonal ? limitsObj.personal[section_id] : limitsObj.common[section_id]
 
-            // const section = await controller.read({
-            //     storeName: constants.store.SECTION,
-            //     id: section_id
-            // })
-
-            if (limitsObj[isPersonal? 'personal': 'common'][section_id] && limit.value < maxLimitPlan) {
+            if (limitsObj[isPersonal ? 'personal' : 'common'][section_id] && limit.value < maxLimitPlan) {
                 console.log(await controller.write({
                     storeName: constants.store.LIMIT,
                     action: 'edit',
                     user_id,
                     data: {...limit, value: maxLimitPlan}
                 }))
-
-                // limit.value = maxLimitPlan
             }
-
-            // !isPersonal && limits.push(
-            //     {
-            //         section_id,
-            //         title: section.title,
-            //         value: limit.value
-            //     }
-            // )
         }
-
-        // total.limits = limits
-
-        // total.updated_at = Date.now()
-        // localStorage.setItem(constants.TOTAL_EXPENSES, JSON.stringify(total))
     }
 }

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
@@ -15,6 +15,7 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
+import currencyTest from "../../../../utils/currencyTest";
 
 /**
  * страница редактиррования лимитов
@@ -28,6 +29,13 @@ export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
     const {travelCode: primary_entity_id, sectionId} = useParams()
+    const  {pathname} = useLocation()
+
+    const isPlan = pathname.includes('plan')
+
+    const backUrl = isPlan
+        ? `/travel/${primary_entity_id}/expenses/plan/`
+        : `/travel/${primary_entity_id}/expenses/`
 
     const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
     const navigate = useNavigate()
@@ -90,6 +98,13 @@ export default function LimitsEdit({
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
     function handler(_) {
+        if (!currencyTest(limitValue)){
+            pushAlertMessage({
+                type: 'warning',
+                message: `Значение лимита не корректно.`
+            })
+            return
+        }
         if (+limitValue < minLimit) {
             setMessage(`Лимит должен быть больше ${minLimit}`)
             pushAlertMessage({
@@ -136,7 +151,7 @@ export default function LimitsEdit({
             <div className='wrapper'>
                 <div className='content'>
                     <Container>
-                        <PageHeader arrowBack title={'Редактировать лимит'} />
+                        <PageHeader arrowBack title={'Редактировать лимит'} to={backUrl} />
                         <div className='column gap-1'>
                             <div className='row flex-wrap gap-0.75'>
                                 {
