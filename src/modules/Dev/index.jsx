@@ -5,7 +5,7 @@ import Container from "../Expenses/components/Container/Container";
 
 import Select from "../../components/ui/Select/Select";
 
-export default function ExpensesPlan({
+export default function Dev({
                                          user_id,
                                          primary_entity_type,
                                          primary_entity_id
@@ -15,7 +15,7 @@ export default function ExpensesPlan({
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'production') {
-            navigate('/travel/123/expenses/')
+            navigate('/')
         }
     },[navigate])
 

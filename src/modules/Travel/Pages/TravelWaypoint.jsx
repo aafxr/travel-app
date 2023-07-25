@@ -2,7 +2,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 
 import Container from "../../Expenses/components/Container/Container";
-import Button from "../../Expenses/components/Button/Button";
+import Button from "../../../components/ui/Button/Button";
 import { PageHeader} from "../../../components/ui";
 
 import '../css/Travel.css'

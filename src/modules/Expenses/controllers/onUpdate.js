@@ -79,7 +79,7 @@ export function onUpdate(primary_entity_id, user_id) {
             .forEach(e => limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value : limitsObj.common[e.section_id] = e.value)
 
         const limitsModel = controller.getStoreModel(constants.store.LIMIT)
-        const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, IDBKeyRange.bound(primary_entity_id, primary_entity_id)))
+        const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id))
         window.limit = limitsModel
         const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
         const commonLimits = allTravelLimits.filter(l => l.personal === 0).map(l => l.section_id)
@@ -121,7 +121,7 @@ export function onUpdate(primary_entity_id, user_id) {
             query: primary_entity_id
         })
         // const limits = []
-        for (let limit of limitsExpenses) {
+        for (let limit of toArray(limitsExpenses)) {
             const section_id = limit.section_id
 
             const isPersonal = limit.user_id === user_id && limit.personal === 1

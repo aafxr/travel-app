@@ -1,6 +1,6 @@
 .swiper-container{
     position: relative;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .swiper-controls{

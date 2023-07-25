@@ -12,7 +12,7 @@ let getActionIntervalID
 if (!getActionIntervalID) {
     getActionIntervalID = setInterval(() => {
         functionDurationTest(getActionsList, '[Worker] Время обработки actions: ')
-    }, 5000)
+    }, 10000)
 }
 
 onmessage = function (e) {

@@ -5,7 +5,7 @@ import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
 import createId from "../../../../utils/createId";
-import Button from "../../components/Button/Button";
+import Button from "../../../../components/ui/Button/Button";
 
 
 import constants from "../../db/constants";
@@ -160,7 +160,7 @@ export default function LimitsEdit({
                                     <Input
                                         value={limitValue}
                                         onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
-                                        type={'text'}
+                                        type={'number'}
                                         placeholder='Лимит'
                                     />
                                     {!!message && <div className='expenses-message'>{message}</div>}

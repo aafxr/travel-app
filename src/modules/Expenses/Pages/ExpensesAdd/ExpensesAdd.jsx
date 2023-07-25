@@ -7,7 +7,7 @@ import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
-import Button from "../../components/Button/Button";
+import Button from "../../../../components/ui/Button/Button";
 import Select from "../../../../components/ui/Select/Select";
 
 import {defaultFilterValue, currency} from "../../static/vars";
@@ -111,7 +111,7 @@ export default function ExpensesAdd({
                         <PageHeader arrowBack title={'Добавить расходы'}/>
                         <div className='column gap-1'>
                             <div className='title'>Категория</div>
-                            <div className={clsx('row flex-wrap gap-0.75 bb-2-grey expenses-pb-20')}>
+                            <div className={clsx('row flex-wrap gap-0.75 bb-2-grey pb-20')}>
                                 {
                                     sections && !!sections.length && sections.map(
                                         (section) => (

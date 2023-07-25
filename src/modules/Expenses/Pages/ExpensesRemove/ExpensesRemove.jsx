@@ -1,6 +1,6 @@
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../components/Container/Container";
-import Button from "../../components/Button/Button";
+import Button from "../../../../components/ui/Button/Button";
 import { useNavigate, useParams} from "react-router-dom";
 import {useContext} from "react";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";

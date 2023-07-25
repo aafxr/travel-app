@@ -6,7 +6,12 @@ const schema = {
       name: 'travel',
       key: 'id',
       indexes: [],
-    }
+    },
+    {
+      name: 'travelActions',
+      key: 'uid',
+      indexes: ['synced', 'entity', 'action'],
+    },
   ],
 };
 

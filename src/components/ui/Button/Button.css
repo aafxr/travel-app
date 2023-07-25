@@ -5,7 +5,7 @@
     box-shadow: 0 -10px 30px 0 rgba(0, 0, 0, 0.10);
 }
 
-.expenses-btn{
+.full-screen-btn{
     padding: 16px 0;
     width: 100%;
     font-weight: 700;
@@ -20,13 +20,13 @@
     background-color: var(--color-primary-light);
 }
 
-.expenses-btn.active{
+.full-screen-btn.active{
     color: var(--color-secondary);
     background-color: var(--color-primary);
 
 }
 
-.expenses-btn:disabled{
+.full-screen-btn:disabled{
     cursor: default;
     pointer-events: none;
 }

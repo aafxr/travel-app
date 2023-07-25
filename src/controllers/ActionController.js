@@ -111,9 +111,12 @@ export default class ActionController {
             })
         });
 
+        this.storeName = options.storeName;
+        this.onLine = navigator.onLine
+
         this.actionsModel = new Model(
             this.db,
-            constants.store.ACTIONS,
+            this.storeName,
             actionValidationObj
         );
 
@@ -136,8 +139,7 @@ export default class ActionController {
             this.subscriptions[mn] = [];
         });
 
-        this.storeName = options.storeName;
-        this.onLine = navigator.onLine
+
     }
 
 
@@ -260,7 +262,6 @@ export default class ActionController {
             for (const action of actionsArr) {
                 if (this.isActionValid(action)) {
                     const {action: actionVariant, synced, entity, data} = action;
-
                     if (this.model[entity].validate(data)) {
                         if (this.model[entity] && this.model[entity][actionVariant] && data) {
                             await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)

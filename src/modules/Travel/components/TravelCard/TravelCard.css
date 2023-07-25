@@ -1,0 +1,36 @@
+.travel-item{
+    display: flex;
+    justify-content: stretch;
+    padding: 4px;
+    border-radius: 1rem;
+    overflow: hidden;
+
+    box-shadow: var(--box-shadoe);
+}
+
+
+.travel-image{
+    position: relative;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.travel-content{
+    flex: 1;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 4px 0;
+}
+
+.travel-button{
+    padding: 2px 8px;
+    color: var(--color-text);
+    font-size: .8rem;
+    background-color: var(--color-secondary);
+
+    border: 2px solid var(--color-grey);
+    border-radius: 1rem;
+    cursor: pointer;
+}

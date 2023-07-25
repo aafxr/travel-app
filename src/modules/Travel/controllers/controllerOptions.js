@@ -1,15 +1,7 @@
 import Model from "../../../models/Model";
-
-import limitValidationObj from '../models/limit/validation'
-import expensesValidationObj from '../models/expenses/validation'
-import sectionValidationObj from '../models/section/validation'
-
-import createAction from "../../../utils/createAction";
-
 import constants from "../db/constants";
-
-
-
+import travelValidation from "../models/travel/validation";
+import createAction from "../../../utils/createAction";
 
 
 /**
@@ -27,12 +19,9 @@ import constants from "../db/constants";
  */
 const options = {
     models: {
-        limit: (db) => new Model(db, constants.store.LIMIT, limitValidationObj),
-        expenses_actual: (db) => new Model(db, constants.store.EXPENSES_ACTUAL, expensesValidationObj),
-        expenses_plan: (db) => new Model(db, constants.store.EXPENSES_PLAN, expensesValidationObj),
-        section: (db) => new Model(db, constants.store.SECTION, sectionValidationObj)
+        travel: (db) => new Model(db, constants.store.TRAVEL, travelValidation),
     },
-    storeName: 'expensesActions',
+    storeName: constants.store.TRAVEL_ACTIONS,
     newAction: createAction,
 }
 

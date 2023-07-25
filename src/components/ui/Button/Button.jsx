@@ -14,7 +14,7 @@ import  './Button.css'
  */
 export default function Button({className, children, active = true, ...props}){
 
-    return <button {...props} className={clsx('expenses-btn', active && 'active', className)} >
+    return <button {...props} className={clsx('full-screen-btn', active && 'active', className)} >
             {children || ''}
         </button>
 }

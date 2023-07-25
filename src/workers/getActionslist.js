@@ -19,9 +19,15 @@ const actionsModel = new Model(db, constants.store.ACTIONS, actionsValidation)
  * функуия запрашивает список actions
  * @returns {Promise<void>}
  */
-export default async function getActionsList() {
+export default async function getActionsList(travelCode) {
     if (ready) {
-        const response = await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getActions/')
+        const response = await fetch(process.env.REACT_APP_SERVER_URL + '/expenses/getActions/',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({filter: {entity: travelCode || 'travel'}})
+        })
         const receivedActions = await response.json()
         console.log('Received data: ', receivedActions)
 
