@@ -36,7 +36,7 @@ export default function TravelAdd({user_id}) {
                 action:"add",
                 data
             })
-                .then(()=> navigate(`/travel/${data.id}/expenses/`))
+                .then(()=> navigate('/')) //`/travel/${data.id}/expenses/`
         }
     }
 

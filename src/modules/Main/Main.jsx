@@ -11,6 +11,7 @@ import TravelCard from "../Travel/components/TravelCard/TravelCard";
 import createAction from "../../utils/createAction";
 import {pushAlertMessage} from "../../components/Alerts/Alerts";
 import updateTravels from "../Travel/helpers/updateTravels";
+import useDefaultTravels from "../Travel/hooks/useDefaultTravels";
 
 export default function Main({
                                  user_id,
@@ -21,6 +22,7 @@ export default function Main({
     const {travelController} = useContext(TravelContext)
     const [travelList, setTravelList] = useState([])
 
+    useDefaultTravels()
 
     useEffect(() => {
         if (travelController) {

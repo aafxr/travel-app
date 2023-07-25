@@ -26,7 +26,7 @@ export default async function getActionsList(travelCode) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({filter: {entity: travelCode || 'travel'}})
+            body: JSON.stringify({filter: {data: {primary_entity_id: travelCode}}})
         })
         const receivedActions = await response.json()
         console.log('Received data: ', receivedActions)
