@@ -9,11 +9,11 @@ console.log('====worker=====')
 
 let getActionIntervalID
 
-if (!getActionIntervalID) {
-    getActionIntervalID = setInterval(() => {
-        functionDurationTest(getActionsList, '[Worker] Время обработки actions: ')
-    }, 10000)
-}
+// if (!getActionIntervalID) {
+//     getActionIntervalID = setInterval(() => {
+//         functionDurationTest(getActionsList, '[Worker] Время обработки actions: ')
+//     }, 10000)
+// }
 
 onmessage = function (e) {
 
