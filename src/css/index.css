@@ -10,7 +10,7 @@ html, body {
     color: var(--color-text);
     font-size: 16px;
     line-height: 140%;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     overflow-x: hidden;
 }
 
@@ -124,7 +124,7 @@ a{
 }
 
 .content {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     overflow-y: auto;
 }
 
@@ -168,6 +168,7 @@ a{
     padding: 10px 20px;
     background-color: var(--color-secondary);
     box-shadow: 0 -10px 30px 0 rgba(0, 0, 0, 0.10);
+    z-index: 2;
 }
 
 .hide-scroll{

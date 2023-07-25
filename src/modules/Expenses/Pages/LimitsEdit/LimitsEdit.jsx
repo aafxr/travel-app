@@ -161,6 +161,7 @@ export default function LimitsEdit({
                                         value={limitValue}
                                         onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
                                         type={'number'}
+                                        min={(limitObj && limitObj.value) || 0}
                                         placeholder='Лимит'
                                     />
                                     {!!message && <div className='expenses-message'>{message}</div>}

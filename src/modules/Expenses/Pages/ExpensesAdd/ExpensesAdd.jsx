@@ -146,7 +146,8 @@ export default function ExpensesAdd({
                                         <Input
                                             ref={inputSumRef}
                                             className='expenses-currency-value'
-                                            type={'text'}
+                                            type={'number'}
+                                            min={0}
                                             value={expSum}
                                             onChange={e => /^[0-9]*$/.test(e.target.value) && setExpSum(e.target.value)}
                                         />
