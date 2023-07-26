@@ -15,6 +15,13 @@
 
     --box-shadoe: 0 0 16px rgba(205,205,205, .7);
 
+}
 
-
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-primary: #FF8E09;
+        --color-secondary: #000;
+        --color-text: #fff;
+        --color-text-light: #E1E1E1;
+    }
 }

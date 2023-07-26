@@ -176,6 +176,7 @@ export default function LimitsEdit({
                                         value={limitValue}
                                         onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
                                         type={'number'}
+                                        step={0.01}
                                         min={(limitObj && limitObj.value) || 0}
                                         placeholder='Лимит'
                                     />

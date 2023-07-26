@@ -12,12 +12,13 @@ import Select from "../../../../components/ui/Select/Select";
 
 import {defaultFilterValue, currency} from "../../static/vars";
 
-import '../../css/Expenses.css'
 import useExpense from "../../hooks/useExpense";
 import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyTest from "../../../../utils/currencyTest";
+
+import '../../css/Expenses.css'
 
 
 /**
@@ -154,6 +155,7 @@ export default function ExpensesAdd({
                                             className='expenses-currency-value'
                                             type={'number'}
                                             min={0}
+                                            step={0.01}
                                             value={expSum}
                                             onChange={e => setExpSum(e.target.value)}
                                         />
