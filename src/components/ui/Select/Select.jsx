@@ -58,7 +58,7 @@ function Select({
                 <div className='select-value'>
                     {selected || ''}
                 </div>
-                <div className='select-chevron' />
+                <ChevronDown className='select-chevron' />
             </div>
             <div
                 className='select-options column hide-scroll'
@@ -97,3 +97,13 @@ function Select({
 }
 
 export default React.forwardRef(Select)
+
+
+function ChevronDown({className}){
+
+     return (
+         <svg className={className} width="24" height="24" viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
+             <path d="M16 10L12 14L8 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+         </svg>
+     )
+}

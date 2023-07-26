@@ -19,8 +19,8 @@
 }
 
 .select-header{
+    position: relative;
     flex: none;
-    align-items: stretch;
     cursor: pointer;
 }
 
@@ -36,8 +36,8 @@
 }
 
 .select-value{
-    flex: 1;
-    height: 2.65rem;
+    padding-right: var(--select-icon-width);
+    height: 2.55rem;
 }
 
 .select-item{
@@ -46,7 +46,7 @@
 }
 
 .select-options{
-flex: 1;
+    flex: 1;
     overflow-y: auto;
     background-color: var(--color-secondary);
 }
@@ -58,14 +58,21 @@ flex: 1;
 }
 
 .select-chevron{
-    flex: none;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 50%;
+
     width: var(--select-icon-width);
-    background: var(--color-secondary) url("../../../../public/icons/chevron_down.svg") center no-repeat;
-    background-color: var(--color-secondary);
-    transform: rotate(0);
+    height: var(--select-icon-width);
+    color: var(--color-text);
+    /*background: var(--color-secondary) url("../../../../public/icons/chevron_down.svg") center no-repeat;*/
+    /*background-color: var(--color-secondary);*/
+    transform: translateY(-50%) rotate(0);
     transition: transform .3s;
+    object-fit: contain;
 }
 
 .select.active .select-chevron{
-    transform: rotate(-180deg);
+    transform: translateY(-50%) rotate(-180deg);
 }
