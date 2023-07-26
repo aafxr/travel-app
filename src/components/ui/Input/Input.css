@@ -1,15 +1,10 @@
-.input-container{
-    position: relative;
-    border-radius: var(--border-radius);
-    border: 2px solid var(--color-grey-light);
-    background-color: var(--color-secondary);
-}
-
 .input{
     padding: 10px 12px 10px 16px;
     width: 100%;
     caret-color: var(--color-primary);
-    border: none;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-grey-light);
+    background-color: var(--color-secondary);
     outline: none;
 }
 

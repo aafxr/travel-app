@@ -1,5 +1,5 @@
 import toArray from "../../../utils/toArray";
-import constants from "../../Expenses/db/constants";
+import constants from "../../Travel/db/constants";
 
 export default async function updateTravels(controller) {
     if (controller) {

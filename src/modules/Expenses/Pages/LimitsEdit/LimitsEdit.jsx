@@ -92,7 +92,7 @@ export default function LimitsEdit({
 
 
     useEffect(() => {
-        limitObj ? setLimitValue(limitObj.value) : setLimitValue(minLimit)
+        limitObj ? setLimitValue(limitObj.value.toString()) : setLimitValue(minLimit)
     }, [minLimit, limitObj])
 
 
@@ -146,7 +146,7 @@ export default function LimitsEdit({
         navigate(-1)
     }
 
-
+    console.log(limitValue)
 
     return (
         <>
@@ -175,9 +175,11 @@ export default function LimitsEdit({
                             <div className='column gap-1'>
                                 <div className='column gap-0.25'>
                                     <Input
+                                        className={'number-hide-arrows'}
                                         value={limitValue}
                                         onChange={e => /^[0-9.,]*$/.test(e.target.value) && setLimitValue(e.target.value)}
-                                        type={'number'}
+                                        type={'text'}
+                                        inputMode={'numeric'}
                                         step={0.01}
                                         min={(limitObj && limitObj.value) || 0}
                                         placeholder='Лимит'

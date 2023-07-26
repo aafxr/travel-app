@@ -16,10 +16,14 @@ function Select({
                     onChange,
                     ...props},
                 ref) {
-    const selected = value || defaultValue
+    const [selected, setSelected] = useState(defaultValue)
     const [active, setActive] = useState(false)
     const {ref: selectMainRef} = useOutside(active, setActive.bind(this, () => false))
     const headerRef = useRef()
+
+    useEffect(()=>{
+        value && setSelected(value)
+    }, [value])
 
     useEffect(() => {
         if (selectMainRef.current && headerRef.current) {
@@ -32,7 +36,7 @@ function Select({
     function onSelectHandler(value, e) {
         e.stopPropagation()
         if (active) {
-            // setSelected(value)
+            setSelected(value)
             setActive(!active)
             onChange && onChange(value)
         }
@@ -56,20 +60,6 @@ function Select({
                 </div>
                 <div className='select-chevron'/>
             </div>
-            <select
-                ref={ref}
-                value={selected}
-                onChange={(e) => e.stopPropagation()}
-                hidden
-                {...props}
-            >
-                {
-                    options && options.length && options.map(o => (
-                        <option key={o} value={o}>{o}</option>
-                    ))
-                }
-            </select>
-
             <div
                 className='select-options column hide-scroll'
                 style={{
@@ -89,6 +79,19 @@ function Select({
                     ))
                 }
             </div>
+            <select
+                ref={ref}
+                value={selected}
+                onChange={(e) => e.stopPropagation()}
+                hidden
+                {...props}
+            >
+                {
+                    options && options.length && options.map(o => (
+                        <option key={o} value={o}>{o}</option>
+                    ))
+                }
+            </select>
         </div>
     )
 }

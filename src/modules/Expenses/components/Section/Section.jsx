@@ -9,6 +9,8 @@ import './Section.css'
 import {formatter} from "../../../../utils/currencyFormat";
 import {currency} from "../../static/vars";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
+import constants from "../../db/constants";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**
  *
@@ -87,7 +89,15 @@ function Section({
                             {
                                 expenses
                                     .map(
-                                        item => <SectionItem key={item.id} expense={item} isPlan={!line} currencySymbol={currency.find(c => c.char_code === item.currency)?.symbol || ''} />
+                                        item => (
+                                            <SectionItem
+                                                key={item.id}
+                                                expense={item}
+                                                isPlan={!line}
+                                                currencySymbol={currency.find(c => c.char_code === item.currency)?.symbol || ''}
+                                                user_id={user_id}
+                                            />
+                                        )
                                     )
                             }
                         </div>
@@ -105,13 +115,17 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
 
 
 /**
+ *
  * @param {import('../../models/ExpenseType').ExpenseType} expense
- * @return {JSX.Element}
+ * @param isPlan
+ * @param currencySymbol
+ * @returns {JSX.Element}
  * @constructor
  */
-function SectionItem({expense, isPlan, currencySymbol}) {
+function SectionItem({expense, isPlan, currencySymbol, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
     const navigate = useNavigate();
+    const {controller} = useContext(ExpensesContext)
 
     let time = new Date(datetime)
     let minutes = time.getMinutes().toString()
@@ -125,20 +139,30 @@ function SectionItem({expense, isPlan, currencySymbol}) {
         ? `/travel/${primary_entity_id}/expenses/plan/edit/${id}/`
         : `/travel/${primary_entity_id}/expenses/edit/${id}/`
 
-    const removeRoute = isPlan
-        ? `/travel/${primary_entity_id}/expenses/plan/remove/${id}/`
-        : `/travel/${primary_entity_id}/expenses/remove/${id}/`
 
 
-    function handleRemoveExpense() {
-        navigate(removeRoute)
+
+    function handleRemove(){
+        if (controller && expense) {
+            const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
+
+            controller.write({
+                storeName,
+                action: 'remove',
+                data: expense,
+                user_id
+            })
+                .then(() => {
+                    pushAlertMessage({type: 'success', message: `Успешно удалено`})
+                })
+        }
     }
 
 
     return (
         <Swipe
             onClick={() => navigate(editRoute)}
-            onRemove={handleRemoveExpense}
+            onRemove={handleRemove}
             rightButton
             small
         >

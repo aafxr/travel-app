@@ -155,16 +155,20 @@ export default function ExpensesAdd({
                                     <div className='relative column'>
                                         <Input
                                             ref={inputSumRef}
-                                            className='expenses-currency-value'
-                                            type={'number'}
+                                            className='expenses-currency-value number-hide-arrows'
+                                            type="text"
+                                            inputMode={'numeric'}
                                             min={0}
                                             step={0.01}
                                             value={expSum}
-                                            onChange={e => setExpSum(e.target.value)}
+                                            lang={navigator.language}
+                                            onInput={e => setExpSum(e.target.value)}
+
                                         />
                                         <Select
                                             className='expenses-currency'
                                             value={expCurr ? expCurr.symbol : ''}
+                                            defaultValue=''
                                             options={currency.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}
                                         />

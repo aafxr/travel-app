@@ -10,7 +10,6 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
             || expense.currency !== expCurr.char_code
         ) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-
             controller.write({
                 storeName,
                 action: 'edit',
@@ -24,9 +23,8 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
                     section_id
                 }
             })
-
-            navigate(-1)
         }
+            navigate(-1)
     } else {
         console.warn('need add user_id & primary_entity_type')
     }
