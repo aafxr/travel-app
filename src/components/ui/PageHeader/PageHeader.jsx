@@ -48,7 +48,7 @@ export default function PageHeader({
         <div className={styles} {...props}>
             {!!arrowBack &&
                 <div className='page-header-icon' onClick={backHandler}>
-                    <img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back"/>
+                    {/*<img src={process.env.PUBLIC_URL + '/icons/back.svg'} alt="back"/>*/}
                 </div>
             }
             {!!title &&

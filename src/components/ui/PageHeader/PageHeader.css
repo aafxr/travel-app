@@ -17,6 +17,11 @@
 }
 
 .page-header-icon{
+    stroke: var(--color-secondary);
+    mask: url("../../../../public/icons/back.svg") 0 50% / var(--x) var(--x) no-repeat;
+    mask-size: 60%;
+    background: var(--color-text);
+
     cursor: pointer;
 }
 
