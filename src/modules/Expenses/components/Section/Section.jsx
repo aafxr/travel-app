@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import clsx from "clsx";
 import Line from "../Line/Line";
 
@@ -6,6 +6,9 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 import './Section.css'
+import {formatter} from "../../../../utils/currencyFormat";
+import {currency} from "../../static/vars";
+import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 
 /**
  *
@@ -27,6 +30,10 @@ function Section({
                      line = false,
                  }) {
     const {travelCode: primary_entity_id} = useParams()
+    const {currency} = useContext(ExpensesContext)
+
+    if(!currency.length)
+        return null
 
     const title = section ? section.title : ''
     let limit = sectionLimit(section)
@@ -34,7 +41,10 @@ function Section({
 
 
     const totalExpenses = expenses
-        .reduce((acc, item) => acc + item.value, 0)
+        .reduce((acc, item) => {
+            const cur = currency.find(c => c.char_code === item.currency)?.value || 1
+            return acc + item.value * cur
+        }, 0)
 
     const percent = (totalExpenses / limit) || 0
     const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
@@ -48,7 +58,7 @@ function Section({
                 <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}/`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
-                        <div className='section-title'>{totalExpenses} ₽</div>
+                        <div className='section-title'>{formatter.format(totalExpenses)} ₽</div>
                     </div>
                 </Link>
                 {
@@ -58,11 +68,11 @@ function Section({
                             {
                                 !!limit && (
                                     <div className={'flex-between'}>
-                                        <div className='section-subtitle'>Лимит {limit} ₽</div>
+                                        <div className='section-subtitle'>Лимит {formatter.format(limit)} ₽</div>
                                         {
                                             balance >= 0
-                                                ? <div className='section-subtitle'>Осталось: {balance} ₽</div>
-                                                : <div className='section-subtitle red'>Перерасход: {Math.abs(balance)} ₽</div>
+                                                ? <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
+                                                : <div className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} ₽</div>
                                         }
 
                                     </div>
@@ -77,7 +87,7 @@ function Section({
                             {
                                 expenses
                                     .map(
-                                        item => <SectionItem key={item.id} {...item} isPlan={!line}/>
+                                        item => <SectionItem key={item.id} expense={item} isPlan={!line} currencySymbol={currency.find(c => c.char_code === item.currency)?.symbol || ''} />
                                     )
                             }
                         </div>
@@ -99,8 +109,8 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * @return {JSX.Element}
  * @constructor
  */
-function SectionItem(expense) {
-    const {datetime, value, title, entity_type, id, primary_entity_id, isPlan} = expense
+function SectionItem({expense, isPlan, currencySymbol}) {
+    const {datetime, value, title, entity_type, id, primary_entity_id} = expense
     const navigate = useNavigate();
 
     let time = new Date(datetime)
@@ -109,6 +119,7 @@ function SectionItem(expense) {
     Number.isNaN(time)
         ? time = '--/--'
         : time = time.getUTCDate() + ' ' + month[time.getMonth()] + ' ' + time.getHours() + ':' + minutes
+
 
     const editRoute = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/edit/${id}/`
@@ -139,11 +150,11 @@ function SectionItem(expense) {
                     <span>{time}</span>
                 </div>
 
-                <div>{value} ₽</div>
+                <div>{formatter.format(value)} {currencySymbol}</div>
             </div>
         </Swipe>
     )
 
 }
 
-export default React.memo(Section)
+export default Section

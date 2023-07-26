@@ -7,7 +7,7 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
             || expense.value !== +expSum
             || expense.personal !== (personal ? 1 : 0)
             || expense.section_id !== section_id
-            || expense.currency !== expCurr.code
+            || expense.currency !== expCurr.char_code
         ) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
@@ -20,7 +20,7 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
                     personal: personal ? 1 : 0,
                     title: expName,
                     value: +expSum,
-                    currency: expCurr.code,
+                    currency: expCurr.char_code,
                     section_id
                 }
             })

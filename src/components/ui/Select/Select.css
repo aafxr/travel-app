@@ -37,15 +37,18 @@
 
 .select-value{
     flex: 1;
+    min-width: 20px;
 }
 
 .select-item{
     cursor: pointer;
+    height: calc(var(--select-padding) * 2 + var(--select-icon-width));
 }
 
 .select-options{
 flex: 1;
     overflow-y: auto;
+    background-color: var(--color-secondary);
 }
 
 

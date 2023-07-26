@@ -14,35 +14,3 @@ export const defaultFilterValue = () => localStorage.getItem(EXPENSES_FILTER) ||
 export const actionsBlackList = [constants.store.SECTION, constants.store.LIMIT]
 export const actionsWhiteList = [constants.store.EXPENSES_ACTUAL, constants.store.EXPENSES_PLAN]
 
-export const currency = [
-    {
-        code: 'RUB',
-        symbol: '₽',
-        link: '',
-    },
-    {
-        code: 'KZT',
-        symbol: '₸',
-        link: '',
-    },
-    {
-        code: 'USD',
-        symbol: '$',
-        link: '',
-    },
-    {
-        code: 'EUR',
-        symbol: '€',
-        link: '',
-    },
-    {
-        code: 'CNY',
-        symbol: '¥',
-        link: '',
-    },
-    {
-        code: 'AED',
-        symbol: 'Dh',
-        link: '',
-    },
-]

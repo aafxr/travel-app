@@ -10,13 +10,13 @@ import Container from "../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import Select from "../../../../components/ui/Select/Select";
 
-import {defaultFilterValue, currency} from "../../static/vars";
+import {defaultFilterValue} from "../../static/vars";
 
 import useExpense from "../../hooks/useExpense";
 import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import currencyTest from "../../../../utils/currencyTest";
+import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
 import '../../css/Expenses.css'
 
@@ -39,7 +39,7 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
-    const {controller, defaultSection, sections} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, currency} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
@@ -69,7 +69,7 @@ export default function ExpensesAdd({
 
     useEffect(() => {
         if (expense) {
-            const cur = currency.find(cr => cr.code === expense.currency)
+            const cur = currency.find(cr => cr.char_code === expense.currency)
             setExpName(expense.title)
             setExpSum(expense.value.toString())
             setSectionId(expense.section_id)
@@ -99,14 +99,17 @@ export default function ExpensesAdd({
             inputSumRef.current?.focus()
             return
         }
-        if(!currencyTest(expSum)){
-            pushAlertMessage({type: 'warning', message: 'Значение лимита не корректно.'})
+
+        const value = currencyToFixedFormat(expSum)
+
+        if(!value){
+            pushAlertMessage({type: 'warning', message: 'Сумма не корректна.'})
             inputSumRef.current?.focus()
             return
         }
         edit
-            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate, expense)
-            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,expSum, expCurr, personal,section_id,navigate)
+            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate, expense)
+            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate)
 
     }
 
@@ -162,7 +165,6 @@ export default function ExpensesAdd({
                                         <Select
                                             className='expenses-currency'
                                             value={expCurr ? expCurr.symbol : ''}
-                                            defaultValue={currency[0].symbol}
                                             options={currency.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}
                                         />

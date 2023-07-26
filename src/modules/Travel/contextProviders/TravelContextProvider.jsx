@@ -50,7 +50,8 @@ export default function TravelContextProvider({user_id}) {
                 onReady: () => setDbReady(true),
                 onError: console.error
             })
-        setState({...state, travelController})
+        state.travelController = travelController
+        setState(state)
     }, [])
 
 

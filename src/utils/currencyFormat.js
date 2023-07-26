@@ -1,0 +1,1 @@
+export const formatter = new Intl.NumberFormat(navigator.language, {maximumFractionDigits:2})

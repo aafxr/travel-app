@@ -1,22 +1,24 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
-import {WorkerContext} from "../../../contexts/WorkerContextProvider";
-import useDefaultSection from "../hooks/useDefaultSections";
-
 import ActionController from "../../../controllers/ActionController";
-import options from '../controllers/controllerOptions'
-import schema from "../db/schema";
 
-import constants from "../db/constants";
+import {WorkerContext} from "../../../contexts/WorkerContextProvider";
+
+import useDefaultSection from "../hooks/useDefaultSections";
+import useCurrency from "../hooks/useCurrency";
 
 import toArray from "../../../utils/toArray";
 import {onUpdate} from "../controllers/onUpdate";
 import updateSections from "../helpers/updateSections";
-
-import '../css/Expenses.css'
 import updateLimits from "../helpers/updateLimits";
 import functionDurationTest from "../../../utils/functionDurationTest";
+
+import options from '../controllers/controllerOptions'
+import constants from "../db/constants";
+import schema from "../db/schema";
+
+import '../css/Expenses.css'
 
 
 /**
@@ -55,12 +57,14 @@ const defaultState = {
 export default function ExpensesContextProvider({user_id}) {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
-    const [state, setState] = useState(defaultState)
+    const [state, setState] = useState( defaultState)
 
     const [sections, setSections] = useState([])
     const [limits, setLimits] = useState([])
 
     const {worker} = useContext(WorkerContext)
+
+    const currency = useCurrency()
 
     useDefaultSection(state.controller, primary_entity_id, user_id)
 
@@ -72,7 +76,8 @@ export default function ExpensesContextProvider({user_id}) {
             onError: console.error
         })
         controller.onUpdate = onUpdate(primary_entity_id, user_id)
-        setState({...state, controller})
+        state.controller = controller
+        setState(state)
 
         updateSections(controller).then(setSections)
         updateLimits(controller, primary_entity_id).then(setLimits)
@@ -85,16 +90,6 @@ export default function ExpensesContextProvider({user_id}) {
             setLimits(await updateLimits(controller, primary_entity_id))
             !sections.length && setSections(await updateSections(controller))
         })
-
-        // return () => {
-        //     controller.unsubscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
-        //     controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
-        //     controller.unsubscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
-        //     controller.unsubscribe(constants.store.EXPENSES_PLAN, async () => {
-        //         setLimits(await updateLimits(controller, primary_entity_id))
-        //         !sections.length && setSections(await updateSections(controller))
-        //     })
-        // }
     }, [])
 
 
@@ -132,9 +127,14 @@ export default function ExpensesContextProvider({user_id}) {
     }, [limits])
 
 
+    useEffect(() => {
+            setState({...state, currency})
+    }, [currency])
+
     if (!dbReady) {
         return null
     }
+
     return (
         <ExpensesContext.Provider value={state}>
             <Outlet/>

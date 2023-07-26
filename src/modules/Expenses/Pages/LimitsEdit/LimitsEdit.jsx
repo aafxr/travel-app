@@ -15,7 +15,7 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {defaultFilterValue} from "../../static/vars";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
-import currencyTest from "../../../../utils/currencyTest";
+import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
 /**
  * страница редактиррования лимитов
@@ -98,14 +98,15 @@ export default function LimitsEdit({
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
     function handler(_) {
-        if (!currencyTest(limitValue)){
+        const value = currencyToFixedFormat(limitValue)
+        if (!value){
             pushAlertMessage({
                 type: 'warning',
                 message: `Значение лимита не корректно.`
             })
             return
         }
-        if (+limitValue < minLimit) {
+        if (value < minLimit) {
             setMessage(`Лимит должен быть больше ${minLimit}`)
             pushAlertMessage({
                 type: 'warning',
@@ -120,7 +121,7 @@ export default function LimitsEdit({
                     storeName: constants.store.LIMIT,
                     action: 'edit',
                     user_id,
-                    data: {...limitObj, value: +limitValue}
+                    data: {...limitObj, value: value}
                 })
             } else {
                 controller.write({
@@ -130,7 +131,7 @@ export default function LimitsEdit({
                     data: {
                         section_id,
                         personal: personal ? 1 : 0,
-                        value: +limitValue,
+                        value: value,
                         user_id,
                         primary_entity_id,
                         primary_entity_type,
@@ -144,6 +145,7 @@ export default function LimitsEdit({
         }
         navigate(-1)
     }
+
 
 
     return (
@@ -174,7 +176,7 @@ export default function LimitsEdit({
                                 <div className='column gap-0.25'>
                                     <Input
                                         value={limitValue}
-                                        onChange={e => /^[0-9]*$/.test(e.target.value) && setLimitValue(e.target.value)}
+                                        onChange={e => /^[0-9.,]*$/.test(e.target.value) && setLimitValue(e.target.value)}
                                         type={'number'}
                                         step={0.01}
                                         min={(limitObj && limitObj.value) || 0}

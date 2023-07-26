@@ -17,7 +17,7 @@ export default function handleAddExpense(controller, isPlan, user_id, primary_en
                 entity_id: '',
                 title: expName,
                 value: Number(expSum),
-                currency: expCurr.code,
+                currency: expCurr.char_code,
                 personal: personal ? 1 : 0,
                 section_id,
                 datetime: new Date().toISOString(),

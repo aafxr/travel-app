@@ -22,7 +22,7 @@ import TravelContextProvider from "./modules/Travel/contextProviders/TravelConte
 function App() {
 
     return (
-        <ErrorBoundary>
+        <>
             <Routes>
                 <Route element={<TravelContextProvider user_id={'12'} />}>
                     <Route path={'/'} element={<Main/>}/>
@@ -50,7 +50,7 @@ function App() {
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts  count={3}/>
-        </ErrorBoundary>
+        </>
     );
 }
 
