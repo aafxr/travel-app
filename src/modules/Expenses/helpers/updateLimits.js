@@ -7,7 +7,7 @@ export default async function updateLimits(controller, primary_entity_id,section
 
     if (controller) {
         if (sectionIdList) {
-            return toArray(await limitsFromArray(controller, sectionIdList))
+            return toArray(await limitsFromArray(controller, primary_entity_id, sectionIdList))
         } else {
             const limits = await controller.read({
                 storeName: constants.store.LIMIT,
@@ -19,11 +19,12 @@ export default async function updateLimits(controller, primary_entity_id,section
     }
 }
 
-async function limitsFromArray(controller, arr) {
+async function limitsFromArray(controller,
+                               primary_entity_id, arr) {
     let items = await controller.read({
         storeName: constants.store.LIMIT,
         index: constants.indexes.PRIMARY_ENTITY_ID,
-        query: 'all'
+        query: primary_entity_id
     })
 
     items = Array.isArray(items) ? items : [items]

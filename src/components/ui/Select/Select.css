@@ -60,8 +60,8 @@ flex: 1;
 .select-chevron{
     flex: none;
     width: var(--select-icon-width);
-    background:  url("../../../../public/icons/chevron_down.svg") center no-repeat;
-    background-size: contain;
+    background: var(--color-secondary) url("../../../../public/icons/chevron_down.svg") center no-repeat;
+    background-color: var(--color-secondary);
     transform: rotate(0);
     transition: transform .3s;
 }

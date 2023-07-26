@@ -58,7 +58,7 @@ function Select({
                 <div className='select-value'>
                     {selected || ''}
                 </div>
-                <div className='select-chevron'/>
+                <div className='select-chevron' />
             </div>
             <div
                 className='select-options column hide-scroll'
