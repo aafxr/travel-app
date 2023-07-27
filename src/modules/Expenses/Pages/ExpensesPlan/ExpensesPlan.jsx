@@ -40,7 +40,7 @@ export default function ExpensesPlan({
         if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
             updateExpenses(controller, primary_entity_id, "plan").then(setExpenses)
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "plan")))
+            controller.subscribe(constants.store.EXPENSES_PLAN, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "plan")))
         }
         // return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
