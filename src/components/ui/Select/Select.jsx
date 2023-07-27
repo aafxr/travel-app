@@ -54,7 +54,7 @@ function Select({
 
     return (
         <div ref={selectMainRef} className={selectClasses}>
-            <div ref={headerRef} className='select-header flex-between' onClick={() => setActive(!active)}>
+            <div ref={headerRef} className='select-header' onClick={() => setActive(!active)}>
                 <div className='select-value'>
                     {selected || ''}
                 </div>
@@ -102,7 +102,7 @@ export default React.forwardRef(Select)
 function ChevronDown({className}){
 
      return (
-         <svg className={className} width="24" height="24" viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
+         <svg className={className} viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
              <path d="M16 10L12 14L8 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
          </svg>
      )

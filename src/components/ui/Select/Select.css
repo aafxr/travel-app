@@ -1,12 +1,11 @@
 .select{
-    --select-icon-width:20px;
+    --select-icon-width:24px;
     --select-padding:10px;
 
     position: relative;
-    padding-right: 4px;
     border-radius: var(--border-radius);
-    overflow: hidden;
     transition: max-height .3s, box-shadow .3s;
+    overflow: hidden;
     z-index: 5;
 }
 
@@ -20,7 +19,6 @@
 
 .select-header{
     position: relative;
-    flex: none;
     cursor: pointer;
 }
 
@@ -66,8 +64,7 @@
     width: var(--select-icon-width);
     height: var(--select-icon-width);
     color: var(--color-text);
-    /*background: var(--color-secondary) url("../../../../public/icons/chevron_down.svg") center no-repeat;*/
-    /*background-color: var(--color-secondary);*/
+
     transform: translateY(-50%) rotate(0);
     transition: transform .3s;
     object-fit: contain;
