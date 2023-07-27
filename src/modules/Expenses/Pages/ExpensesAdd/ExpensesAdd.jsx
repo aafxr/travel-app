@@ -76,7 +76,7 @@ export default function ExpensesAdd({
             setPersonal(expense.personal === 1)
             expense.currency && setExpCurr(cur)
         }
-    }, [expense])
+    }, [expense, currency])
 
 
     function onChipSelect(section) {
@@ -152,7 +152,7 @@ export default function ExpensesAdd({
                                 </div>
                                 <div className='column gap-0.25'>
                                     <div className='title'>Сумма расходов:</div>
-                                    <div className='relative column'>
+                                    <div className='relative'>
                                         <Input
                                             ref={inputSumRef}
                                             className='expenses-currency-value number-hide-arrows'
@@ -166,7 +166,7 @@ export default function ExpensesAdd({
 
                                         />
                                         <Select
-                                            className='expenses-currency'
+                                            className='expenses-currency no-resize'
                                             value={expCurr ? expCurr.symbol : ''}
                                             defaultValue=''
                                             options={currency.map(c => c.symbol)}

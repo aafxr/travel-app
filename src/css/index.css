@@ -108,7 +108,7 @@ a{
     gap: 0.25rem;
 }
 
-.content-stretch {
+.flex-stretch {
     display: flex;
     justify-content: stretch;
 }

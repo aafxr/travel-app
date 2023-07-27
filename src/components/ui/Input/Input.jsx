@@ -4,7 +4,6 @@ import clsx from "clsx";
 import './Input.css'
 
 function Input(props, ref) {
-    const [value, setValue] = useState('')
     const styles = clsx('input', props.className)
 
     function handleEnterKeyUp(e){

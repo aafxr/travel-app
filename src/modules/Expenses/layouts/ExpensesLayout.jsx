@@ -26,7 +26,7 @@ export default function ExpensesLayout() {
             <Container>
                 <PageHeader arrowBack title={title} to='/'/>
             </Container>
-            <div className='content-stretch'>
+            <div className='flex-stretch'>
                 <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/`}/>
                 <Tab name={'Планы'} to={`/travel/${travelCode}/expenses/plan/`}/>
             </div>
