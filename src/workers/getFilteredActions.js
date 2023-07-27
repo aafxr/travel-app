@@ -4,7 +4,7 @@ export default function getFilteredActions(data){
     const whiteList = []
     const blackList = []
 
-    data.forEach(d => !actionsBlackList.includes(d.entity) ? whiteList.push(d) : blackList.push(d))
+    data.forEach(d => actionsBlackList.includes(d.entity) ?  blackList.push(d) : whiteList.push(d))
 
     return [whiteList, blackList]
 }

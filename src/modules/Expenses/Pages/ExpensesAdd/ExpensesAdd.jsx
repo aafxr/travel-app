@@ -35,7 +35,7 @@ import '../../css/Expenses.css'
 export default function ExpensesAdd({
                                         user_id,
                                         primary_entity_type,
-                                        expensesType = 'actual', // 'actual' | 'plan'
+                                        expensesType = 'plan', // 'actual' | 'plan'
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
@@ -58,6 +58,8 @@ export default function ExpensesAdd({
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
+
+    console.log(expense)
 
 
     useEffect(() => {

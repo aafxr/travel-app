@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import constants from "../db/constants";
+import toArray from "../../../utils/toArray";
 
 
 /**
@@ -20,7 +21,7 @@ export default function useExpense(controller, id, type = 'plan') {
                 storeName,
                 id
             })
-                .then(e => e && setExpense(Array.isArray(e) ? e[0] : e))
+                .then(e => e && setExpense(toArray(e)[0]))
         }
     }, [controller, id])
 

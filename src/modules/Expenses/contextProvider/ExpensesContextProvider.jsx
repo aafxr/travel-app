@@ -80,22 +80,39 @@ export default function ExpensesContextProvider({user_id}) {
             onReady: () => setDbReady(true),
             onError: console.error
         })
-        controller.onUpdate = onUpdate(primary_entity_id, user_id)
+
         state.controller = controller
         setState(state)
 
         updateSections(controller).then(setSections)
         updateLimits(controller, primary_entity_id).then(setLimits)
 
-        controller.subscribe(constants.store.SECTION, async () => setSections(await updateSections(controller)))
-        controller.subscribe(constants.store.EXPENSES_ACTUAL, async () => !sections.length && setSections(await updateSections(controller)))
-
-        controller.subscribe(constants.store.LIMIT, async () => setLimits(await updateLimits(controller, primary_entity_id)))
-        controller.subscribe(constants.store.EXPENSES_PLAN, async () => {
+        const sectionSubscription = async () => setSections(await updateSections(controller))
+        const limitsSubscription = async () => !sections.length && setSections(await updateSections(controller))
+        const limitsSubscriptionWithPRkey = async () => setLimits(await updateLimits(controller, primary_entity_id))
+        const onExpSubscr = async () => {
             setLimits(await updateLimits(controller, primary_entity_id))
             !sections.length && setSections(await updateSections(controller))
-        })
+        }
+
+        controller.subscribe(constants.store.SECTION, sectionSubscription)
+        controller.subscribe(constants.store.EXPENSES_ACTUAL, limitsSubscription)
+        controller.subscribe(constants.store.LIMIT, limitsSubscriptionWithPRkey)
+        controller.subscribe(constants.store.EXPENSES_PLAN, onExpSubscr)
+
+        return () => {
+            controller.unsubscribe(constants.store.SECTION, sectionSubscription)
+            controller.unsubscribe(constants.store.EXPENSES_ACTUAL, limitsSubscription)
+            controller.unsubscribe(constants.store.LIMIT, limitsSubscriptionWithPRkey)
+            controller.unsubscribe(constants.store.EXPENSES_PLAN, onExpSubscr)
+        }
     }, [])
+
+    useEffect(()=>{
+        if (state.controller && currency){
+            state.controller.onUpdate = onUpdate(primary_entity_id, user_id, currency)
+        }
+    }, [state.controller, currency])
 
 
     useEffect(() => {
