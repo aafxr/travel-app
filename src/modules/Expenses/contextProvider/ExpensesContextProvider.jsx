@@ -19,6 +19,8 @@ import constants from "../db/constants";
 import schema from "../db/schema";
 
 import '../css/Expenses.css'
+import sendActionToWorker from "../../../utils/sendActionToWorker";
+import usePostMessage from "../hooks/usePostMessage";
 
 
 /**
@@ -30,7 +32,7 @@ export const ExpensesContext = createContext(null)
 
 /**
  * @typedef {Object} ExpensesContextState
- * @property {controller: import('../../../controllers/ActionController').ActionController| null} controller
+ * @property {ActionController | null} controller
  * @property {import('../models/SectionType').SectionType | null} defaultSection
  * @property {Array.<import('../models/SectionType').SectionType> | []} sections
  * @property {Array.<import('../models/LimitType').LimitType> | []} limits
@@ -57,6 +59,7 @@ const defaultState = {
 export default function ExpensesContextProvider({user_id}) {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
+    /**  @type {[ExpensesContextState, function]} */
     const [state, setState] = useState( defaultState)
 
     const [sections, setSections] = useState([])
@@ -67,6 +70,8 @@ export default function ExpensesContextProvider({user_id}) {
     const currency = useCurrency()
 
     useDefaultSection(state.controller, primary_entity_id, user_id)
+
+    usePostMessage(worker, primary_entity_id)
 
 
     useEffect(() => {
@@ -96,7 +101,7 @@ export default function ExpensesContextProvider({user_id}) {
     useEffect(() => {
         if (worker && state.controller) {
             async function workerMessageHandler(e) {
-                let actions = toArray(e.data)
+                const {type, data : actions} = e.data
                 if (state.controller) {
                     console.log('workerMessageHandler: ', e.data)
                     functionDurationTest(state.controller.actionHandler.bind(state.controller, actions), '[Основной поток] Время обработки actions: ')
@@ -106,7 +111,7 @@ export default function ExpensesContextProvider({user_id}) {
 
             worker.addEventListener('message', workerMessageHandler)
 
-            state.controller.onSendData = (action) => worker.postMessage(JSON.stringify(toArray(action)))
+            state.controller.onSendData = sendActionToWorker(worker, state.controller, primary_entity_id)
 
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }

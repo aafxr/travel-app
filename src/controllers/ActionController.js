@@ -200,7 +200,7 @@ export default class ActionController {
     set onSendData(cb) {
         if (typeof cb === 'function') {
             this.send = cb
-            this.actionsModel.get('all')
+            this.actionsModel.getFromIndex(constants.indexes.SYNCED, 0)
                 .then(actions => this.send(toArray(actions)))
         }
     }
@@ -248,6 +248,31 @@ export default class ActionController {
     }
 
     /**
+     * принимает action и обновляет данные в дб.
+     * Возвращает true, если данные были изменены
+     * @param {ActionType} action
+     * @returns {Promise<boolean>}
+     */
+    async actionProcess(action) {
+        const {data, entity, action: actionVariant} = action
+        if (data && this.model[entity].validate(data)) {
+            if (this.model[entity] && this.model[entity][actionVariant]) {
+                if (actionVariant === 'add') {
+                    await this.model[entity][actionVariant](data)
+                } else {
+                    const isDataExist = await this.model[entity].get(data.id)
+                    if(!isDataExist){
+                        return false
+                    }
+                    await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
      * принимает и обрабаиывает события
      * @param {ActionType} actions
      */
@@ -261,13 +286,8 @@ export default class ActionController {
 
             for (const action of actionsArr) {
                 if (this.isActionValid(action)) {
-                    const {action: actionVariant, synced, entity, data} = action;
-                    if (this.model[entity].validate(data)) {
-                        if (this.model[entity] && this.model[entity][actionVariant] && data) {
-                            await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
-                            isModified = true
-                        }
-                    }
+                    const {synced} = action;
+                    await this.actionProcess(action) && (isModified = true)
 
                     if (synced) {
                         await this.actionsModel.edit(action)

@@ -26,6 +26,7 @@ import updateExpenses from "../../helpers/updateExpenses";
  */
 export default function Expenses({user_id, primary_entity_type}) {
     const {travelCode: primary_entity_id} = useParams()
+
     const {controller, sections, limits} = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
@@ -45,7 +46,6 @@ export default function Expenses({user_id, primary_entity_type}) {
     }, [controller])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
-
 
     const sectionLimit = function (section) {
         if (filter !== 'all') {

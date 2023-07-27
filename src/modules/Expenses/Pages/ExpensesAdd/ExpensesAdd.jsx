@@ -69,7 +69,7 @@ export default function ExpensesAdd({
 
     useEffect(() => {
         if (expense) {
-            const cur = currency.find(cr => cr.char_code === expense.currency)
+            const cur = currency.find(cr => cr.char_code === expense.currency) || currency[0]
             setExpName(expense.title)
             setExpSum(expense.value.toString())
             setSectionId(expense.section_id)

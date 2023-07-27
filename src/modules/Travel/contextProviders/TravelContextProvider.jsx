@@ -14,7 +14,7 @@ export const TravelContext = createContext(null)
 
 /**
  * @typedef {Object} TravelContextState
- * @property {controller: import('../../../controllers/ActionController').default| null} travelController
+ * @property {ActionController | null} travelController
  * @property {import('../models/travel/TravelType').TravelType} travel
  */
 
@@ -36,6 +36,7 @@ const defaultState = {
  */
 export default function TravelContextProvider({user_id}) {
     const {travelCode} = useParams()
+    /**  @type {[TravelContextState, function]} */
     const [state, setState] = useState(defaultState)
     const [dbReady, setDbReady] = useState(false)
 
@@ -44,13 +45,12 @@ export default function TravelContextProvider({user_id}) {
 
 
     useEffect(() => {
-        const travelController = new ActionController(schema,
+        state.travelController = new ActionController(schema,
             {
                 ...options,
                 onReady: () => setDbReady(true),
                 onError: console.error
             })
-        state.travelController = travelController
         setState(state)
     }, [])
 
