@@ -50,7 +50,7 @@ registerRoute(
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
     // Add in any other file extensions or routing criteria as needed.
-    ({url}) => url.origin === self.location.origin && url.pathname.endsWith('.png'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    ({url}) => url.origin === self.location.origin && /\.(png|jpg|jpeg|svg)$/i.test(url.pathname), // Customize this strategy as needed, e.g., by changing to CacheFirst.
     new StaleWhileRevalidate({
         cacheName: 'images',
         plugins: [
@@ -70,3 +70,27 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+
+// Establish a cache name
+const cacheName = 'MyFancyCacheName_v1';
+
+self.addEventListener('fetch', (event) => {
+    // Check if this is a navigation request
+    if (event.request.mode === 'navigate') {
+        // Open the cache
+        event.respondWith(caches.open(cacheName).then((cache) => {
+            // Go to the network first
+            return fetch(event.request.url).then((fetchedResponse) => {
+                cache.put(event.request, fetchedResponse.clone());
+
+                return fetchedResponse;
+            }).catch(() => {
+                // If the network is unavailable, get
+                return cache.match(event.request.url);
+            });
+        }));
+    } else {
+        return;
+    }
+});
