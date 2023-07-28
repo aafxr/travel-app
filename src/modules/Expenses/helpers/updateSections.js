@@ -1,6 +1,13 @@
 import constants from "../db/constants";
 import toArray from "../../../utils/toArray";
 
+
+/**
+ * возвращает массив существующих в бд sections
+ * @param {ActionController} controller
+ * @param {Array.<string>} sectionIdList
+ * @returns {Promise<[]>}
+ */
 export default async function updateSections(controller, sectionIdList){
     if (controller) {
         if (sectionIdList) {
@@ -16,9 +23,16 @@ export default async function updateSections(controller, sectionIdList){
         }
 
     }
+    return []
 }
 
 
+/**
+ * функция осуществляет поиск объектов по списку ID из массива arr
+ * @param {ActionController} controller
+ * @param {Array.<string>} arr
+ * @returns {Promise<*[]>}
+ */
 async function sectionsFromArray(controller, arr){
     const result = []
     for (const id of arr) {

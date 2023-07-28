@@ -1,10 +1,15 @@
 import constants from "../db/constants";
 import toArray from "../../../utils/toArray";
 
+
+/**
+ * возвращает массив существующих в бд limits
+ * @param {ActionController} controller
+ * @param {string} primary_entity_id
+ * @param {Array.<string>} sectionIdList
+ * @returns {Promise<[]>}
+ */
 export default async function updateLimits(controller, primary_entity_id,sectionIdList){
-
-
-
     if (controller) {
         if (sectionIdList) {
             return toArray(await limitsFromArray(controller, primary_entity_id, sectionIdList))
@@ -17,8 +22,18 @@ export default async function updateLimits(controller, primary_entity_id,section
             return toArray(limits)
         }
     }
+    return []
 }
 
+
+
+/**
+ * функция осуществляет поиск объектов по списку ID из массива arr
+ * @param {ActionController} controller
+ * @param {string} primary_entity_id
+ * @param {Array.<string>} arr
+ * @returns {Promise<*[]>}
+ */
 async function limitsFromArray(controller,
                                primary_entity_id, arr) {
     let items = await controller.read({

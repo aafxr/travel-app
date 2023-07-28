@@ -30,3 +30,18 @@
 .expenses-currency-value{
     padding-right: 60px!important;
 }
+
+.limit-input{
+    position: relative;
+}
+
+.limit-input::after{
+    content: attr(data-cur) "";
+    position: absolute;
+    top: 0;
+    right: 10px;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

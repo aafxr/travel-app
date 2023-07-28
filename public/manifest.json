@@ -1,6 +1,9 @@
 {
   "short_name": "Traveler App",
   "name": "Create React App Sample",
+  "lang": "ru-Ru",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
@@ -451,8 +454,5 @@
       "sizes": "1024x1024"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "display": "standalone"
 }

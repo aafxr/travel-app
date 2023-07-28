@@ -1,6 +1,13 @@
 import constants from "../db/constants";
 import toArray from "../../../utils/toArray";
 
+/**
+ * возвращает массив расходов, который на данныый момент есть в бд
+ * @param {ActionController} controller
+ * @param {string} primary_entity_id
+ * @param {'plan' | 'actual'} type
+ * @returns {Promise<[]|*>}
+ */
 export default async function updateExpenses(controller, primary_entity_id, type = 'plan') {
     const isPlan = type === 'plan'
 
@@ -13,4 +20,5 @@ export default async function updateExpenses(controller, primary_entity_id, type
         })
         return toArray(expenses)
     }
+    return []
 }

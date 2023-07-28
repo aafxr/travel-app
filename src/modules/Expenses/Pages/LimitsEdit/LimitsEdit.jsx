@@ -16,6 +16,7 @@ import {defaultFilterValue} from "../../static/vars";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
+import {formatter} from "../../../../utils/currencyFormat";
 
 /**
  * страница редактиррования лимитов
@@ -37,7 +38,7 @@ export default function LimitsEdit({
         ? `/travel/${primary_entity_id}/expenses/plan/`
         : `/travel/${primary_entity_id}/expenses/`
 
-    const {controller, defaultSection, sections, limits} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, limits, currency } = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expenses, setExpenses] = useState([])
@@ -54,6 +55,10 @@ export default function LimitsEdit({
 
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
+            const curr = currency.reduce((a, c)=> {
+                a[c.char_code] = c
+                return a
+            }, {})
             return expenses
                 .filter(e => (
                     e.section_id === section_id
@@ -61,7 +66,10 @@ export default function LimitsEdit({
                         ? e.personal === 1 && e.user_id === user_id
                         : e.personal === 0)
                 ))
-                .reduce((acc, e) => e.value + acc, 0)
+                .reduce((acc, e) => {
+                    const coef = curr[e.currency].value || 1
+                    return e.value * coef + acc
+                }, 0)
         }
         return 0
     }, [expenses, section_id, personal, user_id])
@@ -107,10 +115,10 @@ export default function LimitsEdit({
             return
         }
         if (value < minLimit) {
-            setMessage(`Лимит должен быть больше ${minLimit}`)
+            setMessage(`Лимит должен быть больше ${formatter.format(value)}`)
             pushAlertMessage({
                 type: 'warning',
-                message: `Лимит должен быть больше ${minLimit}`
+                message: `Лимит должен быть больше ${formatter.format(value)}`
             })
             return
         }
@@ -173,17 +181,19 @@ export default function LimitsEdit({
                                 }
                             </div>
                             <div className='column gap-1'>
-                                <div className='column gap-0.25'>
-                                    <Input
-                                        className={'number-hide-arrows'}
-                                        value={limitValue}
-                                        onChange={e => /^[0-9.,]*$/.test(e.target.value) && setLimitValue(e.target.value)}
-                                        type={'text'}
-                                        inputMode={'numeric'}
-                                        step={0.01}
-                                        min={(limitObj && limitObj.value) || 0}
-                                        placeholder='Лимит'
-                                    />
+                                <div className='column gap-0.25' >
+                                    <div className='limit-input' data-cur='₽'>
+                                        <Input
+                                            className={'number-hide-arrows '}
+                                            value={limitValue}
+                                            onChange={e => /^[0-9.,]*$/.test(e.target.value) && setLimitValue(e.target.value)}
+                                            type={'text'}
+                                            inputMode={'numeric'}
+                                            step={0.01}
+                                            min={(limitObj && limitObj.value) || 0}
+                                            placeholder='Лимит'
+                                        />
+                                    </div>
                                     {!!message && <div className='expenses-message'>{message}</div>}
                                 </div>
                                 <Checkbox onChange={() => setPersonal(!personal)} checked={personal} left> Личный

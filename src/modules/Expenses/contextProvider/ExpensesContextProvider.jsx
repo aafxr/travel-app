@@ -22,21 +22,23 @@ import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
 
+/**
+ * @typedef {Object} ExpensesContextState
+ * @property {ActionController | null} controller
+ * @property {SectionType | null} defaultSection
+ * @property {Array.<SectionType> | []} sections
+ * @property {Array.<LimitType> | []} limits
+ * @property {Array.<CurrencyType> } currency
+ */
 
 /**
  * предоставляет доступ к контроллеру модуля Expenses
- * @type {React.Context<null>}
+ * @type {React.Context<ExpensesContextState | null>}
  */
 export const ExpensesContext = createContext(null)
 
 
-/**
- * @typedef {Object} ExpensesContextState
- * @property {ActionController | null} controller
- * @property {import('../models/SectionType').SectionType | null} defaultSection
- * @property {Array.<import('../models/SectionType').SectionType> | []} sections
- * @property {Array.<import('../models/LimitType').LimitType> | []} limits
- */
+
 
 /**
  * @type ExpensesContextState
@@ -45,7 +47,8 @@ const defaultState = {
     controller: null,
     defaultSection: null,
     limits: [],
-    sections: []
+    sections: [],
+    currency:[],
 }
 
 /**
