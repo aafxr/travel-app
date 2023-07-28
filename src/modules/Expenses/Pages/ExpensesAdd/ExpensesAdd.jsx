@@ -59,8 +59,6 @@ export default function ExpensesAdd({
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
 
-    console.log(expense)
-
 
     useEffect(() => {
         if (defaultSection) {

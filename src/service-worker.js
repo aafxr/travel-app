@@ -37,6 +37,10 @@ registerRoute(
             return false;
         } // If this looks like a URL for a resource, because it contains // a file extension, skip.
 
+        if (url.pathname.includes('api.')){
+            return false
+        }// If request to api we ignore cache strategy
+
         if (url.pathname.match(fileExtensionRegexp)) {
             return false;
         } // Return true to signal that we want to use the handler.
@@ -90,7 +94,5 @@ self.addEventListener('fetch', (event) => {
                 return cache.match(event.request.url);
             });
         }));
-    } else {
-        return;
     }
 });

@@ -5,13 +5,12 @@ import Container from "../Expenses/components/Container/Container";
 
 import Button from "../../components/ui/Button/Button";
 import {TravelContext} from "../Travel/contextProviders/TravelContextProvider";
-import constants from "../Travel/db/constants";
 import toArray from "../../utils/toArray";
 import TravelCard from "../Travel/components/TravelCard/TravelCard";
-import createAction from "../../utils/createAction";
 import {pushAlertMessage} from "../../components/Alerts/Alerts";
 import updateTravels from "../Travel/helpers/updateTravels";
 import useDefaultTravels from "../Travel/hooks/useDefaultTravels";
+import constants from "../../static/constants";
 
 export default function Main({
                                  user_id,
@@ -39,17 +38,17 @@ export default function Main({
         }
     }, [travelController])
 
-    function handleRemove(id, title){
+    function handleRemove(travel){
         if (travelController){
             travelController.write({
                 storeName:constants.store.TRAVEL,
                 action: "remove",
                 user_id,
-                data: {id}
+                data: travel
             })
-                .then(() => pushAlertMessage({type:"success", message: `${title} удфлено.`}))
-                .then(()=> setTravelList(travelList.filter(t => t.id !==id)))
-                .then(()=> travelController.getStoreModel(constants.store.TRAVEL).remove(id))
+                .then(() => pushAlertMessage({type:"success", message: `${travel.title} удфлено.`}))
+                .then(()=> setTravelList(travelList.filter(t => t.id !==travel.id)))
+                .then(()=> travelController.getStoreModel(constants.store.TRAVEL).remove(travel.id))
         }
     }
 
@@ -66,7 +65,7 @@ export default function Main({
                                 key={t.id}
                                 to={`/travel/${t.id}/expenses/`}
                                 title={t.title}
-                                onRemove={() => handleRemove(t.id, t.title)}
+                                onRemove={() => handleRemove(t)}
                             />
                         ))
                     }

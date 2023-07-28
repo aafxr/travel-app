@@ -7,7 +7,7 @@ import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 
-import constants from "../../db/constants";
+import constants from "../../../../static/constants";
 
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";

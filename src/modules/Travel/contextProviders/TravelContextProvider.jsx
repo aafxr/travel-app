@@ -1,16 +1,13 @@
-import React, {createContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import {Outlet, useParams} from "react-router-dom";
 import ActionController from "../../../controllers/ActionController";
 import schema from "../../Travel/db/schema";
 import options from "../../Travel/controllers/controllerOptions";
 import useTravel from "../hooks/useTravel";
-
-/**
- * предоставляет доступ к контроллеру модуля Travel
- * @type {React.Context<null>}
- */
-export const TravelContext = createContext(null)
-
+import {WorkerContext} from "../../../contexts/WorkerContextProvider";
+import toArray from "../../../utils/toArray";
+import sendActionToWorker from "../../../utils/sendActionToWorker";
+import constants from "../../../static/constants";
 
 /**
  * @typedef {Object} TravelContextState
@@ -27,6 +24,15 @@ const defaultState = {
 }
 
 /**
+ * предоставляет доступ к контроллеру модуля Travel
+ * @type {React.Context<TravelContextState | null>}
+ */
+export const TravelContext = createContext(null)
+
+
+
+
+/**
  * обертка для молуля Travel
  *
  * оборачивает в ExpensesContext
@@ -36,13 +42,11 @@ const defaultState = {
  */
 export default function TravelContextProvider({user_id}) {
     const {travelCode} = useParams()
-    /**  @type {[TravelContextState, function]} */
     const [state, setState] = useState(defaultState)
     const [dbReady, setDbReady] = useState(false)
+    const {worker} = useContext(WorkerContext)
 
     const travel = useTravel(state.controller, travelCode)
-
-
 
     useEffect(() => {
         state.travelController = new ActionController(schema,
@@ -53,6 +57,13 @@ export default function TravelContextProvider({user_id}) {
             })
         setState(state)
     }, [])
+
+
+    useEffect(()=>{
+        if (worker){
+            state.travelController.onSendData = sendActionToWorker(worker, constants.store.TRAVEL_ACTIONS)
+        }
+    },[worker])
 
 
     useEffect(()=>{

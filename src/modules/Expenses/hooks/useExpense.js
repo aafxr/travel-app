@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 import toArray from "../../../utils/toArray";
 
 

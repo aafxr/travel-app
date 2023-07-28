@@ -4,7 +4,10 @@ const constants = {
         LIMIT: 'limit',
         EXPENSES_ACTUAL: 'expenses_actual',
         EXPENSES_PLAN: 'expenses_plan',
-        ACTIONS: 'expensesActions'
+        EXPENSES_ACTIONS: 'expensesActions',
+
+        TRAVEL: 'travel',
+        TRAVEL_ACTIONS: 'travelActions'
     },
     indexes:{
         SECTION_ID:'section_id',
@@ -14,9 +17,13 @@ const constants = {
         PRIMARY_ENTITY_TYPE: 'primary_entity_type',
         SYNCED: 'synced',
         ENTITY: 'entity',
-        ACTION: 'action'
+        ACTION: 'action',
     },
     TOTAL_EXPENSES: 'totalExpenses'
 }
 
 export default constants
+
+
+export const actionsBlackList = [constants.store.SECTION, constants.store.LIMIT]
+export const actionsWhiteList = [constants.store.EXPENSES_ACTUAL, constants.store.EXPENSES_PLAN]

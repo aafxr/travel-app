@@ -1,4 +1,4 @@
-import {actionsBlackList} from "../modules/Expenses/static/vars";
+import {actionsBlackList} from "../static/constants";
 
 export default function getFilteredActions(data){
     const whiteList = []

@@ -1,7 +1,7 @@
 import {LocalDB} from "../db";
 import Model from "../models/Model";
 import schema from "../modules/Expenses/db/schema";
-import constants from "../modules/Expenses/db/constants";
+import constants from "../static/constants";
 import actionsValidation from "../modules/Expenses/models/action/validation";
 import functionDurationTest from "../utils/functionDurationTest";
 
@@ -12,7 +12,7 @@ const db = new LocalDB(schema, {
     onError: e => console.error(e)
 })
 
-const actionsModel = new Model(db, constants.store.ACTIONS, actionsValidation)
+const actionsModel = new Model(db, constants.store.EXPENSES_ACTIONS, actionsValidation)
 
 
 /**

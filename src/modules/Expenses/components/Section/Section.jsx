@@ -9,7 +9,7 @@ import './Section.css'
 import {formatter} from "../../../../utils/currencyFormat";
 import {currency} from "../../static/vars";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import constants from "../../db/constants";
+import constants from "../../../../static/constants";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**

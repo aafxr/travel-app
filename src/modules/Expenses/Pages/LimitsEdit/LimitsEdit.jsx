@@ -8,7 +8,7 @@ import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 
 
-import constants from "../../db/constants";
+import constants from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
@@ -67,12 +67,12 @@ export default function LimitsEdit({
                         : e.personal === 0)
                 ))
                 .reduce((acc, e) => {
-                    const coef = curr[e.currency].value || 1
+                    const coef = curr[e.currency]?.value || 1
                     return e.value * coef + acc
                 }, 0)
         }
         return 0
-    }, [expenses, section_id, personal, user_id])
+    }, [expenses, section_id, personal, user_id, currency])
 
 
     //получаем все расходы (планы) за текущую поездку
@@ -115,10 +115,10 @@ export default function LimitsEdit({
             return
         }
         if (value < minLimit) {
-            setMessage(`Лимит должен быть больше ${formatter.format(value)}`)
+            setMessage(`Лимит должен быть больше ${formatter.format(minLimit)}`)
             pushAlertMessage({
                 type: 'warning',
-                message: `Лимит должен быть больше ${formatter.format(value)}`
+                message: `Лимит должен быть больше ${formatter.format(minLimit)}`
             })
             return
         }
@@ -154,7 +154,6 @@ export default function LimitsEdit({
         navigate(-1)
     }
 
-    console.log(limitValue)
 
     return (
         <>

@@ -4,9 +4,8 @@ import limitValidationObj from '../models/limit/validation'
 import expensesValidationObj from '../models/expenses/validation'
 import sectionValidationObj from '../models/section/validation'
 
-import createAction from "../../../utils/createAction";
 
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 
 
 
@@ -32,8 +31,7 @@ const options = {
         expenses_plan: (db) => new Model(db, constants.store.EXPENSES_PLAN, expensesValidationObj),
         section: (db) => new Model(db, constants.store.SECTION, sectionValidationObj)
     },
-    storeName: 'expensesActions',
-    newAction: createAction,
+    storeName: constants.store.EXPENSES_ACTIONS,
 }
 
 export default options

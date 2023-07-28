@@ -4,13 +4,12 @@ import { useNavigate} from "react-router-dom";
 import Container from "../../../Expenses/components/Container/Container";
 
 import {TravelContext} from "../../contextProviders/TravelContextProvider";
-import createAction from "../../../../utils/createAction";
 import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import constants from "../../db/constants";
 
 import '../../css/Travel.css'
+import constants from "../../../../static/constants";
 
 
 export default function TravelAdd({user_id}) {

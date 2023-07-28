@@ -1,10 +1,11 @@
 import Model from '../models/Model';
-import constants from '../modules/Expenses/db/constants';
+import constants from '../static/constants';
 import actionValidationObj from '../modules/Expenses/models/action/validation';
 import {LocalDB} from '../db';
 import isString from '../utils/validation/isString';
 import ErrorReport from "./ErrorReport";
 import toArray from "../utils/toArray";
+import createId from "../utils/createId";
 
 /**
  * @callback CB
@@ -92,6 +93,15 @@ import toArray from "../utils/toArray";
  */
 
 
+/**
+ * @typedef {object} PayloadType
+ * @property {string} storeName
+ * @property {string} user_id
+ * @property {ActionVariant} action
+ * @property {*} data
+ */
+
+
 
 
 
@@ -123,11 +133,6 @@ export default class ActionController {
         this.update = options.onUpdate || (() => {
         })
         this.send = options.onSendData || (() => {
-        })
-
-        !options.newAction && console.warn('[ActionController] you need to specify a function "newAction"')
-        /**@returns {ActionType} */
-        this.createAction = options.newAction || (() => {
         })
 
         this.model = {};
@@ -239,7 +244,7 @@ export default class ActionController {
             console.warn('[Action validation] entity ', action.entity);
         }
 
-        if (Number.isNaN(Date.parse(action.datetime))) {
+        if (typeof action.datetime !== 'number') {
             isValid = false;
             console.warn('[Action validation] entity ', action.datetime);
         }
@@ -371,6 +376,30 @@ export default class ActionController {
         } else {
             this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
             return Promise.resolve(null)
+        }
+    }
+
+
+
+    /**
+     * возвращает action для новой записи в бд
+     * @param {PayloadType} payload должен содержать: storeName, user_id, action, data
+     * @returns {ActionType}
+     */
+    createAction(payload) {
+        const {storeName, user_id, action, data} = payload
+        if (storeName && user_id && action && data) {
+            return {
+                id: createId(user_id),
+                action: action,
+                data: data,
+                entity: storeName,
+                datetime: Date.now(),
+                synced: 0,
+                uid: createId(user_id)
+            }
+        } else {
+            return {}
         }
     }
 

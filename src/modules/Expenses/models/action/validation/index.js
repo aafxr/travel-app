@@ -1,10 +1,3 @@
-// uid
-// datetime
-// entity
-// action
-// data
-// synced
-
 import isString from "../../../../../utils/validation/isString";
 import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
 
@@ -15,7 +8,7 @@ function validatePayload(data) {
         data.uid && isString(data.uid)
         && isString(data.entity)
         && isString(data.action)
-        && !Number.isNaN(Date.parse(data.datetime))
+        && typeof data.datetime === 'number'
         && typeof data.synced === 'number' && (data.synced === 0 || data.synced === 1)
     )
 }

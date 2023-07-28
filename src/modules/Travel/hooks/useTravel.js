@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 
 /**
  * поиск информации о путешествии по id

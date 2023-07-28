@@ -1,4 +1,4 @@
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 import toArray from "../../../utils/toArray";
 import createId from "../../../utils/createId";
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";

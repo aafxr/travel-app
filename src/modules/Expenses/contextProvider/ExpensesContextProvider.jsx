@@ -15,7 +15,7 @@ import updateLimits from "../helpers/updateLimits";
 import functionDurationTest from "../../../utils/functionDurationTest";
 
 import options from '../controllers/controllerOptions'
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 import schema from "../db/schema";
 
 import '../css/Expenses.css'
@@ -131,7 +131,7 @@ export default function ExpensesContextProvider({user_id}) {
 
             worker.addEventListener('message', workerMessageHandler)
 
-            state.controller.onSendData = sendActionToWorker(worker, state.controller, primary_entity_id)
+            state.controller.onSendData = sendActionToWorker(worker, constants.store.EXPENSES_ACTIONS)
 
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }

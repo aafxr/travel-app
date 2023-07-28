@@ -1,11 +1,21 @@
 import React, {createContext, useEffect, useState} from "react";
 import {Outlet} from "react-router-dom";
 
+/**
+ *@typedef {Object} WorkerContextType
+ * @property {Worker} worker
+ */
 
-export const WorkerContext = createContext(null)
+const defaultWorkerContext = {}
+
+/**
+ *
+ * @type {React.Context<WorkerContextType | {}>}
+ */
+export const WorkerContext = createContext({})
 
 export default function WorkerContextProvider() {
-    const [worker, setWorker] = useState(null)
+    const [state, setState] = useState(defaultWorkerContext)
 
 
     useEffect(() => {
@@ -13,16 +23,16 @@ export default function WorkerContextProvider() {
             const w = new Worker(new URL('../workers/worker.js', import.meta.url))
 
             if (w){
-                setWorker(w)
+                state.worker = w
+                setState(state)
                 w.onerror = console.error
             }
 
         }
     }, [])
 
-
     return (
-        <WorkerContext.Provider value={{worker}} >
+        <WorkerContext.Provider value={state} >
             <Outlet />
         </WorkerContext.Provider>
     )

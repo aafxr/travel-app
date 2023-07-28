@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 import ErrorReport from "../../../controllers/ErrorReport";
 
 export default function useDefaultSection(controller, primary_entity_id, user_id) {

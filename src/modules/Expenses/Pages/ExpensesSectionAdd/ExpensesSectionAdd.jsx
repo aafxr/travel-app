@@ -5,7 +5,7 @@ import Container from "../../components/Container/Container";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Button from "../../../../components/ui/Button/Button";
 import createId from "../../../../utils/createId";
-import constants from "../../db/constants";
+import constants from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 

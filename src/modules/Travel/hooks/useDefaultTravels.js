@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import constants from "../db/constants";
+import constants from "../../../static/constants";
 
 export default function useDefaultTravels(travelController,user_id){
 

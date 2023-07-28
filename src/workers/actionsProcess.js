@@ -9,12 +9,13 @@ let intervalId = null
  * отправка actions на север. Если Оффлайн записывает actions и очередь и запускает setInterval.
  * После востановления соединения, отправляет накопившуюся очередь на сервер
  * @param {Array} actions
+ * @param {string} type
  */
-export function actionsProcess(actions) {
+export function actionsProcess({data: actions, type}) {
     const [whiteList, blackList] = getFilteredActions(actions)
 
     if (navigator.onLine) {
-        sendActionsToServer(whiteList)
+        sendActionsToServer(whiteList, type)
             .catch(console.error)
     } else {
         queue = queue.concat(actions)

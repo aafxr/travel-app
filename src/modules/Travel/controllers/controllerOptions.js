@@ -1,7 +1,6 @@
 import Model from "../../../models/Model";
-import constants from "../db/constants";
 import travelValidation from "../models/travel/validation";
-import createAction from "../../../utils/createAction";
+import constants from "../../../static/constants";
 
 
 /**
@@ -22,7 +21,6 @@ const options = {
         travel: (db) => new Model(db, constants.store.TRAVEL, travelValidation),
     },
     storeName: constants.store.TRAVEL_ACTIONS,
-    newAction: createAction,
 }
 
 export default options

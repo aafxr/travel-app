@@ -1,4 +1,4 @@
-import constants from "../../db/constants";
+import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 
 export default function handleAddExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum,expCurr, personal, section_id, navigate) {
