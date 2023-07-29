@@ -16,6 +16,7 @@ import Alerts from "./components/Alerts/Alerts";
 import React from "react";
 import Dev from "./modules/Dev";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
+import ErrorPage from "./modules/Error/ErrorPage";
 
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
                             </Route>
                     </Route>
                 </Route>
+
+                <Route path={'/error/'} element={<ErrorPage />}/>
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts  count={3}/>

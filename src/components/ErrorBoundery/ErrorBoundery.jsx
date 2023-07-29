@@ -15,6 +15,7 @@ export default class ErrorBoundary extends React.Component {
         // Обновить состояние с тем, чтобы следующий рендер показал запасной UI.
         localStorage.setItem(CRITICAL_ERROR, JSON.stringify(error))
         ErrorReport.sendError(error).catch(console.error)
+        window.travelerError = error
 
         return { hasError: true };
 
@@ -35,7 +36,7 @@ export default class ErrorBoundary extends React.Component {
         if (this.state.hasError) {
 
             // Можно отрендерить запасной UI произвольного вида
-                window.location.href = '/'
+                window.location.href = '/error/'
             return <h1>Что-то пошло не так.</h1>;
 
         }
