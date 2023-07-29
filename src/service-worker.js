@@ -28,6 +28,7 @@ const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
     // Return false to exempt requests from being fulfilled by index.html.
     ({request, url}) => {
+        console.log(url)
         // If this isn't a navigation, skip.
         if (request.mode !== 'navigate') {
             return false;
@@ -38,7 +39,7 @@ registerRoute(
         } // If this looks like a URL for a resource, because it contains // a file extension, skip.
 
         if (url.pathname.includes('api.')){
-            return false
+            return fetch(request)
         }// If request to api we ignore cache strategy
 
         if (url.pathname.match(fileExtensionRegexp)) {
@@ -77,7 +78,7 @@ self.addEventListener('message', (event) => {
 
 
 // Establish a cache name
-const cacheName = 'MyFancyCacheName_v1';
+const cacheName = 'TravelerCache_v1';
 
 self.addEventListener('fetch', (event) => {
     // Check if this is a navigation request
