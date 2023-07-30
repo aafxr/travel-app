@@ -17,13 +17,15 @@ class ErrorReport {
 
     async sendError(error) {
         if (this.isProd) {
+            const  extraInfo = this.getExtraInfo()
             await fetch(process.env.REACT_APP_SERVER_URL + '/log/addEvent/', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json;charset=utf-8"
                 },
                 body: JSON.stringify({
-                    error: error.toString()
+                    error: error.toString(),
+                    ...extraInfo
                 })
             }).catch(console.error)
         }
@@ -36,18 +38,29 @@ class ErrorReport {
             const error = localStorage.getItem(CRITICAL_ERROR) || null
 
             if (error) {
+            const  extraInfo = this.getExtraInfo()
                 await fetch(process.env.REACT_APP_SERVER_URL + '/log/addReport/', {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json;charset=utf-8"
                     },
                     body: JSON.stringify({
-                        error: error.toString()
+                        error: error.toString(),
+                        ...extraInfo
                     })
                 }).catch(console.error)
 
                 localStorage.setItem(CRITICAL_ERROR, JSON.stringify(null))
             }
+        }
+    }
+
+
+    getExtraInfo(){
+        const userAgent = navigator.userAgent
+
+        return {
+            userAgent
         }
     }
 }
