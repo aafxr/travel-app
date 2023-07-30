@@ -1,8 +1,8 @@
-import {LocalDB} from "../db";
+import {LocalDB} from "../db/LocalDB";
 import Model from "../models/Model";
 import schema from "../modules/Expenses/db/schema";
 import constants from "../static/constants";
-import actionsValidation from "../modules/Expenses/models/action/validation";
+import actionsValidation from "../models/action/validation";
 import functionDurationTest from "../utils/functionDurationTest";
 
 

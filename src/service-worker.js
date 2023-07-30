@@ -39,7 +39,7 @@ registerRoute(
         } // If this looks like a URL for a resource, because it contains // a file extension, skip.
 
         if (url.pathname.includes('api.')){
-            return fetch(request)
+            return false //fetch(request)
         }// If request to api we ignore cache strategy
 
         if (url.pathname.match(fileExtensionRegexp)) {

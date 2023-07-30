@@ -28,8 +28,7 @@ export function pushAlertMessage(payload) {
     }))
 }
 
-window.newAlert = pushAlertMessage
-
+// window.newAlert = pushAlertMessage
 
 export default function Alerts({count = 1, maxAlertsCount = 10}) {
     const activeAlerts = useRef(0)

@@ -1,6 +1,4 @@
-export const CRITICAL_ERROR = 'critical_error'
-
-
+import {CRITICAL_ERROR} from '../static/constants'
 
 class ErrorReport {
     constructor() {

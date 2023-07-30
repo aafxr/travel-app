@@ -30,13 +30,6 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
                         await ErrorReport.sendError(err)
                         console.error(err)
                     }
-
-                    // await controller.write({
-                    //     storeName: constants.store.SECTION,
-                    //     action: 'edit',
-                    //     user_id,
-                    //     data
-                    // })
                 }
             }
         }

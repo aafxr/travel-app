@@ -1,4 +1,4 @@
-import {LocalDB} from "../db";
+import {LocalDB} from "../db/LocalDB";
 import isString from "../utils/validation/isString";
 import isError from "../utils/isError";
 import {ca} from "date-fns/locale";
@@ -67,7 +67,7 @@ export default class Model {
 
     /**
      * Model позволяет работать с отдельным хранилищем (storeName)
-     * @param {import('../db').LocalDB} db - локальная база данных (indexeddb)
+     * @param {import('../db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
      * @param {string} storeName - имя хранилища
      * @param {validateCallback | validateObj}validation
      */

@@ -1,8 +1,6 @@
-import Model from "../../../models/Model";
-
-import limitValidationObj from '../models/limit/validation'
-import expensesValidationObj from '../models/expenses/validation'
-import sectionValidationObj from '../models/section/validation'
+import {expensesPlanModel,expensesActualModel} from "../models/expenses/expensesModel";
+import limitModel from "../models/limit/limitModel";
+import sectionModel from "../models/section/sectionModel";
 
 
 import constants from "../../../static/constants";
@@ -26,10 +24,10 @@ import constants from "../../../static/constants";
  */
 const options = {
     models: {
-        limit: (db) => new Model(db, constants.store.LIMIT, limitValidationObj),
-        expenses_actual: (db) => new Model(db, constants.store.EXPENSES_ACTUAL, expensesValidationObj),
-        expenses_plan: (db) => new Model(db, constants.store.EXPENSES_PLAN, expensesValidationObj),
-        section: (db) => new Model(db, constants.store.SECTION, sectionValidationObj)
+        limit: () => limitModel,
+        expenses_actual: () => expensesActualModel,
+        expenses_plan: () =>expensesPlanModel,
+        section: () => sectionModel
     },
     storeName: constants.store.EXPENSES_ACTIONS,
 }

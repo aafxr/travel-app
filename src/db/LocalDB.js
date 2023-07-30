@@ -1,4 +1,5 @@
 import {openDB} from 'idb';
+import {pushAlertMessage} from "../components/Alerts/Alerts";
 
 /**
  * @typedef {object} StoreInfo
@@ -91,9 +92,34 @@ export class LocalDB {
         this.dbname = dbname;
         this.version = version;
         this.stores = stores;
+        this.ready = false
+        this.onReady = onReady || (()=>{})
         openDataBase(dbname, version, stores)
-            .then((db) => onReady && onReady(this))
-            .catch((err) => onError && onError(err));
+            .then(() => {
+                this.ready = true
+                this.readyHandler()
+            })
+            .catch((err) => {
+                onError && onError(err)
+                pushAlertMessage({type:'danger', message: 'Ошибка при инициализации БД'})
+            });
+    }
+
+    readyHandler(){
+        this.onReady(this.ready)
+    }
+
+    /**
+     * Метод устанавливает callback, который будет вызван когда бд будет готова к работе
+     * @param {function} cb
+     */
+    set onReadyHandler(cb){
+        if (typeof cb === 'function'){
+            this.onReady = cb
+            this.ready && this.readyHandler()
+        } else {
+            console.warn("[LocalDB] onReady callback must be function!")
+        }
     }
 
     /**

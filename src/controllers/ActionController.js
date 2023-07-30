@@ -1,7 +1,7 @@
 import Model from '../models/Model';
 import constants from '../static/constants';
-import actionValidationObj from '../modules/Expenses/models/action/validation';
-import {LocalDB} from '../db';
+import actionValidationObj from '../models/action/validation';
+import {LocalDB} from '../db/LocalDB';
 import isString from '../utils/validation/isString';
 import ErrorReport from "./ErrorReport";
 import toArray from "../utils/toArray";
@@ -9,7 +9,7 @@ import createId from "../utils/createId";
 
 /**
  * @callback CB
- * @param {import('../db').LocalDB}
+ * @param {import('../db/LocalDB').LocalDB}
  * @returns {import('../models/Model').default}
  */
 
@@ -110,16 +110,12 @@ const actions = ['add', 'edit', 'get', 'remove'];
 export default class ActionController {
     /**
      *
-     * @param {import('../db').DBSchemaType} dbSchema
+     * @param {LocalDB} db
      * @param {OptionsType} options
      */
-    constructor(dbSchema, options) {
-        this.db = new LocalDB(dbSchema, {
-            onReady: options.onReady || (() => {
-            }),
-            onError: options.onError || (() => {
-            })
-        });
+    constructor(db, options) {
+        this.db = db
+        db.onReadyHandler =  options.onReady || (() => {})
 
         this.storeName = options.storeName;
         this.onLine = navigator.onLine

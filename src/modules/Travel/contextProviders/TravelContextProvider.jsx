@@ -8,6 +8,7 @@ import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 import toArray from "../../../utils/toArray";
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import constants from "../../../static/constants";
+import travelDB from "../db/travelDB";
 
 /**
  * @typedef {Object} TravelContextState
@@ -48,13 +49,13 @@ export default function TravelContextProvider({user_id}) {
 
     const travel = useTravel(state.controller, travelCode)
 
+    console.log(dbReady)
+
     useEffect(() => {
-        state.travelController = new ActionController(schema,
-            {
-                ...options,
-                onReady: () => setDbReady(true),
-                onError: console.error
-            })
+        state.travelController = new ActionController(travelDB, {
+            ...options,
+            onReady: (dbr) => setDbReady(dbr)
+        })
         setState(state)
     }, [])
 

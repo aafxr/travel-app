@@ -1,5 +1,6 @@
 import React from 'react'
-import ErrorReport, {CRITICAL_ERROR} from "../../controllers/ErrorReport";
+import ErrorReport from "../../controllers/ErrorReport";
+import {CRITICAL_ERROR} from "../../static/constants";
 
 export default class ErrorBoundary extends React.Component {
 
@@ -7,7 +8,7 @@ export default class ErrorBoundary extends React.Component {
 
         super(props);
 
-        this.state = { hasError: false };
+        this.state = {hasError: false};
 
     }
 
@@ -15,33 +16,22 @@ export default class ErrorBoundary extends React.Component {
         // Обновить состояние с тем, чтобы следующий рендер показал запасной UI.
         localStorage.setItem(CRITICAL_ERROR, JSON.stringify(error))
         ErrorReport.sendError(error).catch(console.error)
-        window.travelerError = error
 
-        return { hasError: true };
+        return {hasError: true};
 
     }
 
     componentDidCatch(error, errorInfo) {
-
         // Можно также сохранить информацию об ошибке в соответствующую службу журнала ошибок
         console.log('boundary catch')
-        // console.log(error)
-        // console.log(errorInfo)
-        // logErrorToMyService(error, errorInfo);
-
     }
 
     render() {
-
         if (this.state.hasError) {
-
-            // Можно отрендерить запасной UI произвольного вида
-                window.location.href = '/error/'
-            return <h1>Что-то пошло не так.</h1>;
-
+            this.state.hasError = false
+            window.location.href = '/error/'
         }
 
         return this.props.children;
-
     }
 }

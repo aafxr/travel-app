@@ -6,10 +6,10 @@ import toArray from "../../../utils/toArray";
  * возвращает массив существующих в бд limits
  * @param {ActionController} controller
  * @param {string} primary_entity_id
- * @param {Array.<string>} sectionIdList
+ * @param {Array.<string>} [sectionIdList]
  * @returns {Promise<[]>}
  */
-export default async function updateLimits(controller, primary_entity_id,sectionIdList){
+export default async function updateLimits(controller, primary_entity_id, sectionIdList){
     if (controller) {
         if (sectionIdList) {
             return toArray(await limitsFromArray(controller, primary_entity_id, sectionIdList))

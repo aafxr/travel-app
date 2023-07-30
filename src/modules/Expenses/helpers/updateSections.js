@@ -5,7 +5,7 @@ import toArray from "../../../utils/toArray";
 /**
  * возвращает массив существующих в бд sections
  * @param {ActionController} controller
- * @param {Array.<string>} sectionIdList
+ * @param {Array.<string>} [sectionIdList]
  * @returns {Promise<[]>}
  */
 export default async function updateSections(controller, sectionIdList){

@@ -30,7 +30,7 @@ export default function useCurrency() {
             .then(data => {
                 if (data && data.length) {
                     setCurrency(data)
-                    localStorage.setItem('currency', data)
+                    localStorage.setItem('currency', JSON.stringify(data))
                 }
             })
             .catch((err) => {

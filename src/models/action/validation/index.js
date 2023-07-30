@@ -1,5 +1,5 @@
-import isString from "../../../../../utils/validation/isString";
-import validateDBQuery from "../../../../../utils/validation/validateDBQuery";
+import isString from "../../../utils/validation/isString";
+import validateDBQuery from "../../../utils/validation/validateDBQuery";
 
 
 
@@ -16,7 +16,7 @@ function validatePayload(data) {
 
 /**
  * @description объект валидации actions
- * @type {import('../../../../../models/Model').validateObj}
+ * @type {import('../../Model').validateObj}
  */
 export default {
     add: validatePayload,

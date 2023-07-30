@@ -3,10 +3,12 @@ import {Outlet} from "react-router-dom";
 
 /**
  *@typedef {Object} WorkerContextType
- * @property {Worker} worker
+ * @property {Worker | null} worker
  */
 
-const defaultWorkerContext = {}
+const defaultWorkerContext = {
+    worker: null
+}
 
 /**
  *

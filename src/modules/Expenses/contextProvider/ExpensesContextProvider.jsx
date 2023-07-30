@@ -21,6 +21,7 @@ import schema from "../db/schema";
 import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
+import expensesDB from "../db/expensesDB";
 
 /**
  * @typedef {Object} ExpensesContextState
@@ -78,11 +79,11 @@ export default function ExpensesContextProvider({user_id}) {
 
 
     useEffect(() => {
-        const controller = new ActionController(schema, {
+        const controller = new ActionController(expensesDB, {
             ...options,
-            onReady: () => setDbReady(true),
-            onError: console.error
+            onReady: (dbr) => setDbReady(dbr)
         })
+
 
         state.controller = controller
         setState(state)

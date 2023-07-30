@@ -22,7 +22,7 @@ import ErrorPage from "./modules/Error/ErrorPage";
 function App() {
 
     return (
-        <>
+        <ErrorBoundary>
             <Routes>
                 <Route element={<WorkerContextProvider/>}>
                     <Route element={<TravelContextProvider user_id={'12'} />}>
@@ -50,7 +50,7 @@ function App() {
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts  count={3}/>
-        </>
+        </ErrorBoundary>
     );
 }
 
