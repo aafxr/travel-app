@@ -2,6 +2,7 @@ import {LocalDB} from "../db/LocalDB";
 import isString from "../utils/validation/isString";
 import isError from "../utils/isError";
 import {ca} from "date-fns/locale";
+import ErrorReport from "../controllers/ErrorReport";
 
 /**
  * @typedef {function} validateCallback
@@ -110,6 +111,10 @@ export default class Model {
         console.warn(`[Model] Received data is not correct: `, data)
     }
 
+    _sendReport(err) {
+        ErrorReport.sendReport(err).catch(console.error)
+    }
+
 
     /**
      * @param err
@@ -136,7 +141,7 @@ export default class Model {
             this._notCorrectDataMessage(payload)
             return undefined
         } catch (err) {
-            throw new Error(`[Model.add/${this.storeName}] ` + err)
+            this._sendReport(new Error(`[Model.add/${this.storeName}] ` + err))
         }
     }
 
@@ -154,7 +159,7 @@ export default class Model {
             this._notCorrectDataMessage(payload)
             return undefined
         } catch (err) {
-            throw new Error(`[Model.edit/${this.storeName}] ` + err)
+            this._sendReport(new Error(`[Model.edit/${this.storeName}] ` + err))
         }
     }
 
@@ -173,7 +178,7 @@ export default class Model {
             this._notCorrectDataMessage(query)
             return undefined
         } catch (err) {
-            throw new Error(`[Model.get/${this.storeName}] ` + err)
+            this._sendReport(new Error(`[Model.get/${this.storeName}] ` + err))
         }
     }
 
@@ -193,7 +198,7 @@ export default class Model {
             this._notCorrectDataMessage(query)
             return undefined
         } catch (err) {
-            throw new Error(`[Model.getFromIndex/${this.storeName}] ` + err)
+            this._sendReport(new Error(`[Model.getFromIndex/${this.storeName}] ` + err))
         }
     }
 
@@ -206,12 +211,12 @@ export default class Model {
     async remove(query) {
         try {
             if (this.validate(query, 'remove')) {
-                return  await this.db.removeElement(this.storeName, query)
+                return await this.db.removeElement(this.storeName, query)
             }
             this._notCorrectDataMessage(query)
             return undefined
         } catch (err) {
-            throw new Error(`[Model.remove/${this.storeName}] ` + err)
+            this._sendReport(new Error(`[Model.remove/${this.storeName}] ` + err))
         }
     }
 }

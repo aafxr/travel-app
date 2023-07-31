@@ -11,7 +11,7 @@ import {clientsClaim} from 'workbox-core';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
 import {registerRoute} from 'workbox-routing';
-import {StaleWhileRevalidate} from 'workbox-strategies';
+import {StaleWhileRevalidate, NetworkFirst} from 'workbox-strategies';
 
 clientsClaim();
 
@@ -28,7 +28,6 @@ const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 registerRoute(
     // Return false to exempt requests from being fulfilled by index.html.
     ({request, url}) => {
-        console.log(url)
         // If this isn't a navigation, skip.
         if (request.mode !== 'navigate') {
             return false;
@@ -66,6 +65,22 @@ registerRoute(
     })
 );
 
+registerRoute(
+    ({url})=>{
+        if (url.origin.includes('api')){
+            return (
+                url.pathname.includes('getSections')
+                ||  url.pathname.includes('currency/getList/')
+            )
+        }
+        return false
+    },
+    new NetworkFirst({
+        cacheName: 'api'
+    })
+)
+
+
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
@@ -96,4 +111,5 @@ self.addEventListener('fetch', (event) => {
             });
         }));
     }
+
 });

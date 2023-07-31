@@ -5,7 +5,7 @@ class ErrorReport {
         this.isProd = process.env.NODE_ENV === 'production'
 
         const sendReport = this.sendReport.bind(this)
-        window.addEventListener('keydown', function (e) {
+        global.addEventListener('keydown', function (e) {
             const {key, altKey, ctrlKey, shiftKey} = e
 
             if (ctrlKey && altKey && shiftKey && key === 'F10') {

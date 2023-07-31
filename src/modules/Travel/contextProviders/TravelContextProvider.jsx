@@ -49,7 +49,6 @@ export default function TravelContextProvider({user_id}) {
 
     const travel = useTravel(state.controller, travelCode)
 
-    console.log(dbReady)
 
     useEffect(() => {
         state.travelController = new ActionController(travelDB, {

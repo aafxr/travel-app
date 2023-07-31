@@ -2,6 +2,7 @@ import constants from "../../../static/constants";
 import toArray from "../../../utils/toArray";
 import createId from "../../../utils/createId";
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
+import limitsModel from '../models/limit/limitModel'
 
 // const totalDefault = {
 //     updated_at: Date.now(),
@@ -50,9 +51,7 @@ export function onUpdate(primary_entity_id, user_id, currency) {
                 limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value * coeff : limitsObj.common[e.section_id] = e.value * coeff
             })
 
-        const limitsModel = controller.getStoreModel(constants.store.LIMIT)
         const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id))
-        window.limit = limitsModel
         const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
         const commonLimits = allTravelLimits.filter(l => l.personal === 0).map(l => l.section_id)
 
