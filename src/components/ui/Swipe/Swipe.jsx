@@ -6,7 +6,7 @@ import useOutside from "../../../hooks/useOutside";
 
 import './Swipe.css'
 
-const defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
+let defaultMargin = 40
 
 
 /**
@@ -38,6 +38,10 @@ export default function Swipe({
                }) {
     const [marginLeft, setMarginLeft] = useState(0)
     const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
+
+    useEffect(()=>{
+        defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
+    }, [])
 
 
     const max = (marginMax || defaultMargin)
