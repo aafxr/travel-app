@@ -1,16 +1,17 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
-import Button from "../../../../components/ui/Button/Button";
+
+import Swipe from "../../../../components/ui/Swipe/Swipe";
+import IconButton from "../../../../components/ui/IconButton/IconButton";
 
 import './TravelCard.css'
-import Swipe from "../../../../components/ui/Swipe/Swipe";
 
-export default function TravelCard({title, onRemove, to}) {
+export default function TravelCard({id, title, onRemove}) {
     const navigate = useNavigate()
 
-    function HandleClick(e) {
+    function handleClick(e) {
         e.stopPropagation()
-        to && navigate(to)
+        navigate(`/travel/${id}/expenses/`)
     }
 
     function handleRemove(){
@@ -19,7 +20,11 @@ export default function TravelCard({title, onRemove, to}) {
 
 
     return (
-        <Swipe onRemove={handleRemove} rightButton>
+        <Swipe
+            onRemove={handleRemove}
+            rightButton
+            onClick={() => navigate(`/travel/${id}/`)}
+        >
             <div className='travel-item gap-1'>
                 <div className='travel-image no-resize'>
                     <img className='img-abs' src={process.env.PUBLIC_URL + '/images/travel-placeholder.jpg'}
@@ -27,12 +32,11 @@ export default function TravelCard({title, onRemove, to}) {
                 </div>
                 <div className='travel-content column title-bold'>
                     {title}
-                    <button
+                    <IconButton
                         className='travel-button'
-                        onClick={HandleClick}
-                    >
-                        Расходы
-                    </button>
+                        onClick={handleClick}
+                        title='Расходы'
+                    />
                 </div>
             </div>
         </Swipe>

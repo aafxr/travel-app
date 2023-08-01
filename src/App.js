@@ -17,6 +17,7 @@ import React from "react";
 import Dev from "./modules/Dev";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import ErrorPage from "./modules/Error/ErrorPage";
+import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                         <Route path={'/'} element={<Main/>}/>
                         <Route path={'/dev/'} element={<Dev />}/>
                             <Route path={'/travel/add/'} element={<TravelAdd user_id={'12'}/>}/>
+                            <Route path={'/travel/:travelCode/'} element={<TravelDetails />}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route  element={<ExpensesContextProvider user_id={'12'}/>}>
                                 <Route element={<ExpensesLayout user_id={'12'}/>}>

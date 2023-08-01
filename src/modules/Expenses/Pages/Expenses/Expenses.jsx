@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import AddButton from "../../components/AddButtom/AddButton";
+import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../components/Container/Container";
 import Section from "../../components/Section/Section";
 

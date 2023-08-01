@@ -14,7 +14,7 @@ export default class ErrorBoundary extends React.Component {
 
     static getDerivedStateFromError(error) {
         // Обновить состояние с тем, чтобы следующий рендер показал запасной UI.
-        localStorage.setItem(CRITICAL_ERROR, JSON.stringify(error))
+        localStorage.setItem(CRITICAL_ERROR, error.toString())
         ErrorReport.sendError(error).catch(console.error)
 
         return {hasError: true};

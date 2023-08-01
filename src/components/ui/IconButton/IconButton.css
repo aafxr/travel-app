@@ -1,0 +1,52 @@
+.icon-button {
+    padding: 12px 18px;
+    background-color: transparent;
+    stroke: var(--color-text);
+    border: var(--border);
+    border-radius: 2rem;
+    cursor: pointer;
+    transform: scale(1);
+    transition: var(--tr-all);
+}
+
+.icon-button:disabled{
+    color: var(--color-grey);
+    fill: var(--color-grey);
+    stroke: var(--color-grey);
+    cursor: default;
+    pointer-events: none;
+}
+
+.icon-button:active{
+    transform: scale(.98);
+}
+
+.icon-button.small{
+    padding: 2px 10px;
+}
+
+.icon-button.center{
+    width: 50px;
+}
+
+.icon-button.center .icon{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon-button .icon{
+    position: relative;
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+.icon-button .icon svg,
+.icon-button .icon img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}

@@ -63,7 +63,7 @@ export default function Main({
                         travelList && !!travelList.length && travelList.map(t => (
                             <TravelCard
                                 key={t.id}
-                                to={`/travel/${t.id}/expenses/`}
+                                id={t.id}
                                 title={t.title}
                                 onRemove={() => handleRemove(t)}
                             />

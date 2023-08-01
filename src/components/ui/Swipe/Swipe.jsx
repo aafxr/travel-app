@@ -25,21 +25,21 @@ let defaultMargin = 40
  * @constructor
  */
 export default function Swipe({
-                   children,
-                   className,
-                   onClick,
-                   onRemove,
-                   onConfirm,
-                   marginMax,
-                   small,
-                   leftButton,
-                   rightButton,
-                   multy = false
-               }) {
+                                  children,
+                                  className,
+                                  onClick,
+                                  onRemove,
+                                  onConfirm,
+                                  marginMax,
+                                  small,
+                                  leftButton,
+                                  rightButton,
+                                  multy = false
+                              }) {
     const [marginLeft, setMarginLeft] = useState(0)
     const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
 
-    useEffect(()=>{
+    useEffect(() => {
         defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
     }, [])
 
@@ -64,10 +64,6 @@ export default function Swipe({
                 leftButton && setMarginLeft(Math.min(e.absX, marginMax || defaultMargin))
                 marginLeft < 0 && max - e.absX > 0 && setMarginLeft(0)
             }
-        },
-        onTap(e) {
-            handleClick(e.event)
-            setMarginLeft(0)
         },
         onSwipedLeft(e) {
             rightButton && setMarginLeft(e.absX > marginThreshold ? -max : 0)
@@ -102,8 +98,10 @@ export default function Swipe({
     }
 
     function handleClick(e) {
-        e.stopPropagation()
-        onClick && onClick()
+        if (e.eventPhase === Event.BUBBLING_PHASE) {
+            e.stopPropagation()
+            onClick && onClick()
+        }
     }
 
 

@@ -1,0 +1,19 @@
+.user-card{
+    width: 100%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-grey);
+}
+
+.user-card-info{
+    flex: 1;
+}
+
+.user-card-name{
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+.user-card-status{}
+
+.user-card-role{}

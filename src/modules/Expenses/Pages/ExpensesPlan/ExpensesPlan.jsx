@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useParams} from "react-router-dom";
 
-import AddButton from "../../components/AddButtom/AddButton";
+import AddButton from "../../../../components/ui/AddButtom/AddButton";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Container from "../../components/Container/Container";

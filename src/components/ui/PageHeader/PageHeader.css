@@ -1,19 +1,24 @@
 .page-header-container {
     position: relative;
-    display: flex;
-    flex-direction: row;
     padding: 0.5rem 0;
+    stroke: var(--color-text);
+    fill: var(--color-text);
 }
 
 .page-header {
     flex: 1;
 }
 
-.page-header-icon, .page-header-placeholder {
+.page-header-icon, .page-header-icons {
     position: relative;
     flex: none;
-    width: var(--x);
+    min-width: var(--x);
     height: var(--x);
+}
+
+.page-header-icons svg,.page-header-icons img{
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 
 .page-header-icon{
@@ -25,10 +30,10 @@
     cursor: pointer;
 }
 
-.page-header-icon img{
+.page-header-icon svg{
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     top: 50%;
     transform: translateY(-50%);
 }

@@ -4,6 +4,8 @@ import {PageHeader} from "../../components/ui";
 import Container from "../Expenses/components/Container/Container";
 
 import Select from "../../components/ui/Select/Select";
+import IconButton from "../../components/ui/IconButton/IconButton";
+import {ChatIcon, ChecklistIcon, Money} from "../../components/svg";
 
 export default function Dev({
                                          user_id,
@@ -50,6 +52,12 @@ export default function Dev({
                 </div>
 
                 <Select options={['AFN','RUB','KZT','USD', 'EUR']} defaultValue={'RUB'} />
+
+                <div className='flex-between gap-0.75'>
+                <IconButton icon={<Money />} title='Расходы' />
+                <IconButton icon={<ChecklistIcon />} title='Чек-лист' />
+                <IconButton icon={<ChatIcon  badge />} />
+                </div>
 
             </Container>
         </>

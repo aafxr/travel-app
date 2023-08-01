@@ -23,3 +23,24 @@
 .travel-destination-input{
     flex: 0 0 100%;
 }
+
+.travel-details{
+    position: relative;
+    aspect-ratio: 1.25;
+}
+
+.travel-details img{
+    border-radius: var(--br-20);
+    object-fit: cover;
+}
+
+.travel-details-title{
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.travel-details-subtitle{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-grey);
+}

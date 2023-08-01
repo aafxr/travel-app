@@ -12,9 +12,12 @@ export default function ErrorPage() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        const e = JSON.parse(localStorage.getItem(CRITICAL_ERROR))
+        const e = localStorage.getItem(CRITICAL_ERROR)
+        debugger
         setError(e)
     }, [])
+
+
     return (
         <div className='wrapper'>
             <Container className='content'>
