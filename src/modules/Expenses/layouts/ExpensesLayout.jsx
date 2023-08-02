@@ -2,7 +2,7 @@ import React from 'react'
 import {Outlet, useLocation, useParams} from "react-router-dom";
 
 import {PageHeader, Tab} from "../../../components/ui";
-import Container from "../components/Container/Container";
+import Container from "../../../components/Container/Container";
 
 
 /**

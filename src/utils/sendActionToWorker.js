@@ -9,7 +9,7 @@ import toArray from "./toArray";
 export default function sendActionToWorker(worker, type) {
     return (action) => {
         const data = {
-            type,
+            type: 'action',
             data: toArray(action)
         }
         worker.postMessage(data)

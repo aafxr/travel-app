@@ -24,7 +24,10 @@ class ErrorReport {
                     "Content-Type": "application/json;charset=utf-8"
                 },
                 body: JSON.stringify({
-                    error: error.toString(),
+                    error: {
+                        message: error.message,
+                        stack: error.stack
+                    },
                     ...extraInfo
                 })
             }).catch(console.error)
@@ -45,7 +48,10 @@ class ErrorReport {
                         "Content-Type": "application/json;charset=utf-8"
                     },
                     body: JSON.stringify({
-                        error: error.toString(),
+                        error: {
+                            message: error.message,
+                            stack: error.stack
+                        },
                         ...extraInfo
                     })
                 }).catch(console.error)

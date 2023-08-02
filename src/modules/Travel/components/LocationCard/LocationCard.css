@@ -1,0 +1,49 @@
+.location-container{
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 1.25rem;
+    padding-left: 0.5rem;
+    border-radius: var(--br-20);
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.10);
+}
+
+.location-date-start,
+.location-date-end{
+    position: absolute;
+    left: 1rem;
+    min-width: 60px;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.location-date-start{
+    top: 0;
+    transform: translateY(-50%);
+}
+
+.location-date-end{
+    bottom: 0;
+    transform: translateY(50%);
+}
+
+.location-img{
+    position: relative;
+    aspect-ratio: 2.0875;
+    border-radius: var(--br-20);
+    overflow: hidden;
+}
+
+.location-img img{
+    object-fit: cover;
+}
+
+.location-title{
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.location-entity-type{
+    color: var(--color-grey);
+    font-size: 0.75rem;
+    font-weight: 600;
+}

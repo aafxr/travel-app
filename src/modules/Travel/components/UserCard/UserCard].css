@@ -10,6 +10,8 @@
 }
 
 .user-card-name{
+    display: flex;
+    align-items: center;
     font-size: 1rem;
     color: var(--color-text);
 }

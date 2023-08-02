@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
-import Container from "../../components/Container/Container";
+import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'

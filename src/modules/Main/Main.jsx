@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { useNavigate} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
-import Container from "../Expenses/components/Container/Container";
+import Container from "../../components/Container/Container";
 
 import Button from "../../components/ui/Button/Button";
 import {TravelContext} from "../Travel/contextProviders/TravelContextProvider";

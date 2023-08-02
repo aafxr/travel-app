@@ -1,6 +1,6 @@
 import {EXPENSES_FILTER, filterType, local} from "../static/vars";
 import Button from "../../../components/ui/Button/Button";
-import Container from "./Container/Container";
+import Container from "../../../components/Container/Container";
 import React from "react";
 import clsx from "clsx";
 

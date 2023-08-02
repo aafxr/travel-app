@@ -6,7 +6,7 @@ import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
-import Container from "../../components/Container/Container";
+import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import Select from "../../../../components/ui/Select/Select";
 

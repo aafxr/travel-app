@@ -1,4 +1,4 @@
-import Container from "../Expenses/components/Container/Container";
+import Container from "../../components/Container/Container";
 import {PageHeader} from "../../components/ui";
 import {useNavigate} from "react-router-dom";
 import Button from "../../components/ui/Button/Button";

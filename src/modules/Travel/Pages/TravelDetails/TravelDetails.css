@@ -1,0 +1,60 @@
+.travel-details{
+    position: relative;
+    aspect-ratio: 1.25;
+}
+
+.travel-details-header{
+    position: fixed!important;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: transparent;
+}
+
+.travel-details-backface{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0
+;
+    z-index: 0;
+    padding-top: 60px;
+    background-color: #E5E8E7;
+}
+
+.travel-details img{
+    border-radius: var(--br-20);
+    object-fit: cover;
+}
+
+.travel-details-title{
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.travel-details-subtitle{
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-grey);
+}
+
+.travel-days{
+    position: relative;
+    border-radius: var(--br-20) var(--br-20) 0 0;
+    background: var(--color-secondary);
+    box-shadow: 0 -10px 30px 0 rgba(0, 0, 0, 0.10);
+
+    top: 90%;
+    z-index: 2;
+}
+
+.travel-days-top-btn{
+    margin: 1rem auto;
+    width: 67px;
+    height: 4px;
+    background-color: var(--color-grey);
+    border-right: var(--br-16);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}

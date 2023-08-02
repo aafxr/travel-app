@@ -11,6 +11,7 @@ import {currency} from "../../static/vars";
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import constants from "../../../../static/constants";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import dateToStringFormat from "../../../../utils/dateToStringFormat";
 
 /**
  *
@@ -127,13 +128,7 @@ function SectionItem({expense, isPlan, currencySymbol, user_id}) {
     const navigate = useNavigate();
     const {controller} = useContext(ExpensesContext)
 
-    let time = new Date(datetime)
-    let minutes = time.getMinutes().toString()
-    minutes = minutes.length < 2 ? 0 + minutes : minutes
-    Number.isNaN(time)
-        ? time = '--/--'
-        : time = time.getUTCDate() + ' ' + month[time.getMonth()] + ' ' + time.getHours() + ':' + minutes
-
+    let time = dateToStringFormat(datetime)
 
     const editRoute = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/edit/${id}/`

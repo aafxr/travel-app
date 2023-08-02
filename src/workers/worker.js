@@ -16,8 +16,7 @@ onmessage = function (e) {
     console.log(message)
 
     if (Array.isArray(data)) {
-        type === constants.store.EXPENSES_ACTIONS && actionsProcess(message)
-        type === constants.store.TRAVEL_ACTIONS && actionsProcess(message)
+        type === 'action' && actionsProcess(message)
     }
     type === 'fetch' && fetchActions(message)
 }

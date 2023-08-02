@@ -37,6 +37,7 @@ export default function PageHeader({
             'row': title,
             'flex-between': !title,
             'arrow-back': !!arrowBack,
+
         },
         className
     )

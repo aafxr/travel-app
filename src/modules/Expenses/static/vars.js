@@ -1,4 +1,3 @@
-import constants from "../../../static/constants";
 
 export const filterType = ['personal', 'common', 'all']
 

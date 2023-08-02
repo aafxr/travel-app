@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
-import Container from "../Expenses/components/Container/Container";
+import Container from "../../components/Container/Container";
 
 import Select from "../../components/ui/Select/Select";
 import IconButton from "../../components/ui/IconButton/IconButton";

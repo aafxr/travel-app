@@ -3,7 +3,7 @@ import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import Container from "../../components/Container/Container";
+import Container from "../../../../components/Container/Container";
 import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 

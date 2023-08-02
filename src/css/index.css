@@ -42,6 +42,12 @@ a{
     font-weight: 700;
 }
 
+.link{
+    color: var(--color-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
 .flex-between {
     display: flex;
     justify-content: space-between;
@@ -62,6 +68,11 @@ a{
 .flex-wrap{
     display: flex;
     flex-wrap: wrap;
+}
+
+.flex-nowrap{
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 .no-resize{

@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import { useNavigate} from "react-router-dom";
 
-import Container from "../../../Expenses/components/Container/Container";
+import Container from "../../../../components/Container/Container";
 
 import {TravelContext} from "../../contextProviders/TravelContextProvider";
 import createId from "../../../../utils/createId";

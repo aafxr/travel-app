@@ -13,7 +13,7 @@ export default function UserCard({name, vehicle, status, role, avatarURL}){
                 </div>
                 {!!status && <div className='user-card-status'>{status}</div>}
             </div>
-            {!!role && <div className='user-card-role no-resize'>{status}</div>}
+            {!!role && <div className='user-card-role no-resize'>{role}</div>}
         </div>
     )
 }

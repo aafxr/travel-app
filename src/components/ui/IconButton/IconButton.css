@@ -1,12 +1,31 @@
 .icon-button {
+    position: relative;
     padding: 12px 18px;
-    background-color: transparent;
     stroke: var(--color-text);
-    border: var(--border);
     border-radius: 2rem;
+    border: none;
+    outline: none;
     cursor: pointer;
-    transform: scale(1);
-    transition: var(--tr-all);
+}
+
+.icon-button.border{
+    border: var(--border);
+}
+
+.icon-button.bg-transparent{
+    background-color: transparent;
+}
+
+.icon-button.bg-secondary{
+    background-color: var(--color-secondary);
+}
+
+.icon-button.bg-primary{
+    background-color: var(--color-primary);
+}
+
+.icon-button.shadow{
+    box-shadow: var(--box-shadoe);
 }
 
 .icon-button:disabled{
@@ -18,7 +37,6 @@
 }
 
 .icon-button:active{
-    transform: scale(.98);
 }
 
 .icon-button.small{
@@ -27,6 +45,7 @@
 
 .icon-button.center{
     width: 50px;
+    height: 50px;
 }
 
 .icon-button.center .icon{

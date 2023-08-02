@@ -5,21 +5,7 @@
  * @returns {Promise<Response>}
  */
 export default async function sendActionsToServer(actions, type) {
-    let url
-    let data
-
-    if(type === 'expensesActions'){
-        url = process.env.REACT_APP_SERVER_URL + '/expenses/addActions/'
-        data = actions
-    } else if (type === 'travelsActions'){
-        url = process.env.REACT_APP_SERVER_URL + '/travel/add/'
-        data = actions.map(a => a.data)
-    } else {
-        console.log({actions, type})
-        return
-    }
-
-
+    let url = process.env.REACT_APP_SERVER_URL + '/actions/add/'
 
     if (actions && actions.length) {
         return await fetch(url, {
@@ -27,7 +13,7 @@ export default async function sendActionsToServer(actions, type) {
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(actions)
         })
     }
 }

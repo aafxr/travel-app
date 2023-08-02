@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-import Container from "../../Expenses/components/Container/Container";
+import Container from "../../../components/Container/Container";
 import Button from "../../../components/ui/Button/Button";
 import { PageHeader} from "../../../components/ui";
 
