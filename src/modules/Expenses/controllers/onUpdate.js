@@ -59,7 +59,7 @@ export function onUpdate(primary_entity_id, user_id, currency) {
         const commonExistingSections = Object.keys(limitsObj.common)
         for (const s of personalExistingSections) {
             if (!personalLimits.includes(s)) {
-                await limitsModel.edit({
+                await limitsModel.update({
                     id: createId(user_id),
                     section_id: s,
                     value: 0,
@@ -73,7 +73,7 @@ export function onUpdate(primary_entity_id, user_id, currency) {
 
         for (const s of commonExistingSections) {
             if (!commonLimits.includes(s)) {
-                await limitsModel.edit({
+                await limitsModel.update({
                     id: createId(user_id),
                     section_id: s,
                     value: 0,
@@ -103,7 +103,7 @@ export function onUpdate(primary_entity_id, user_id, currency) {
             if (limitsObj[isPersonal ? 'personal' : 'common'][section_id] && limit.value < maxLimitPlan) {
                 console.log(await controller.write({
                     storeName: constants.store.LIMIT,
-                    action: 'edit',
+                    action: 'update',
                     user_id,
                     data: {...limit, value: maxLimitPlan }
                 }))

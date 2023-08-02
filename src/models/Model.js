@@ -13,7 +13,7 @@ import ErrorReport from "../controllers/ErrorReport";
 /**
  * @typedef {object} validateObj
  * @property {validateCallback} [add]
- * @property {validateCallback} [edit]
+ * @property {validateCallback} [update]
  * @property {validateCallback} [get]
  * @property {validateCallback} [getFromIndex]
  * @property {validateCallback} [remove]
@@ -56,7 +56,7 @@ import ErrorReport from "../controllers/ErrorReport";
  *
  * getFormIndex
  *
- * edit
+ * update
  *
  * remove
  *
@@ -90,7 +90,7 @@ export default class Model {
     /**
      * валидация данных согласно переданному в конструктор методу или объекту валидации
      * @param {*} data
-     * @param {'add' | 'edit' | 'get' | 'getFromIndex' | 'remove'} methodType
+     * @param {'add' | 'update' | 'get' | 'getFromIndex' | 'remove'} methodType
      * @returns {boolean}
      */
     validate(data, methodType) {
@@ -151,15 +151,15 @@ export default class Model {
      * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
-    async edit(payload) {
+    async update(payload) {
         try {
-            if (this.validate(payload, 'edit')) {
+            if (this.validate(payload, 'update')) {
                 return await this.db.editElement(this.storeName, payload)
             }
             this._notCorrectDataMessage(payload)
             return undefined
         } catch (err) {
-            this._sendReport(new Error(`[Model.edit/${this.storeName}] ` + err))
+            this._sendReport(new Error(`[Model.update/${this.storeName}] ` + err))
         }
     }
 

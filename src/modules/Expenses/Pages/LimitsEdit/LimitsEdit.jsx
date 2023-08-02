@@ -127,7 +127,7 @@ export default function LimitsEdit({
             if (limitObj ) {
                 controller.write({
                     storeName: constants.store.LIMIT,
-                    action: 'edit',
+                    action: 'update',
                     user_id,
                     data: {...limitObj, value: value}
                 })

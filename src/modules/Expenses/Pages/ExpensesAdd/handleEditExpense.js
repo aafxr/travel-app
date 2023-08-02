@@ -12,7 +12,7 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
             controller.write({
                 storeName,
-                action: 'edit',
+                action: 'update',
                 user_id,
                 data: {
                     ...expense,

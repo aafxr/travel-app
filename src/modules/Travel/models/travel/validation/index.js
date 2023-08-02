@@ -29,7 +29,7 @@ function validatePayload(data) {
  */
 const travelValidation = {
     add: validatePayload,
-    edit: validatePayload,
+    update: validatePayload,
     get: validateDBQuery,
     getFromIndex: validateDBQuery,
     remove: isString

@@ -18,7 +18,7 @@ import createId from "../utils/createId";
  */
 
 /**
- * @typedef {'add' | 'edit' | 'get' | 'remove'} ActionVariant
+ * @typedef {'add' | 'update' | 'get' | 'remove'} ActionVariant
  */
 
 /**
@@ -105,7 +105,7 @@ import createId from "../utils/createId";
 
 
 
-const actions = ['add', 'edit', 'get', 'remove'];
+const actions = ['add', 'update', 'get', 'remove'];
 
 export default class ActionController {
     /**
@@ -291,10 +291,10 @@ export default class ActionController {
                     await this.actionProcess(action) && (isModified = true)
 
                     if (synced) {
-                        await this.actionsModel.edit(action)
+                        await this.actionsModel.update(action)
                     } else {
                         //действия если не синхронизированно
-                        await this.actionsModel.edit(action)
+                        await this.actionsModel.update(action)
                         actionsQueue.push(action)
                     }
                 }
