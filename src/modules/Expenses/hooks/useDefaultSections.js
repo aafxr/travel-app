@@ -25,7 +25,7 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
                     const sectionModel = controller.getStoreModel(constants.store.SECTION)
 
                     try {
-                        await sectionModel.edit(data)
+                        await sectionModel.update(data)
                     } catch (err) {
                         await ErrorReport.sendError(err)
                         console.error(err)

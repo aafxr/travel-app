@@ -3,6 +3,7 @@ import './RecommendationCard.css'
 
 /**
  * @typedef {Object} RecommendationItemType
+ * @property {string} id
  * @property {string} entityType
  * @property {string} entityName
  */
@@ -23,7 +24,7 @@ export default function RecommendationCard({to = '', items}){
             </div>
             {
                 items && !!items.length && items.map(item => (
-                    <RecommendationItem {...item}/>
+                    <RecommendationItem key={item.id} {...item}/>
                 ))
             }
         </div>

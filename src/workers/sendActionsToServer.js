@@ -14,6 +14,8 @@ export default async function sendActionsToServer(actions, type) {
                 "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(actions)
+        }).then(() => {
+            console.log('sanded ', actions)
         })
     }
 }

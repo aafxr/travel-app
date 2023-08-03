@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useRef, useState} from "react";
+import clsx from "clsx";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -12,15 +13,18 @@ import UserCard from "../../components/UserCard/UserCard";
 import {BellIcon, ChatIcon, ChecklistIcon, CopyIcon, LinkIcon, MenuIcon, Money} from "../../../../components/svg";
 
 import './TravelDetails.css'
+import swipeBarHandler from "./swipeBarHandler";
 
-
-export default function TravelDetails() {
     const icons = [<CopyIcon key={1}/>, <LinkIcon key={2}/>, <BellIcon key={3}/>, <MenuIcon key={4}/>]
 
+export default function TravelDetails() {
+    const [scrolled, setScrolled] = useState(true)
+    const tdref = useRef()
+
     const items = [
-        {entityType: 'Прокат', entityName: 'Велопрокат'},
-        {entityType: 'Кафе', entityName: 'Malina'},
-        {entityType: 'Кафе', entityName: 'Brusnika'},
+        { id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
+        { id: 2, entityType: 'Кафе', entityName: 'Malina'},
+        { id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
     ]
 
     return (
@@ -64,9 +68,9 @@ export default function TravelDetails() {
                 </div>
             </Container>
 
-            <div className='travel-days'>
+            <div ref={tdref} className='travel-days'>
                 <div className='center'>
-                    <button className='travel-days-top-btn'/>
+                    <button className='travel-days-top-btn' onClick={() => tdref.current && swipeBarHandler(tdref.current)}/>
                 </div>
                 <Container>
                     <div className='flex-between gap-1'>
