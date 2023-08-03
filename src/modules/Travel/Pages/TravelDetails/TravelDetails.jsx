@@ -1,5 +1,4 @@
-import React, {useRef, useState} from "react";
-import clsx from "clsx";
+import React, {useRef} from "react";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -12,13 +11,13 @@ import UserCard from "../../components/UserCard/UserCard";
 
 import {BellIcon, ChatIcon, ChecklistIcon, CopyIcon, LinkIcon, MenuIcon, Money} from "../../../../components/svg";
 
-import './TravelDetails.css'
 import swipeBarHandler from "./swipeBarHandler";
+
+import './TravelDetails.css'
 
     const icons = [<CopyIcon key={1}/>, <LinkIcon key={2}/>, <BellIcon key={3}/>, <MenuIcon key={4}/>]
 
 export default function TravelDetails() {
-    const [scrolled, setScrolled] = useState(true)
     const tdref = useRef()
 
     const items = [
@@ -68,49 +67,49 @@ export default function TravelDetails() {
                 </div>
             </Container>
 
-            <div ref={tdref} className='travel-days'>
-                <div className='center'>
-                    <button className='travel-days-top-btn' onClick={() => tdref.current && swipeBarHandler(tdref.current)}/>
-                </div>
-                <Container>
-                    <div className='flex-between gap-1'>
-                        <Button>по дням</Button>
-                        <Button>на карте</Button>
-                        <Button>все места</Button>
-                    </div>
-                </Container>
-                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                    <Tab name='1 день'/>
-                    <Tab name='2 день'/>
-                    <Tab name='3 день'/>
-                    <Tab name='4 день'/>
-                    <Tab name='5 день'/>
-                    <Tab name='6 день'/>
-                    <Tab name='7 день'/>
-                </div>
-                <Container className='pt-20 pb-20'>
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2}
-                        dateEnd={Date.now()}
-                    />
-                    <RecommendLocation items={items} />
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-                        dateEnd={Date.now()}
-                    />
-                    <RecommendLocation items={items} />
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-                    />
-                    <AddButton>Добавить локацию</AddButton>
-                </Container>
-            </div>
+            {/*<div ref={tdref} className='travel-days'>*/}
+            {/*    <div className='center'>*/}
+            {/*        <button className='travel-days-top-btn' onClick={() => tdref.current && swipeBarHandler(tdref.current)}/>*/}
+            {/*    </div>*/}
+            {/*    <Container>*/}
+            {/*        <div className='flex-between gap-1'>*/}
+            {/*            <Button>по дням</Button>*/}
+            {/*            <Button>на карте</Button>*/}
+            {/*            <Button>все места</Button>*/}
+            {/*        </div>*/}
+            {/*    </Container>*/}
+            {/*    <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>*/}
+            {/*        <Tab name='1 день'/>*/}
+            {/*        <Tab name='2 день'/>*/}
+            {/*        <Tab name='3 день'/>*/}
+            {/*        <Tab name='4 день'/>*/}
+            {/*        <Tab name='5 день'/>*/}
+            {/*        <Tab name='6 день'/>*/}
+            {/*        <Tab name='7 день'/>*/}
+            {/*    </div>*/}
+            {/*    <Container className='pt-20 pb-20'>*/}
+            {/*        <LocationCard*/}
+            {/*            title='Новосибирск-Сочи'*/}
+            {/*            entityType='Перелет'*/}
+            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2}*/}
+            {/*            dateEnd={Date.now()}*/}
+            {/*        />*/}
+            {/*        <RecommendLocation items={items} />*/}
+            {/*        <LocationCard*/}
+            {/*            title='Новосибирск-Сочи'*/}
+            {/*            entityType='Перелет'*/}
+            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2.1}*/}
+            {/*            dateEnd={Date.now()}*/}
+            {/*        />*/}
+            {/*        <RecommendLocation items={items} />*/}
+            {/*        <LocationCard*/}
+            {/*            title='Новосибирск-Сочи'*/}
+            {/*            entityType='Перелет'*/}
+            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2.1}*/}
+            {/*        />*/}
+            {/*        <AddButton>Добавить локацию</AddButton>*/}
+            {/*    </Container>*/}
+            {/*</div>*/}
         </>
     )
 }

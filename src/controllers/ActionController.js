@@ -28,7 +28,7 @@ import createId from "../utils/createId";
 /**
  * @typedef {object} ActionType
  * @property {string} [id]
- * @property {string} uid
+ * @property {string} user_id
  * @property {string} datetime
  * @property {string} entity
  * @property {ActionVariant} action
@@ -199,6 +199,10 @@ export default class ActionController {
      * @param cb
      */
     set onSendData(cb) {
+        if (cb === this.send){
+            debugger
+            return
+        }
         if (typeof cb === 'function') {
             this.send = cb
             this.actionsModel.getFromIndex(constants.indexes.SYNCED, 0)
@@ -225,9 +229,9 @@ export default class ActionController {
     isActionValid(action) {
         let isValid = true;
 
-        if (!isString(action.uid)) {
+        if (!isString(action.user_id)) {
             isValid = false;
-            console.warn('[Action validation] uid ', action.uid);
+            console.warn('[Action validation] user_id ', action.user_id);
         }
 
         if (!actions.includes(action.action)) {
@@ -392,7 +396,7 @@ export default class ActionController {
                 entity: storeName,
                 datetime: Date.now(),
                 synced: 0,
-                uid: createId(user_id)
+                user_id: user_id
             }
         } else {
             return {}

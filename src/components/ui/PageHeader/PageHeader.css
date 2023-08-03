@@ -3,6 +3,11 @@
     padding: 0.5rem 0;
     stroke: var(--color-text);
     fill: var(--color-text);
+    pointer-events: none;
+}
+
+.page-header-container > * {
+    pointer-events: all;
 }
 
 .travel-details-header{
@@ -23,6 +28,7 @@
     flex: none;
     min-width: var(--x);
     height: var(--x);
+    pointer-events: all;
 }
 
 .page-header-icons svg,.page-header-icons img{

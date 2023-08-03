@@ -73,6 +73,8 @@ export default function ExpensesContextProvider({user_id}) {
 
     const currency = useCurrency()
 
+    const [onSendSet, setOnSendSet] = useState(false)
+
     useDefaultSection(state.controller, primary_entity_id, user_id)
 
     usePostMessage(worker, primary_entity_id)
@@ -113,7 +115,7 @@ export default function ExpensesContextProvider({user_id}) {
     }, [])
 
     useEffect(()=>{
-        if (state.controller && currency){
+        if (state.controller && currency ){
             state.controller.onUpdate = onUpdate(primary_entity_id, user_id, currency)
         }
     }, [state.controller, currency])
@@ -132,11 +134,18 @@ export default function ExpensesContextProvider({user_id}) {
 
             worker.addEventListener('message', workerMessageHandler)
 
-            state.controller.onSendData = sendActionToWorker(worker, constants.store.EXPENSES_ACTIONS)
+
 
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
     }, [state.controller, worker])
+
+    useEffect(() => {
+        if(state.controller && worker && !onSendSet){
+            state.controller.onSendData = sendActionToWorker(worker, constants.store.EXPENSES_ACTIONS)
+            setOnSendSet(true)
+        }
+    }, [state.controller,worker, onSendSet])
 
 
     useEffect(() => {

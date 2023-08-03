@@ -1,7 +1,6 @@
 import {LocalDB} from "../db/LocalDB";
 import isString from "../utils/validation/isString";
 import isError from "../utils/isError";
-import {ca} from "date-fns/locale";
 import ErrorReport from "../controllers/ErrorReport";
 
 /**

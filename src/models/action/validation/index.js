@@ -2,10 +2,10 @@ import isString from "../../../utils/validation/isString";
 import validateDBQuery from "../../../utils/validation/validateDBQuery";
 
 
-
 function validatePayload(data) {
     return (
-        data.uid && isString(data.uid)
+        isString(data.id)
+        && isString(data.user_id)
         && isString(data.entity)
         && isString(data.action)
         && typeof data.datetime === 'number'

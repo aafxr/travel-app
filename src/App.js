@@ -18,6 +18,7 @@ import Dev from "./modules/Dev";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import ErrorPage from "./modules/Error/ErrorPage";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
+import TelegramAuth from "./modules/Main/TelegramAuth";
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                 <Route element={<WorkerContextProvider/>}>
                     <Route element={<TravelContextProvider user_id={'12'} />}>
                         <Route path={'/'} element={<Main/>}/>
+                        <Route path={'/auth/'} element={<TelegramAuth />}/>
                         <Route path={'/dev/'} element={<Dev />}/>
                             <Route path={'/travel/add/'} element={<TravelAdd user_id={'12'}/>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails />}/>
