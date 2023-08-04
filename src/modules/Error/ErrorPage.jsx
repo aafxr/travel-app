@@ -13,7 +13,6 @@ export default function ErrorPage() {
 
     useEffect(() => {
         const e = localStorage.getItem(CRITICAL_ERROR)
-        debugger
         setError(e)
     }, [])
 

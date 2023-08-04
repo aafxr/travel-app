@@ -11,7 +11,7 @@ import {clientsClaim} from 'workbox-core';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
 import {registerRoute} from 'workbox-routing';
-import {StaleWhileRevalidate, NetworkFirst} from 'workbox-strategies';
+import {StaleWhileRevalidate} from 'workbox-strategies';
 
 clientsClaim();
 
@@ -20,6 +20,10 @@ clientsClaim();
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST);
+precacheAndRoute([
+    process.env.PUBLIC_URL + '/expenses/getSections/',
+    process.env.PUBLIC_URL + '/main/currency/getList/'
+]);
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
@@ -37,9 +41,9 @@ registerRoute(
             return false;
         } // If this looks like a URL for a resource, because it contains // a file extension, skip.
 
-        if (url.pathname.includes('api.')){
-            return false //fetch(request)
-        }// If request to api we ignore cache strategy
+        // if (url.pathname.includes('api.')){
+        //     return false //fetch(request)
+        // }// If request to api we ignore cache strategy
 
         if (url.pathname.match(fileExtensionRegexp)) {
             return false;
@@ -75,7 +79,7 @@ registerRoute(
         }
         return false
     },
-    new NetworkFirst({
+    new StaleWhileRevalidate({
         cacheName: 'api'
     })
 )

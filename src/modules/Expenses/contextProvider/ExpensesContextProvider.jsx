@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
-import {Outlet, useParams} from "react-router-dom";
+import {Outlet, useNavigate, useParams} from "react-router-dom";
 
 import ActionController from "../../../controllers/ActionController";
 
@@ -22,6 +22,7 @@ import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
 import expensesDB from "../db/expensesDB";
+import {UserContext} from "../../../contexts/UserContextProvider";
 
 /**
  * @typedef {Object} ExpensesContextState
@@ -60,7 +61,8 @@ const defaultState = {
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ExpensesContextProvider({user_id}) {
+export default function ExpensesContextProvider() {
+    const navigate = useNavigate()
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
     /**  @type {[ExpensesContextState, function]} */
@@ -74,6 +76,10 @@ export default function ExpensesContextProvider({user_id}) {
     const currency = useCurrency()
 
     const [onSendSet, setOnSendSet] = useState(false)
+
+    const {user} = useContext(UserContext)
+
+    const user_id = user.id
 
     useDefaultSection(state.controller, primary_entity_id, user_id)
 

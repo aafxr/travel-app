@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState} from 'react'
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
@@ -15,16 +15,16 @@ import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
 import '../../css/Expenses.css'
 import updateExpenses from "../../helpers/updateExpenses";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 
 
 /**
  * страница отображает текущие расходы с лимитами пользователя (если указаны)
- * @param {string} user_id
  * @param {string} primary_entity_type
  * @returns {JSX.Element}
  * @constructor
  */
-export default function Expenses({user_id, primary_entity_type}) {
+export default function Expenses({primary_entity_type}) {
     const {travelCode: primary_entity_id} = useParams()
 
     const {controller, sections, limits} = useContext(ExpensesContext)
@@ -34,6 +34,10 @@ export default function Expenses({user_id, primary_entity_type}) {
     const [noDataMessage, setNoDataMessage] = useState('')
 
     const [filter, setFilter] = useState(defaultFilterValue)
+
+    const {user} = useContext(UserContext)
+
+    const user_id = user.id
 
 
     useEffect(() => {

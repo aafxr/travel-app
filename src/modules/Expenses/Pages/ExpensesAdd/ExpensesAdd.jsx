@@ -19,13 +19,13 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
 import '../../css/Expenses.css'
+import {UserContext} from "../../../../contexts/UserContextProvider";
 
 
 /**
  * страница жобавления расходов
  *
  * в зависимости от expensesType добавляются либо плановые либо текущие
- * @param {string} user_id
  * @param {string} primary_entity_type
  * @param {'actual' | 'plan'} expensesType - default =  actual
  * @param {boolean} edit - default =  false
@@ -33,7 +33,6 @@ import '../../css/Expenses.css'
  * @constructor
  */
 export default function ExpensesAdd({
-                                        user_id,
                                         primary_entity_type,
                                         expensesType = 'plan', // 'actual' | 'plan'
                                         edit = false
@@ -58,6 +57,10 @@ export default function ExpensesAdd({
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
+
+    const {user} = useContext(UserContext)
+
+    const user_id = user.id
 
 
     useEffect(() => {

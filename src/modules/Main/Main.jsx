@@ -10,16 +10,21 @@ import TravelCard from "../Travel/components/TravelCard/TravelCard";
 import {pushAlertMessage} from "../../components/Alerts/Alerts";
 import updateTravels from "../Travel/helpers/updateTravels";
 import useDefaultTravels from "../Travel/hooks/useDefaultTravels";
-import constants from "../../static/constants";
+import constants, {USER_AUTH} from "../../static/constants";
+import Modal from "../../components/Modal/Modal";
+import TelegramAuth from "./TelegramAuth";
+import {UserContext} from "../../contexts/UserContextProvider";
 
 export default function Main({
-                                 user_id,
                                  primary_entity_type,
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
     const {travelController} = useContext(TravelContext)
+    const {user, setUser} = useContext(UserContext)
+
     const [travelList, setTravelList] = useState([])
+    const [modalVisible, setModalVisible] = useState(!user)
 
     useDefaultTravels()
 
@@ -39,11 +44,11 @@ export default function Main({
     }, [travelController])
 
     function handleRemove(travel){
-        if (travelController){
+        if (travelController && user){
             travelController.write({
                 storeName:constants.store.TRAVEL,
                 action: "remove",
-                user_id,
+                user_id: user.id,
                 data: travel
             })
                 .then(() => pushAlertMessage({type:"success", message: `${travel.title} удфлено.`}))
@@ -52,6 +57,22 @@ export default function Main({
         }
     }
 
+    useEffect(() => {
+        if (!user){
+            const us = JSON.parse(localStorage.getItem(USER_AUTH))
+            if(!us){
+            setModalVisible(true)
+            }else{
+                setUser(us)
+            }
+        }
+    }, [user])
+
+    function handleAuth(user){
+        console.log(user)
+        setModalVisible(false)
+        setUser(user)
+    }
 
 
     return (
@@ -74,6 +95,9 @@ export default function Main({
             <div className='footer-btn-container footer'>
                 <Button onClick={() => navigate('/travel/add/')}>Добавить</Button>
             </div>
+            <Modal isVisible={modalVisible} >
+                <TelegramAuth handleAuth={handleAuth}/>
+            </Modal>
         </div>
     )
 }

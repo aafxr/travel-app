@@ -17,16 +17,15 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {formatter} from "../../../../utils/currencyFormat";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 
 /**
  * страница редактиррования лимитов
- * @param {string} user_id
  * @param {string} primary_entity_type
  * @returns {JSX.Element}
  * @constructor
  */
 export default function LimitsEdit({
-                                       user_id,
                                        primary_entity_type
                                    }) {
     const {travelCode: primary_entity_id, sectionId} = useParams()
@@ -34,12 +33,16 @@ export default function LimitsEdit({
 
     const isPlan = pathname.includes('plan')
 
+    const {user} = useContext(UserContext)
+    const navigate = useNavigate()
+
+    const user_id = user.id
+
     const backUrl = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/`
         : `/travel/${primary_entity_id}/expenses/`
 
     const {controller, defaultSection, sections, limits, currency } = useContext(ExpensesContext)
-    const navigate = useNavigate()
 
     const [expenses, setExpenses] = useState([])
 

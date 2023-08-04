@@ -1,0 +1,34 @@
+.modal {
+    position: relative;
+    z-index: 2000;
+}
+
+.modal-backplate {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--modal-bg);
+    opacity: 0.8;
+}
+
+.modal-wrapper {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    padding: 20px;
+    background-color: var(--color-secondary);
+    transform: translate(-50%, -50%);
+}
+
+.modal-close {
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    width: 20px;
+    height: 20px;
+    fill: var(--color-text);
+    transform: rotate(45deg);
+    cursor: pointer;
+}

@@ -200,7 +200,6 @@ export default class ActionController {
      */
     set onSendData(cb) {
         if (cb === this.send){
-            debugger
             return
         }
         if (typeof cb === 'function') {

@@ -31,3 +31,5 @@ export const actionsWhiteList = [constants.store.EXPENSES_ACTUAL, constants.stor
 export const CRITICAL_ERROR = 'critical_error'
 
 export const DEFAULT_IMG_URL = process.env.PUBLIC_URL + '/images/travel-placeholder.jpg'
+
+export const USER_AUTH = 'USER'

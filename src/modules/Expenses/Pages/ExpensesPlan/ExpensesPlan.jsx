@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 
@@ -13,6 +13,7 @@ import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
 import updateExpenses from "../../helpers/updateExpenses";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 
 
 /**
@@ -22,10 +23,7 @@ import updateExpenses from "../../helpers/updateExpenses";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function ExpensesPlan({
-                                         user_id,
-                                         primary_entity_type
-                                     }) {
+export default function ExpensesPlan() {
     const {travelCode: primary_entity_id} = useParams()
     const {controller, sections, limits} = useContext(ExpensesContext)
 
@@ -34,6 +32,11 @@ export default function ExpensesPlan({
     const [noDataMessage, setNoDataMessage] = useState('')
 
     const [filter, setFilter] = useState(defaultFilterValue)
+
+    const {user} = useContext(UserContext)
+    const navigate = useNavigate()
+
+    const user_id = user.id
 
 
     useEffect(() => {

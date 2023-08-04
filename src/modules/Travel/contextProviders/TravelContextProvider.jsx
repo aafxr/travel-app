@@ -37,11 +37,10 @@ export const TravelContext = createContext(null)
  * обертка для молуля Travel
  *
  * оборачивает в ExpensesContext
- * @param {string} user_id
  * @returns {JSX.Element}
  * @constructor
  */
-export default function TravelContextProvider({user_id}) {
+export default function TravelContextProvider() {
     const {travelCode} = useParams()
     const [state, setState] = useState(defaultState)
     const [dbReady, setDbReady] = useState(false)

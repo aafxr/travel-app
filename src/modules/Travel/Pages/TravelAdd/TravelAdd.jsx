@@ -10,11 +10,16 @@ import {Input, PageHeader} from "../../../../components/ui";
 
 import '../../css/Travel.css'
 import constants from "../../../../static/constants";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 
 
-export default function TravelAdd({user_id}) {
+export default function TravelAdd() {
     const navigate = useNavigate()
     const {travelController} = useContext(TravelContext)
+    const {user} = useContext(UserContext)
+
+    const user_id = user.id
+
 
     const [title, setTitle] = useState('')
 
