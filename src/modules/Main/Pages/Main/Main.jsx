@@ -3,7 +3,6 @@ import { useNavigate} from "react-router-dom";
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 
-import Button from "../../../../components/ui/Button/Button";
 import {TravelContext} from "../../../Travel/contextProviders/TravelContextProvider";
 import toArray from "../../../../utils/toArray";
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
@@ -15,9 +14,7 @@ import Modal from "../../../../components/Modal/Modal";
 import TelegramAuth from "../../TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
-import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import {PlusIcon} from "../../../../components/svg";
 
 export default function Main({
                                  primary_entity_type,
@@ -89,7 +86,7 @@ export default function Main({
                     className='link'
                     onClick={() => navigate('/travel/add/')}
                 />
-                <div className='column gap-1 pt-20'>
+                <div className='column gap-1'>
                     {
                         travelList && !!travelList.length && travelList.map(t => (
                             <TravelCard

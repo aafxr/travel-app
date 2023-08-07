@@ -59,7 +59,7 @@ export default function UserContextProvider() {
         if (process.env.NODE_ENV === 'development') {
             /**@type{UserAppType} */
             const userPH = {
-                id: 12,
+                id: '12',
                 first_name: 'Иван',
                 last_name: 'Алексеев'
             }

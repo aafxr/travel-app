@@ -51,8 +51,10 @@
 }
 
 .icons-container{
+    position: absolute;
     visibility: hidden;
     overflow-x: hidden;
+    transform: translateX(-100%);
 }
 
 .icons-container.open{

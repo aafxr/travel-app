@@ -6,6 +6,7 @@ import {ArrowBackIcon, MenuIcon} from "../../svg";
 import isString from "../../../utils/validation/isString";
 
 import './PageHeader.css'
+import useOutside from "../../../hooks/useOutside";
 
 
 /**
@@ -31,6 +32,8 @@ export default function PageHeader({
                                    }) {
     const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
+    const {ref} = useOutside(false, setMenuOpen)
+
     const styles = clsx(
         'page-header-container gap-0.25',
         {
@@ -62,7 +65,7 @@ export default function PageHeader({
             {children}
             <div className='page-header-icons center raw gap-0.75'>
                 {icons && (
-                    <div className='row flex-nowrap gap-0.5'>
+                    <div ref={ref} className='row flex-nowrap gap-0.5'>
                         {menuOpen && <div
                             className={clsx('icons-container raw flex-nowrap gap-0.5', {'open': menuOpen})}>{icons}</div>}
                         <div onClick={() => setMenuOpen(!menuOpen)}>
