@@ -19,7 +19,7 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
 import '../../css/Expenses.css'
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 
 
 /**

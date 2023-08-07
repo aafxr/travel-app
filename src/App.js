@@ -4,7 +4,7 @@ import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
 
-import Main from "./modules/Main/Main";
+import Main from "./modules/Main/Pages/Main/Main";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
@@ -12,17 +12,27 @@ import ExpensesContextProvider from "./modules/Expenses/contextProvider/Expenses
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 import Alerts from "./components/Alerts/Alerts";
-import React from "react";
+import React, {useEffect} from "react";
 import Dev from "./modules/Dev";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import ErrorPage from "./modules/Error/ErrorPage";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 import TelegramAuth from "./modules/Main/TelegramAuth";
-import UserContextProvider from "./contexts/UserContextProvider";
+import UserContextProvider from "./contexts/UserContextProvider.jsx";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
+import Profile from "./modules/Main/Pages/Profile/Profile";
 
 
 function App() {
+
+    useEffect(() => {
+        const prefetch = [
+            process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
+            process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
+        ]
+
+        prefetch.forEach(url => fetch(url).catch(console.error))
+    }, [])
 
     return (
         <ErrorBoundary>
@@ -49,6 +59,7 @@ function App() {
                                     <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
                                     <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit />}/>
                                 </Route>
+                            <Route path={'/profile/'} element={<Profile />} />
                         </Route>
                     </Route>
                 </Route>

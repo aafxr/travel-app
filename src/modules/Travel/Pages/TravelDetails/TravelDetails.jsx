@@ -1,35 +1,33 @@
 import React, {useRef} from "react";
 
-import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import LocationCard from "../../components/LocationCard/LocationCard";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
 import {Chip, PageHeader, Tab} from "../../../../components/ui";
-import Button from "../../../../components/ui/Button/Button";
 import UserCard from "../../components/UserCard/UserCard";
 
-import {BellIcon, ChatIcon, ChecklistIcon, CopyIcon, LinkIcon, MenuIcon, Money} from "../../../../components/svg";
-
-import swipeBarHandler from "./swipeBarHandler";
+import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
+import MenuIconList from "../../../../components/MenuIconList/MenuIconList";
 
 import './TravelDetails.css'
+import Curtain from "../../../../components/Curtain/Curtain";
+import Button from "../../../../components/ui/Button/Button";
+import LocationCard from "../../components/LocationCard/LocationCard";
+import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 
-    const icons = [<CopyIcon key={1}/>, <LinkIcon key={2}/>, <BellIcon key={3}/>, <MenuIcon key={4}/>]
 
 export default function TravelDetails() {
-    const tdref = useRef()
 
     const items = [
-        { id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
-        { id: 2, entityType: 'Кафе', entityName: 'Malina'},
-        { id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
+        {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
+        {id: 2, entityType: 'Кафе', entityName: 'Malina'},
+        {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
     ]
 
     return (
         <>
             <Container className='travel-details-header'>
-                <PageHeader arrowBack icons={icons}/>
+                <PageHeader arrowBack icons={<MenuIconList/>}/>
             </Container>
             <Container className='travel-details-backface column gap-1 pb-20'>
                 <div className='travel-details'>
@@ -57,7 +55,7 @@ export default function TravelDetails() {
                               avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}/>
                 </div>
                 <div className='flex-between'>
-                <AddButton>Пригласить еще</AddButton>
+                    <AddButton>Пригласить еще</AddButton>
                     <span className='link'>Свернуть</span>
                 </div>
                 <div className='flex-between flex-nowrap gap-0.5'>
@@ -67,10 +65,7 @@ export default function TravelDetails() {
                 </div>
             </Container>
 
-            {/*<div ref={tdref} className='travel-days'>*/}
-            {/*    <div className='center'>*/}
-            {/*        <button className='travel-days-top-btn' onClick={() => tdref.current && swipeBarHandler(tdref.current)}/>*/}
-            {/*    </div>*/}
+            {/*<Curtain>*/}
             {/*    <Container>*/}
             {/*        <div className='flex-between gap-1'>*/}
             {/*            <Button>по дням</Button>*/}
@@ -94,14 +89,14 @@ export default function TravelDetails() {
             {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2}*/}
             {/*            dateEnd={Date.now()}*/}
             {/*        />*/}
-            {/*        <RecommendLocation items={items} />*/}
+            {/*        <RecommendLocation items={items}/>*/}
             {/*        <LocationCard*/}
             {/*            title='Новосибирск-Сочи'*/}
             {/*            entityType='Перелет'*/}
             {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2.1}*/}
             {/*            dateEnd={Date.now()}*/}
             {/*        />*/}
-            {/*        <RecommendLocation items={items} />*/}
+            {/*        <RecommendLocation items={items}/>*/}
             {/*        <LocationCard*/}
             {/*            title='Новосибирск-Сочи'*/}
             {/*            entityType='Перелет'*/}
@@ -109,7 +104,7 @@ export default function TravelDetails() {
             {/*        />*/}
             {/*        <AddButton>Добавить локацию</AddButton>*/}
             {/*    </Container>*/}
-            {/*</div>*/}
+            {/*</Curtain>*/}
         </>
     )
 }

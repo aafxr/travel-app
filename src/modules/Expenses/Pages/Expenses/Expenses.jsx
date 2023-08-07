@@ -15,7 +15,7 @@ import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
 import '../../css/Expenses.css'
 import updateExpenses from "../../helpers/updateExpenses";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 
 
 /**

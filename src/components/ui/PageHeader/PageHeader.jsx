@@ -1,9 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom'
 import clsx from "clsx";
 
-import {ArrowBackIcon} from "../../svg";
-
+import {ArrowBackIcon, MenuIcon} from "../../svg";
 import isString from "../../../utils/validation/isString";
 
 import './PageHeader.css'
@@ -16,7 +15,7 @@ import './PageHeader.css'
  * @param {string} title - заголовок
  * @param {string} to - url на который перенаправляется пользователь при клике либо назад
  * @param {JSX.Element} children
- * @param {Array.<JSX.Element>} icons
+ * @param {Array.<JSX.Element> | JSX.Element} icons
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -31,6 +30,7 @@ export default function PageHeader({
                                        ...props
                                    }) {
     const navigate = useNavigate()
+    const [menuOpen, setMenuOpen] = useState(false)
     const styles = clsx(
         'page-header-container gap-0.25',
         {
@@ -51,7 +51,9 @@ export default function PageHeader({
 
     return (
         <div className={styles} {...props}>
-            {!!arrowBack && <div className='page-header-icon' onClick={backHandler} ><ArrowBackIcon /></div> }
+            <div className='page-header-icon' onClick={backHandler}>
+                {!!arrowBack && <ArrowBackIcon/>}
+            </div>
             {!!title &&
                 <div className='page-header center title-bold'>
                     {title}
@@ -59,7 +61,14 @@ export default function PageHeader({
             }
             {children}
             {(arrowBack || icons) && <div className='page-header-icons center raw gap-0.75'>
-                { !!icons && icons }
+                <div className='row flex-nowrap gap-0.5'>
+                    {menuOpen && <div
+                        className={clsx('icons-container raw flex-nowrap gap-0.5', {'open': menuOpen})}>{icons}</div>}
+                    <div onClick={() => setMenuOpen(!menuOpen)}>
+                        <MenuIcon/>
+                    </div>
+
+                </div>
             </div>
             }
         </div>

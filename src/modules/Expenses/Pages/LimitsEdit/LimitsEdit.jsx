@@ -17,7 +17,7 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {formatter} from "../../../../utils/currencyFormat";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 
 /**
  * страница редактиррования лимитов

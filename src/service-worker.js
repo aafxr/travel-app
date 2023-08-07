@@ -124,23 +124,24 @@ self.addEventListener('fetch', (event) => {
 
 });
 
-self.addEventListener('install', (e) => {
-    e.waitUntil(
-        caches
-            .open(CACHE_NAME)
-            .then((cache) => {
-                return cache
-                    .addAll(
-                        prefetch.map((urlToPrefetch) => {
-                            return new Request(urlToPrefetch, {mode: "no-cors"});
-                        }),
-                    )
-                    .then(() => {
-                        console.log("All resources have been fetched and cached.");
-                    });
-            })
-            .catch((error) => {
-                console.error("Pre-fetching failed:", error);
-            }),
-    );
-})
+// self.addEventListener('install', (e) => {
+//     console.log(prefetch)
+//     e.waitUntil(
+//         caches
+//             .open(CACHE_NAME)
+//             .then(async (cache) => {
+//                 return await cache
+//                     .addAll(
+//                         prefetch.map((urlToPrefetch) => {
+//                             return new Request(urlToPrefetch, {mode: "no-cors"});
+//                         }),
+//                     )
+//                     .then(() => {
+//                         console.log("All resources have been fetched and cached.");
+//                     });
+//             })
+//             .catch((error) => {
+//                 console.error("Pre-fetching failed:", error);
+//             }),
+//     );
+// })

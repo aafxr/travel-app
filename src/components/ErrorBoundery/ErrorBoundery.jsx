@@ -1,6 +1,7 @@
 import React from 'react'
 import ErrorReport from "../../controllers/ErrorReport";
 import {CRITICAL_ERROR} from "../../static/constants";
+import errorToObject from "../../utils/errorToObject";
 
 export default class ErrorBoundary extends React.Component {
 
@@ -14,7 +15,7 @@ export default class ErrorBoundary extends React.Component {
 
     static getDerivedStateFromError(error) {
         // Обновить состояние с тем, чтобы следующий рендер показал запасной UI.
-        localStorage.setItem(CRITICAL_ERROR, error.toString())
+        localStorage.setItem(CRITICAL_ERROR, errorToObject(error))
         ErrorReport.sendError(error).catch(console.error)
 
         return {hasError: true};

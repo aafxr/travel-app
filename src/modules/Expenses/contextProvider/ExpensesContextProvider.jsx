@@ -22,7 +22,7 @@ import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
 import expensesDB from "../db/expensesDB";
-import {UserContext} from "../../../contexts/UserContextProvider";
+import {UserContext} from "../../../contexts/UserContextProvider.jsx";
 
 /**
  * @typedef {Object} ExpensesContextState

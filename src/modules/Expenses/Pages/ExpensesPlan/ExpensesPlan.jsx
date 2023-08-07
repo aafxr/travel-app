@@ -13,7 +13,7 @@ import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
 import updateExpenses from "../../helpers/updateExpenses";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 
 
 /**

@@ -1,0 +1,23 @@
+.profile-backside{
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    height: 100%;
+
+    overflow-y: auto;
+    z-index: 0;
+}
+
+.profile-image img{
+    /*margin: 0 auto;*/
+    width: var(--photo-size);
+    height: var(--photo-size);
+    border-radius: var(--br-20);
+    overflow: hidden;
+}
+
+.profile-user-name{
+    font-size: 1rem;
+    font-weight: 700;
+}

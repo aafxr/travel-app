@@ -1,19 +1,20 @@
 import React, {useContext, useEffect, useState} from 'react'
 import { useNavigate} from "react-router-dom";
-import {PageHeader} from "../../components/ui";
-import Container from "../../components/Container/Container";
+import {PageHeader} from "../../../../components/ui";
+import Container from "../../../../components/Container/Container";
 
-import Button from "../../components/ui/Button/Button";
-import {TravelContext} from "../Travel/contextProviders/TravelContextProvider";
-import toArray from "../../utils/toArray";
-import TravelCard from "../Travel/components/TravelCard/TravelCard";
-import {pushAlertMessage} from "../../components/Alerts/Alerts";
-import updateTravels from "../Travel/helpers/updateTravels";
-import useDefaultTravels from "../Travel/hooks/useDefaultTravels";
-import constants, {USER_AUTH} from "../../static/constants";
-import Modal from "../../components/Modal/Modal";
-import TelegramAuth from "./TelegramAuth";
-import {UserContext} from "../../contexts/UserContextProvider";
+import Button from "../../../../components/ui/Button/Button";
+import {TravelContext} from "../../../Travel/contextProviders/TravelContextProvider";
+import toArray from "../../../../utils/toArray";
+import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import updateTravels from "../../../Travel/helpers/updateTravels";
+import useDefaultTravels from "../../../Travel/hooks/useDefaultTravels";
+import constants, {USER_AUTH} from "../../../../static/constants";
+import Modal from "../../../../components/Modal/Modal";
+import TelegramAuth from "../../TelegramAuth";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import Navigation from "../../../../components/Navigation/Navigation";
 
 export default function Main({
                                  primary_entity_type,
@@ -92,9 +93,10 @@ export default function Main({
                     }
                 </div>
             </Container>
-            <div className='footer-btn-container footer'>
-                <Button onClick={() => navigate('/travel/add/')}>Добавить</Button>
-            </div>
+            <Navigation className='footer' />
+            {/*<div className='footer-btn-container footer'>*/}
+            {/*    <Button onClick={() => navigate('/travel/add/')}>Добавить</Button>*/}
+            {/*</div>*/}
             <Modal isVisible={modalVisible} >
                 <TelegramAuth handleAuth={handleAuth}/>
             </Modal>

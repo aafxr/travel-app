@@ -21,6 +21,7 @@
 
 .page-header {
     flex: 1;
+    pointer-events: none;
 }
 
 .page-header-icon, .page-header-icons {
@@ -38,10 +39,6 @@
 
 .page-header-icon{
     stroke: var(--color-secondary);
-    mask: url("../../../../public/icons/back.svg") 0 50% / var(--x) var(--x) no-repeat;
-    mask-size: 60%;
-    background: var(--color-text);
-
     cursor: pointer;
 }
 
@@ -51,5 +48,23 @@
     height: var(--icon-size);
     top: 50%;
     transform: translateY(-50%);
+}
+
+.icons-container{
+    visibility: hidden;
+    overflow-x: hidden;
+}
+
+.icons-container.open{
+    visibility: visible;
+}
+
+@keyframes icons-animation {
+    from{
+        max-width: 0%;
+    }
+    to{
+        max-width: 100%;
+    }
 }
 

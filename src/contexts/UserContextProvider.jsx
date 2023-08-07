@@ -1,5 +1,5 @@
 import {createContext, useEffect, useState} from "react";
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
 import {USER_AUTH} from "../static/constants";
 
@@ -19,6 +19,7 @@ import {USER_AUTH} from "../static/constants";
  * @property {string} first_name
  * @property {string} last_name
  * @property {number} auth_date
+ * @property {string} photo_url
  * @property {string} hash
  */
 
@@ -40,12 +41,13 @@ import {USER_AUTH} from "../static/constants";
 export const UserContext = createContext({})
 
 
-export default function UserContextProvider(){
+export default function UserContextProvider() {
     const navigate = useNavigate()
+    const {pathname} = useLocation()
     const [user, setUser] = useState(null)
 
     /**@type {TelegramAuthToApp} */
-    function handleUserAuth(user){
+    function handleUserAuth(user) {
         const result = user
         result.id = 'tg:' + result.id.toString()
         console.log(result)
@@ -54,17 +56,28 @@ export default function UserContextProvider(){
     }
 
     useEffect(() => {
-        const us = JSON.parse(localStorage.getItem(USER_AUTH))
-        setUser(us)
+        if (process.env.NODE_ENV === 'development') {
+            /**@type{UserAppType} */
+            const userPH = {
+                id: 12,
+                first_name: 'Иван',
+                last_name: 'Алексеев'
+            }
+            setUser(userPH)
+        } else {
+            const us = JSON.parse(localStorage.getItem(USER_AUTH))
+            setUser(us)
+        }
+
     }, [])
 
-    if (!user){
-        navigate('/')
-    }
+    // if (!user && pathname !== '/') {
+    //     navigate('/')
+    // }
 
     return (
         <UserContext.Provider value={{user, setUser: handleUserAuth}}>
-            <Outlet />
+            <Outlet/>
         </UserContext.Provider>
     )
 

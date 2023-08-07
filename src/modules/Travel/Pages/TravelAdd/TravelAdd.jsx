@@ -10,7 +10,7 @@ import {Input, PageHeader} from "../../../../components/ui";
 
 import '../../css/Travel.css'
 import constants from "../../../../static/constants";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 
 
 export default function TravelAdd() {
