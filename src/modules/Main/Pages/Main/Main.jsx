@@ -15,6 +15,9 @@ import Modal from "../../../../components/Modal/Modal";
 import TelegramAuth from "../../TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
+import AddButton from "../../../../components/ui/AddButtom/AddButton";
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {PlusIcon} from "../../../../components/svg";
 
 export default function Main({
                                  primary_entity_type,
@@ -80,6 +83,12 @@ export default function Main({
         <div className='wrapper'>
             <Container className='content'>
                 <PageHeader title={'Главная страница'}/>
+                <IconButton
+                    border={false}
+                    title='+ Добавить'
+                    className='link'
+                    onClick={() => navigate('/travel/add/')}
+                />
                 <div className='column gap-1 pt-20'>
                     {
                         travelList && !!travelList.length && travelList.map(t => (
@@ -94,9 +103,6 @@ export default function Main({
                 </div>
             </Container>
             <Navigation className='footer' />
-            {/*<div className='footer-btn-container footer'>*/}
-            {/*    <Button onClick={() => navigate('/travel/add/')}>Добавить</Button>*/}
-            {/*</div>*/}
             <Modal isVisible={modalVisible} >
                 <TelegramAuth handleAuth={handleAuth}/>
             </Modal>

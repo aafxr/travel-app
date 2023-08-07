@@ -60,17 +60,17 @@ export default function PageHeader({
                 </div>
             }
             {children}
-            {(arrowBack || icons) && <div className='page-header-icons center raw gap-0.75'>
-                <div className='row flex-nowrap gap-0.5'>
-                    {menuOpen && <div
-                        className={clsx('icons-container raw flex-nowrap gap-0.5', {'open': menuOpen})}>{icons}</div>}
-                    <div onClick={() => setMenuOpen(!menuOpen)}>
-                        <MenuIcon/>
+            <div className='page-header-icons center raw gap-0.75'>
+                {icons && (
+                    <div className='row flex-nowrap gap-0.5'>
+                        {menuOpen && <div
+                            className={clsx('icons-container raw flex-nowrap gap-0.5', {'open': menuOpen})}>{icons}</div>}
+                        <div onClick={() => setMenuOpen(!menuOpen)}>
+                            <MenuIcon/>
+                        </div>
                     </div>
-
-                </div>
+                )}
             </div>
-            }
         </div>
     )
 }
