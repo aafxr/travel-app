@@ -1,11 +1,11 @@
 import React, {useContext} from "react";
 
-import MenuIconList from "../../../../components/MenuIconList/MenuIconList";
 import Navigation from "../../../../components/Navigation/Navigation";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
+import Menu from "../../../../components/Menu/Menu";
 import {PageHeader} from "../../../../components/ui";
-import {UserContext} from "../../../../contexts/UserContextProvider";
 
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
@@ -19,7 +19,7 @@ export default function Profile() {
         <div className='wrapper'>
             <div className='content hide-scroll'>
                 <Container className='header-fixed'>
-                    <PageHeader arrowBack icons={<MenuIconList/>}/>
+                    <PageHeader arrowBack MenuEl={<Menu/>}/>
                 </Container>
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>

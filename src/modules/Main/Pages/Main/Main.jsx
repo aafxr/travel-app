@@ -15,6 +15,7 @@ import TelegramAuth from "../../TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import Menu from "../../../../components/Menu/Menu";
 
 export default function Main({
                                  primary_entity_type,
@@ -79,7 +80,7 @@ export default function Main({
     return (
         <div className='wrapper'>
             <Container className='content'>
-                <PageHeader title={'Главная страница'}/>
+                <PageHeader title={'Главная страница'}  MenuEl={<Menu/>} />
                 {user
                     ? (
                         <div>

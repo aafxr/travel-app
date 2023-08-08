@@ -6,6 +6,7 @@ import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../../Main/TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider";
+import Navigation from "../../../../components/Navigation/Navigation";
 
 export default function Login() {
     const {setUser} = useContext(UserContext)
@@ -29,6 +30,7 @@ export default function Login() {
                 <PageHeader arrowBack title={'Войти'}/>
                 <TelegramAuth handleAuth={tgAuthHandler}/>
             </Container>
+            <Navigation className='footer' />
         </div>
     )
 }

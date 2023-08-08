@@ -2,11 +2,12 @@ import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom'
 import clsx from "clsx";
 
-import {ArrowBackIcon, MenuIcon} from "../../svg";
+import {ArrowBackIcon} from "../../svg";
 import isString from "../../../utils/validation/isString";
 
-import './PageHeader.css'
 import useOutside from "../../../hooks/useOutside";
+
+import './PageHeader.css'
 
 
 /**
@@ -16,7 +17,7 @@ import useOutside from "../../../hooks/useOutside";
  * @param {string} title - заголовок
  * @param {string} to - url на который перенаправляется пользователь при клике либо назад
  * @param {JSX.Element} children
- * @param {Array.<JSX.Element> | JSX.Element} icons
+ * @param { JSX.Element} MenuEl
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -26,7 +27,7 @@ export default function PageHeader({
                                        className,
                                        title,
                                        to,
-                                       icons,
+                                       MenuEl,
                                        children,
                                        ...props
                                    }) {
@@ -37,7 +38,7 @@ export default function PageHeader({
     const styles = clsx(
         'page-header-container gap-0.25',
         {
-            'row': title,
+            // 'row': title,
             'flex-between': !title,
             'arrow-back': !!arrowBack,
 
@@ -64,15 +65,7 @@ export default function PageHeader({
             }
             {children}
             <div className='page-header-icons center raw gap-0.75'>
-                {icons && (
-                    <div ref={ref} className='row flex-nowrap gap-0.5'>
-                        {menuOpen && <div
-                            className={clsx('icons-container raw flex-nowrap gap-0.5', {'open': menuOpen})}>{icons}</div>}
-                        <div onClick={() => setMenuOpen(!menuOpen)}>
-                            <MenuIcon/>
-                        </div>
-                    </div>
-                )}
+                {MenuEl}
             </div>
         </div>
     )

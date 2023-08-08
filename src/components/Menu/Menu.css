@@ -1,0 +1,81 @@
+.menu{
+    position: relative;
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+    color: var(--color-text);
+    transition: color .3s, stroke .3s, fill .3s;
+    z-index: 2000;
+}
+
+.menu:hover{
+
+}
+
+.menu-container{
+    padding: 20px;
+    position: absolute;
+    right: 0;
+
+    background-color: var(--color-secondary);
+
+    transition: max-width 1s, max-height 1s;
+    transition-delay: 0s, 100ms;
+    overflow: hidden;
+}
+
+.menu .menu-container{
+    max-width: var(--icon-size);
+    max-height: var(--icon-size);
+    border: transparent;
+    pointer-events: none;
+    opacity: 0;
+
+}
+
+.menu.open .menu-container{
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: var(--br-10);
+    box-shadow: var(--box-shadoe);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.menu-dots{
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.menu.open .menu-dots{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.menu-icons{
+    cursor: pointer;
+}
+
+.menu-icons svg,
+.menu-dots{
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+}
+
+.menu-icons svg:hover{
+    stroke: var(--color-primary);
+    fill: var(--color-primary);
+}
+
+.menu-item{
+    padding: .5rem;
+    cursor: pointer;
+}
+
+.menu-item:hover{
+    color: var(--color-primary);
+}
