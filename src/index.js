@@ -9,6 +9,8 @@ import App from './App';
 import setFixedVH from "./utils/setFixedVH";
 
 import './css/index.css';
+import {CACHE_VERSION} from "./static/constants";
+import errorReport from "./controllers/ErrorReport";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,7 +25,19 @@ root.render(
 setFixedVH()
 window.addEventListener('resize', setFixedVH)
 
-serviceWorkerRegistration.register();
+const version = JSON.parse(localStorage.getItem('cache-version'))
+
+if (version !== CACHE_VERSION) {
+    serviceWorkerRegistration.unregister()
+    caches.keys().then(cacheNames => {
+        Promise.all(
+            cacheNames.map(cacheName => caches.delete(cacheName))
+        ).then(()=> serviceWorkerRegistration.register())
+    }).catch(err => errorReport.sendError(err))
+} else {
+    serviceWorkerRegistration.register();
+}
+
 
 if (ServiceWorker in window) {
     navigator.serviceWorker.ready.then(registration => console.log(registration))
