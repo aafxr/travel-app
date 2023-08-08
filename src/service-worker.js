@@ -7,18 +7,29 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
-import {clientsClaim} from 'workbox-core';
-import {ExpirationPlugin} from 'workbox-expiration';
-import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
-import {registerRoute} from 'workbox-routing';
+
+import {precacheAndRoute, createHandlerBoundToURL,} from 'workbox-precaching';
 import {StaleWhileRevalidate} from 'workbox-strategies';
+import {ExpirationPlugin} from 'workbox-expiration';
+import {registerRoute} from 'workbox-routing';
+import {clientsClaim, setCacheNameDetails} from 'workbox-core';
 
-const CACHE_NAME = 'TravelerCache_v1';
+import {CACHE_VERSION} from "./static/constants";
 
-const prefetch = [
-    process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
-    process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
-]
+
+const CACHE_NAME = 'TravelerCache_v' + CACHE_VERSION;
+const PRECACHE_NAME = 'Precache';
+
+setCacheNameDetails({
+    prefix: PRECACHE_NAME,
+    suffix: 'v' + CACHE_VERSION,
+})
+
+
+// const prefetch = [
+//     process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
+//     process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
+// ]
 
 clientsClaim();
 

@@ -1,3 +1,6 @@
+export const CACHE_VERSION = 5;
+
+
 const constants = {
     store:{
         SECTION: 'section',

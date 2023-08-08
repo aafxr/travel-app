@@ -39,3 +39,9 @@
     font-weight: 600;
     color: var(--color-grey);
 }
+
+@media (prefers-color-scheme: dark) {
+    .travel-details-backface{
+        color: var(--color-text-secondary)
+    }
+}

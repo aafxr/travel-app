@@ -1,6 +1,12 @@
 import {useEffect, useRef} from "react";
 
 
+/**
+ * компонент добавляет кнопку регистрации телеграм
+ * @param handleAuth
+ * @return {JSX.Element}
+ * @constructor
+ */
 export default function TelegramAuth({handleAuth}) {
     const ref = useRef(null)
 

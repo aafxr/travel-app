@@ -1,5 +1,5 @@
 import {createContext, useEffect, useState} from "react";
-import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 import {USER_AUTH} from "../static/constants";
 
@@ -24,14 +24,14 @@ import {USER_AUTH} from "../static/constants";
  */
 
 /**
- * @function TelegramAuthToApp
+ * @function TelegramAuthHandler
  * @param {UserAuthType} user
  */
 
 /**
  * @typedef {Object} UserContextType
  * @property {UserAppType | null} user
- * @property {TelegramAuthToApp} setUser
+ * @property {TelegramAuthHandler} setUser
  */
 
 /**
@@ -42,11 +42,9 @@ export const UserContext = createContext({})
 
 
 export default function UserContextProvider() {
-    const navigate = useNavigate()
-    const {pathname} = useLocation()
     const [user, setUser] = useState(null)
 
-    /**@type {TelegramAuthToApp} */
+    /**@type {TelegramAuthHandler} */
     function handleUserAuth(user) {
         const result = user
         result.id = 'tg:' + result.id.toString()
@@ -71,9 +69,6 @@ export default function UserContextProvider() {
 
     }, [])
 
-    // if (!user && pathname !== '/') {
-    //     navigate('/')
-    // }
 
     return (
         <UserContext.Provider value={{user, setUser: handleUserAuth}}>

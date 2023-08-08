@@ -31,7 +31,7 @@ export default function Profile() {
                         <span>{user?.last_name}</span>
                     </div>
                 </div>
-                <Curtain maxOpenPercent={.6} >
+                <Curtain minOffset={54} maxOpenPercent={.6} >
                     <Container className='pt-20'>
                         test
                     </Container>

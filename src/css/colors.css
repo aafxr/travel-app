@@ -6,9 +6,11 @@
     --color-grey: #A2A2A2;
     --color-grey-light: #F0F0F0;
     --color-text: #000;
+    --color-text-secondary: #FFF;
     --color-text-light: #1E1E1E;
     --color-blue: #0075FF;
-    --color-navigation-bg: #FFE5E5;
+    --color-navigation-bg: var(--color-secondary);
+    /*#FFE5E5;*/
 
     --color-success: #52CF37;
     --color-warning: #E3CD00;
@@ -26,6 +28,7 @@
         --color-primary: #FF8E09;
         --color-secondary: #000;
         --color-text: #fff;
+        --color-text-secondary: #000;
         --color-text-light: #E1E1E1;
     }
 }

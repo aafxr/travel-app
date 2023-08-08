@@ -21,6 +21,7 @@ import TelegramAuth from "./modules/Main/TelegramAuth";
 import UserContextProvider from "./contexts/UserContextProvider.jsx";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import Profile from "./modules/Main/Pages/Profile/Profile";
+import Login from "./modules/Login/Pages/Login/Login";
 
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
                                     <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit />}/>
                                 </Route>
                             <Route path={'/profile/'} element={<Profile />} />
+                            <Route path={'/login/'} element={<Login />} />
                         </Route>
                     </Route>
                 </Route>

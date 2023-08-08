@@ -69,23 +69,34 @@ export default function Main({
         }
     }, [user])
 
-    function handleAuth(user){
-        console.log(user)
-        setModalVisible(false)
-        setUser(user)
-    }
+    // function handleAuth(user){
+    //     console.log(user)
+    //     setModalVisible(false)
+    //     setUser(user)
+    // }
 
 
     return (
         <div className='wrapper'>
             <Container className='content'>
                 <PageHeader title={'Главная страница'}/>
+                {!user && (
+                    <div>
+                        <IconButton
+                            border={false}
+                            title='Войти'
+                            className='link'
+                            onClick={() => navigate('/login/')}
+                        />
+                    </div>
+                )}
                 <IconButton
                     border={false}
                     title='+ Добавить'
                     className='link'
                     onClick={() => navigate('/travel/add/')}
                 />
+
                 <div className='column gap-1'>
                     {
                         travelList && !!travelList.length && travelList.map(t => (
@@ -100,9 +111,6 @@ export default function Main({
                 </div>
             </Container>
             <Navigation className='footer' />
-            <Modal isVisible={modalVisible} >
-                <TelegramAuth handleAuth={handleAuth}/>
-            </Modal>
         </div>
     )
 }
