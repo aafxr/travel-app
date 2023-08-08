@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import { useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 
@@ -44,26 +44,26 @@ export default function Main({
         }
     }, [travelController])
 
-    function handleRemove(travel){
-        if (travelController && user){
+    function handleRemove(travel) {
+        if (travelController && user) {
             travelController.write({
-                storeName:constants.store.TRAVEL,
+                storeName: constants.store.TRAVEL,
                 action: "remove",
                 user_id: user.id,
                 data: travel
             })
-                .then(() => pushAlertMessage({type:"success", message: `${travel.title} удфлено.`}))
-                .then(()=> setTravelList(travelList.filter(t => t.id !==travel.id)))
-                .then(()=> travelController.getStoreModel(constants.store.TRAVEL).remove(travel.id))
+                .then(() => pushAlertMessage({type: "success", message: `${travel.title} удфлено.`}))
+                .then(() => setTravelList(travelList.filter(t => t.id !== travel.id)))
+                .then(() => travelController.getStoreModel(constants.store.TRAVEL).remove(travel.id))
         }
     }
 
     useEffect(() => {
-        if (!user){
+        if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if(!us){
-            setModalVisible(true)
-            }else{
+            if (!us) {
+                setModalVisible(true)
+            } else {
                 setUser(us)
             }
         }
@@ -80,16 +80,29 @@ export default function Main({
         <div className='wrapper'>
             <Container className='content'>
                 <PageHeader title={'Главная страница'}/>
-                {!user && (
-                    <div>
-                        <IconButton
-                            border={false}
-                            title='Войти'
-                            className='link'
-                            onClick={() => navigate('/login/')}
-                        />
-                    </div>
-                )}
+                {user
+                    ? (
+                        <div>
+                            <IconButton
+                                border={false}
+                                title='Выйти'
+                                className='link'
+                                onClick={() => localStorage.setItem(USER_AUTH, JSON.stringify(null))}
+                            />
+                        </div>
+                    )
+                    : (
+
+                        <div>
+                            <IconButton
+                                border={false}
+                                title='Войти'
+                                className='link'
+                                onClick={() => navigate('/login/')}
+                            />
+                        </div>
+                    )
+                }
                 <IconButton
                     border={false}
                     title='+ Добавить'
@@ -110,7 +123,7 @@ export default function Main({
                     }
                 </div>
             </Container>
-            <Navigation className='footer' />
+            <Navigation className='footer'/>
         </div>
     )
 }

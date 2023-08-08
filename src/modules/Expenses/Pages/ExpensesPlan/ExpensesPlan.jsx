@@ -36,7 +36,7 @@ export default function ExpensesPlan() {
     const {user} = useContext(UserContext)
     const navigate = useNavigate()
 
-    const user_id = user.id
+    const user_id = user?.id
 
 
     useEffect(() => {

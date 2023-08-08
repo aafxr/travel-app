@@ -1,5 +1,6 @@
 import {useEffect} from "react";
 import constants from "../../../static/constants";
+import aFetch from "../../../axios";
 
 export default function useDefaultTravels(travelController,user_id){
 
@@ -13,8 +14,8 @@ export default function useDefaultTravels(travelController,user_id){
 
 
 async function fetchTravels(controller, user_id){
-    const response = await fetch(process.env.REACT_APP_SERVER_URL + '/travel/getList/')
-    const {ok, result: travels} = await response.json()
+    const response = await aFetch.get('/travel/getList/')
+    const {ok, result: travels} = response.data
 
     if(ok && travels && travels.length){
         for(const travel of travels){

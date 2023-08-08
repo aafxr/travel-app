@@ -1,4 +1,5 @@
 import {CRITICAL_ERROR} from '../static/constants'
+import aFetch from "../axios";
 
 class ErrorReport {
     constructor() {
@@ -18,19 +19,14 @@ class ErrorReport {
     async sendError(error) {
         if (this.isProd) {
             const  extraInfo = this.getExtraInfo()
-            await fetch(process.env.REACT_APP_SERVER_URL + '/log/addEvent/', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8"
-                },
-                body: JSON.stringify({
+            await aFetch.post('/log/addEvent/',{
                     error: {
                         message: error.message,
                         stack: error.stack
                     },
                     ...extraInfo
-                })
-            }).catch(console.error)
+                }
+            ).catch(console.error)
         }
     }
 
@@ -42,19 +38,14 @@ class ErrorReport {
 
             if (error) {
             const  extraInfo = this.getExtraInfo()
-                await fetch(process.env.REACT_APP_SERVER_URL + '/log/addReport/', {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json;charset=utf-8"
-                    },
-                    body: JSON.stringify({
+                await aFetch.post('/log/addReport/', {
                         error: {
                             message: error.message,
                             stack: error.stack
                         },
                         ...extraInfo
-                    })
-                }).catch(console.error)
+                    }
+                ).catch(console.error)
 
                 localStorage.setItem(CRITICAL_ERROR, JSON.stringify(null))
             }

@@ -8,7 +8,6 @@ import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 import useDefaultSection from "../hooks/useDefaultSections";
 import useCurrency from "../hooks/useCurrency";
 
-import toArray from "../../../utils/toArray";
 import {onUpdate} from "../controllers/onUpdate";
 import updateSections from "../helpers/updateSections";
 import updateLimits from "../helpers/updateLimits";
@@ -16,7 +15,6 @@ import functionDurationTest from "../../../utils/functionDurationTest";
 
 import options from '../controllers/controllerOptions'
 import constants from "../../../static/constants";
-import schema from "../db/schema";
 
 import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
@@ -62,7 +60,6 @@ const defaultState = {
  * @constructor
  */
 export default function ExpensesContextProvider() {
-    const navigate = useNavigate()
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
     /**  @type {[ExpensesContextState, function]} */
@@ -79,7 +76,7 @@ export default function ExpensesContextProvider() {
 
     const {user} = useContext(UserContext)
 
-    const user_id = user.id
+    const user_id = user?.id
 
     useDefaultSection(state.controller, primary_entity_id, user_id)
 

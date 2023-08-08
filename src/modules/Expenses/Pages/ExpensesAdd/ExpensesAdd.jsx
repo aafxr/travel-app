@@ -60,7 +60,7 @@ export default function ExpensesAdd({
 
     const {user} = useContext(UserContext)
 
-    const user_id = user.id
+    const user_id = user?.id
 
 
     useEffect(() => {

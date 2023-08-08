@@ -20,6 +20,7 @@ aFetch.interceptors.request.use(c => {
 aFetch.interceptors.response.use(c => c, err => {
     const originalRequest = err.config;
 
+    console.log(err)
     if (err.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
@@ -32,7 +33,7 @@ aFetch.interceptors.response.use(c => c, err => {
             return aFetch(originalRequest);
         });
     }
-
+    localStorage.setItem(USER_AUTH, JSON.stringify(null))
     return Promise.reject(err);
 })
 

@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import aFetch from "../../../axios";
 
 const t = {
     char_code: "KZT",
@@ -25,8 +26,8 @@ export default function useCurrency() {
     const [currency, setCurrency] = useState([])
 
     useEffect(() => {
-        fetch(process.env.REACT_APP_SERVER_URL + '/main/currency/getList/')
-            .then(res => res.json())
+        aFetch.get('/main/currency/getList/')
+            .then(res => res.data)
             .then(data => {
                 if (data && data.length) {
                     setCurrency(data)

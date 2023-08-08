@@ -18,14 +18,15 @@ export default function TravelAdd() {
     const {travelController} = useContext(TravelContext)
     const {user} = useContext(UserContext)
 
-    const user_id = user.id
+
 
 
     const [title, setTitle] = useState('')
 
 
     function handler() {
-        if (travelController && title.length){
+        if (travelController && title.length && user && user.id){
+            const user_id = user.id
             const data = {
                 id: createId(),
                 code: '',

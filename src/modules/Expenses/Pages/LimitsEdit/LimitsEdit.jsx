@@ -36,7 +36,7 @@ export default function LimitsEdit({
     const {user} = useContext(UserContext)
     const navigate = useNavigate()
 
-    const user_id = user.id
+    const user_id = user?.id
 
     const backUrl = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/`

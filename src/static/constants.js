@@ -1,4 +1,4 @@
-export const CACHE_VERSION = 5;
+export const CACHE_VERSION = 6;
 
 
 const constants = {
