@@ -76,7 +76,7 @@ export default function ExpensesContextProvider() {
 
     const {user} = useContext(UserContext)
 
-    const user_id = user?.id
+    const user_id = user.id
 
     useDefaultSection(state.controller, primary_entity_id, user_id)
 

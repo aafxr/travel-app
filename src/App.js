@@ -22,6 +22,7 @@ import UserContextProvider from "./contexts/UserContextProvider.jsx";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 import Login from "./modules/Login/Pages/Login/Login";
+import AuthRequired from "./hoc/AuthRequired";
 
 
 function App() {
@@ -44,10 +45,10 @@ function App() {
                             <Route path={'/'} element={<Main/>}/>
                             <Route path={'/auth/'} element={<TelegramAuth />}/>
                             <Route path={'/dev/'} element={<Dev />}/>
-                                <Route path={'/travel/add/'} element={<TravelAdd />}/>
+                            <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd /></AuthRequired>}/>
                                 <Route path={'/travel/:travelCode/'} element={<TravelDetails />}/>
                                 <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
-                                <Route  element={<ExpensesContextProvider />}>
+                                <Route  element={<AuthRequired><ExpensesContextProvider /></AuthRequired>}>
                                     <Route element={<ExpensesLayout />}>
                                         <Route path={'/travel/:travelCode/expenses/'} element={<Expenses />}/>
                                         <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan />}/>
@@ -60,7 +61,7 @@ function App() {
                                     <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
                                     <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit />}/>
                                 </Route>
-                            <Route path={'/profile/'} element={<Profile />} />
+                            <Route path={'/profile/'} element={<AuthRequired><Profile /></AuthRequired>} />
                             <Route path={'/login/'} element={<Login />} />
                         </Route>
                     </Route>

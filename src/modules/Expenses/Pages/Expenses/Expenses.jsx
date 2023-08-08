@@ -37,7 +37,7 @@ export default function Expenses({primary_entity_type}) {
 
     const {user} = useContext(UserContext)
 
-    const user_id = user?.id
+    const user_id = user.id
 
 
     useEffect(() => {

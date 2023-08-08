@@ -11,6 +11,7 @@ import {Input, PageHeader} from "../../../../components/ui";
 import '../../css/Travel.css'
 import constants from "../../../../static/constants";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 
 export default function TravelAdd() {
@@ -25,6 +26,10 @@ export default function TravelAdd() {
 
 
     function handler() {
+        if(!user){
+            pushAlertMessage({type:"danger", message: "Необходимо авторизоваться"})
+            return
+        }
         if (travelController && title.length && user && user.id){
             const user_id = user.id
             const data = {

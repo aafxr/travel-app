@@ -60,7 +60,7 @@ export default function ExpensesAdd({
 
     const {user} = useContext(UserContext)
 
-    const user_id = user?.id
+    const user_id = user.id
 
 
     useEffect(() => {
@@ -108,6 +108,11 @@ export default function ExpensesAdd({
         if(!value){
             pushAlertMessage({type: 'warning', message: 'Сумма не корректна.'})
             inputSumRef.current?.focus()
+            return
+        }
+
+        if(!user_id){
+            pushAlertMessage({type: 'danger', message: 'Необходимо авторизоваться.'})
             return
         }
         edit
