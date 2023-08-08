@@ -7,6 +7,7 @@ import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../../Main/TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
+import {USER_AUTH} from "../../../../static/constants";
 
 export default function Login() {
     const {setUser} = useContext(UserContext)
@@ -19,6 +20,7 @@ export default function Login() {
             .then(userData => {
                 console.log(userData)
                 setUser(userData)
+                localStorage.setItem(USER_AUTH, JSON.stringify(userData))
                 navigate(-1)
             })
             .catch(err => console.error(err))
