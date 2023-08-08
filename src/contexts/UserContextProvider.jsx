@@ -47,8 +47,8 @@ export default function UserContextProvider() {
     /**@type {TelegramAuthHandler} */
     function handleUserAuth(user) {
         const result = user
-        result.id = 'tg:' + result.id.toString()
-        console.log(result)
+        // result.id = 'tg:' + result.id.toString()
+        // console.log(result)
         localStorage.setItem(USER_AUTH, JSON.stringify(result))
         setUser(result)
     }
