@@ -9,12 +9,34 @@ import {MenuIcon} from "../svg";
 import useOutside from "../../hooks/useOutside";
 
 import './Menu.css'
+import storeDB from "../../db/storeDB/storeDB";
+import constants, {ACCESS_TOKEN, REFRESH_TOKEN} from "../../static/constants";
+import errorReport from "../../controllers/ErrorReport";
 
 export default function Menu() {
-    const {user} = useContext(UserContext)
-    const navigation = useNavigate()
+    const {user,setUser} = useContext(UserContext)
+    const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
+
+    function handleLogin() {
+        if(user){
+            Promise.all([
+                storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
+                storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
+            ])
+                .then(() => {
+                    navigate('/')
+                    setUser(null)
+                })
+                .catch(err=> {
+                    console.error(err)
+                    errorReport.sendError(err).catch(console.error)
+                })
+        }else{
+            navigate('/login/')
+        }
+    }
 
 
     return (
@@ -29,7 +51,7 @@ export default function Menu() {
 
                 <div
                     className='menu-item'
-                    onClick={() => navigation('/login/')}
+                    onClick={handleLogin}
                 >
                     {user ? 'Выйти' : 'Войти'}
                 </div>

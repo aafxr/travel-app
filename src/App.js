@@ -1,4 +1,5 @@
 import {Routes, Route, Navigate} from "react-router-dom";
+import aFetch from "./axios";
 
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
@@ -23,6 +24,9 @@ import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 import Login from "./modules/Login/Pages/Login/Login";
 import AuthRequired from "./hoc/AuthRequired";
+import TravelRoutes from "./modules/Main/Pages/Routes/TravelRoutes";
+import Events from "./modules/Main/Pages/Events/Events";
+import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 
 
 function App() {
@@ -33,7 +37,7 @@ function App() {
             process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
         ]
 
-        prefetch.forEach(url => fetch(url).catch(console.error))
+        prefetch.forEach(url => aFetch.get(url).catch(console.error))
     }, [])
 
     return (
@@ -43,6 +47,9 @@ function App() {
                     <Route element={<WorkerContextProvider/>}>
                         <Route element={<TravelContextProvider />}>
                             <Route path={'/'} element={<Main/>}/>
+                            <Route path={'/travels/'} element={<TravelRoutes/>}/>
+                            <Route path={'/events/'} element={<Events/>}/>
+                            <Route path={'/favorite/'} element={<Favorite/>}/>
                             <Route path={'/auth/'} element={<TelegramAuth />}/>
                             <Route path={'/dev/'} element={<Dev />}/>
                             <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd /></AuthRequired>}/>

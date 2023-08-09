@@ -16,11 +16,13 @@ export default function Login() {
     function tgAuthHandler(user) {
         aFetch.post('/user/auth/tg/', user)
             .then(res => res.data)
-            .then(userData => {
-                console.log(userData)
-                setUser(userData)
-                // localStorage.setItem(USER_AUTH, JSON.stringify(userData))
-                navigate(-1)
+            .then(res => {
+                console.log(res)
+                const {ok, data} = res
+                if (ok) {
+                    setUser(data)
+                    navigate(-1)
+                }
             })
             .catch(err => console.error(err))
     }
@@ -31,7 +33,7 @@ export default function Login() {
                 <PageHeader arrowBack title={'Войти'}/>
                 <TelegramAuth handleAuth={tgAuthHandler}/>
             </Container>
-            <Navigation className='footer' />
+            <Navigation className='footer'/>
         </div>
     )
 }

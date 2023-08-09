@@ -10,7 +10,9 @@ const constants = {
         EXPENSES_ACTIONS: 'expensesActions',
 
         TRAVEL: 'travel',
-        TRAVEL_ACTIONS: 'travelActions'
+        TRAVEL_ACTIONS: 'travelActions',
+
+        STORE: 'store'
     },
     indexes:{
         SECTION_ID:'section_id',
@@ -36,3 +38,6 @@ export const CRITICAL_ERROR = 'critical_error'
 export const DEFAULT_IMG_URL = process.env.PUBLIC_URL + '/images/travel-placeholder.jpg'
 
 export const USER_AUTH = 'USER'
+
+export const ACCESS_TOKEN = 'token'
+export const REFRESH_TOKEN = 'refresh_token'

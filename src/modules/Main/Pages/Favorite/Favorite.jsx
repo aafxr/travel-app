@@ -7,12 +7,11 @@ import  {USER_AUTH} from "../../../../static/constants";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import Menu from "../../../../components/Menu/Menu";
 
-export default function Main({
-                                 primary_entity_type,
-                                 primary_entity_id
-                             }) {
+export default function Favorite({
+                                   primary_entity_type,
+                                   primary_entity_id
+                               }) {
     const navigate = useNavigate()
     const {user, setUser} = useContext(UserContext)
 
@@ -28,13 +27,22 @@ export default function Main({
     return (
         <div className='wrapper'>
             <Container className='content'>
-                <PageHeader title={'Главная страница'}  MenuEl={<Menu/>} />
-                <IconButton
-                    border={false}
-                    title='+ Добавить'
-                    className='link'
-                    onClick={() => navigate('/travel/add/')}
-                />
+                <PageHeader title={'Избранное'} />
+                {
+                    user
+                        ? (
+                            <div className='column gap-1'>
+                                В разработке
+                            </div>
+                        ) : (
+                            <IconButton
+                                border={false}
+                                title='Авторизоваться'
+                                className='link'
+                                onClick={() => navigate('/login/')}
+                            />
+                        )
+                }
             </Container>
             <Navigation className='footer'/>
         </div>

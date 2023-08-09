@@ -14,6 +14,7 @@
     width: var(--photo-size);
     height: var(--photo-size);
     border-radius: var(--br-20);
+    object-fit: cover;
     overflow: hidden;
 }
 

@@ -8,9 +8,9 @@ import App from './App';
 
 import setFixedVH from "./utils/setFixedVH";
 
-import './css/index.css';
-import {CACHE_VERSION} from "./static/constants";
 import errorReport from "./controllers/ErrorReport";
+import {CACHE_VERSION} from "./static/constants";
+import './css/index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,10 +21,11 @@ root.render(
     </StrictMode>
 );
 
-
+//===================== установка фикчированного vh ================================================
 setFixedVH()
 window.addEventListener('resize', setFixedVH)
 
+//====================== чистка кэш и регистрация серыис воркера ===================================
 const version = JSON.parse(localStorage.getItem('cache-version'))
 localStorage.setItem('cache-version', CACHE_VERSION.toString())
 
@@ -35,7 +36,7 @@ if (version !== CACHE_VERSION) {
             cacheNames.map(cacheName => caches.delete(cacheName))
         ).then(()=> {
             serviceWorkerRegistration.register()
-            window?.location.reload()
+            setTimeout(() => window?.location.reload(), 1000)
         })
     }).catch(err => errorReport.sendError(err))
 } else {

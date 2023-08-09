@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {USER_AUTH} from "../static/constants";
+import constants, {ACCESS_TOKEN, REFRESH_TOKEN} from "../static/constants";
+import storeDB from "../db/storeDB/storeDB";
 
 const baseURL = process.env.REACT_APP_SERVER_URL
 
@@ -7,15 +8,53 @@ const baseURL = process.env.REACT_APP_SERVER_URL
 const aFetch = axios.create({
     baseURL,
     timeout: 2000,
-    // headers: {'X-Custom-Header': 'foobar'}
 });
 
+let access_token
+let refresh_token
 
-aFetch.interceptors.request.use(c => {
-    const user = localStorage.getItem(USER_AUTH);
-    c.headers.Authorization = (user && user.token) ? `Bearer ${user.token}` : '';
+
+async function getTokensFromDB(){
+    await Promise.all([
+        storeDB.getElement(constants.store.STORE, ACCESS_TOKEN).then(res => access_token = res[0]?.value),
+        storeDB.getElement(constants.store.STORE, REFRESH_TOKEN).then(res => refresh_token = res[0]?.value)
+    ])
+        .then(() => console.log({access_token, refresh_token}))
+        .catch(console.error)
+}
+
+getTokensFromDB()
+
+
+aFetch.interceptors.request.use(async (c) => {
+    if(!access_token) {
+        await getTokensFromDB()
+    }
+    console.log('[axios] ===> ', c.url)
+    console.log('[axios] Authorization ===> ', c.headers.Authorization)
+    c.headers.Authorization = access_token ? `Bearer ${access_token}` : '';
     return c;
 }, err => console.error(err))
+
+
+aFetch.interceptors.response.use(response => {
+    const url = response.config.url
+    if (url.includes('/user/auth/')) {
+        const {ok, data} = response.data
+        if (ok) {
+            access_token = data.token
+            refresh_token = data.refresh_token
+            Promise.all([
+                storeDB.editElement(constants.store.STORE, {name: ACCESS_TOKEN, value: access_token}),
+                storeDB.editElement(constants.store.STORE, {name: REFRESH_TOKEN, value: refresh_token})
+            ])
+                .then(() => console.log({access_token, refresh_token}))
+                .catch(console.error)
+        }
+    }
+    return response
+})
+
 
 aFetch.interceptors.response.use(c => c, err => {
     const originalRequest = err.config;
@@ -25,15 +64,15 @@ aFetch.interceptors.response.use(c => c, err => {
         originalRequest._retry = true;
 
         return axios.get(baseURL + '/user/auth/refresh/').then((response) => {
-            const userAuth = response.data
+            const {ok, data: userAuth, message} = response.data
             console.log(userAuth)
-            localStorage.setItem(USER_AUTH, JSON.stringify(userAuth))
-            // Replace the access token in the original request config
-            originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
-            return aFetch(originalRequest);
+            if (ok) {
+                originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
+                return aFetch(originalRequest);
+            }
+            throw new Error(message)
         });
     }
-    localStorage.setItem(USER_AUTH, JSON.stringify(null))
     return Promise.reject(err);
 })
 

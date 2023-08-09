@@ -18,9 +18,10 @@ import {USER_AUTH} from "../static/constants";
  * @property {string} id
  * @property {string} first_name
  * @property {string} last_name
- * @property {number} auth_date
- * @property {string} photo_url
- * @property {string} hash
+ * @property {string} username
+ * @property {string} photo
+ * @property {string} token
+ * @property {string} refresh_token
  */
 
 /**
@@ -47,8 +48,6 @@ export default function UserContextProvider() {
     /**@type {TelegramAuthHandler} */
     function handleUserAuth(user) {
         const result = user
-        // result.id = 'tg:' + result.id.toString()
-        // console.log(result)
         localStorage.setItem(USER_AUTH, JSON.stringify(result))
         setUser(result)
     }

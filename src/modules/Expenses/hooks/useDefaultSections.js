@@ -23,7 +23,7 @@ export default function useDefaultSection(controller, primary_entity_id, user_id
                         primary_entity_id,
                     }
 
-                    const sectionModel = controller.getStoreModel(constants.store.SECTION)
+                    const sectionModel = controller.getstorageModel(constants.store.SECTION)
 
                     try {
                         await sectionModel.update(data)

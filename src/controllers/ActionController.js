@@ -408,7 +408,7 @@ export default class ActionController {
      * @param storeName
      * @returns {*|null}
      */
-    getStoreModel(storeName) {
+    getstorageModel(storeName) {
         if (this.modelNames.includes(storeName)) {
             // return this.model[storeName]
 
