@@ -27,9 +27,7 @@ getTokensFromDB()
 
 
 aFetch.interceptors.request.use(async (c) => {
-    if(!access_token) {
-        await getTokensFromDB()
-    }
+    await getTokensFromDB()
     console.log('[axios] ===> ', c.url)
     console.log('[axios] Authorization ===> ', c.headers.Authorization)
     c.headers.Authorization = access_token ? `Bearer ${access_token}` : '';
@@ -62,8 +60,12 @@ aFetch.interceptors.response.use(c => c, err => {
     console.log(err)
     if (err.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-
-        return axios.get(baseURL + '/user/auth/refresh/').then((response) => {
+        console.log(refresh_token)
+        return axios.get(baseURL + '/user/auth/refresh/',{
+            headers:{
+                Authorization: access_token ? `Bearer ${refresh_token}` : '',
+            }
+        }).then((response) => {
             const {ok, data: userAuth, message} = response.data
             console.log(userAuth)
             if (ok) {
