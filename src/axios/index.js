@@ -27,7 +27,7 @@ getTokensFromDB()
 
 aFetch.interceptors.request.use(async (c) => {
     await getTokensFromDB()
-    access_token && (c.headers.Authorization = `Bearer ${access_token}`)
+    c.headers.Authorization = access_token ? `Bearer ${access_token}`: ''
     return c;
 }, err => console.error(err))
 
