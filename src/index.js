@@ -29,19 +29,18 @@ window.addEventListener('resize', setFixedVH)
 const version = JSON.parse(localStorage.getItem('cache-version'))
 localStorage.setItem('cache-version', CACHE_VERSION.toString())
 
-if (version !== CACHE_VERSION) {
-    serviceWorkerRegistration.unregister()
-    caches.keys().then(cacheNames => {
-        Promise.all(
-            cacheNames.map(cacheName => caches.delete(cacheName))
-        ).then(()=> {
-            serviceWorkerRegistration.register()
-            setTimeout(() => window?.location.reload(), 1000)
-        })
-    }).catch(err => errorReport.sendError(err))
-} else {
-    serviceWorkerRegistration.register();
-}
+serviceWorkerRegistration.register({
+    onUpdate(){
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => caches.delete(cacheName))
+            )
+        }).catch(err => errorReport.sendError(err))
+    },
+    onSuccess() {
+        window?.location.reload()
+    }
+})
 
 
 if (ServiceWorker in window) {
