@@ -114,8 +114,14 @@ export default class ActionController {
      * @param {OptionsType} options
      */
     constructor(db, options) {
+        this.readyFunctions = []
+        this.ready = false
         this.db = db
-        db.onReadyHandler =  options.onReady || (() => {})
+        db.onReadyHandler =  function(){
+            this.ready = true
+            this.readyFunctions.forEach(cd => cd())
+            this.readyFunctions = []
+        }.bind(this) //options.onReady || (() => {})
 
         this.storeName = options.storeName;
         this.onLine = navigator.onLine
@@ -139,8 +145,16 @@ export default class ActionController {
             this.model[mn] = options.models[mn](this.db);
             this.subscriptions[mn] = [];
         });
+    }
 
-
+    set onReady(cb){
+        if(typeof cb === 'function'){
+            if (this.ready){
+                cb()
+            }else{
+                this.readyFunctions.push(cb)
+            }
+        }
     }
 
 

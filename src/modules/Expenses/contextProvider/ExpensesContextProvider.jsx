@@ -1,7 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
-import {Outlet, useNavigate, useParams} from "react-router-dom";
-
-import ActionController from "../../../controllers/ActionController";
+import {Outlet, useParams} from "react-router-dom";
 
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 
@@ -13,14 +11,13 @@ import updateSections from "../helpers/updateSections";
 import updateLimits from "../helpers/updateLimits";
 import functionDurationTest from "../../../utils/functionDurationTest";
 
-import options from '../controllers/controllerOptions'
 import constants from "../../../static/constants";
 
-import '../css/Expenses.css'
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
-import expensesDB from "../db/expensesDB";
 import {UserContext} from "../../../contexts/UserContextProvider.jsx";
+import '../css/Expenses.css'
+import expensesController from "../controllers/expensesController";
 
 /**
  * @typedef {Object} ExpensesContextState
@@ -55,7 +52,6 @@ const defaultState = {
  * обертка для молуля Expenses
  *
  * оборачивает в ExpensesContext
- * @param {string} user_id
  * @returns {JSX.Element}
  * @constructor
  */
@@ -84,12 +80,8 @@ export default function ExpensesContextProvider() {
 
 
     useEffect(() => {
-        const controller = new ActionController(expensesDB, {
-            ...options,
-            onReady: (dbr) => setDbReady(dbr)
-        })
-
-
+        const controller = expensesController
+        controller.onReady = () => setDbReady(true)
         state.controller = controller
         setState(state)
 

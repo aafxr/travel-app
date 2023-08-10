@@ -10,30 +10,41 @@ import useOutside from "../../hooks/useOutside";
 
 import './Menu.css'
 import storeDB from "../../db/storeDB/storeDB";
-import constants, {ACCESS_TOKEN, REFRESH_TOKEN} from "../../static/constants";
+import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import errorReport from "../../controllers/ErrorReport";
+import aFetch from "../../axios";
+import axios from "axios";
 
 export default function Menu() {
-    const {user,setUser} = useContext(UserContext)
+    const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
 
     function handleLogin() {
-        if(user){
-            Promise.all([
-                storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
-                storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
-            ])
-                .then(() => {
-                    navigate('/')
-                    setUser(null)
-                })
-                .catch(err=> {
-                    console.error(err)
-                    errorReport.sendError(err).catch(console.error)
-                })
-        }else{
+        if (user) {
+            storeDB
+                .getElement(constants.store.STORE, REFRESH_TOKEN)
+                .then(refresh_token => {
+                        console.log('refresh_token ', refresh_token)
+                        axios.post(process.env.REACT_APP_SERVER_URL + '/user/auth/remove/', {[REFRESH_TOKEN]: refresh_token[0]?.value})
+                            .then(() => {
+                                Promise.all([
+                                    storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
+                                    storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
+                                ])
+                                localStorage.setItem(USER_AUTH, JSON.stringify(null))
+                                setUser(null)
+                                navigate('/')
+                            })
+                            .catch(err => {
+                                console.error(err)
+                                errorReport.sendError(err).catch(console.error)
+                            })
+                    }
+                )
+
+        } else {
             navigate('/login/')
         }
     }

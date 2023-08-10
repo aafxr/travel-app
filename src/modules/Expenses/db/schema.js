@@ -1,3 +1,5 @@
+import {GLOBAL_DB_VERSION} from "../../../static/constants";
+
 /**
  * @description - описание структуры бд Expenses
  *
@@ -11,7 +13,7 @@
  */
 const schema = {
   dbname: 'expenses',
-  version: 10,
+  version: 10 + GLOBAL_DB_VERSION,
   stores: [
     {
       name: 'section',
@@ -35,7 +37,7 @@ const schema = {
     },
     {
       name: 'expensesActions',
-      key: 'uid',
+      key: 'id',
       indexes: ['synced', 'entity', 'action'],
     },
   ],

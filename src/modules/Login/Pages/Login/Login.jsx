@@ -1,5 +1,5 @@
+import axios from "axios";
 import {useContext} from "react";
-import aFetch from "../../../../axios";
 import {useNavigate} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
@@ -14,10 +14,9 @@ export default function Login() {
 
     /**@param {UserAuthType} user */
     function tgAuthHandler(user) {
-        aFetch.post('/user/auth/tg/', user)
+        axios.post(process.env.REACT_APP_SERVER_URL + '/user/auth/tg/', user)
             .then(res => res.data)
             .then(res => {
-                console.log(res)
                 const {ok, data} = res
                 if (ok) {
                     setUser(data)

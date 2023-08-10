@@ -1,4 +1,5 @@
 export const CACHE_VERSION = 8;
+export const GLOBAL_DB_VERSION = 1
 
 
 const constants = {

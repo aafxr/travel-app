@@ -158,7 +158,7 @@ export default class Model {
             this._notCorrectDataMessage(payload)
             return undefined
         } catch (err) {
-            this._sendReport(new Error(`[Model.update/${this.storeName}] ` + err))
+            this._sendReport(new Error(`[Model.update]${this.storeName}] ` + err))
         }
     }
 

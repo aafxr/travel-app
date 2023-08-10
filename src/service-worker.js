@@ -9,7 +9,7 @@
 
 
 import {precacheAndRoute, createHandlerBoundToURL,} from 'workbox-precaching';
-import {StaleWhileRevalidate} from 'workbox-strategies';
+import {StaleWhileRevalidate, NetworkFirst} from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {registerRoute} from 'workbox-routing';
 import {clientsClaim, setCacheNameDetails} from 'workbox-core';
@@ -94,7 +94,7 @@ registerRoute(
         }
         return false
     },
-    new StaleWhileRevalidate({
+    new NetworkFirst({
         cacheName: CACHE_NAME,
         plugins:[
             new ExpirationPlugin({maxAgeSeconds: 60*60*24})

@@ -1,14 +1,10 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Outlet, useParams} from "react-router-dom";
-import ActionController from "../../../controllers/ActionController";
-import schema from "../../Travel/db/schema";
-import options from "../../Travel/controllers/controllerOptions";
 import useTravel from "../hooks/useTravel";
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
-import toArray from "../../../utils/toArray";
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import constants from "../../../static/constants";
-import travelDB from "../db/travelDB";
+import travelController from "../controllers/travelController";
 
 /**
  * @typedef {Object} TravelContextState
@@ -50,10 +46,8 @@ export default function TravelContextProvider() {
 
 
     useEffect(() => {
-        state.travelController = new ActionController(travelDB, {
-            ...options,
-            onReady: (dbr) => setDbReady(dbr)
-        })
+        state.travelController = travelController
+        travelController.onReady = () => setDbReady(true)
         setState(state)
     }, [])
 
@@ -70,7 +64,6 @@ export default function TravelContextProvider() {
             setState({...state, travel})
         }
     }, [travel])
-
 
     if (!dbReady)
         return null

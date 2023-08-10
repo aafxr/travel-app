@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 
 import './Curtain.css'
+import useResize from "../../hooks/useResize";
 
 /**
  *
@@ -19,8 +20,8 @@ export default function Curtain({
                                     minOffset = 0,
                                     maxScroll,
                                     maxOpenPercent,
-    defaultOffsetPX = 0,
-    defaultOffsetPercents = 0
+                                    defaultOffsetPX = 0,
+                                    defaultOffsetPercents = 0
                                 }) {
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const cRef = useRef()
@@ -29,28 +30,38 @@ export default function Curtain({
 
     const [topOffset, setTopOffset] = useState(minOffset)
 
-    useEffect(()=>{
-        if(defaultOffsetPX || defaultOffsetPercents){
+    const windowSize = useResize()
+
+    useEffect(() => {
+        if (defaultOffsetPX || defaultOffsetPercents) {
             const curtainHeight = cRef.current.getBoundingClientRect().height
             setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * curtainHeight))
         }
     }, [])
 
+    useEffect(() => {
+        if (topOffset > minOffset) {
+            setTopOffset(calcTopOffset())
+        }
+    }, [windowSize])
 
+    function calcTopOffset() {
+        const curtainHeight = cRef.current.getBoundingClientRect().height
+        const cTopHeight = cTopRef.current.getBoundingClientRect().height
+        let top = curtainHeight - cTopHeight
+        if (maxScroll) {
+            top = Math.min(top, maxScroll)
+        } else if (maxOpenPercent) {
+            top = top * maxOpenPercent
+        }
+        return top
+    }
 
     function curtainHandler() {
         if (topOffset > minOffset) {
             setTopOffset(minOffset)
         } else {
-            const curtainHeight = cRef.current.getBoundingClientRect().height
-            const cTopHeight = cTopRef.current.getBoundingClientRect().height
-            let top = curtainHeight - cTopHeight
-            if (maxScroll) {
-                top = Math.min(top, maxScroll)
-            } else if (maxOpenPercent) {
-                top = top * maxOpenPercent
-            }
-            setTopOffset(top)
+            setTopOffset(calcTopOffset())
         }
     }
 

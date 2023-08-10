@@ -1,6 +1,8 @@
+import {GLOBAL_DB_VERSION} from "../../../static/constants";
+
 const schema = {
   dbname: 'routs',
-  version: 1,
+  version: 1 + GLOBAL_DB_VERSION,
   stores: [
     {
       name: 'travel',
@@ -9,7 +11,7 @@ const schema = {
     },
     {
       name: 'travelActions',
-      key: 'uid',
+      key: 'id',
       indexes: ['synced', 'entity', 'action'],
     },
   ],
