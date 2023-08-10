@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-export const CACHE_VERSION = 8;
-export const GLOBAL_DB_VERSION = 1
-=======
+export const GLOBAL_DB_VERSION = 1;
 export const CACHE_VERSION = 9;
->>>>>>> 833cd24fcbe7db9b5038cc4c88a795fc004a8c12
 
 
 const constants = {
