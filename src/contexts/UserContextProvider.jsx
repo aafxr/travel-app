@@ -1,7 +1,8 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {Outlet} from "react-router-dom";
 
-import {USER_AUTH} from "../static/constants";
+import {UNAUTHORIZED, USER_AUTH} from "../static/constants";
+import {WorkerContext} from "./WorkerContextProvider";
 
 /**
  * объект которы предоставляет telegram auth widget
@@ -44,6 +45,7 @@ export const UserContext = createContext({})
 
 export default function UserContextProvider() {
     const [user, setUser] = useState(null)
+    const {worker} = useContext(WorkerContext)
 
     /**@type {TelegramAuthHandler} */
     function handleUserAuth(user) {
@@ -51,6 +53,17 @@ export default function UserContextProvider() {
         localStorage.setItem(USER_AUTH, JSON.stringify(result))
         setUser(result)
     }
+
+    useEffect(()=> {
+        if(worker){
+            worker.addEventListener('message', msg=>{
+                if(msg.type === UNAUTHORIZED){
+                    localStorage.setItem(USER_AUTH, JSON.stringify(null))
+                    setUser(null)
+                }
+            })
+        }
+    }, [worker])
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'development') {

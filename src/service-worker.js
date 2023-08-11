@@ -26,10 +26,10 @@ setCacheNameDetails({
 })
 
 
-// const prefetch = [
-//     process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
-//     process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
-// ]
+const prefetch = [
+    process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
+    process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
+]
 
 clientsClaim();
 

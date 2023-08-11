@@ -7,14 +7,16 @@ import Curtain from "../../../../components/Curtain/Curtain";
 import Menu from "../../../../components/Menu/Menu";
 import {PageHeader} from "../../../../components/ui";
 
-import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
-
 import expensesController from "../../../Expenses/controllers/expensesController";
-import './Profile.css'
 import expensesActionModel from "../../../Expenses/models/expensesActionModel/expensesActionModel";
 import travelActionModel from "../../../Travel/models/travelActionModel/travelActionModel";
 import travelController from "../../../Travel/controllers/travelController";
 import errorReport from "../../../../controllers/ErrorReport";
+
+import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
+import './Profile.css'
+import Accordion from "../../../../components/Accordion/Accordion";
+import Loader from "../../../../components/Loader/Loader";
 
 export default function Profile() {
     const {user} = useContext(UserContext)
@@ -28,7 +30,7 @@ export default function Profile() {
             expensesActions && setExpensesList(expensesActions)
         }
 
-        async function onTravel(){
+        async function onTravel() {
             const travelActions = await travelActionModel.getFromIndex(constants.indexes.SYNCED, 0)
             console.log('[travelActions] ', travelActions)
             travelActions && setTravelsList(travelActions)
@@ -44,7 +46,7 @@ export default function Profile() {
         expensesController.subscribe(constants.store.EXPENSES_PLAN, onExpenses)
         travelController.subscribe(constants.store.TRAVEL, onTravel)
 
-        return ()=>{
+        return () => {
             expensesController.unsubscribe(constants.store.EXPENSES_ACTUAL, onExpenses)
             expensesController.unsubscribe(constants.store.EXPENSES_PLAN, onExpenses)
             travelController.unsubscribe(constants.store.TRAVEL, onTravel)
@@ -70,7 +72,24 @@ export default function Profile() {
                 </div>
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>
                     <Container className='pt-20'>
-                        test
+                        {
+                            !!expensesList.length && (
+                                <Accordion title={'Расходы'}>
+                                    {expensesList.map(e => (
+                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}/>
+                                    ))}
+                                </Accordion>
+                            )
+                        }
+                        {
+                            !!travelsList.length && (
+                                <Accordion title={'Маршруты'}>
+                                    {travelsList.map(e => (
+                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}/>
+                                    ))}
+                                </Accordion>
+                            )
+                        }
                     </Container>
                 </Curtain>
             </div>

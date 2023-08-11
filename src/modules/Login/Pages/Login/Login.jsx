@@ -1,4 +1,3 @@
-import axios from "axios";
 import {useContext} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -7,6 +6,7 @@ import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../../Main/TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
+import aFetch from "../../../../axios";
 
 export default function Login() {
     const {setUser} = useContext(UserContext)
@@ -14,7 +14,7 @@ export default function Login() {
 
     /**@param {UserAuthType} user */
     function tgAuthHandler(user) {
-        axios.post(process.env.REACT_APP_SERVER_URL + '/user/auth/tg/', user)
+        aFetch.post('/user/auth/tg/', user)
             .then(res => res.data)
             .then(res => {
                 const {ok, data} = res

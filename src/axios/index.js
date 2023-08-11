@@ -1,5 +1,5 @@
 import axios from 'axios'
-import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../static/constants";
+import constants, {ACCESS_TOKEN, REFRESH_TOKEN, UNAUTHORIZED, USER_AUTH} from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 
 const baseURL = process.env.REACT_APP_SERVER_URL
@@ -22,7 +22,17 @@ async function getTokensFromDB() {
         .catch(console.error)
 }
 
-getTokensFromDB()
+/**
+ * Функция сохраняет токеныв indexedDB
+ * @param {UserAppType} userAuth
+ * @return {Promise<Awaited<number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>[]>}
+ */
+async function saveTokensToDB(userAuth){
+    return Promise.all([
+        storeDB.editElement(constants.store.STORE, {name: ACCESS_TOKEN, value: userAuth.token}),
+        storeDB.editElement(constants.store.STORE, {name: REFRESH_TOKEN, value: userAuth.refresh_token})
+    ])
+}
 
 
 aFetch.interceptors.request.use(async (c) => {
@@ -38,12 +48,7 @@ aFetch.interceptors.response.use(
         if (url.includes('/user/auth/')) {
             const {ok, data} = response.data
             if (ok) {
-                access_token = data.token
-                refresh_token = data.refresh_token
-                Promise.all([
-                    storeDB.editElement(constants.store.STORE, {name: ACCESS_TOKEN, value: access_token}),
-                    storeDB.editElement(constants.store.STORE, {name: REFRESH_TOKEN, value: refresh_token})
-                ])
+                saveTokensToDB(data)
                     .catch(console.error)
             }
         }
@@ -59,14 +64,18 @@ aFetch.interceptors.response.use(
                     Authorization: refresh_token ? `Bearer ${refresh_token}` : '',
                 }
             }).then((response) => {
-                const {ok, data: userAuth, message} = response.data
+                const {ok, data: userAuth} = response.data
                 if (ok) {
+                    saveTokensToDB(userAuth)
+                        .catch(console.error)
                     originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
                     return axios(originalRequest);
                 } else if (window) {
                     window.localStorage.setItem(USER_AUTH, JSON.stringify(null))
+                }else if(postMessage){
+                    postMessage({type: UNAUTHORIZED})
                 }
-                throw new Error(message)
+                return originalRequest
             })
         }
         return Promise.reject(err);

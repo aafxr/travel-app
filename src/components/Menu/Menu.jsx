@@ -8,12 +8,13 @@ import {MenuIcon} from "../svg";
 
 import useOutside from "../../hooks/useOutside";
 
-import './Menu.css'
 import storeDB from "../../db/storeDB/storeDB";
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import errorReport from "../../controllers/ErrorReport";
 import aFetch from "../../axios";
 import axios from "axios";
+
+import './Menu.css'
 
 export default function Menu() {
     const {user, setUser} = useContext(UserContext)
@@ -27,12 +28,8 @@ export default function Menu() {
                 .getElement(constants.store.STORE, REFRESH_TOKEN)
                 .then(refresh_token => {
                         console.log('refresh_token ', refresh_token)
-                        axios.post(process.env.REACT_APP_SERVER_URL + '/user/auth/remove/', {[REFRESH_TOKEN]: refresh_token[0]?.value})
+                        aFetch.post(process.env.REACT_APP_SERVER_URL + '/user/auth/remove/', {[REFRESH_TOKEN]: refresh_token[0]?.value})
                             .then(() => {
-                                Promise.all([
-                                    storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
-                                    storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
-                                ])
                                 localStorage.setItem(USER_AUTH, JSON.stringify(null))
                                 setUser(null)
                                 navigate('/')
@@ -56,7 +53,7 @@ export default function Menu() {
                 <MenuIcon/>
             </div>
             <div className='menu-container column gap-0.5'>
-                <div className='menu-icons row flex-nowrap gap-1'>
+                <div className='menu-icons row flex-nowrap gap-1 pb-20'>
                     <MenuIconList/>
                 </div>
 
