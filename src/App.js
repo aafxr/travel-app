@@ -47,7 +47,7 @@ function App() {
                     <Route element={<WorkerContextProvider/>}>
                         <Route element={<TravelContextProvider />}>
                             <Route path={'/'} element={<Main/>}/>
-                            <Route path={'/travels/'} element={<TravelRoutes/>}/>
+                            <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
                             <Route path={'/events/'} element={<Events/>}/>
                             <Route path={'/favorite/'} element={<Favorite/>}/>
                             <Route path={'/auth/'} element={<TelegramAuth />}/>

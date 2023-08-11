@@ -14,9 +14,9 @@ import travelController from "../../../Travel/controllers/travelController";
 import errorReport from "../../../../controllers/ErrorReport";
 
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
-import './Profile.css'
 import Accordion from "../../../../components/Accordion/Accordion";
 import Loader from "../../../../components/Loader/Loader";
+import './Profile.css'
 
 export default function Profile() {
     const {user} = useContext(UserContext)
@@ -26,13 +26,11 @@ export default function Profile() {
     useEffect(() => {
         async function onExpenses() {
             const expensesActions = await expensesActionModel.getFromIndex(constants.indexes.SYNCED, 0)
-            console.log('[expensesActions] ', expensesActions)
             expensesActions && setExpensesList(expensesActions)
         }
 
         async function onTravel() {
             const travelActions = await travelActionModel.getFromIndex(constants.indexes.SYNCED, 0)
-            console.log('[travelActions] ', travelActions)
             travelActions && setTravelsList(travelActions)
         }
 

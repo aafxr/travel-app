@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
-import {PageHeader} from "../../../../components/ui";
+import {PageHeader, Tab} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 
 import {TravelContext} from "../../../Travel/contextProviders/TravelContextProvider";
@@ -13,7 +13,6 @@ import constants, {USER_AUTH} from "../../../../static/constants";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import Menu from "../../../../components/Menu/Menu";
 
 export default function TravelRoutes({
                                          primary_entity_type,
@@ -67,8 +66,15 @@ export default function TravelRoutes({
 
     return (
         <div className='wrapper'>
-            <Container className='content'>
+            <Container>
                 <PageHeader title={'Маршруты'} />
+            </Container>
+            <div className='flex-stretch'>
+                <Tab name={'Текущие'} to={'/travels/current/'}/>
+                <Tab name={'Будущие'} to={'/travels/plan/'}/>
+                <Tab name={'Прошедшие'} to={'/travels/old/'}/>
+            </div>
+            <Container className='content pt-20'>
                 {
                     user
                         ? (

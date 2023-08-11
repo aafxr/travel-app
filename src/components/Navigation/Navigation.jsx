@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import clsx from "clsx";
 
 import {CompassIcon, EventsIcon, HeartIcon, HomeIcon, UserIcon} from "../svg";
@@ -6,6 +6,7 @@ import {CompassIcon, EventsIcon, HeartIcon, HomeIcon, UserIcon} from "../svg";
 import './Navigation.css'
 
 export default function Navigation({className}) {
+    const {travelsType} = useParams()
     const navLinkClassName = ({ isActive, isPending }) => isPending ? "pending" : isActive ? "active" : ""
 
     return (
@@ -26,7 +27,7 @@ export default function Navigation({className}) {
                     </NavLink>
                 </div>
                 <div className='navigation-item center'>
-                    <NavLink to={'/travels/'} className={navLinkClassName}>
+                    <NavLink to={`/travels/${travelsType || 'current/'}`} className={navLinkClassName}>
                         <div className='navigation-icon'><CompassIcon/></div>
                         <div className='navigation-title'>Маршруты</div>
                     </NavLink>
