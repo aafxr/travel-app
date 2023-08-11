@@ -38,6 +38,12 @@ async function saveTokensToDB(userAuth){
 aFetch.interceptors.request.use(async (c) => {
     await getTokensFromDB()
     c.headers.Authorization = access_token ? `Bearer ${access_token}`: ''
+    if(c.url.includes('/user/auth/remove/')){
+        await Promise.all([
+            storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
+            storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
+        ])
+    }
     return c;
 }, err => console.error(err))
 
