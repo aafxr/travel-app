@@ -8,7 +8,7 @@
 // service worker, and the Workbox build step will be skipped.
 
 
-import {precacheAndRoute, createHandlerBoundToURL,} from 'workbox-precaching';
+import {precacheAndRoute, createHandlerBoundToURL, cleanupOutdatedCaches,} from 'workbox-precaching';
 import {StaleWhileRevalidate, NetworkFirst} from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {registerRoute} from 'workbox-routing';
@@ -38,6 +38,7 @@ clientsClaim();
 // This variable must be present somewhere in your service worker file,
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST);
+cleanupOutdatedCaches()
 
 
 // Set up App Shell-style routing, so that all navigation requests
