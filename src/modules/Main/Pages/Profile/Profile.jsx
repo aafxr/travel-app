@@ -66,7 +66,7 @@ export default function Profile() {
          * @param {ActionType} a
          * @param {ActionType} b
          */
-        (a, b) => a.datetime - b.datetime)
+        (a, b) => b.datetime - a.datetime )
         .map(
             /**
              * @param {ActionType} action
