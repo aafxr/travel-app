@@ -26,20 +26,20 @@ setFixedVH()
 window.addEventListener('resize', setFixedVH)
 
 //====================== чистка кэш и регистрация серыис воркера ===================================
-const version = JSON.parse(localStorage.getItem('cache-version'))
-localStorage.setItem('cache-version', CACHE_VERSION.toString())
+// const version = JSON.parse(localStorage.getItem('cache-version'))
+// localStorage.setItem('cache-version', CACHE_VERSION.toString())
 
 serviceWorkerRegistration.register({
-    onUpdate(){
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => caches.delete(cacheName))
-            )
-        }).catch(err => errorReport.sendError(err))
-    },
-    onSuccess() {
-        window?.location.reload()
-    }
+    // onUpdate(){
+    //     caches.keys().then(cacheNames => {
+    //         return Promise.all(
+    //             cacheNames.map(cacheName => caches.delete(cacheName))
+    //         )
+    //     }).catch(err => errorReport.sendError(err))
+    // },
+    // onSuccess() {
+    //     window?.location.reload()
+    // }
 })
 
 
