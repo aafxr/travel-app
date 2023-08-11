@@ -70,9 +70,9 @@ export default function TravelRoutes({
                 <PageHeader title={'Маршруты'} />
             </Container>
             <div className='flex-stretch'>
+                <Tab name={'Прошедшие'} to={'/travels/old/'}/>
                 <Tab name={'Текущие'} to={'/travels/current/'}/>
                 <Tab name={'Будущие'} to={'/travels/plan/'}/>
-                <Tab name={'Прошедшие'} to={'/travels/old/'}/>
             </div>
             <Container className='content pt-20'>
                 {

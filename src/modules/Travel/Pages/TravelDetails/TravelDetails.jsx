@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
@@ -8,15 +8,13 @@ import UserCard from "../../components/UserCard/UserCard";
 
 import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
 import MenuIconList from "../../../../components/MenuIconList/MenuIconList";
+import TravelPeople from "../../components/TravelPeople/TravelPeople";
 
 import './TravelDetails.css'
-import Curtain from "../../../../components/Curtain/Curtain";
-import Button from "../../../../components/ui/Button/Button";
-import LocationCard from "../../components/LocationCard/LocationCard";
-import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 
 
 export default function TravelDetails() {
+    const [compact, setCompact] = useState(false)
 
     const items = [
         {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
@@ -40,23 +38,15 @@ export default function TravelDetails() {
                 <div className='center'>
                     <Chip className='center' color='orange' rounded>17-21 июля</Chip>
                 </div>
-                <div className='travel-details-people column gap-0.25'>
-                    <UserCard name='Иван' role='админ' status='в поездке'
-                              vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                              avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}/>
-                    <UserCard name='Иван' role='админ' status='в поездке'
-                              vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                              avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}/>
-                    <UserCard name='Иван' role='админ' status='в поездке'
-                              vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                              avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}/>
-                    <UserCard name='Иван' role='админ' status='в поездке'
-                              vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                              avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}/>
-                </div>
+                <TravelPeople compact={compact}  />
                 <div className='flex-between'>
                     <AddButton>Пригласить еще</AddButton>
-                    <span className='link'>Свернуть</span>
+                    <span
+                        className='link'
+                        onClick={() => setCompact(!compact)}
+                    >
+                        {compact ? 'Развернуть' : 'Свернуть'}
+                    </span>
                 </div>
                 <div className='flex-between flex-nowrap gap-0.5'>
                     <IconButton icon={<Money/>} title='Расходы'/>

@@ -17,7 +17,7 @@
     --color-danger: #FF0909;
 
     --box-shadoe: 0 0 16px rgba(205,205,205, .7);
-    --border: 2px solid var(--color-grey-light);
+    --border: 2px solid var(--color-grey);
 
     --modal-bg: rgba(0,0,0,.6)
 

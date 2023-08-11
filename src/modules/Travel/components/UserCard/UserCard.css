@@ -5,6 +5,11 @@
     color: var(--color-grey);
 }
 
+.user-card.compact{
+    width: auto;
+    display: inline-block;
+}
+
 .user-card-info{
     flex: 1;
 }

@@ -1,5 +1,5 @@
 .accordion {
-    border-bottom: var(--border);
+    border-bottom: 2px solid var(--color-grey-light);
     cursor: pointer;
 }
 
@@ -55,4 +55,10 @@
 
 .accordion-item-title{
     flex: 1;
+}
+
+.accordion-item-description,
+.accordion-item-time{
+    font-size: .8rem;
+    color: var(--color-grey);
 }

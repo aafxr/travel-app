@@ -17,6 +17,16 @@ import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 import Accordion from "../../../../components/Accordion/Accordion";
 import Loader from "../../../../components/Loader/Loader";
 import './Profile.css'
+import dateToStringFormat from "../../../../utils/dateToStringFormat";
+
+const convertor = {
+    "add": "Добавлено",
+    "update": "Обновлено",
+    "remove": "Удалено",
+    [constants.store.EXPENSES_ACTUAL]: 'Расходы(Т)',
+    [constants.store.EXPENSES_PLAN]: 'Расходы(П)',
+    [constants.store.TRAVEL]: 'Маршрут'
+}
 
 export default function Profile() {
     const {user} = useContext(UserContext)
@@ -51,6 +61,27 @@ export default function Profile() {
         }
     }, [])
 
+    const list = expensesList.concat(travelsList).sort(
+        /**
+         * @param {ActionType} a
+         * @param {ActionType} b
+         */
+        (a, b) => a.datetime - b.datetime)
+        .map(
+            /**
+             * @param {ActionType} action
+             * @return {*}
+             */
+            action => {
+                const a = {...action}
+                a.entity = convertor[a.entity] || ''
+                a.action = convertor[a.action] || ''
+                a.datetime = dateToStringFormat(a.datetime)
+                return a
+            })
+    console.log(convertor)
+    console.log(expensesList)
+    console.log(list)
 
     return (
         <div className='wrapper'>
@@ -71,19 +102,10 @@ export default function Profile() {
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>
                     <Container className='pt-20'>
                         {
-                            !!expensesList.length && (
-                                <Accordion title={'Расходы'}>
-                                    {expensesList.map(e => (
-                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}/>
-                                    ))}
-                                </Accordion>
-                            )
-                        }
-                        {
-                            !!travelsList.length && (
-                                <Accordion title={'Маршруты'}>
-                                    {travelsList.map(e => (
-                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}/>
+                            !!list.length && (
+                                <Accordion title={'Действия'}>
+                                    {list.map(e => (
+                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>} dascription={e.entity + ' - ' + e.action} time={e.datetime} />
                                     ))}
                                 </Accordion>
                             )

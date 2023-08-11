@@ -1,0 +1,10 @@
+.travel-details-people{
+    position: relative;
+}
+
+.travel-details-people.compact > div {
+    display: inline-block;
+    position: relative;
+    left: -50%;
+    transform: translateX(-50%);
+}
