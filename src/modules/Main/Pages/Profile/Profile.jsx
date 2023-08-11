@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 
 import Navigation from "../../../../components/Navigation/Navigation";
 import {UserContext} from "../../../../contexts/UserContextProvider";
@@ -61,12 +61,12 @@ export default function Profile() {
         }
     }, [])
 
-    const list = expensesList.concat(travelsList).sort(
+    const list = useMemo(() => expensesList.concat(travelsList).sort(
         /**
          * @param {ActionType} a
          * @param {ActionType} b
          */
-        (a, b) => b.datetime - a.datetime )
+        (a, b) => b.datetime - a.datetime)
         .map(
             /**
              * @param {ActionType} action
@@ -78,10 +78,8 @@ export default function Profile() {
                 a.action = convertor[a.action] || ''
                 a.datetime = dateToStringFormat(a.datetime)
                 return a
-            })
-    console.log(convertor)
-    console.log(expensesList)
-    console.log(list)
+            }
+        ), [expensesList, travelsList])
 
     return (
         <div className='wrapper'>
@@ -105,7 +103,8 @@ export default function Profile() {
                             !!list.length && (
                                 <Accordion title={'Действия'}>
                                     {list.map(e => (
-                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>} dascription={e.entity + ' - ' + e.action} time={e.datetime} />
+                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}
+                                                        dascription={e.entity + ' - ' + e.action} time={e.datetime}/>
                                     ))}
                                 </Accordion>
                             )
