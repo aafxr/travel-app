@@ -8,7 +8,7 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
-import constants from "../../../../static/constants";
+import constants, {reducer} from "../../../../static/constants";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
@@ -25,9 +25,7 @@ import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
  */
 export default function ExpensesPlan() {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, sections, limits} = useContext(ExpensesContext)
-
-    const [expenses, setExpenses] = useState([])
+    const {controller, sections, limits, expensesPlan, dispatch} = useContext(ExpensesContext)
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
@@ -42,13 +40,11 @@ export default function ExpensesPlan() {
     useEffect(() => {
         if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "plan").then(setExpenses)
-            controller.subscribe(constants.store.EXPENSES_PLAN, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "plan")))
+            updateExpenses(controller, primary_entity_id, "plan").then(items => dispatch({type: reducer.UPDATE_EXPENSES_PLAN, payload: items}))
         }
-        // return () => controller.subscribe(constants.store.EXPENSES_PLAN, updateExpenses)
     }, [controller])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expensesPlan, limits, filter, user_id)
 
     const sectionLimit = function (section) {
         if (filter !== 'all') {

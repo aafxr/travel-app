@@ -7,7 +7,7 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 
-import constants from "../../../../static/constants";
+import constants, {reducer} from "../../../../static/constants";
 
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
@@ -26,15 +26,9 @@ import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
  */
 export default function Expenses({primary_entity_type}) {
     const {travelCode: primary_entity_id} = useParams()
-
-    const {controller, sections, limits} = useContext(ExpensesContext)
-
-    const [expenses, setExpenses] = useState([])
-
+    const {controller, sections, limits, dispatch,expensesActual} = useContext(ExpensesContext)
     const [noDataMessage, setNoDataMessage] = useState('')
-
     const [filter, setFilter] = useState(defaultFilterValue)
-
     const {user} = useContext(UserContext)
 
     const user_id = user.id
@@ -43,13 +37,11 @@ export default function Expenses({primary_entity_type}) {
     useEffect(() => {
         if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "actual").then(setExpenses)
-            controller.subscribe(constants.store.EXPENSES_ACTUAL, async ()=> setExpenses(await updateExpenses(controller, primary_entity_id, "actual")))
+            updateExpenses(controller, primary_entity_id, "actual").then(items => dispatch({type: reducer.UPDATE_EXPENSES_ACTUAL, payload:items}))
         }
-        // return () => controller.unsubscribe(constants.store.EXPENSES_ACTUAL, updateExpenses)
     }, [controller])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expenses, limits, filter, user_id)
+    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expensesActual, limits, filter, user_id)
 
     const sectionLimit = function (section) {
         if (filter !== 'all') {

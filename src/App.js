@@ -31,14 +31,14 @@ import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 
 function App() {
 
-    useEffect(() => {
-        const prefetch = [
-            process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
-            process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
-        ]
-
-        prefetch.forEach(url => aFetch.get(url).catch(console.error))
-    }, [])
+    // useEffect(() => {
+    //     const prefetch = [
+    //         process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
+    //         process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
+    //     ]
+    //
+    //     prefetch.forEach(url => aFetch.get(url).catch(console.error))
+    // }, [])
 
     return (
         <ErrorBoundary>

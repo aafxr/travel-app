@@ -3,7 +3,16 @@ import constants from "../../../static/constants";
 import ErrorReport from "../../../controllers/ErrorReport";
 import aFetch from "../../../axios";
 
-export default function useDefaultSection(controller, primary_entity_id, user_id) {
+
+/**
+ *
+ * @param {ActionController} controller
+ * @param {DispatchFunction} dispatch
+ * @param {string} primary_entity_id
+ * @param {string} user_id
+ * @return {string}
+ */
+export default function useDefaultSection(controller, dispatch, primary_entity_id, user_id) {
     const [errorMessage, setErrorMessage] = useState('')
 
     // добавлени дефолтных секций

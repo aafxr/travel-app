@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from 'react'
+import React, {createContext, useContext, useEffect, useReducer, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
@@ -11,26 +11,23 @@ import updateSections from "../helpers/updateSections";
 import updateLimits from "../helpers/updateLimits";
 import functionDurationTest from "../../../utils/functionDurationTest";
 
-import constants from "../../../static/constants";
+import constants, {reducer} from "../../../static/constants";
 
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import usePostMessage from "../hooks/usePostMessage";
 import {UserContext} from "../../../contexts/UserContextProvider.jsx";
 import '../css/Expenses.css'
 import expensesController from "../controllers/expensesController";
+import expensesReducer from "./reducer";
 
 /**
- * @typedef {Object} ExpensesContextState
- * @property {ActionController | null} controller
- * @property {SectionType | null} defaultSection
- * @property {Array.<SectionType> | []} sections
- * @property {Array.<LimitType> | []} limits
- * @property {Array.<CurrencyType> } currency
+ * @typedef {Object} DispatchType
+ * @property {DispatchFunction} dispatch
  */
 
 /**
  * предоставляет доступ к контроллеру модуля Expenses
- * @type {React.Context<ExpensesContextState | null>}
+ * @type {React.Context<ExpensesReducerState & DispatchType| null>}
  */
 export const ExpensesContext = createContext(null)
 
@@ -38,13 +35,15 @@ export const ExpensesContext = createContext(null)
 
 
 /**
- * @type ExpensesContextState
+ * @type ExpensesReducerState
  */
 const defaultState = {
     controller: null,
     defaultSection: null,
     limits: [],
     sections: [],
+    expensesActual: [],
+    expensesPlan: [],
     currency:[],
 }
 
@@ -58,15 +57,12 @@ const defaultState = {
 export default function ExpensesContextProvider() {
     const {travelCode: primary_entity_id} = useParams()
     const [dbReady, setDbReady] = useState(false)
-    /**  @type {[ExpensesContextState, function]} */
-    const [state, setState] = useState( defaultState)
-
-    const [sections, setSections] = useState([])
-    const [limits, setLimits] = useState([])
+    /**@type{[ExpensesReducerState, DispatchFunction]}*/
+    const [state, dispatch] = useReducer(expensesReducer, defaultState, ()=>defaultState)
 
     const {worker} = useContext(WorkerContext)
 
-    const currency = useCurrency()
+    useCurrency(dispatch)
 
     const [onSendSet, setOnSendSet] = useState(false)
 
@@ -74,7 +70,7 @@ export default function ExpensesContextProvider() {
 
     const user_id = user.id
 
-    useDefaultSection(state.controller, primary_entity_id, user_id)
+    useDefaultSection(state.controller, dispatch, primary_entity_id, user_id)
 
     usePostMessage(worker, primary_entity_id)
 
@@ -82,39 +78,17 @@ export default function ExpensesContextProvider() {
     useEffect(() => {
         const controller = expensesController
         controller.onReady = () => setDbReady(true)
-        state.controller = controller
-        setState(state)
+        dispatch({type: reducer.UPDATE_CONTROLLER, payload: controller})
 
-        updateSections(controller).then(setSections)
-        updateLimits(controller, primary_entity_id).then(setLimits)
-
-        const sectionSubscription = async () => setSections(await updateSections(controller))
-        const limitsSubscription = async () => !sections.length && setSections(await updateSections(controller))
-        const limitsSubscriptionWithPRkey = async () => setLimits(await updateLimits(controller, primary_entity_id))
-        const onExpSubscr = async () => {
-            setLimits(await updateLimits(controller, primary_entity_id))
-            !sections.length && setSections(await updateSections(controller))
-        }
-
-        controller.subscribe(constants.store.SECTION, sectionSubscription)
-        controller.subscribe(constants.store.EXPENSES_ACTUAL, limitsSubscription)
-        controller.subscribe(constants.store.LIMIT, limitsSubscriptionWithPRkey)
-        controller.subscribe(constants.store.EXPENSES_PLAN, onExpSubscr)
-
-        return () => {
-            controller.unsubscribe(constants.store.SECTION, sectionSubscription)
-            controller.unsubscribe(constants.store.EXPENSES_ACTUAL, limitsSubscription)
-            controller.unsubscribe(constants.store.LIMIT, limitsSubscriptionWithPRkey)
-            controller.unsubscribe(constants.store.EXPENSES_PLAN, onExpSubscr)
-        }
+        updateSections(controller).then(items => dispatch({typeof: reducer.UPDATE_EXPENSES_SECTIONS, payload: items}))
+        updateLimits(controller, primary_entity_id).then(items => dispatch({typeof: reducer.UPDATE_EXPENSES_LIMIT, payload: items}))
     }, [])
 
     useEffect(()=>{
-        if (state.controller && currency ){
-            state.controller.onUpdate = onUpdate(primary_entity_id, user_id, currency)
+        if (state.controller && state.currency ){
+            state.controller.onUpdate = onUpdate(primary_entity_id, user_id, state.currency)
         }
-    }, [state.controller, currency])
-
+    }, [state.controller, state.currency])
 
     useEffect(() => {
         if (worker && state.controller) {
@@ -123,14 +97,12 @@ export default function ExpensesContextProvider() {
                 if (state.controller) {
                     console.log('workerMessageHandler: ', e.data)
                     functionDurationTest(state.controller.actionHandler.bind(state.controller, actions), '[Основной поток] Время обработки actions: ')
-                    !sections.length && setSections(await updateSections(state.controller))
+                    !state.sections.length && (await updateSections(state.controller))
+                        .then(items => dispatch({type: reducer.UPDATE_EXPENSES_SECTIONS, payload: items}))
                 }
             }
 
             worker.addEventListener('message', workerMessageHandler)
-
-
-
             return () => worker && worker.removeEventListener('message', workerMessageHandler)
         }
     }, [state.controller, worker])
@@ -144,29 +116,20 @@ export default function ExpensesContextProvider() {
 
 
     useEffect(() => {
+        const sections = state.sections
         if (sections && sections.length) {
             const section = sections.find(s => s.title === 'Прочие расходы')
             const defaultSection = section ? section : null
-            setState({...state, sections, defaultSection})
+            dispatch({type: reducer.UPDATE_EXPENSES_DEFAULT_SECTION, payload:defaultSection})
         }
-    }, [sections])
-
-
-    useEffect(() => {
-        limits.length && setState({...state, limits})
-    }, [limits])
-
-
-    useEffect(() => {
-            setState({...state, currency})
-    }, [currency])
+    }, [state.sections])
 
     if (!dbReady) {
         return null
     }
 
     return (
-        <ExpensesContext.Provider value={state}>
+        <ExpensesContext.Provider value={{dispatch, ...state}}>
             <Outlet/>
         </ExpensesContext.Provider>
     )
