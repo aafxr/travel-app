@@ -29,9 +29,10 @@ export default function useCurrency() {
         aFetch.get('/main/currency/getList/')
             .then(res => res.data)
             .then(data => {
-                if (data && data.length) {
-                    setCurrency(data)
-                    localStorage.setItem('currency', JSON.stringify(data))
+                const c = Object.keys(data).map(k => data[k])[0]
+                if (c && c.length) {
+                    setCurrency(c)
+                    localStorage.setItem('currency', JSON.stringify(c))
                 }
             })
             .catch((err) => {
