@@ -7,7 +7,7 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 
-import constants, {reducer} from "../../../../static/constants";
+import constants, {reducerConstants} from "../../../../static/constants";
 
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
@@ -37,7 +37,7 @@ export default function Expenses({primary_entity_type}) {
     useEffect(() => {
         if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "actual").then(items => dispatch({type: reducer.UPDATE_EXPENSES_ACTUAL, payload:items}))
+            updateExpenses(controller, primary_entity_id, "actual").then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_ACTUAL, payload:items}))
         }
     }, [controller])
 

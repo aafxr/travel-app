@@ -20,6 +20,8 @@ import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
 import '../../css/Expenses.css'
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {updateLimits} from "../../helpers/updateLimits";
+import {reducerConstants} from "../../../../static/constants";
 
 
 /**
@@ -38,7 +40,7 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
-    const {controller, defaultSection, sections, currency} = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, currency, dispatch} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
@@ -115,10 +117,13 @@ export default function ExpensesAdd({
             pushAlertMessage({type: 'danger', message: 'Необходимо авторизоваться.'})
             return
         }
-        edit
-            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate, expense)
-            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate)
 
+        (edit
+            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate, expense)
+            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate))
+            .then(() => updateLimits(primary_entity_id, user_id, currency)(controller)
+                .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
+            )
     }
 
     return (

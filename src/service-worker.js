@@ -76,9 +76,9 @@ registerRoute(
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
     // Add in any other file extensions or routing criteria as needed.
-    ({url}) => url.origin === self.location.origin && /\.(png|jpg|jpeg|svg)$/i.test(url.pathname), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    ({url}) => url.origin === self.location.origin && /\.(png|jpg|jpeg|svg|ttf|woff|woff2|otf)$/i.test(url.pathname), // Customize this strategy as needed, e.g., by changing to CacheFirst.
     new StaleWhileRevalidate({
-        cacheName: 'images',
+        cacheName: 'assets',
         plugins: [
             // Ensure that once this runtime cache reaches a maximum size the
             // least-recently used images are removed.

@@ -1,11 +1,11 @@
 import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 
-export default function handleAddExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum,expCurr, personal, section_id, navigate) {
+export default async function handleAddExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum,expCurr, personal, section_id, navigate) {
     if (user_id && primary_entity_type) {
         const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-        controller.write({
+        await controller.write({
             storeName,
             action: 'add',
             user_id,
