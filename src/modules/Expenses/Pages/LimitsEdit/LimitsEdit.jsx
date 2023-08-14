@@ -8,7 +8,7 @@ import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 
 
-import constants from "../../../../static/constants";
+import constants, {reducerConstants} from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
@@ -18,6 +18,7 @@ import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {formatter} from "../../../../utils/currencyFormat";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {updateLimits} from "../../helpers/updateLimits";
 
 /**
  * страница редактиррования лимитов
@@ -42,7 +43,7 @@ export default function LimitsEdit({
         ? `/travel/${primary_entity_id}/expenses/plan/`
         : `/travel/${primary_entity_id}/expenses/`
 
-    const {controller, defaultSection, sections, limits, currency } = useContext(ExpensesContext)
+    const {controller, defaultSection, sections, limits, currency, dispatch } = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -139,6 +140,7 @@ export default function LimitsEdit({
                     user_id,
                     data: {...limitObj, value: value}
                 })
+
             } else {
                 controller.write({
                     storeName: constants.store.LIMIT,
@@ -156,6 +158,8 @@ export default function LimitsEdit({
                 })
                     .catch(console.error)
             }
+            updateLimits(primary_entity_id, user_id, currency)(controller)
+                .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
         } else {
             console.warn('need add user_id')
         }

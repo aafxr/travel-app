@@ -21,7 +21,7 @@
  */
 
 
-import {reducer} from "../../../static/constants";
+import {reducerConstants} from "../../../static/constants";
 
 
 
@@ -33,20 +33,26 @@ import {reducer} from "../../../static/constants";
 export default function expensesReducer(state, action){
 
     switch (action.type){
-        case reducer.UPDATE_EXPENSES_ACTUAL:{
+        case reducerConstants.UPDATE_EXPENSES_ACTUAL:{
             return {...state, expensesActual: action.payload}
         }
-        case reducer.UPDATE_EXPENSES_PLAN:{
+        case reducerConstants.UPDATE_EXPENSES_PLAN:{
             return {...state, expensesPlan: action.payload}
         }
-        case reducer.UPDATE_EXPENSES_LIMIT:{
+        case reducerConstants.UPDATE_EXPENSES_LIMIT:{
             return {...state, limits: action.payload}
         }
-        case reducer.UPDATE_EXPENSES_SECTIONS:{
+        case reducerConstants.UPDATE_EXPENSES_SECTIONS:{
             return {...state, sections: action.payload}
         }
-        case reducer.UPDATE_CONTROLLER:{
+        case reducerConstants.UPDATE_CONTROLLER:{
             return {...state, controller: action.payload}
+        }
+        case reducerConstants.UPDATE_CURRENCY:{
+            return {...state, currency: action.payload}
+        }
+        case reducerConstants.UPDATE_EXPENSES_DEFAULT_SECTION:{
+            return {...state, defaultSection: action.payload}
         }
         default: {
             return state

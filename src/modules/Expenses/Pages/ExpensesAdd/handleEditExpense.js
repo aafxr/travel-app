@@ -1,6 +1,6 @@
 import constants from "../../../../static/constants";
 
-export default function handleEditExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum, expCurr, personal, section_id, navigate, expense) {
+export default async function handleEditExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum, expCurr, personal, section_id, navigate, expense) {
     if (expense && user_id) {
         if (
             expense.title !== expName
@@ -10,7 +10,7 @@ export default function handleEditExpense(controller, isPlan, user_id, primary_e
             || expense.currency !== expCurr.char_code
         ) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-            controller.write({
+            await controller.write({
                 storeName,
                 action: 'update',
                 user_id,

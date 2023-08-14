@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import aFetch from "../../../axios";
-import {reducer} from "../../../static/constants";
+import {reducerConstants} from "../../../static/constants";
 
 const t = {
     char_code: "KZT",
@@ -24,21 +24,19 @@ const t = {
  * @param {DispatchFunction} dispatch
  * @returns {CurrencyType[]}
  */
-export default function useCurrency(dispatch) {
-    useEffect(() => {
-        aFetch.get('/main/currency/getList/')
+export default async function updateCurrency(dispatch) {
+        await aFetch.get('/main/currency/getList/')
             .then(res => res.data)
             .then(data => {
                 const c = Object.keys(data).map(k => data[k])[0]
                 if (c.length) {
-                    dispatch({type: reducer.UPDATE_CURRENCY, payload: c})
+                    dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: c})
                     localStorage.setItem('currency', JSON.stringify(c))
                 }
             })
             .catch((err) => {
                 console.error(err)
                 const c = JSON.parse(localStorage.getItem('currency')) || []
-                dispatch({type: reducer.UPDATE_CURRENCY, payload: c})
+                dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: c})
             })
-    }, [dispatch])
 }

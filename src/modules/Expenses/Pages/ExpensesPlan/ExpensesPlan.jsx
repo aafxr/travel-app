@@ -8,7 +8,7 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
-import constants, {reducer} from "../../../../static/constants";
+import constants, {reducerConstants} from "../../../../static/constants";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
@@ -40,7 +40,7 @@ export default function ExpensesPlan() {
     useEffect(() => {
         if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "plan").then(items => dispatch({type: reducer.UPDATE_EXPENSES_PLAN, payload: items}))
+            updateExpenses(controller, primary_entity_id, "plan").then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_PLAN, payload: items}))
         }
     }, [controller])
 

@@ -29,7 +29,7 @@ const constants = {
 }
 
 
-export const reducer ={
+export const reducerConstants ={
     UPDATE_CONTROLLER: 'UPDATE_CONTROLLER',
     UPDATE_EXPENSES_ACTUAL: 'UPDATE_EXPENSES_ACTUAL',
     UPDATE_EXPENSES_PLAN: 'UPDATE_EXPENSES_PLAN',
