@@ -164,6 +164,53 @@ export class LocalDB {
     }
 
     /**
+     * поиск объекта в store по переданным параметрам query
+     * @param {String} storeName                     массив с инфо о всех хранилищах в бд
+     * @param {String | Number | IDBKeyRange} query  параметры поиска
+     * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
+     */
+    async getOne(storeName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            const db = await openDataBase(this.dbname, this.version, this.stores)
+            return await db.get(storeName, query);
+        }
+        console.error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
+        return Promise.resolve();
+    }
+
+    /**
+     * поиск объектов в store по переданным параметрам query
+     * @param {String} storeName                            массив с инфо о всех хранилищах в бд
+     * @param {String | Number | IDBKeyRange} query         параметры поиска
+     * @returns { Promise<[]>}   возвращает Promise с резултатом поиска либо с ошибкой
+     */
+    async getMany(storeName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            const db = await openDataBase(this.dbname, this.version, this.stores)
+            return await db.getAll(storeName, query);
+        }
+        console.error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
+        return Promise.resolve();
+    }
+
+    /**
+     * поиск всех объектов в store
+     * @param {String} storeName        массив с инфо о всех хранилищах в бд
+     * @returns {Promise<[]>}           возвращает Promise с резултатом поиска либо с ошибкой
+     */
+    async getAll(storeName) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            const db = await openDataBase(this.dbname, this.version, this.stores)
+            return await db.getAll(storeName);
+        }
+        console.error(`[DB/${this.dbname}]: Store '${storeInfo}' not exist`)
+        return Promise.resolve();
+    }
+
+    /**
      * поиск объекта в store по индексу с учетом переданных параметров query
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
@@ -182,6 +229,63 @@ export class LocalDB {
                 }
 
                 return await db.getAllFromIndex(storeName, indexName, query);
+            }
+            throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
+        }
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+    }
+
+    /**
+     * поиск объекта в store по индексу с учетом переданных параметров query
+     * @param {string} storeName                   имя хранилища в бд
+     * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
+     * @param { string | IDBKeyRange} query        параметры поиска
+     * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
+     */
+    async getOneFromIndex(storeName, indexName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            if (this.isIndexProp(storeInfo.indexes, indexName)) {
+                const db = await openDataBase(this.dbname, this.version, this.stores)
+                return await db.getFromIndex(storeName, indexName, query);
+            }
+            throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
+        }
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+    }
+
+
+    /**
+     * поиск объекта в store по индексу с учетом переданных параметров query
+     * @param {string} storeName                   имя хранилища в бд
+     * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
+     * @param { string | IDBKeyRange} query        параметры поиска
+     * @returns {Promise<[]>}                     Promise с результатом поиска либо ошибкой
+     */
+    async getManyFromIndex(storeName, indexName, query) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            if (this.isIndexProp(storeInfo.indexes, indexName)) {
+                const db = await openDataBase(this.dbname, this.version, this.stores)
+                return await db.getAllFromIndex(storeName, indexName, query);
+            }
+            throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
+        }
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+    }
+
+    /**
+     * поиск объекта в store по индексу с учетом переданных параметров query
+     * @param {string} storeName                   имя хранилища в бд
+     * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
+     * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
+     */
+    async getAllFromIndex(storeName, indexName) {
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            if (this.isIndexProp(storeInfo.indexes, indexName)) {
+                const db = await openDataBase(this.dbname, this.version, this.stores)
+                return await db.getFromIndex(storeName, indexName);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }
