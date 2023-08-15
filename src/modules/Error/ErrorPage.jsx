@@ -12,7 +12,7 @@ export default function ErrorPage() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        const e = localStorage.getItem(CRITICAL_ERROR)
+        const e = JSON.parse(localStorage.getItem(CRITICAL_ERROR))
         setError(e)
     }, [])
 
@@ -23,10 +23,16 @@ export default function ErrorPage() {
                 <PageHeader title={'Произошла ошибка'}/>
                 {
                     !!error && (
-                        <>
-                            <div>{error.message}</div>
-                            <div>{error.stack}</div>
-                        </>
+                            <div className='column gap-1'>
+                                <div>
+                                    <b>Error: </b>
+                                    {error.message}
+                                </div>
+                                <div>
+                                    <b>Stack: </b>
+                                    {error.stack}
+                                </div>
+                            </div>
                     )}
             </Container>
             <Container className='footer footer-btn-container'>

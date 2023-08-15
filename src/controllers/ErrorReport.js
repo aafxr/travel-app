@@ -63,4 +63,6 @@ class ErrorReport {
 }
 
 
-export default new ErrorReport()
+const errorReport = new ErrorReport()
+
+export default errorReport

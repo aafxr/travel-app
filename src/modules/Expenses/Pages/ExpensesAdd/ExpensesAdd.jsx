@@ -21,7 +21,9 @@ import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import '../../css/Expenses.css'
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import {updateLimits} from "../../helpers/updateLimits";
-import {reducerConstants} from "../../../../static/constants";
+import constants, {reducerConstants} from "../../../../static/constants";
+import updateExpenses from "../../helpers/updateExpenses";
+import expensesDB from "../../../../db/expensesDB/expensesDB";
 
 
 /**
@@ -93,13 +95,13 @@ export default function ExpensesAdd({
         value && setExpCurr(value)
     }
 
-    function handleExpense(){
-        if (!expName ){
+    function handleExpense() {
+        if (!expName) {
             pushAlertMessage({type: 'warning', message: 'Укажите ' + expNameTitle.toLowerCase()})
             inputNameRef.current?.focus()
             return
         }
-        if (!expSum){
+        if (!expSum) {
             pushAlertMessage({type: 'warning', message: 'Укажите сумму'})
             inputSumRef.current?.focus()
             return
@@ -107,23 +109,31 @@ export default function ExpensesAdd({
 
         const value = currencyToFixedFormat(expSum)
 
-        if(!value){
+        if (!value) {
             pushAlertMessage({type: 'warning', message: 'Сумма не корректна.'})
             inputSumRef.current?.focus()
             return
         }
 
-        if(!user_id){
+        if (!user_id) {
             pushAlertMessage({type: 'danger', message: 'Необходимо авторизоваться.'})
             return
         }
 
         (edit
-            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate, expense)
-            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate))
+            ? handleEditExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate, expense)
+            : handleAddExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate))
             .then(() => updateLimits(primary_entity_id, user_id, currency)(controller)
                 .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
             )
+            .then(() => {
+                const store = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
+                const reducerAction = isPlan ? reducerConstants.UPDATE_EXPENSES_PLAN : reducerConstants.UPDATE_EXPENSES_ACTUAL
+
+                expensesDB.getManyFromIndex(store, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
+                    .then(items => dispatch({type: reducerAction, payload: items}))
+
+            })
     }
 
     return (
@@ -197,7 +207,7 @@ export default function ExpensesAdd({
             </div>
 
             <div className='footer-btn-container footer'>
-                <Button onClick={handleExpense} >{buttonTitle}</Button>
+                <Button onClick={handleExpense}>{buttonTitle}</Button>
             </div>
         </div>
     )

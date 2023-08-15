@@ -11,7 +11,7 @@ export default async function sendActionsToServer(actions, type) {
 
     if (actions && actions.length) {
         return await aFetch.post(url, actions).then(() => {
-            console.log('sanded ', actions)
+            console.log('sended ', actions)
         })
     }
 }

@@ -21,31 +21,27 @@ const t = {
  */
 
 /**
- * Возвращает массив с курсом валют
+ * записывает курс валют в бд (store) и устанавлевает в state значение на текущий день
  * @param {DispatchFunction} dispatch
  * @returns {CurrencyType[]}
  */
 export default async function updateCurrency(dispatch) {
-        await aFetch.get('/main/currency/getList/')
-            .then(res => res.data)
-            .then(data => {
-                const c = Object.keys(data).map(k => ({date: k, value: data[k]}) )
-                Promise.all(c
-                    .map(item => storeDB.editElement(constants.store.CURRENCY, item))
-                ).then(() =>
-                    storeDB.getOne(constants.store.CURRENCY, new Date().toLocaleDateString())
-                        .then(date => {
-                            console.log(date)
-                            if (date.length) {
-                                dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: date.value})
-                                localStorage.setItem('currency', JSON.stringify(date.value))
-                            }
-                        })
-                )
-            })
-            .catch((err) => {
-                console.error(err)
-                const c = JSON.parse(localStorage.getItem('currency')) || []
-                dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: c})
-            })
+    await aFetch.get('/main/currency/getList/')
+        .then(res => res.data)
+        .then(data => {
+            const c = Object.keys(data).map(k => ({date: k, value: data[k]}))
+            Promise.all(c
+                .map(item => storeDB.editElement(constants.store.CURRENCY, item))
+            ).then(() => {
+                    const value = data[new Date().toLocaleDateString()]
+                    dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: value})
+                    localStorage.setItem('currency', JSON.stringify(value))
+                }
+            )
+        })
+        .catch((err) => {
+            console.error(err)
+            const c = JSON.parse(localStorage.getItem('currency')) || []
+            dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: c})
+        })
 }

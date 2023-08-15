@@ -3,6 +3,7 @@ import toArray from "../../../utils/toArray";
 import createId from "../../../utils/createId";
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
 import limitsModel from '../models/limit/limitModel'
+import expensesDB from "../../../db/expensesDB/expensesDB";
 
 // const totalDefault = {
 //     updated_at: Date.now(),
@@ -31,7 +32,8 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
         }
 
         if (!currency || !currency.length)
-            return []
+            return expensesDB.getMany(constants.store.LIMIT, primary_entity_id)
+
         const coeffList = currency.reduce((a, c) => {
             a[c.char_code] = c
             return a

@@ -19,6 +19,7 @@ import '../css/Expenses.css'
 import expensesController from "../controllers/expensesController";
 import expensesReducer from "./reducer";
 import updateExpenses from "../helpers/updateExpenses";
+import errorReport from "../../../controllers/ErrorReport";
 
 /**
  * @typedef {Object} DispatchType
@@ -71,38 +72,40 @@ export default function ExpensesContextProvider() {
 
     usePostMessage(worker, primary_entity_id)
 
-    console.log(state)
+    // console.log(state)
 
     useEffect(() => {
         const controller = expensesController
         controller.onReady = () => setDbReady(true)
         dispatch({type: reducerConstants.UPDATE_CONTROLLER, payload: controller})
 
-        updateSections(controller).then(items => dispatch({
-            type: reducerConstants.UPDATE_EXPENSES_SECTIONS,
-            payload: items
-        }))
-        updateCurrency(dispatch)
+        async function init(){
+            await updateSections(controller).then(items => dispatch({
+                type: reducerConstants.UPDATE_EXPENSES_SECTIONS,
+                payload: items
+            }))
 
-        updateExpenses(controller, primary_entity_id, 'actual').then(items => dispatch({
-            type: reducerConstants.UPDATE_EXPENSES_ACTUAL,
-            payload: items
-        }))
-        updateExpenses(controller, primary_entity_id, 'plan').then(items => dispatch({
-            type: reducerConstants.UPDATE_EXPENSES_PLAN,
-            payload: items
-        }))
-    }, [])
+            await updateCurrency(dispatch)
 
-    useEffect(() => {
-        if (state.currency.length) {
-            updateLimits(primary_entity_id, user_id, state.currency)(state.controller).then(items => dispatch({
+            await updateExpenses(controller, primary_entity_id, 'actual').then(items => dispatch({
+                type: reducerConstants.UPDATE_EXPENSES_ACTUAL,
+                payload: items
+            }))
+
+            await updateExpenses(controller, primary_entity_id, 'plan').then(items => dispatch({
+                type: reducerConstants.UPDATE_EXPENSES_PLAN,
+                payload: items
+            }))
+
+            await updateLimits(primary_entity_id, user_id, state.currency)(state.controller).then(items => dispatch({
                     type: reducerConstants.UPDATE_EXPENSES_LIMIT,
                     payload: items
                 })
             )
         }
-    }, [state.currency])
+
+        init().catch(err => errorReport.sendError(err))
+    }, [])
 
     useEffect(() => {
         if (worker && state.controller) {

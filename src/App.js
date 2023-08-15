@@ -22,7 +22,7 @@ import TelegramAuth from "./modules/Main/TelegramAuth";
 import UserContextProvider from "./contexts/UserContextProvider.jsx";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import Profile from "./modules/Main/Pages/Profile/Profile";
-import Login from "./modules/Login/Pages/Login/Login";
+import Login from "./modules/Main/Pages/Login/Login";
 import AuthRequired from "./hoc/AuthRequired";
 import TravelRoutes from "./modules/Main/Pages/Routes/TravelRoutes";
 import Events from "./modules/Main/Pages/Events/Events";

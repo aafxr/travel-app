@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
-import TelegramAuth from "../../../Main/TelegramAuth";
+import TelegramAuth from "../../TelegramAuth";
 import {UserContext} from "../../../../contexts/UserContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import aFetch from "../../../../axios";
