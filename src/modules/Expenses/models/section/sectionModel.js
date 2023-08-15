@@ -1,7 +1,7 @@
 import Model from "../../../../models/Model";
 import constants from "../../../../static/constants";
 import sectionValidationObj from "./validation";
-import expensesDB from "../../db/expensesDB";
+import expensesDB from "../../../../db/expensesDB/expensesDB";
 
 const sectionModel = new Model(expensesDB, constants.store.SECTION, sectionValidationObj)
 

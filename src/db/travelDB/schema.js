@@ -1,4 +1,4 @@
-import {GLOBAL_DB_VERSION} from "../../../static/constants";
+import {GLOBAL_DB_VERSION} from "../../static/constants";
 
 const schema = {
   dbname: 'routs',

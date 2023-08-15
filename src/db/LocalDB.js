@@ -20,7 +20,7 @@ import {pushAlertMessage} from "../components/Alerts/Alerts";
  * @param {string} dbname                                имя создаваемой базы данных
  * @param {number} version                               версия базы дынных
  * @param {Array.<StoreInfo>} stores                     массив с инфо о всех хранилищах в бд
- * @returns {Promise<IDBPDatabase<unknown>>}             возвращает Promise с объектом db
+ * @returns {Promise<IDBPDatabase<unknown>>}             возвращает Promise с объектом expensesDB
  */
 async function openDataBase(dbname, version, stores) {
     return await openDB(dbname, version, {

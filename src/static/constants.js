@@ -13,7 +13,8 @@ const constants = {
         TRAVEL: 'travel',
         TRAVEL_ACTIONS: 'travelActions',
 
-        STORE: 'store'
+        STORE: 'store',
+        CURRENCY: 'currency'
     },
     indexes:{
         SECTION_ID:'section_id',

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import aFetch from "../../../axios";
-import {reducerConstants} from "../../../static/constants";
+import constants, {reducerConstants} from "../../../static/constants";
+import storeDB from "../../../db/storeDB/storeDB";
 
 const t = {
     char_code: "KZT",
@@ -28,11 +29,19 @@ export default async function updateCurrency(dispatch) {
         await aFetch.get('/main/currency/getList/')
             .then(res => res.data)
             .then(data => {
-                const c = Object.keys(data).map(k => data[k])[0]
-                if (c.length) {
-                    dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: c})
-                    localStorage.setItem('currency', JSON.stringify(c))
-                }
+                const c = Object.keys(data).map(k => ({date: k, value: data[k]}) )
+                Promise.all(c
+                    .map(item => storeDB.editElement(constants.store.CURRENCY, item))
+                ).then(() =>
+                    storeDB.getOne(constants.store.CURRENCY, new Date().toLocaleDateString())
+                        .then(date => {
+                            console.log(date)
+                            if (date.length) {
+                                dispatch({type: reducerConstants.UPDATE_CURRENCY, payload: date.value})
+                                localStorage.setItem('currency', JSON.stringify(date.value))
+                            }
+                        })
+                )
             })
             .catch((err) => {
                 console.error(err)
