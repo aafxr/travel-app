@@ -27,7 +27,7 @@ async function getTokensFromDB() {
  * @param {UserAppType} userAuth
  * @return {Promise<Awaited<number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>[]>}
  */
-async function saveTokensToDB(userAuth){
+async function saveTokensToDB(userAuth) {
     return Promise.all([
         storeDB.editElement(constants.store.STORE, {name: ACCESS_TOKEN, value: userAuth.token}),
         storeDB.editElement(constants.store.STORE, {name: REFRESH_TOKEN, value: userAuth.refresh_token})
@@ -37,8 +37,8 @@ async function saveTokensToDB(userAuth){
 
 aFetch.interceptors.request.use(async (c) => {
     await getTokensFromDB()
-    c.headers.Authorization = access_token ? `Bearer ${access_token}`: ''
-    if(c.url.includes('/user/auth/remove/')){
+    c.headers.Authorization = access_token ? `Bearer ${access_token}` : ''
+    if (c.url.includes('/user/auth/remove/')) {
         await Promise.all([
             storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
             storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
@@ -72,13 +72,19 @@ aFetch.interceptors.response.use(
             }).then((response) => {
                 const {ok, data: userAuth} = response.data
                 if (ok) {
-                    saveTokensToDB(userAuth)
-                        .catch(console.error)
-                    originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
-                    return axios(originalRequest);
+                    axios.get(baseURL + '/user/auth/refresh/confirm/', {
+                        headers: {
+                            Authorization: `Bearer ${userAuth.refresh_token}`,
+                        }
+                    }).then(() => {
+                        saveTokensToDB(userAuth)
+                            .catch(console.error)
+                        originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
+                        return axios(originalRequest);
+                    })
                 } else if (window) {
                     window.localStorage.setItem(USER_AUTH, JSON.stringify(null))
-                }else if(postMessage){
+                } else if (postMessage) {
                     postMessage({type: UNAUTHORIZED})
                 }
                 return originalRequest
