@@ -3,7 +3,6 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
@@ -14,35 +13,34 @@ import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
 import updateExpenses from "../../helpers/updateExpenses";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {actions} from "../../../../redux/store";
 
 
 /**
  * страница отображает плановые расходы  пользователя
- * @param {string} user_id
- * @param {string} primary_entity_type
  * @returns {JSX.Element}
  * @constructor
  */
 export default function ExpensesPlan() {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller, sections, limits, expensesPlan, dispatch} = useContext(ExpensesContext)
+    const {sections, limits, expensesPlan} = useSelector(state => state[constants.redux.EXPENSES])
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
     const [filter, setFilter] = useState(defaultFilterValue)
 
-    const {user} = useContext(UserContext)
     const navigate = useNavigate()
 
     const user_id = user.id
 
-
     useEffect(() => {
-        if (controller) {
             setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses(controller, primary_entity_id, "plan").then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_PLAN, payload: items}))
-        }
-    }, [controller])
+            updateExpenses( primary_entity_id, "plan")
+                .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
+    }, [dispatch, primary_entity_id])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expensesPlan, limits, filter, user_id)
 

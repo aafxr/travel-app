@@ -1,5 +1,12 @@
-import constants from "../../../static/constants";
-import travelModel from "../models/travel/travelModel";
+import {expensesPlanModel,expensesActualModel} from "../../modules/Expenses/models/expenses/expensesModel";
+import limitModel from "../../modules/Expenses/models/limit/limitModel";
+import sectionModel from "../../modules/Expenses/models/section/sectionModel";
+
+
+import constants from "../../static/constants";
+
+
+
 
 
 /**
@@ -13,13 +20,16 @@ import travelModel from "../models/travel/travelModel";
  *
  * newAction - функция, должна возвращать action на основе переданной в контроллер информации из методов read, write
  *
- * @type{import('../../../controllers/ActionController').OptionsType}
+ * @type{import('../ActionController').OptionsType}
  */
 const options = {
     models: {
-        travel: () => travelModel,
+        limit: () => limitModel,
+        expenses_actual: () => expensesActualModel,
+        expenses_plan: () =>expensesPlanModel,
+        section: () => sectionModel
     },
-    storeName: constants.store.TRAVEL_ACTIONS,
+    storeName: constants.store.EXPENSES_ACTIONS,
 }
 
 export default options

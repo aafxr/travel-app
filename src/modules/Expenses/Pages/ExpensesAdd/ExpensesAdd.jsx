@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
@@ -24,6 +23,10 @@ import {updateLimits} from "../../helpers/updateLimits";
 import constants, {reducerConstants} from "../../../../static/constants";
 import updateExpenses from "../../helpers/updateExpenses";
 import expensesDB from "../../../../db/expensesDB/expensesDB";
+import {useDispatch, useSelector} from "react-redux";
+import {actions, store} from "../../../../redux/store";
+import storeDB from "../../../../db/storeDB/storeDB";
+import aFetch from "../../../../axios";
 
 
 /**
@@ -42,12 +45,15 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
-    const {controller, defaultSection, sections, currency, dispatch} = useContext(ExpensesContext)
+    const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
-    const [expCurr, setExpCurr] = useState(currency[0])
+    const [expCurr, setExpCurr] = useState('')
+    const [currency, setCurrency] = useState([])
 
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -55,14 +61,12 @@ export default function ExpensesAdd({
     const inputNameRef = useRef()
     const inputSumRef = useRef()
 
-    const expense = useExpense(controller, expenseCode, expensesType)
+    const expense = useExpense(expenseCode, expensesType)
 
     const isPlan = expensesType === 'plan'
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
-
-    const {user} = useContext(UserContext)
 
     const user_id = user.id
 
@@ -75,15 +79,27 @@ export default function ExpensesAdd({
 
 
     useEffect(() => {
-        if (expense) {
-            const cur = currency.find(cr => cr.char_code === expense.currency) || currency[0]
-            setExpName(expense.title)
-            setExpSum(expense.value.toString())
-            setSectionId(expense.section_id)
-            setPersonal(expense.personal === 1)
-            expense.currency && setExpCurr(cur)
-        }
-    }, [expense, currency])
+        (async function () {
+            if (expense) {
+                const key = new Date(expense.datetime).toLocaleDateString()
+                let res = await storeDB.getOne(constants.store.CURRENCY, key)
+
+                // здес должен быть запрос на добавление курса валют
+                // if(!res) {
+                //     res = await aFetch.get('/main/currency/getList/')
+                // }
+
+                const cr = res.value
+                const cur = cr.find(cr => cr.char_code === expense.currency) || cr[0]
+                setExpName(expense.title)
+                setExpSum(expense.value.toString())
+                setSectionId(expense.section_id)
+                setPersonal(expense.personal === 1)
+                expense.currency && setExpCurr(cur)
+                setCurrency(cr)
+            }
+        })()
+    }, [expense])
 
 
     function onChipSelect(section) {
@@ -120,20 +136,23 @@ export default function ExpensesAdd({
             return
         }
 
-        (edit
-            ? handleEditExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate, expense)
-            : handleAddExpense(controller, isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate))
-            .then(() => updateLimits(primary_entity_id, user_id, currency)(controller)
-                .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
-            )
-            .then(() => {
-                const store = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-                const reducerAction = isPlan ? reducerConstants.UPDATE_EXPENSES_PLAN : reducerConstants.UPDATE_EXPENSES_ACTUAL
-
-                expensesDB.getManyFromIndex(store, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
-                    .then(items => dispatch({type: reducerAction, payload: items}))
-
-            })
+        if (edit) {
+            handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate, expense)
+                .then(item => {
+                    const action = isPlan
+                        ? actions.expensesActions.updateExpensePlan
+                        : actions.expensesActions.updateExpenseActual
+                    dispatch(action(item))
+                })
+        } else {
+            handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate)
+                .then(item => {
+                    const action = isPlan
+                        ? actions.expensesActions.addExpensePlan
+                        : actions.expensesActions.addExpenseActual
+                    dispatch(action(item))
+                })
+        }
     }
 
     return (

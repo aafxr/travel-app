@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 import createId from "../../../../utils/createId";
@@ -17,8 +16,9 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {formatter} from "../../../../utils/currencyFormat";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import {updateLimits} from "../../helpers/updateLimits";
+import {useSelector} from "react-redux";
+import storeDB from "../../../../db/storeDB/storeDB";
 
 /**
  * страница редактиррования лимитов
@@ -34,7 +34,8 @@ export default function LimitsEdit({
 
     const isPlan = pathname.includes('plan')
 
-    const {user} = useContext(UserContext)
+    const {defaultSection, sections, limits} = useSelector(state => state[constants.redux.EXPENSES])
+    const {user} = useSelector(state => state[constants.redux.USER])
     const navigate = useNavigate()
 
     const user_id = user.id
@@ -43,7 +44,6 @@ export default function LimitsEdit({
         ? `/travel/${primary_entity_id}/expenses/plan/`
         : `/travel/${primary_entity_id}/expenses/`
 
-    const {controller, defaultSection, sections, limits, currency, dispatch } = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -55,10 +55,12 @@ export default function LimitsEdit({
 
     const [message, setMessage] = useState('')
 
-
-
+    //
+    //
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
+
+            storeDB.getOne(constants.store.STORE, new Date(expenses))
             const curr = currency.reduce((a, c)=> {
                 a[c.char_code] = c
                 return a

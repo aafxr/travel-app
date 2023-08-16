@@ -9,7 +9,7 @@ import Main from "./modules/Main/Pages/Main/Main";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
-import ExpensesContextProvider from "./modules/Expenses/contextProvider/ExpensesContextProvider";
+import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 import Alerts from "./components/Alerts/Alerts";
@@ -27,6 +27,8 @@ import AuthRequired from "./hoc/AuthRequired";
 import TravelRoutes from "./modules/Main/Pages/Routes/TravelRoutes";
 import Events from "./modules/Main/Pages/Events/Events";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
+import {store} from './redux/store'
+import {Provider} from 'react-redux'
 
 
 function App() {
@@ -41,41 +43,51 @@ function App() {
     // }, [])
 
     return (
-        <ErrorBoundary>
-            <Routes>
-                <Route element={<UserContextProvider />}>
-                    <Route element={<WorkerContextProvider/>}>
-                        <Route element={<TravelContextProvider />}>
-                            <Route path={'/'} element={<Main/>}/>
-                            <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                            <Route path={'/events/'} element={<Events/>}/>
-                            <Route path={'/favorite/'} element={<Favorite/>}/>
-                            <Route path={'/auth/'} element={<TelegramAuth />}/>
-                            <Route path={'/dev/'} element={<Dev />}/>
-                            <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd /></AuthRequired>}/>
-                                <Route path={'/travel/:travelCode/'} element={<TravelDetails />}/>
+        <Provider store={store}>
+            <ErrorBoundary>
+                <Routes>
+                    <Route element={<UserContextProvider/>}>
+                        <Route element={<WorkerContextProvider/>}>
+                            <Route element={<TravelContextProvider/>}>
+                                <Route path={'/'} element={<Main/>}/>
+                                <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                                <Route path={'/events/'} element={<Events/>}/>
+                                <Route path={'/favorite/'} element={<Favorite/>}/>
+                                <Route path={'/auth/'} element={<TelegramAuth/>}/>
+                                <Route path={'/dev/'} element={<Dev/>}/>
+                                <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
+                                <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                                 <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
-                                <Route  element={<AuthRequired><ExpensesContextProvider /></AuthRequired>}>
-                                    <Route element={<ExpensesLayout />}>
-                                        <Route path={'/travel/:travelCode/expenses/'} element={<Expenses />}/>
-                                        <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan />}/>
+                                <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
+                                    <Route element={<ExpensesLayout/>}>
+                                        <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
+                                        <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                                     </Route>
-                                    <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit  primary_entity_type={'travel'}/>}/>
-                                    <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'} />}/>
-                                    <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit />}/>
-                                    <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
-                                    <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit />}/>
+                                    <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'}
+                                           element={<LimitsEdit primary_entity_type={'travel'}/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/add/'}
+                                           element={<ExpensesAdd primary_entity_type={'travel'}
+                                                                 expensesType={'actual'}/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'}
+                                           element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual'
+                                                                 edit/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/plan/add/'}
+                                           element={<ExpensesAdd primary_entity_type={'travel'}
+                                                                 expensesType={'plan'}/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'}
+                                           element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                                 </Route>
-                            <Route path={'/profile/'} element={<AuthRequired><Profile /></AuthRequired>} />
-                            <Route path={'/login/'} element={<Login />} />
+                                <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
+                                <Route path={'/login/'} element={<Login/>}/>
+                            </Route>
                         </Route>
                     </Route>
-                </Route>
-                <Route path={'/error/'} element={<ErrorPage />}/>
-                <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
-            </Routes>
-            <Alerts  count={3}/>
-        </ErrorBoundary>
+                    <Route path={'/error/'} element={<ErrorPage/>}/>
+                    <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
+                </Routes>
+                <Alerts count={3}/>
+            </ErrorBoundary>
+        </Provider>
     );
 }
 

@@ -13,45 +13,33 @@ import constants, {USER_AUTH} from "../../../../static/constants";
 import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {useDispatch, useSelector} from "react-redux";
+import travelDB from "../../../../db/travelDB/travelDB";
+import createAction from "../../../../utils/createAction";
+import {actions} from "../../../../redux/store";
 
 export default function TravelRoutes({
                                          primary_entity_type,
                                          primary_entity_id
                                      }) {
     const navigate = useNavigate()
-    const {travelController} = useContext(TravelContext)
-    const {user, setUser} = useContext(UserContext)
-
-    const [travelList, setTravelList] = useState([])
+    const {travelController, travels} = useSelector(state => state[constants.redux.TRAVEL])
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
 
     useDefaultTravels()
 
-    useEffect(() => {
-        if (travelController) {
-            travelController.read({
-                storeName: constants.store.TRAVEL,
-                query: 'all'
-            })
-                .then(items => setTravelList(toArray(items)))
-                .catch(console.error)
-
-            travelController.subscribe(constants.store.TRAVEL, () => {
-                updateTravels(travelController).then(setTravelList)
-            })
-        }
-    }, [travelController])
-
     function handleRemove(travel) {
         if (travelController && user) {
-            travelController.write({
-                storeName: constants.store.TRAVEL,
-                action: "remove",
-                user_id: user.id,
-                data: travel
-            })
+            Promise.all([
+            travelDB.removeElement(constants.store.TRAVEL, travel.id),
+            travelDB.editElement(
+                constants.store.TRAVEL_ACTIONS,
+                createAction(constants.store.TRAVEL, user.id, 'remove', travel)
+                )
                 .then(() => pushAlertMessage({type: "success", message: `${travel.title} удфлено.`}))
-                .then(() => setTravelList(travelList.filter(t => t.id !== travel.id)))
-                .then(() => travelController.getstorageModel(constants.store.TRAVEL).remove(travel.id))
+                .then(() => dispatch(actions.travelActions.removeTravels(travels)))
+            ]).catch(console.error)
         }
     }
 
@@ -59,7 +47,7 @@ export default function TravelRoutes({
         if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
             if (us) {
-                setUser(us)
+                dispatch(actions.userActions.updateUser(us))
             }
         }
     }, [user])
@@ -80,7 +68,7 @@ export default function TravelRoutes({
                         ? (
                             <div className='column gap-1'>
                                 {
-                                    travelList && !!travelList.length && travelList.map(t => (
+                                    !!travels.length && travels.map(t => (
                                         <TravelCard
                                             key={t.id}
                                             id={t.id}

@@ -4,7 +4,7 @@ import useTravel from "../hooks/useTravel";
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
 import sendActionToWorker from "../../../utils/sendActionToWorker";
 import constants from "../../../static/constants";
-import travelController from "../controllers/travelController";
+import travelController from "../../../controllers/travelController/travelController";
 
 /**
  * @typedef {Object} TravelContextState

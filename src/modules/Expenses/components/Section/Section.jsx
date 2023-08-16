@@ -8,10 +8,11 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import './Section.css'
 import {formatter} from "../../../../utils/currencyFormat";
 import {currency} from "../../static/vars";
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
+import {ExpensesContext} from "../ExpensesWrapper";
 import constants from "../../../../static/constants";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
+import {useSelector} from "react-redux";
 
 /**
  *
@@ -33,7 +34,8 @@ function Section({
                      line = false,
                  }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {currency} = useContext(ExpensesContext)
+    // useSelector
+    // const {currency} = useContext(ExpensesContext)
 
     if(!currency.length)
         return null
