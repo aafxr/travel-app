@@ -60,7 +60,17 @@ export default function LimitsEdit({
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
 
-            storeDB.getOne(constants.store.STORE, new Date(expenses))
+            Promise.all([
+            expenses.map(e => storeDB.getOne(constants.store.STORE, new Date(e.datetime).toLocaleDateString()))
+            ])
+                .then(currencyList => currencyList.reduce((acc, c)=> acc[c.date] = c.value, {}))
+                .then(currency => {
+                    const curr = currency.reduce((a, c)=> {
+                        a[c.char_code] = c
+                        return a
+                    }, {})
+                })
+
             const curr = currency.reduce((a, c)=> {
                 a[c.char_code] = c
                 return a
@@ -83,8 +93,8 @@ export default function LimitsEdit({
 
     //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
-        controller && updateExpenses(controller, primary_entity_id, 'plan').then(setExpenses)
-    }, [controller])
+        updateExpenses( primary_entity_id, 'plan').then(setExpenses)
+    }, [])
 
     useEffect(() => {
             defaultSection && setSectionId(sectionId || defaultSection.id)

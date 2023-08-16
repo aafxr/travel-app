@@ -2,6 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import expensesDB from "../../db/expensesDB/expensesDB";
 import constants from "../../static/constants";
 import expensesController from '../../controllers/expensesController/expensesController'
+import distinctValues from "../../utils/distinctValues";
+import storeDB from "../../db/storeDB/storeDB";
 
 // First, create the thunk
 export const initExpensesThunk = createAsyncThunk(
@@ -25,6 +27,13 @@ export const initExpensesThunk = createAsyncThunk(
             primary_entity_id
         )
 
+        const dates = distinctValues(expensesActual, e => new Date(e.datetime).toLocaleDateString())
+
+        const currencyList = await Promise
+            .all(dates.map(d => storeDB.getOne(constants.store.STORE, d)))
+
+        const currency = currencyList.reduce((acc, c) => acc[c.date] = c.value, {})
+
         const sections = await expensesDB.getAll(constants.store.SECTION)
 
         return {
@@ -32,7 +41,8 @@ export const initExpensesThunk = createAsyncThunk(
             expensesActual,
             expensesPlan,
             limits,
-            sections
+            sections,
+            currency
         }
     }
 )
