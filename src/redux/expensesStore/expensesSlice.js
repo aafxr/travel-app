@@ -216,6 +216,7 @@ export const expensesSlice = createSlice({
             state.limits = action.payload.limits
             state.sections = action.payload.sections
             state.expensesController = action.payload.expensesController
+            state.currency = action.payload.currency
         })
         builder.addCase(updateLimitThunk.fulfilled, (state, action) => {
             state.limits = action.payload
