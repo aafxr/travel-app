@@ -30,6 +30,8 @@ import Events from "./modules/Main/Pages/Events/Events";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import {actions, store} from './redux/store'
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
+import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
+import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 
 
 function App() {
@@ -83,6 +85,8 @@ function App() {
                                            element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                                 </Route>
                                 <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
+                                <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
+                                <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
                                 <Route path={'/login/'} element={<Login/>}/>
                             </Route>
                         </Route>

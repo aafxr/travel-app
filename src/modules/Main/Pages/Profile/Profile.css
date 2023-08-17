@@ -23,9 +23,7 @@
     font-weight: 700;
 }
 
-.auth-item{
-    margin: auto .5rem;
-}
+
 
 .auth-item:first-child{
     margin-top: 20px;
@@ -41,4 +39,11 @@
     color: var(--color-grey);
     font-weight: 400;
     font-size: .5rem;
+}
+
+.profile-link{
+    padding: .5rem 0;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-grey-light);
+    cursor: pointer;
 }

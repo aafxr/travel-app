@@ -28,7 +28,7 @@ export default async function handleAddExpense(isPlan, user_id, primary_entity_t
                 entity_id: '',
                 title: expName,
                 value: Number(expSum),
-                currency: expCurr.symbol,
+                currency: expCurr.symbol || '₽',
                 personal: personal ? 1 : 0,
                 section_id,
                 datetime: new Date().toISOString(),

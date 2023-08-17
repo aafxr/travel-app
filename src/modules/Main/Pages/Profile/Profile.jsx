@@ -1,4 +1,6 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React from "react";
+import {Link} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
@@ -6,124 +8,13 @@ import Curtain from "../../../../components/Curtain/Curtain";
 import Menu from "../../../../components/Menu/Menu";
 import {PageHeader} from "../../../../components/ui";
 
-import expensesController from "../../../../controllers/expensesController/expensesController";
-import expensesActionModel from "../../../Expenses/models/expensesActionModel/expensesActionModel";
-import travelActionModel from "../../../Travel/models/travelActionModel/travelActionModel";
-import travelController from "../../../../controllers/travelController/travelController";
-import errorReport from "../../../../controllers/ErrorReport";
+import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 
-import constants, {DEFAULT_IMG_URL, REFRESH_TOKEN} from "../../../../static/constants";
-import Accordion from "../../../../components/Accordion/Accordion";
-import Loader from "../../../../components/Loader/Loader";
 import './Profile.css'
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import aFetch from "../../../../axios";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
-import storeDB from "../../../../db/storeDB/storeDB";
-import {useSelector} from "react-redux";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
-import travelDB from "../../../../db/travelDB/travelDB";
-
-/**
- * @typedef {object} SessionDataType
- * @property {string} created_at
- * @property {string} created_ip
- * @property {string} created_location
- * @property {string} created_user_agent
- * @property {string} uid
- * @property {string} update_location
- * @property {string} updated_at
- * @property {string} updated_ip
- */
-
-
-
-const convertor = {
-    "add": "Добавлен",
-    "update": "Обновлен",
-    "remove": "Удален",
-    [constants.store.EXPENSES_ACTUAL]: 'Расходы(Т)',
-    [constants.store.EXPENSES_PLAN]: 'Расходы(П)',
-    [constants.store.TRAVEL]: 'Маршрут'
-}
 
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
-    const [expensesList, setExpensesList] = useState([])
-    const [travelsList, setTravelsList] = useState([])
-    const [authList, setAuthList] =  useState([])
 
-    useEffect(() => {
-        if (user) {
-            storeDB.getOne(constants.store.STORE, REFRESH_TOKEN)
-                .then(rt => {
-                    aFetch.post('/user/auth/getList/',{[REFRESH_TOKEN]: rt.value})
-                        .then(res => res.data)
-                        .then(({ok, data}) => {
-                            console.log({ok, data})
-                            ok && setAuthList(data)
-                        })
-                        .catch(console.error)
-                })
-        }
-    }, [user])
-
-    useEffect(() => {
-        async function onExpenses() {
-            const expensesActions = await expensesDB.getManyFromIndex(
-                constants.store.EXPENSES_ACTIONS,
-                constants.indexes.SYNCED,
-                0)
-            expensesActions && setExpensesList(expensesActions)
-        }
-
-        async function onTravel() {
-            const travelActions = await travelDB.getManyFromIndex(
-                constants.store.TRAVEL_ACTIONS,
-                constants.indexes.SYNCED,
-                0)
-            travelActions && setTravelsList(travelActions)
-        }
-
-        Promise.all([onExpenses(), onTravel()])
-            .catch(err => {
-                errorReport.sendReport().catch(console.error)
-                console.error(err)
-            })
-    }, [])
-
-    const list = useMemo(() => expensesList.concat(travelsList).sort(
-        /**
-         * @param {ActionType} a
-         * @param {ActionType} b
-         */
-        (a, b) => b.datetime - a.datetime)
-        .map(
-            /**
-             * @param {ActionType} action
-             * @return {*}
-             */
-            action => {
-                const a = {...action}
-                a.entity = convertor[a.entity] || ''
-                a.action = convertor[a.action] || ''
-                a.datetime = dateToStringFormat(a.datetime)
-                return a
-            }
-        ), [expensesList, travelsList])
-
-
-    /**
-     * @param {SessionDataType} auth
-     */
-    function removeSessionHandler(auth) {
-        aFetch.post('/user/auth/remove/',{uid: auth.uid})
-            .then((res) =>{
-                console.log(res)
-                setAuthList(authList.filter(a => a.uid !== auth.uid))
-            })
-            .catch(console.error)
-    }
 
     return (
         <div className='wrapper'>
@@ -142,37 +33,9 @@ export default function Profile() {
                     </div>
                 </div>
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>
-                    <Container className='pt-20'>
-                        {
-                            !!list.length && (
-                                <Accordion title={'Действия'}>
-                                    {list.map(e => (
-                                        <Accordion.Item key={e.id} title={e.data?.title || ''} icon={<Loader/>}
-                                                        dascription={e.entity + ' - ' + e.action} time={e.datetime}/>
-                                    ))}
-                                </Accordion>
-                            )
-                        }
-                        {!!authList.length &&
-                            <Accordion title={'Активные сеансы'}>
-                                {authList.map(
-                                    /**@param{SessionDataType} a*/
-                                    a => (
-                                    <Swipe
-                                        key={a.uid}
-                                        className='auth-item'
-                                        onRemove={() => removeSessionHandler(a)}
-                                        rightButton
-                                    >
-                                        <div className='column'>
-                                            <div className='auth-info'>{a.updated_ip}</div>
-                                            <div className='auth-info'>{a.created_user_agent.split('/').shift()}</div>
-                                            {/*<div className='auth-info indistinct'>{new Date(a.updated_at).toLocaleDateString()}</div>*/}
-                                        </div>
-                                    </Swipe>
-                                ))}
-                            </Accordion>
-                        }
+                    <Container className='column pt-20'>
+                        <Link to={'/profile/actions/'} className='profile-link'>Действия</Link>
+                        <Link to={'/profile/sessions/'} className='profile-link'>Активные сеансы</Link>
                     </Container>
                 </Curtain>
             </div>
@@ -181,13 +44,4 @@ export default function Profile() {
     )
 }
 
-// const tepl = {
-//     created_at: "2023-08-10T04:37:31+03:00",
-//     created_ip: "82.200.95.130",
-//     created_location: "Novosibirsk",
-//     created_user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
-//     uid: "66",
-//     update_location: "Novosibirsk",
-//     updated_at: "2023-08-10T04:37:31+03:00",
-//     updated_ip: "82.200.95.130",
-// }
+
