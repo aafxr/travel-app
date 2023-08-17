@@ -1,6 +1,5 @@
 import React, {createContext, useEffect, useState} from "react";
 import {Outlet} from "react-router-dom";
-import {USER_AUTH} from "../static/constants";
 
 /**
  *@typedef {Object} WorkerContextType
@@ -24,6 +23,8 @@ export default function WorkerContextProvider() {
     useEffect(() => {
         if (window.Worker) {
             const w = new Worker(new URL('../workers/worker.js', import.meta.url))
+
+            // new Worker(new URL('../workers/actions-worker.js', import.meta.url))
 
             if (w){
                 state.worker = w

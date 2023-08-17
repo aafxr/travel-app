@@ -4,46 +4,37 @@ import createId from "../../../utils/createId";
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
 import limitsModel from '../models/limit/limitModel'
 import expensesDB from "../../../db/expensesDB/expensesDB";
-
-// const totalDefault = {
-//     updated_at: Date.now(),
-//     limits: [],
-//     total_actual: 0,
-//     total_planed: 0
-// }
+import createAction from "../../../utils/createAction";
+import {store} from "../../../redux/store";
 
 
-export function updateLimits(primary_entity_id, user_id, currency = []) {
+export function updateLimits(primary_entity_id, user_id = {}) {
     /**
      *
      * @param {ActionController} controller
      * @param {import('../../../controllers/ActionController').ActionType} [action]
      */
-    return async function (controller) {
-        const expenses_plan = await controller.read({
-            storeName: constants.store.EXPENSES_PLAN,
-            index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: primary_entity_id
-        })
+    return async function () {
+        const currency = store.getState().expenses.currency
+        const expenses_plan = await expensesDB.getManyFromIndex(
+            constants.store.EXPENSES_PLAN,
+            constants.indexes.PRIMARY_ENTITY_ID,
+            primary_entity_id
+        )
 
         const limitsObj = {
             personal: {},
             common: {}
         }
 
-        if (!currency || !currency.length)
-            return expensesDB.getMany(constants.store.LIMIT, primary_entity_id)
-
-        const coeffList = currency.reduce((a, c) => {
-            a[c.char_code] = c
-            return a
-        }, {})
-
         //подсчет запланированных персональных расходов
         expenses_plan
             .filter(e => e.personal === 1 && e.user_id === user_id)
             .forEach(e => {
-                const coeff = coeffList[e.currency]?.value || 1
+                const coeffList = currency[new Date(e.datetime).toLocaleDateString()]|| []
+                const coeff = e.currency
+                    ? coeffList.find(c => c.symbol === e.currency)?.value || 1
+                    : 1
                 limitsObj.personal[e.section_id] ? limitsObj.personal[e.section_id] += e.value * coeff : limitsObj.personal[e.section_id] = e.value * coeff
             })
 
@@ -51,7 +42,12 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
         expenses_plan
             .filter(e => e.personal === 0)
             .forEach(e => {
-                const coeff = coeffList[e.currency]?.value || 1
+                const coeffList = currency[new Date(e.datetime).toLocaleDateString()]
+                    || currency[new Date().toLocaleDateString()]
+                    || []
+                const coeff = e.currency
+                    ? coeffList.find(c => c.symbol === e.currency)?.value || 1
+                    : 1
                 limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value * coeff : limitsObj.common[e.section_id] = e.value * coeff
             })
 
@@ -63,7 +59,7 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
         const commonExistingSections = Object.keys(limitsObj.common)
         for (const s of personalExistingSections) {
             if (!personalLimits.includes(s)) {
-                await limitsModel.update({
+                await expensesDB.editElement(constants.store.LIMIT,{
                     id: createId(user_id),
                     section_id: s,
                     value: 0,
@@ -77,7 +73,7 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
 
         for (const s of commonExistingSections) {
             if (!commonLimits.includes(s)) {
-                await limitsModel.update({
+                await expensesDB.editElement(constants.store.LIMIT,{
                     id: createId(user_id),
                     section_id: s,
                     value: 0,
@@ -90,11 +86,11 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
         }
 
 
-        let limitsExpenses = await controller.read({
-            storeName: constants.store.LIMIT,
-            index: constants.indexes.PRIMARY_ENTITY_ID,
-            query: primary_entity_id
-        })
+        let limitsExpenses = await expensesDB.getManyFromIndex(
+            constants.store.LIMIT,
+            constants.indexes.PRIMARY_ENTITY_ID,
+            primary_entity_id
+        )
 
         for (let limit of toArray(limitsExpenses)) {
             const section_id = limit.section_id
@@ -106,12 +102,13 @@ export function updateLimits(primary_entity_id, user_id, currency = []) {
 
             if (limitsObj[isPersonal ? 'personal' : 'common'][section_id] && limit.value < maxLimitPlan) {
                 limit.value = maxLimitPlan
-                console.log(await controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'update',
-                    user_id,
-                    data: {...limit, value: maxLimitPlan }
-                }))
+                await Promise.all([
+                    expensesDB.editElement(constants.store.LIMIT, limit),
+                    expensesDB.addElement(
+                        constants.store.EXPENSES_ACTIONS,
+                        createAction(constants.store.LIMIT, user_id,'update', limit)
+                    )
+                ])
             }
         }
         return limitsExpenses

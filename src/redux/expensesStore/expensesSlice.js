@@ -1,10 +1,10 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {initExpensesThunk, initThunk} from "./initExpensesThunk";
+import {initExpensesThunk} from "./initExpensesThunk";
 import {updateLimitThunk} from "./updateLimitThunk";
+import {updateCurrencyThunk} from "./updateCurrencyThunk";
 
 /**
  * @typedef {Object} ExpensesReducerState
- * @property {ActionController | null} controller
  * @property {SectionType | null} defaultSection
  * @property {Array.<SectionType> | []} sections
  * @property {Array.<LimitType> | []} limits
@@ -22,7 +22,6 @@ import {updateLimitThunk} from "./updateLimitThunk";
  * @type ExpensesReducerState
  */
 const initialState = {
-    expensesController: null,
     defaultSection: null,
     limits: [],
     sections: [],
@@ -215,11 +214,13 @@ export const expensesSlice = createSlice({
             state.expensesPlan = action.payload.expensesPlan
             state.limits = action.payload.limits
             state.sections = action.payload.sections
-            state.expensesController = action.payload.expensesController
             state.currency = action.payload.currency
         })
         builder.addCase(updateLimitThunk.fulfilled, (state, action) => {
             state.limits = action.payload
+        })
+        builder.addCase(updateCurrencyThunk.fulfilled, (state, action) => {
+            state.currency = action.payload
         })
     }
 })

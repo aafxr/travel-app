@@ -17,7 +17,6 @@ import {actions} from "../../../../redux/store";
 
 export default function TravelAdd() {
     const navigate = useNavigate()
-    const {travelController} = useSelector(state => state[constants.redux.TRAVEL])
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
 
@@ -33,7 +32,7 @@ export default function TravelAdd() {
             pushAlertMessage({type: "danger", message: "Необходимо указать название маршрута"})
             return
         }
-        if (travelController && title.length && user && user.id) {
+        if (title.length && user && user.id) {
             const user_id = user.id
             const data = createTravel(title, user_id)
             const action = createAction(constants.store.TRAVEL, user_id, 'add', data)

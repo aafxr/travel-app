@@ -3,6 +3,7 @@ import expensesDB from "../../../../db/expensesDB/expensesDB";
 import createAction from "../../../../utils/createAction";
 
 /**
+ *
  * @param isPlan
  * @param user_id
  * @param primary_entity_type
@@ -13,7 +14,7 @@ import createAction from "../../../../utils/createAction";
  * @param personal
  * @param section_id
  * @param expense
- * @returns {Promise<void>}
+ * @returns {Promise<(*&{section_id, personal: (number), currency: (string|string|*), title, value: number})|null>}
  */
 
 export default async function handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, expSum, expCurr, personal, section_id, expense) {
@@ -23,14 +24,14 @@ export default async function handleEditExpense(isPlan, user_id, primary_entity_
             || expense.value !== +expSum
             || expense.personal !== (personal ? 1 : 0)
             || expense.section_id !== section_id
-            || expense.currency !== expCurr.char_code
+            || expense.currency !== expCurr.symbol
         ) {
             const data = {
                 ...expense,
                 personal: personal ? 1 : 0,
                 title: expName,
                 value: +expSum,
-                currency: expCurr.char_code,
+                currency: expCurr.symbol,
                 section_id
             }
 

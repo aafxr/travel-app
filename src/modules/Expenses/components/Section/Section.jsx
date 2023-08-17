@@ -5,14 +5,16 @@ import Line from "../Line/Line";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
-import './Section.css'
 import {formatter} from "../../../../utils/currencyFormat";
-import {currency} from "../../static/vars";
-import {ExpensesContext} from "../ExpensesWrapper";
 import constants from "../../../../static/constants";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+
+import './Section.css'
+import expensesDB from "../../../../db/expensesDB/expensesDB";
+import createAction from "../../../../utils/createAction";
+import {actions} from "../../../../redux/store";
 
 /**
  *
@@ -33,12 +35,8 @@ function Section({
                      personal = false,
                      line = false,
                  }) {
+    const {currency} = useSelector(state => state[constants.redux.EXPENSES])
     const {travelCode: primary_entity_id} = useParams()
-    // useSelector
-    // const {currency} = useContext(ExpensesContext)
-
-    if(!currency.length)
-        return null
 
     const title = section ? section.title : ''
     let limit = sectionLimit(section)
@@ -47,7 +45,7 @@ function Section({
 
     const totalExpenses = expenses
         .reduce((acc, item) => {
-            const cur = currency.find(c => c.char_code === item.currency)?.value || 1
+            const cur = currency[new Date().toLocaleDateString()].find(c => c.symbol === item.currency)?.value || 1
             return acc + item.value * cur
         }, 0)
 
@@ -97,14 +95,12 @@ function Section({
                                                 key={item.id}
                                                 expense={item}
                                                 isPlan={!line}
-                                                currencySymbol={currency.find(c => c.char_code === item.currency)?.symbol || ''}
                                                 user_id={user_id}
                                             />
                                         )
                                     )
                             }
                         </div>
-
                     )
                 }
             </div>
@@ -121,14 +117,14 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  *
  * @param {import('../../models/ExpenseType').ExpenseType} expense
  * @param isPlan
- * @param currencySymbol
+ * @param user_id
  * @returns {JSX.Element}
  * @constructor
  */
-function SectionItem({expense, isPlan, currencySymbol, user_id}) {
+function SectionItem({expense, isPlan, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
+    const dispatch = useDispatch()
     const navigate = useNavigate();
-    const {controller} = useContext(ExpensesContext)
 
     let time = dateToStringFormat(datetime)
 
@@ -140,16 +136,19 @@ function SectionItem({expense, isPlan, currencySymbol, user_id}) {
 
 
     function handleRemove(){
-        if (controller && expense) {
+        if (expense) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-            controller.write({
-                storeName,
-                action: 'remove',
-                data: expense,
-                user_id
-            })
+            expensesDB.removeElement(storeName, expense.id)
+            expensesDB.removeElement(
+                constants.store.EXPENSES_ACTIONS,
+                createAction(storeName, user_id, 'remove', expense)
+            )
                 .then(() => {
+                    const action = isPlan
+                        ? actions.expensesActions.removeExpensePlan
+                        : actions.expensesActions.removeExpenseActual
+                    dispatch(action(expense))
                     pushAlertMessage({type: 'success', message: `Успешно удалено`})
                 })
         }
@@ -171,7 +170,7 @@ function SectionItem({expense, isPlan, currencySymbol, user_id}) {
                     <span>{time}</span>
                 </div>
 
-                <div>{formatter.format(value)} {currencySymbol}</div>
+                <div>{formatter.format(value)} {expense.currency}</div>
             </div>
         </Swipe>
     )

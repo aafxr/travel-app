@@ -1,3 +1,5 @@
+import {Provider} from 'react-redux'
+import React, {useEffect} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 import aFetch from "./axios";
 
@@ -13,7 +15,6 @@ import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 import Alerts from "./components/Alerts/Alerts";
-import React, {useEffect} from "react";
 import Dev from "./modules/Dev";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import ErrorPage from "./modules/Error/ErrorPage";
@@ -27,11 +28,15 @@ import AuthRequired from "./hoc/AuthRequired";
 import TravelRoutes from "./modules/Main/Pages/Routes/TravelRoutes";
 import Events from "./modules/Main/Pages/Events/Events";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
-import {store} from './redux/store'
-import {Provider} from 'react-redux'
+import {actions, store} from './redux/store'
+import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 
 
 function App() {
+    useEffect(() => {
+        store.dispatch(actions.userActions.initUser())
+        store.dispatch(initTravelsThunk())
+    }, [])
 
     // useEffect(() => {
     //     const prefetch = [
@@ -44,7 +49,7 @@ function App() {
 
     return (
         <Provider store={store}>
-            <ErrorBoundary>
+            <>
                 <Routes>
                     <Route element={<UserContextProvider/>}>
                         <Route element={<WorkerContextProvider/>}>
@@ -86,7 +91,7 @@ function App() {
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
                 </Routes>
                 <Alerts count={3}/>
-            </ErrorBoundary>
+            </>
         </Provider>
     );
 }

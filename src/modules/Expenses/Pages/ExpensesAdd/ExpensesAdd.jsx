@@ -17,16 +17,13 @@ import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
-import '../../css/Expenses.css'
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
-import {updateLimits} from "../../helpers/updateLimits";
-import constants, {reducerConstants} from "../../../../static/constants";
-import updateExpenses from "../../helpers/updateExpenses";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import constants from "../../../../static/constants";
 import {useDispatch, useSelector} from "react-redux";
-import {actions, store} from "../../../../redux/store";
+import {actions} from "../../../../redux/store";
 import storeDB from "../../../../db/storeDB/storeDB";
-import aFetch from "../../../../axios";
+
+import '../../css/Expenses.css'
+import {updateLimits} from "../../helpers/updateLimits";
 
 
 /**
@@ -82,21 +79,25 @@ export default function ExpensesAdd({
         (async function () {
             if (expense) {
                 const key = new Date(expense.datetime).toLocaleDateString()
-                let res = await storeDB.getOne(constants.store.CURRENCY, key)
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                let cr = res && res.value
 
                 // здес должен быть запрос на добавление курса валют
                 // if(!res) {
                 //     res = await aFetch.get('/main/currency/getList/')
                 // }
 
-                const cr = res.value
-                const cur = cr.find(cr => cr.char_code === expense.currency) || cr[0]
+                const cur = cr.find(c => c.symbol === expense.currency) || cr[0]
                 setExpName(expense.title)
                 setExpSum(expense.value.toString())
                 setSectionId(expense.section_id)
                 setPersonal(expense.personal === 1)
                 expense.currency && setExpCurr(cur)
                 setCurrency(cr)
+            } else{
+                const key = new Date().toLocaleDateString()
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                setCurrency(res && res.value)
             }
         })()
     }, [expense])
@@ -111,7 +112,7 @@ export default function ExpensesAdd({
         value && setExpCurr(value)
     }
 
-    function handleExpense() {
+    async function handleExpense() {
         if (!expName) {
             pushAlertMessage({type: 'warning', message: 'Укажите ' + expNameTitle.toLowerCase()})
             inputNameRef.current?.focus()
@@ -137,7 +138,7 @@ export default function ExpensesAdd({
         }
 
         if (edit) {
-            handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate, expense)
+            await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
                 .then(item => {
                     const action = isPlan
                         ? actions.expensesActions.updateExpensePlan
@@ -145,7 +146,7 @@ export default function ExpensesAdd({
                     dispatch(action(item))
                 })
         } else {
-            handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, navigate)
+            await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
                 .then(item => {
                     const action = isPlan
                         ? actions.expensesActions.addExpensePlan
@@ -153,6 +154,15 @@ export default function ExpensesAdd({
                     dispatch(action(item))
                 })
         }
+
+        if(isPlan){
+            await updateLimits(primary_entity_id,user_id)()
+                .then(items => {
+                    console.log(items)
+                    dispatch(actions.expensesActions.setExpensesLimit(items))
+                })
+        }
+        navigate(-1)
     }
 
     return (
@@ -205,11 +215,10 @@ export default function ExpensesAdd({
                                             value={expSum}
                                             lang={navigator.language}
                                             onInput={e => setExpSum(e.target.value)}
-
                                         />
                                         <Select
                                             className='expenses-currency no-resize'
-                                            value={expCurr ? expCurr.symbol : ''}
+                                            value={expCurr ? expCurr.symbol : '₽'}
                                             defaultValue=''
                                             options={currency.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}

@@ -22,6 +22,7 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {useSelector} from "react-redux";
 import expensesDB from "../../../../db/expensesDB/expensesDB";
+import travelDB from "../../../../db/travelDB/travelDB";
 
 /**
  * @typedef {object} SessionDataType
@@ -77,7 +78,7 @@ export default function Profile() {
         }
 
         async function onTravel() {
-            const travelActions = await expensesDB.getManyFromIndex(
+            const travelActions = await travelDB.getManyFromIndex(
                 constants.store.TRAVEL_ACTIONS,
                 constants.indexes.SYNCED,
                 0)

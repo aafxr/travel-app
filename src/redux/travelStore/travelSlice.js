@@ -3,7 +3,6 @@ import {initTravelsThunk} from "./initTravelsThunk";
 
 /**
  * @typedef {Object} TravelState
- * @property {ActionController | null} travelController
  * @property {import('../models/travel/TravelType').TravelType[]} travels
  * @property {import('../models/travel/TravelType').TravelType} travel
  */
@@ -12,7 +11,6 @@ import {initTravelsThunk} from "./initTravelsThunk";
  * @type TravelState
  */
 const initialState = {
-    travelController: null,
     travels: [],
     travel: null,
 }
@@ -71,7 +69,6 @@ export const travelsSlice = createSlice({
         extraReducers: (builder) => {
             builder.addCase(initTravelsThunk.fulfilled, (state, action) => {
                 state.travels = action.payload.travels
-                state.travelController = action.payload.travelController
             })
         }
     }

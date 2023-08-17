@@ -31,6 +31,21 @@ export const userSlice = createSlice({
         reducers: {
             /**
              * @param {UserState} state
+             */
+            initUser(state){
+                if (process.env.NODE_ENV === 'development') {
+                    state.user = {
+                        id: '12',
+                        first_name: 'Иван',
+                        last_name: 'Алексеев'
+                    }
+                } else {
+                    state.user = JSON.parse(localStorage.getItem(USER_AUTH))
+                }
+            },
+
+            /**
+             * @param {UserState} state
              * @param action
              */
             updateUser(state, action){

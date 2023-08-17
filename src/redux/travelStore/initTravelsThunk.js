@@ -1,22 +1,27 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import {createAsyncThunk} from '@reduxjs/toolkit'
 import constants from "../../static/constants";
 import aFetch from "../../axios";
 import travelDB from "../../db/travelDB/travelDB";
-import travelController from "../../controllers/travelController/travelController";
 
 export const initTravelsThunk = createAsyncThunk(
     'initTravelsThunk',
-    async (primary_entity_id, thunkAPI) => {
-        const response = await aFetch.get('/travel/getList/')
-        let travels = response.data.ok ? response.data.data : []
+    async (_, thunkAPI) => {
+        try {
+            const response = await aFetch.get('/travel/getList/')
+            let travels = response.data.ok ? response.data.data : []
 
-        if(!travels.length){
-            travels = await travelDB.getAll(constants.store.TRAVEL)
+            await Promise.all(travels.map(t => travelDB.editElement(constants.store.TRAVEL, t)))
+
+            if (!travels.length) {
+                travels = await travelDB.getAll(constants.store.TRAVEL)
+            }
+            return {
+                travels
+            }
+        } catch (err) {
+            console.error(err)
+            thunkAPI.abort()
         }
 
-        return {
-            travelController,
-            travels
-        }
     }
 )
