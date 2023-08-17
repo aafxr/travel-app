@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
 
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
@@ -18,8 +17,13 @@ import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 
+import constants from "../../../../static/constants";
+import {useDispatch, useSelector} from "react-redux";
+import {actions} from "../../../../redux/store";
+import storeDB from "../../../../db/storeDB/storeDB";
+
 import '../../css/Expenses.css'
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {updateLimits} from "../../helpers/updateLimits";
 
 
 /**
@@ -38,12 +42,15 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
-    const {controller, defaultSection, sections, currency} = useContext(ExpensesContext)
+    const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
-    const [expCurr, setExpCurr] = useState(currency[0])
+    const [expCurr, setExpCurr] = useState('')
+    const [currency, setCurrency] = useState([])
 
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -51,14 +58,12 @@ export default function ExpensesAdd({
     const inputNameRef = useRef()
     const inputSumRef = useRef()
 
-    const expense = useExpense(controller, expenseCode, expensesType)
+    const expense = useExpense(expenseCode, expensesType)
 
     const isPlan = expensesType === 'plan'
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
-
-    const {user} = useContext(UserContext)
 
     const user_id = user.id
 
@@ -71,15 +76,31 @@ export default function ExpensesAdd({
 
 
     useEffect(() => {
-        if (expense) {
-            const cur = currency.find(cr => cr.char_code === expense.currency) || currency[0]
-            setExpName(expense.title)
-            setExpSum(expense.value.toString())
-            setSectionId(expense.section_id)
-            setPersonal(expense.personal === 1)
-            expense.currency && setExpCurr(cur)
-        }
-    }, [expense, currency])
+        (async function () {
+            if (expense) {
+                const key = new Date(expense.datetime).toLocaleDateString()
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                let cr = res && res.value
+
+                // здес должен быть запрос на добавление курса валют
+                // if(!res) {
+                //     res = await aFetch.get('/main/currency/getList/')
+                // }
+
+                const cur = cr.find(c => c.symbol === expense.currency) || cr[0]
+                setExpName(expense.title)
+                setExpSum(expense.value.toString())
+                setSectionId(expense.section_id)
+                setPersonal(expense.personal === 1)
+                expense.currency && setExpCurr(cur)
+                setCurrency(cr)
+            } else{
+                const key = new Date().toLocaleDateString()
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                setCurrency(res && res.value)
+            }
+        })()
+    }, [expense])
 
 
     function onChipSelect(section) {
@@ -91,13 +112,13 @@ export default function ExpensesAdd({
         value && setExpCurr(value)
     }
 
-    function handleExpense(){
-        if (!expName ){
+    async function handleExpense() {
+        if (!expName) {
             pushAlertMessage({type: 'warning', message: 'Укажите ' + expNameTitle.toLowerCase()})
             inputNameRef.current?.focus()
             return
         }
-        if (!expSum){
+        if (!expSum) {
             pushAlertMessage({type: 'warning', message: 'Укажите сумму'})
             inputSumRef.current?.focus()
             return
@@ -105,20 +126,43 @@ export default function ExpensesAdd({
 
         const value = currencyToFixedFormat(expSum)
 
-        if(!value){
+        if (!value) {
             pushAlertMessage({type: 'warning', message: 'Сумма не корректна.'})
             inputSumRef.current?.focus()
             return
         }
 
-        if(!user_id){
+        if (!user_id) {
             pushAlertMessage({type: 'danger', message: 'Необходимо авторизоваться.'})
             return
         }
-        edit
-            ? handleEditExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate, expense)
-            : handleAddExpense(controller, isPlan,user_id,primary_entity_type,primary_entity_id,expName,value, expCurr, personal,section_id,navigate)
 
+        if (edit) {
+            await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
+                .then(item => {
+                    const action = isPlan
+                        ? actions.expensesActions.updateExpensePlan
+                        : actions.expensesActions.updateExpenseActual
+                    dispatch(action(item))
+                })
+        } else {
+            await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
+                .then(item => {
+                    const action = isPlan
+                        ? actions.expensesActions.addExpensePlan
+                        : actions.expensesActions.addExpenseActual
+                    dispatch(action(item))
+                })
+        }
+
+        if(isPlan){
+            await updateLimits(primary_entity_id,user_id)()
+                .then(items => {
+                    console.log(items)
+                    dispatch(actions.expensesActions.setExpensesLimit(items))
+                })
+        }
+        navigate(-1)
     }
 
     return (
@@ -171,11 +215,10 @@ export default function ExpensesAdd({
                                             value={expSum}
                                             lang={navigator.language}
                                             onInput={e => setExpSum(e.target.value)}
-
                                         />
                                         <Select
                                             className='expenses-currency no-resize'
-                                            value={expCurr ? expCurr.symbol : ''}
+                                            value={expCurr ? expCurr.symbol : '₽'}
                                             defaultValue=''
                                             options={currency.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}
@@ -192,7 +235,7 @@ export default function ExpensesAdd({
             </div>
 
             <div className='footer-btn-container footer'>
-                <Button onClick={handleExpense} >{buttonTitle}</Button>
+                <Button onClick={handleExpense}>{buttonTitle}</Button>
             </div>
         </div>
     )

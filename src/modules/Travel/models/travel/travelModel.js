@@ -1,7 +1,7 @@
 import Model from "../../../../models/Model";
 import constants from "../../../../static/constants";
 import travelValidation from "./validation";
-import travelDB from "../../db/travelDB";
+import travelDB from "../../../../db/travelDB/travelDB";
 
 const travelModel = new Model(travelDB, constants.store.TRAVEL, travelValidation)
 

@@ -1,14 +1,13 @@
 import React, {useContext, useEffect, useMemo, useState} from 'react'
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
-import {ExpensesContext} from "../../contextProvider/ExpensesContextProvider";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 
 
-import constants from "../../../../static/constants";
+import constants, {reducerConstants} from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
@@ -17,7 +16,12 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import updateExpenses from "../../helpers/updateExpenses";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {formatter} from "../../../../utils/currencyFormat";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import {updateLimits} from "../../helpers/updateLimits";
+import {useDispatch, useSelector} from "react-redux";
+import storeDB from "../../../../db/storeDB/storeDB";
+import expensesDB from "../../../../db/expensesDB/expensesDB";
+import createAction from "../../../../utils/createAction";
+import {actions} from "../../../../redux/store";
 
 /**
  * страница редактиррования лимитов
@@ -28,12 +32,15 @@ import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
+    const dispatch = useDispatch()
+    const {currency} = useSelector(state => state[constants.redux.EXPENSES])
     const {travelCode: primary_entity_id, sectionId} = useParams()
-    const  {pathname} = useLocation()
+    const {pathname} = useLocation()
 
     const isPlan = pathname.includes('plan')
 
-    const {user} = useContext(UserContext)
+    const {defaultSection, sections, limits} = useSelector(state => state[constants.redux.EXPENSES])
+    const {user} = useSelector(state => state[constants.redux.USER])
     const navigate = useNavigate()
 
     const user_id = user.id
@@ -42,7 +49,6 @@ export default function LimitsEdit({
         ? `/travel/${primary_entity_id}/expenses/plan/`
         : `/travel/${primary_entity_id}/expenses/`
 
-    const {controller, defaultSection, sections, limits, currency } = useContext(ExpensesContext)
 
     const [expenses, setExpenses] = useState([])
 
@@ -54,14 +60,14 @@ export default function LimitsEdit({
 
     const [message, setMessage] = useState('')
 
-
-
+    //
+    //
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
-            const curr = currency.reduce((a, c)=> {
+            const curr = currency[new Date().toLocaleDateString()].reduce((a, c) => {
                 a[c.char_code] = c
                 return a
-            }, {})
+            }, {}) || {}
             return expenses
                 .filter(e => (
                     e.section_id === section_id
@@ -80,11 +86,11 @@ export default function LimitsEdit({
 
     //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
-        controller && updateExpenses(controller, primary_entity_id, 'plan').then(setExpenses)
-    }, [controller])
+        updateExpenses(primary_entity_id, 'plan').then(setExpenses)
+    }, [])
 
     useEffect(() => {
-            defaultSection && setSectionId(sectionId || defaultSection.id)
+        defaultSection && setSectionId(sectionId || defaultSection.id)
     }, [defaultSection])
 
 
@@ -110,7 +116,7 @@ export default function LimitsEdit({
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
     function handler(_) {
         const value = currencyToFixedFormat(limitValue)
-        if (!value){
+        if (!value) {
             pushAlertMessage({
                 type: 'warning',
                 message: `Значение лимита не корректно.`
@@ -126,36 +132,43 @@ export default function LimitsEdit({
             return
         }
 
-        if(!user_id){
+        if (!user_id) {
             pushAlertMessage({type: 'danger', message: 'Необходимо авторизоваться.'})
             return
         }
 
         if (user_id) {
-            if (limitObj ) {
-                controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'update',
-                    user_id,
-                    data: {...limitObj, value: value}
-                })
+            if (limitObj) {
+                const data = {...limitObj, value: value}
+                Promise.all([
+                    expensesDB.editElement(constants.store.LIMIT, data),
+                    expensesDB.addElement(
+                        constants.store.EXPENSES_ACTIONS,
+                        createAction(constants.store.LIMIT, user_id, 'update', data)
+                    )
+                ]).then(() => dispatch(actions.expensesActions.updateLimit(data)))
             } else {
-                controller.write({
-                    storeName: constants.store.LIMIT,
-                    action: 'add',
+                const data = {
+                    section_id,
+                    personal: personal ? 1 : 0,
+                    value: value,
                     user_id,
-                    data: {
-                        section_id,
-                        personal: personal ? 1 : 0,
-                        value: value,
-                        user_id,
-                        primary_entity_id,
-                        primary_entity_type,
-                        id: createId(user_id)
-                    }
-                })
+                    primary_entity_id,
+                    primary_entity_type,
+                    id: createId(user_id)
+                }
+                Promise.all([
+                    expensesDB.editElement(constants.store.LIMIT, data),
+                    expensesDB.addElement(
+                        constants.store.EXPENSES_ACTIONS,
+                        createAction(constants.store.LIMIT, user_id, 'add', data)
+                    )
+                ])
+                    .then(() => dispatch(actions.expensesActions.addLimit(data)))
                     .catch(console.error)
             }
+            updateLimits(primary_entity_id, user_id, currency)()
+                .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
         } else {
             console.warn('need add user_id')
         }
@@ -168,7 +181,7 @@ export default function LimitsEdit({
             <div className='wrapper'>
                 <div className='content'>
                     <Container>
-                        <PageHeader arrowBack title={'Редактировать лимит'} to={backUrl} />
+                        <PageHeader arrowBack title={'Редактировать лимит'} to={backUrl}/>
                         <div className='column gap-1'>
                             <div className='row flex-wrap gap-0.75'>
                                 {
@@ -188,7 +201,7 @@ export default function LimitsEdit({
                                 }
                             </div>
                             <div className='column gap-1'>
-                                <div className='column gap-0.25' >
+                                <div className='column gap-0.25'>
                                     <div className='limit-input' data-cur='₽'>
                                         <Input
                                             className={'number-hide-arrows '}
@@ -210,7 +223,7 @@ export default function LimitsEdit({
 
                     </Container>
                 </div>
-                <div className='footer-btn-container footer' >
+                <div className='footer-btn-container footer'>
                     <Button onMouseUp={() => handler()}>Добавить</Button>
                 </div>
             </div>

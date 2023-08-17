@@ -9,10 +9,9 @@ import {MenuIcon} from "../svg";
 import useOutside from "../../hooks/useOutside";
 
 import storeDB from "../../db/storeDB/storeDB";
-import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
+import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import errorReport from "../../controllers/ErrorReport";
 import aFetch from "../../axios";
-import axios from "axios";
 
 import './Menu.css'
 
@@ -25,10 +24,11 @@ export default function Menu() {
     function handleLogin() {
         if (user) {
             storeDB
-                .getElement(constants.store.STORE, REFRESH_TOKEN)
+                .getOne(constants.store.STORE, REFRESH_TOKEN)
                 .then(refresh_token => {
-                        console.log('refresh_token ', refresh_token)
-                        aFetch.post(process.env.REACT_APP_SERVER_URL + '/user/auth/remove/', {[REFRESH_TOKEN]: refresh_token[0]?.value})
+                        aFetch.post('/user/auth/remove/', {
+                            [REFRESH_TOKEN]: refresh_token?.value
+                        })
                             .then(() => {
                                 localStorage.setItem(USER_AUTH, JSON.stringify(null))
                                 setUser(null)

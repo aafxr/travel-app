@@ -1,48 +1,116 @@
 import constants from "../../../static/constants";
 import toArray from "../../../utils/toArray";
+import createId from "../../../utils/createId";
+import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
+import limitsModel from '../models/limit/limitModel'
+import expensesDB from "../../../db/expensesDB/expensesDB";
+import createAction from "../../../utils/createAction";
+import {store} from "../../../redux/store";
 
 
-/**
- * возвращает массив существующих в бд limits
- * @param {ActionController} controller
- * @param {string} primary_entity_id
- * @param {Array.<string>} [sectionIdList]
- * @returns {Promise<[]>}
- */
-export default async function updateLimits(controller, primary_entity_id, sectionIdList){
-    if (controller) {
-        if (sectionIdList) {
-            return toArray(await limitsFromArray(controller, primary_entity_id, sectionIdList))
-        } else {
-            const limits = await controller.read({
-                storeName: constants.store.LIMIT,
-                index: constants.indexes.PRIMARY_ENTITY_ID,
-                query: primary_entity_id
-            })
-            return toArray(limits)
+export function updateLimits(primary_entity_id, user_id = {}) {
+    /**
+     *
+     * @param {ActionController} controller
+     * @param {import('../../../controllers/ActionController').ActionType} [action]
+     */
+    return async function () {
+        const currency = store.getState().expenses.currency
+        const expenses_plan = await expensesDB.getManyFromIndex(
+            constants.store.EXPENSES_PLAN,
+            constants.indexes.PRIMARY_ENTITY_ID,
+            primary_entity_id
+        )
+
+        const limitsObj = {
+            personal: {},
+            common: {}
         }
+
+        //подсчет запланированных персональных расходов
+        expenses_plan
+            .filter(e => e.personal === 1 && e.user_id === user_id)
+            .forEach(e => {
+                const coeffList = currency[new Date(e.datetime).toLocaleDateString()]|| []
+                const coeff = e.currency
+                    ? coeffList.find(c => c.symbol === e.currency)?.value || 1
+                    : 1
+                limitsObj.personal[e.section_id] ? limitsObj.personal[e.section_id] += e.value * coeff : limitsObj.personal[e.section_id] = e.value * coeff
+            })
+
+        //подсчет запланированных общих расходов
+        expenses_plan
+            .filter(e => e.personal === 0)
+            .forEach(e => {
+                const coeffList = currency[new Date(e.datetime).toLocaleDateString()]
+                    || currency[new Date().toLocaleDateString()]
+                    || []
+                const coeff = e.currency
+                    ? coeffList.find(c => c.symbol === e.currency)?.value || 1
+                    : 1
+                limitsObj.common[e.section_id] ? limitsObj.common[e.section_id] += e.value * coeff : limitsObj.common[e.section_id] = e.value * coeff
+            })
+
+        const allTravelLimits = toArray(await limitsModel.getFromIndex(constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id))
+        const personalLimits = allTravelLimits.filter(l => l.user_id === user_id && l.personal === 1).map(l => l.section_id)
+        const commonLimits = allTravelLimits.filter(l => l.personal === 0).map(l => l.section_id)
+
+        const personalExistingSections = Object.keys(limitsObj.personal)
+        const commonExistingSections = Object.keys(limitsObj.common)
+        for (const s of personalExistingSections) {
+            if (!personalLimits.includes(s)) {
+                await expensesDB.editElement(constants.store.LIMIT,{
+                    id: createId(user_id),
+                    section_id: s,
+                    value: 0,
+                    primary_entity_id,
+                    primary_entity_type: 'travel',
+                    personal: 1,
+                    user_id
+                })
+            }
+        }
+
+        for (const s of commonExistingSections) {
+            if (!commonLimits.includes(s)) {
+                await expensesDB.editElement(constants.store.LIMIT,{
+                    id: createId(user_id),
+                    section_id: s,
+                    value: 0,
+                    primary_entity_id,
+                    primary_entity_type: 'travel',
+                    personal: 0,
+                    user_id
+                })
+            }
+        }
+
+
+        let limitsExpenses = await expensesDB.getManyFromIndex(
+            constants.store.LIMIT,
+            constants.indexes.PRIMARY_ENTITY_ID,
+            primary_entity_id
+        )
+
+        for (let limit of toArray(limitsExpenses)) {
+            const section_id = limit.section_id
+
+            const isPersonal = limit.user_id === user_id && limit.personal === 1
+
+            let maxLimitPlan = isPersonal ? limitsObj.personal[section_id] : limitsObj.common[section_id]
+            maxLimitPlan = currencyToFixedFormat((maxLimitPlan || 0).toString())
+
+            if (limitsObj[isPersonal ? 'personal' : 'common'][section_id] && limit.value < maxLimitPlan) {
+                limit.value = maxLimitPlan
+                await Promise.all([
+                    expensesDB.editElement(constants.store.LIMIT, limit),
+                    expensesDB.addElement(
+                        constants.store.EXPENSES_ACTIONS,
+                        createAction(constants.store.LIMIT, user_id,'update', limit)
+                    )
+                ])
+            }
+        }
+        return limitsExpenses
     }
-    return []
-}
-
-
-
-/**
- * функция осуществляет поиск объектов по списку ID из массива arr
- * @param {ActionController} controller
- * @param {string} primary_entity_id
- * @param {Array.<string>} arr
- * @returns {Promise<*[]>}
- */
-async function limitsFromArray(controller,
-                               primary_entity_id, arr) {
-    let items = await controller.read({
-        storeName: constants.store.LIMIT,
-        index: constants.indexes.PRIMARY_ENTITY_ID,
-        query: primary_entity_id
-    })
-
-    items = Array.isArray(items) ? items : [items]
-
-    return items.filter(l => arr.includes(l.section_id))
 }

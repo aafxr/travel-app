@@ -3,7 +3,7 @@ export const CACHE_VERSION = 12;
 
 
 const constants = {
-    store:{
+    store: {
         SECTION: 'section',
         LIMIT: 'limit',
         EXPENSES_ACTUAL: 'expenses_actual',
@@ -13,19 +13,38 @@ const constants = {
         TRAVEL: 'travel',
         TRAVEL_ACTIONS: 'travelActions',
 
-        STORE: 'store'
+        STORE: 'store',
+        CURRENCY: 'currency'
     },
-    indexes:{
-        SECTION_ID:'section_id',
-        PERSONAL:'personal',
-        USER_ID:'user_id',
+    indexes: {
+        SECTION_ID: 'section_id',
+        PERSONAL: 'personal',
+        USER_ID: 'user_id',
         PRIMARY_ENTITY_ID: 'primary_entity_id',
         PRIMARY_ENTITY_TYPE: 'primary_entity_type',
         SYNCED: 'synced',
         ENTITY: 'entity',
         ACTION: 'action',
     },
-    TOTAL_EXPENSES: 'totalExpenses'
+    TOTAL_EXPENSES: 'totalExpenses',
+
+    redux: {
+        EXPENSES: 'expenses',
+        TRAVEL: 'travel',
+        USER: 'user',
+    }
+}
+
+
+export const reducerConstants = {
+    UPDATE_CONTROLLER: 'UPDATE_CONTROLLER',
+    UPDATE_EXPENSES_ACTUAL: 'UPDATE_EXPENSES_ACTUAL',
+    UPDATE_EXPENSES_PLAN: 'UPDATE_EXPENSES_PLAN',
+    UPDATE_EXPENSES_LIMIT: 'UPDATE_EXPENSES_LIMIT',
+    UPDATE_EXPENSES_SECTIONS: 'UPDATE_EXPENSES_SECTIONS',
+    UPDATE_EXPENSES_DEFAULT_SECTION: 'UPDATE_EXPENSES_DEFAULT_SECTION',
+    UPDATE_CURRENCY: 'UPDATE_CURRENCY',
+
 }
 
 export default constants

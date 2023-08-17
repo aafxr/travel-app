@@ -10,7 +10,7 @@
 }
 
 .select.active{
-    box-shadow: var(--box-shadoe);
+    box-shadow: var(--box-shadow);
 }
 
 .select.border{

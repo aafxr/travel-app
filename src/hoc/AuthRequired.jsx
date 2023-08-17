@@ -1,11 +1,11 @@
-import {useContext} from "react";
-import {UserContext} from "../contexts/UserContextProvider";
 import {Navigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import constants from "../static/constants";
 
 export default function AuthRequired({children}){
-    const {user} = useContext(UserContext)
+    const {user} = useSelector(state => state[constants.redux.USER])
 
-    if(user){
+    if(user || process.env.NODE_ENV === "development"){
         return children
     }
 

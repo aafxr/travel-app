@@ -25,7 +25,7 @@
 }
 
 .icon-button.shadow{
-    box-shadow: var(--box-shadoe);
+    box-shadow: var(--box-shadow);
 }
 
 .icon-button:disabled{

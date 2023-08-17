@@ -13,11 +13,16 @@ import constants from "../../static/constants";
  */
 const schema = {
     dbname: 'store',
-    version: 12,
+    version: 13,
     stores: [
         {
             name: constants.store.STORE,
             key: 'name',
+            indexes: [],
+        },
+        {
+            name: constants.store.CURRENCY,
+            key: 'date',
             indexes: [],
         },
     ],

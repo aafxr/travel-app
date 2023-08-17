@@ -1,29 +1,25 @@
 import React, {useEffect, useState} from 'react'
 import constants from "../../../static/constants";
-import toArray from "../../../utils/toArray";
+import expensesDB from "../../../db/expensesDB/expensesDB";
 
 
 /**
  * поиск информации о расходах по id
- * @param {import('../../../controllers/ActionController').ActionController} controller
  * @param {string} id
  * @param {'plan' | 'actual'} type
  * @returns {import('../models/ExpenseType').ExpenseType | null}
  */
-export default function useExpense(controller, id, type = 'plan') {
+export default function useExpense(id, type = 'plan') {
     const [expense, setExpense] = useState(null)
-    const isPlan = type === 'plan'
 
     useEffect(() => {
-        if (controller && id) {
+    const isPlan = type === 'plan'
+        if (id) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-            controller.read({
-                storeName,
-                id
-            })
-                .then(e => e && setExpense(toArray(e)[0]))
+            expensesDB.getOne(storeName, id)
+                .then(e => e && setExpense(e))
         }
-    }, [controller, id])
+    }, [id, type])
 
     return expense
 }

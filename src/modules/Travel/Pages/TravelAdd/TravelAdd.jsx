@@ -1,52 +1,47 @@
-import React, {useContext, useState} from "react";
-import { useNavigate} from "react-router-dom";
+import React, { useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 
 import Container from "../../../../components/Container/Container";
-
-import {TravelContext} from "../../contextProviders/TravelContextProvider";
-import createId from "../../../../utils/createId";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 
-import '../../css/Travel.css'
-import constants from "../../../../static/constants";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import createTravel from "../../helpers/createTravel";
+import travelDB from "../../../../db/travelDB/travelDB";
+import createAction from "../../../../utils/createAction";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import constants from "../../../../static/constants";
 
+import '../../css/Travel.css'
+import {actions} from "../../../../redux/store";
 
 export default function TravelAdd() {
     const navigate = useNavigate()
-    const {travelController} = useContext(TravelContext)
-    const {user} = useContext(UserContext)
-
-
-
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
 
     const [title, setTitle] = useState('')
 
 
-    function handler() {
-        if(!user){
-            pushAlertMessage({type:"danger", message: "Необходимо авторизоваться"})
+    async function handler() {
+        if (!user) {
+            pushAlertMessage({type: "danger", message: "Необходимо авторизоваться"})
             return
         }
-        if (travelController && title.length && user && user.id){
+        if (!title.length) {
+            pushAlertMessage({type: "danger", message: "Необходимо указать название маршрута"})
+            return
+        }
+        if (title.length && user && user.id) {
             const user_id = user.id
-            const data = {
-                id: createId(),
-                code: '',
-                title,
-                owner_id: user_id,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            }
-            travelController.write({
-                user_id,
-                storeName: constants.store.TRAVEL,
-                action:"add",
-                data
-            })
-                .then(()=> navigate('/')) //`/travel/${data.id}/expenses/`
+            const data = createTravel(title, user_id)
+            const action = createAction(constants.store.TRAVEL, user_id, 'add', data)
+
+            await travelDB.editElement(constants.store.TRAVEL, data)
+            await travelDB.editElement(constants.store.TRAVEL_ACTIONS, action)
+
+            dispatch(actions.travelActions.addTravels(data))
+            navigate('/travels/current/')
         }
     }
 

@@ -3,14 +3,15 @@ import {useNavigate} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
-import TelegramAuth from "../../../Main/TelegramAuth";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import TelegramAuth from "../../TelegramAuth";
 import Navigation from "../../../../components/Navigation/Navigation";
 import aFetch from "../../../../axios";
+import {useDispatch} from "react-redux";
+import {actions} from "../../../../redux/store";
 
 export default function Login() {
-    const {setUser} = useContext(UserContext)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     /**@param {UserAuthType} user */
     function tgAuthHandler(user) {
@@ -19,7 +20,7 @@ export default function Login() {
             .then(res => {
                 const {ok, data} = res
                 if (ok) {
-                    setUser(data)
+                    dispatch(actions.userActions.updateUser(data))
                     navigate(-1)
                 }
             })
