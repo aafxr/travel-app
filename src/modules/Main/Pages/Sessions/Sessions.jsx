@@ -7,8 +7,10 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import aFetch from "../../../../axios";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
-import './Session.css'
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
+
+import ListItem from "../../../../components/ListItem/ListItem";
+import browserName from "../../../../utils/browserName";
 
 /**
  * @typedef {object} SessionDataType
@@ -20,10 +22,13 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
  * @property {string} update_location
  * @property {string} updated_at
  * @property {string} updated_ip
+ * @property {boolean} active
  */
 
 export default function Sessions() {
     const {user} = useSelector(state => state[constants.redux.USER])
+
+    const [currentSession, setCurrentSession] = useState(null)
     const [authList, setAuthList] = useState([])
 
     useEffect(() => {
@@ -34,7 +39,10 @@ export default function Sessions() {
                         .then(res => res.data)
                         .then(({ok, data}) => {
                             console.log({ok, data})
-                            ok && setAuthList(data)
+                            if(ok){
+                                setCurrentSession(data.find(a => a.active))
+                                setAuthList(data.filter(a => !a.active).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)))
+                            }
                         })
                         .catch(console.error)
                 })
@@ -54,6 +62,15 @@ export default function Sessions() {
     return (
         <Container>
             <PageHeader arrowBack title='Активные сеансы'/>
+            {!!currentSession && (
+            <ListItem
+                className='bg-grey-light'
+                title={currentSession.update_location || ''}
+                topDescription={currentSession.updated_ip + ' - ' + browserName(currentSession.created_user_agent)}
+                time={dateToStringFormat(currentSession.updated_at)}
+            />
+
+            )}
             {!!authList.length && authList.map(
                 /**@param{SessionDataType} a*/
                 a => (
@@ -63,15 +80,14 @@ export default function Sessions() {
                         onRemove={() => removeSessionHandler(a)}
                         rightButton
                     >
-                        <div className='action-item flex-between '>
-                            <div className='column'>
-                                <div className='action-item-description'>{a.updated_ip + ' - ' + a.created_user_agent.split('/').shift()}</div>
-                                <div className='action-item-title'>{a.update_location || ''}</div>
-                            </div>
-                            <div className='action-item-time'>{dateToStringFormat(a.updated_at)}</div>
-                        </div>
-                    </Swipe>
 
+                        <ListItem
+                            className={a.active ? 'active' : ''}
+                            title={a.update_location || ''}
+                            topDescription={a.updated_ip + ' - ' + a.created_user_agent.split('/').shift()}
+                            time={dateToStringFormat(a.updated_at)}
+                        />
+                    </Swipe>
                 )
             )}
         </Container>

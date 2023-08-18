@@ -218,3 +218,7 @@ a{
     height: var(--icon-size);
 }
 
+.bg-grey-light{
+    background-color: var(--color-grey-light);
+}
+

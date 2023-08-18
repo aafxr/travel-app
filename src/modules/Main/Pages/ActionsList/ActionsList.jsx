@@ -8,8 +8,8 @@ import Loader from "../../../../components/Loader/Loader";
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 import ChecklistIconIcon from "../../../../components/svg/ChecklistIconIcon";
+import ListItem from "../../../../components/ListItem/ListItem";
 
-import './ActionsList.css'
 
 const convertor = {
     "add": "Добавлен",
@@ -69,22 +69,19 @@ export default function ActionsList() {
             }
         ), [expensesList, travelsList])
 
-    console.log(list)
 
     return (
         <Container>
             <PageHeader arrowBack title='Действия'/>
             {
-
                 !!list.length && list.map(e => (
-                        <div className='action-item flex-between '>
-                            <div className='column'>
-                                <div className='action-item-description'>{e.entity + ' - ' + e.action}</div>
-                                <div className='action-item-title'>{e.data.title || e.data.value || ''}</div>
-                            </div>
-                            <div className='action-item-time'>{e.datetime}</div>
-                            <span className='action-item-icon'>{e.synced ? <Loader/> : <ChecklistIconIcon/>}</span>
-                        </div>
+                        <ListItem
+                            key={e.id}
+                            title={e.data.title || e.data.value || ''}
+                            topDescription={e.entity + ' - ' + e.action}
+                            time={e.datetime}
+                            icon={e.synced ? <ChecklistIconIcon/> : <Loader/>}
+                        />
                     )
                 )
             }
