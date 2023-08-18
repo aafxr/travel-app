@@ -77,11 +77,12 @@ export default function ActionsList() {
                 !!list.length && list.map(e => (
                         <ListItem
                             key={e.id}
-                            title={e.data.title || e.data.value || ''}
                             topDescription={e.entity + ' - ' + e.action}
                             time={e.datetime}
                             icon={e.synced ? <ChecklistIconIcon/> : <Loader/>}
-                        />
+                        >
+                            {e.data.title || e.data.value || ''}
+                        </ListItem>
                     )
                 )
             }

@@ -5,19 +5,19 @@
  */
 export default function browserName(agent) {
     switch (true) {
-        case agent.indexOf("edge") > -1:
+        case /edge/i.test(agent):
             return "MS Edge";
-        case agent.indexOf("edg/") > -1:
+        case /edg\//.test(agent):
             return "Edge ( chromium based)";
-        case agent.indexOf("opr") > -1 && !!window.opr:
+        case /opr/.test(agent) && !!window.opr:
             return "Opera";
-        case agent.indexOf("chrome") > -1 && !!window.chrome:
+        case /chrome/i.test(agent) && !!window.chrome:
             return "Chrome";
-        case agent.indexOf("trident") > -1:
+        case /trident/i.test(agent):
             return "MS IE";
-        case agent.indexOf("firefox") > -1:
+        case /firefox/i.test(agent):
             return "Mozilla Firefox";
-        case agent.indexOf("safari") > -1:
+        case /safari/i.test(agent):
             return "Safari";
         default:
             return "other";

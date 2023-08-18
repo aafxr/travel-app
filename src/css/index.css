@@ -222,3 +222,7 @@ a{
     background-color: var(--color-grey-light);
 }
 
+.small{
+    font-size: .7rem;
+}
+

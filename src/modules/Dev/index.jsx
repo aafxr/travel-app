@@ -6,6 +6,18 @@ import Container from "../../components/Container/Container";
 import Select from "../../components/ui/Select/Select";
 import IconButton from "../../components/ui/IconButton/IconButton";
 import {ChatIcon, ChecklistIcon, Money} from "../../components/svg";
+import SessionItem from "../../components/SessionItem/SessionItem";
+
+const tepl = {
+    created_at: "2023-08-10T04:37:31+03:00",
+    created_ip: "82.200.95.130",
+    created_location: "Novosibirsk",
+    created_user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
+    uid: "66",
+    update_location: "Novosibirsk",
+    updated_at: "2023-08-10T04:37:31+03:00",
+    updated_ip: "82.200.95.130",
+}
 
 export default function Dev({
                                          user_id,
@@ -58,6 +70,8 @@ export default function Dev({
                 <IconButton icon={<ChecklistIcon />} title='Чек-лист' />
                 <IconButton icon={<ChatIcon  badge />} />
                 </div>
+
+                <SessionItem sessionData={tepl}/>
 
             </Container>
         </>

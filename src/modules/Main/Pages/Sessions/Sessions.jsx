@@ -11,6 +11,7 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
 
 import ListItem from "../../../../components/ListItem/ListItem";
 import browserName from "../../../../utils/browserName";
+import SessionItem from "../../../../components/SessionItem/SessionItem";
 
 /**
  * @typedef {object} SessionDataType
@@ -62,15 +63,7 @@ export default function Sessions() {
     return (
         <Container>
             <PageHeader arrowBack title='Активные сеансы'/>
-            {!!currentSession && (
-            <ListItem
-                className='bg-grey-light'
-                title={currentSession.update_location || ''}
-                topDescription={currentSession.updated_ip + ' - ' + browserName(currentSession.created_user_agent)}
-                time={dateToStringFormat(currentSession.updated_at)}
-            />
-
-            )}
+            {!!currentSession && <SessionItem className='bg-grey-light' sessionData={currentSession} />}
             {!!authList.length && authList.map(
                 /**@param{SessionDataType} a*/
                 a => (
@@ -80,13 +73,7 @@ export default function Sessions() {
                         onRemove={() => removeSessionHandler(a)}
                         rightButton
                     >
-
-                        <ListItem
-                            className={a.active ? 'active' : ''}
-                            title={a.update_location || ''}
-                            topDescription={a.updated_ip + ' - ' + a.created_user_agent.split('/').shift()}
-                            time={dateToStringFormat(a.updated_at)}
-                        />
+                        <SessionItem sessionData={a} />
                     </Swipe>
                 )
             )}

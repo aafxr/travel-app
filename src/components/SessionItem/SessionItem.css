@@ -1,0 +1,47 @@
+.session-item {
+    line-height: 1.2;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.session-bowser-icon {
+    width: var(--browser-icon-size);
+    height: var(--browser-icon-size);
+    overflow: hidden;
+}
+
+.session-bowser-icon.chrome {
+    background: url("../../../public/images/browsers.png") 0 0;
+}
+
+.session-bowser-icon.edge {
+    background: url("../../../public/images/browsers.png") -40px 0;
+}
+
+.session-bowser-icon.firefox {
+    background: url("../../../public/images/browsers.png") -80px 0;
+}
+
+.session-bowser-icon.opera {
+    background: url("../../../public/images/browsers.png") -120px 0;
+}
+
+.session-bowser-icon.safari {
+    background: url("../../../public/images/browsers.png") -160px 0;
+}
+
+.session-bowser-icon.other {
+}
+
+.session-browser-name {
+    font-weight: 600;
+}
+
+.session-ip {
+    font-size: .7rem;
+}
+
+.session-location {
+    font-size: .7rem;
+    color: var(--color-grey);
+}
