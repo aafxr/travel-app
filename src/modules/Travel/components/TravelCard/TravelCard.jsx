@@ -26,7 +26,7 @@ export default function TravelCard({id, title, onRemove}) {
             onClick={() => navigate(`/travel/${id}/`)}
         >
             <div className='travel-item gap-1'>
-                <div className='travel-image no-resize'>
+                <div className='travel-image flex-0'>
                     <img className='img-abs' src={process.env.PUBLIC_URL + '/images/travel-placeholder.jpg'}
                          alt='travel'/>
                 </div>

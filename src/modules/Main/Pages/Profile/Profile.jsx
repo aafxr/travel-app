@@ -11,6 +11,7 @@ import {PageHeader} from "../../../../components/ui";
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 import './Profile.css'
+import ChevronRightIcon from "../../../../components/svg/ChevronRightIcon";
 
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -34,8 +35,18 @@ export default function Profile() {
                 </div>
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>
                     <Container className='column pt-20'>
-                        <Link to={'/profile/actions/'} className='profile-link'>Действия</Link>
-                        <Link to={'/profile/sessions/'} className='profile-link'>Активные сеансы</Link>
+                        <Link to={'/profile/actions/'} className='profile-link flex-stretch'>
+                            <span className='flex-1'>Действия</span>
+                            <span className='icon center'>
+                                <ChevronRightIcon/>
+                            </span>
+                        </Link>
+                        <Link to={'/profile/sessions/'} className='profile-link flex-stretch'>
+                            <span className='flex-1'>Активные сеансы</span>
+                            <span className='icon center'>
+                                <ChevronRightIcon/>
+                            </span>
+                        </Link>
                     </Container>
                 </Curtain>
             </div>

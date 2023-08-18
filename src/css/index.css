@@ -75,8 +75,12 @@ a{
     flex-wrap: nowrap;
 }
 
-.no-resize{
+.flex-0{
     flex: 0 0 auto;
+}
+
+.flex-1{
+    flex: 1 1 auto;
 }
 
 .w-full{
@@ -208,5 +212,9 @@ a{
     z-index: 100;
 }
 
-
+.icon svg,
+.icon img{
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
 

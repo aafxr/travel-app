@@ -14,31 +14,28 @@ import './css/index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-        <BrowserRouter>
-            <App/>
-        </BrowserRouter>
+    <BrowserRouter>
+        <App/>
+    </BrowserRouter>
 );
 
 //===================== установка фикчированного vh ================================================
 setFixedVH()
 window.addEventListener('resize', setFixedVH)
 
-//====================== чистка кэш и регистрация серыис воркера ===================================
-// const version = JSON.parse(localStorage.getItem('cache-version'))
-// localStorage.setItem('cache-version', CACHE_VERSION.toString())
+//====================== чистка кэш  ===============================================================
+const version = JSON.parse(localStorage.getItem('cache-version'))
+localStorage.setItem('cache-version', CACHE_VERSION.toString())
+if (+version !== CACHE_VERSION) {
+    caches.keys().then(cacheNames => {
+        return Promise.all(
+            cacheNames.map(cacheName => caches.delete(cacheName))
+        )
+            .then(() => window.location.reload())
+    }).catch(err => errorReport.sendError(err))
+}
 
-serviceWorkerRegistration.register({
-    // onUpdate(){
-    //     caches.keys().then(cacheNames => {
-    //         return Promise.all(
-    //             cacheNames.map(cacheName => caches.delete(cacheName))
-    //         )
-    //     }).catch(err => errorReport.sendError(err))
-    // },
-    // onSuccess() {
-    //     window?.location.reload()
-    // }
-})
+serviceWorkerRegistration.register()
 
 
 if (ServiceWorker in window) {

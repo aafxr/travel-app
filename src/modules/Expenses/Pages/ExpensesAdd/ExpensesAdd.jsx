@@ -140,18 +140,22 @@ export default function ExpensesAdd({
         if (edit) {
             await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
                 .then(item => {
-                    const action = isPlan
-                        ? actions.expensesActions.updateExpensePlan
-                        : actions.expensesActions.updateExpenseActual
-                    dispatch(action(item))
+                    if (item){
+                        const action = isPlan
+                            ? actions.expensesActions.updateExpensePlan
+                            : actions.expensesActions.updateExpenseActual
+                        dispatch(action(item))
+                    }
                 })
         } else {
             await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
                 .then(item => {
-                    const action = isPlan
-                        ? actions.expensesActions.addExpensePlan
-                        : actions.expensesActions.addExpenseActual
-                    dispatch(action(item))
+                    if (item){
+                        const action = isPlan
+                            ? actions.expensesActions.addExpensePlan
+                            : actions.expensesActions.addExpenseActual
+                        dispatch(action(item))
+                    }
                 })
         }
 
@@ -217,7 +221,7 @@ export default function ExpensesAdd({
                                             onInput={e => setExpSum(e.target.value)}
                                         />
                                         <Select
-                                            className='expenses-currency no-resize'
+                                            className='expenses-currency flex-0'
                                             value={expCurr ? expCurr.symbol : '₽'}
                                             defaultValue=''
                                             options={currency.map(c => c.symbol)}

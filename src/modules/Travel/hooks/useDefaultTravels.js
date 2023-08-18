@@ -19,7 +19,7 @@ const dispatch = useDispatch()
 
 async function fetchTravels(controller, user_id) {
     const response = await aFetch.get('/travel/getList/')
-    const {ok, result: travels} = response.data
+    const {ok, data: travels} = response.data
 
     if (ok && travels && travels.length) {
         await Promise.all(

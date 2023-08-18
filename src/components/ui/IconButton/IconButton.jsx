@@ -42,7 +42,7 @@ export default function IconButton({
         <button {...props} className={classes}>
             <div className='flex-stretch gap-0.25'>
                 {!!icon && (
-                    <div className='icon no-resize'>{icon}</div>
+                    <div className='icon flex-0'>{icon}</div>
                 )}
                 {title}
             </div>

@@ -24,7 +24,7 @@ function Accordion({title, className, children}) {
         >
             <div className='accordion-header flex-stretch'>
                 <span className='accordion-title'>{title}</span>
-                <span className='accordion-chevron center no-resize'><ChevronRightIcon/></span>
+                <span className='accordion-chevron center flex-0'><ChevronRightIcon/></span>
             </div>
             <div className='accordion-content'>
                 {children}

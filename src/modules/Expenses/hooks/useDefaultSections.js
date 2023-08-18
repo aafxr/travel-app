@@ -20,11 +20,11 @@ export default function useDefaultSection(primary_entity_id, user_id) {
     // добавлени дефолтных секций
     useEffect(() => {
         async function addDefaultSections() {
-            const response = await aFetch('/expenses/getSections/')
-            let {ok,result} = response.data
+            const response = await aFetch.get('/expenses/getSections/')
+            let {ok,data} = response.data
 
             if (ok) {
-                const sectionList = result.map(s => ({
+                const sectionList = data.map(s => ({
                     ...s,
                     color: '#52CF37',
                     hidden: 1,

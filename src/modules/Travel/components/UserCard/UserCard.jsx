@@ -24,7 +24,7 @@ export default function UserCard({name, vehicle, status, role, avatarURL, compac
                 'compact': compact
             }
         )}>
-            <Avatar className='no-resize' src={avatarURL} alt='avatar'/>
+            <Avatar className='flex-0' src={avatarURL} alt='avatar'/>
             {!compact && (
                 <>
                     <div className='user-card-info column'>
@@ -34,7 +34,7 @@ export default function UserCard({name, vehicle, status, role, avatarURL, compac
                         </div>
                         {!!status && <div className='user-card-status'>{status}</div>}
                     </div>
-                    {!!role && <div className='user-card-role no-resize'>{role}</div>}
+                    {!!role && <div className='user-card-role flex-0'>{role}</div>}
                 </>
             )}
         </div>
