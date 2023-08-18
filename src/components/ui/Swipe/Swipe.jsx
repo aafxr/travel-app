@@ -5,6 +5,8 @@ import clsx from "clsx";
 import useOutside from "../../../hooks/useOutside";
 
 import './Swipe.css'
+import TrashIcon from "../../svg/TrashIcon";
+import CheckIcon from "../../svg/CheckIcon";
 
 let defaultMargin = 40
 
@@ -118,10 +120,10 @@ export default function Swipe({
         <div ref={ref} className={styles}>
             <div className='swiper-controls flex-between'>
                 <div className='swiper-button checkmark center success' onClick={handleConfirm}>
-                    <div className='checkmark-svg'/>
+                    <div className='checkmark-svg'><CheckIcon /></div>
                 </div>
                 <div className='swiper-button  center danger' onClick={handleRemove}>
-                    <div className='trash-svg'/>
+                    <div className='trash-svg'><TrashIcon /></div>
                 </div>
             </div>
             <div

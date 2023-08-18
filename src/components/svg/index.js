@@ -1,7 +1,7 @@
 import PlusIcon from "./PlusIcon";
 
 export {default as Money} from './MoneyIcon'
-export {default as ChecklistIcon} from './ChecklistIconIcon'
+export {default as ChecklistIcon} from './ChecklistIcon'
 export {default as ChatIcon} from './ChatIcon'
 export {default as CopyIcon} from './CopyIcon'
 export {default as LinkIcon} from './LinkIcon'

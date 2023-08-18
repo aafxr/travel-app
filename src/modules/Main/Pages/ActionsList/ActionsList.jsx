@@ -7,8 +7,8 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import Loader from "../../../../components/Loader/Loader";
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
-import ChecklistIconIcon from "../../../../components/svg/ChecklistIconIcon";
 import ListItem from "../../../../components/ListItem/ListItem";
+import CheckIcon from "../../../../components/svg/CheckIcon";
 
 
 const convertor = {
@@ -79,7 +79,7 @@ export default function ActionsList() {
                             key={e.id}
                             topDescription={e.entity + ' - ' + e.action}
                             time={e.datetime}
-                            icon={e.synced ? <ChecklistIconIcon/> : <Loader/>}
+                            icon={e.synced ? <CheckIcon/> : <Loader/>}
                         >
                             {e.data.title || e.data.value || ''}
                         </ListItem>

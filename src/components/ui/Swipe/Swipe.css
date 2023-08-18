@@ -48,12 +48,11 @@
     background-size: contain;
 }
 
-.checkmark-svg{
-    background-image: url(../../../../public/icons/check.svg);
-}
-
+.checkmark-svg,
 .trash-svg{
-    background-image: url(../../../../public/icons/trash.svg);
+    color: white;
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 
 .swiper-container.small .swiper-button img{

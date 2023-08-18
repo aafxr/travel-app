@@ -1,6 +1,6 @@
-export default function ChecklistIconIcon(){
+export default function ChecklistIcon(props){
     return (
-        <svg viewBox="0 0 25 24" strike="currentColor" fill='none' xmlns="http://www.w3.org/2000/svg">
+        <svg {...props} viewBox="0 0 25 24" strike="currentColor" fill='none' xmlns="http://www.w3.org/2000/svg">
             <path d="M11.5 17H20.5"  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M8.5 15L6 18L4.5 17"  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M11.5 12H20.5"  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

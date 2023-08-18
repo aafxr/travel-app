@@ -64,11 +64,13 @@ export default function LimitsEdit({
     //
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
-            const curr = currency[new Date().toLocaleDateString()].reduce((a, c) => {
-                a[c.char_code] = c
+            const date = new Date().toLocaleDateString()
+            const curr = currency[date].reduce((a, c) => {
+                a[c.symbol] = c
                 return a
             }, {}) || {}
-            return expenses
+
+            const result = expenses
                 .filter(e => (
                     e.section_id === section_id
                     && (personal
@@ -79,6 +81,8 @@ export default function LimitsEdit({
                     const coef = curr[e.currency]?.value || 1
                     return e.value * coef + acc
                 }, 0)
+
+            return result
         }
         return 0
     }, [expenses, section_id, personal, user_id, currency])
