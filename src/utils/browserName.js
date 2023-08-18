@@ -7,7 +7,7 @@ export default function browserName(agent) {
     switch (true) {
         case /edge/i.test(agent):
             return "MS Edge";
-        case /edg\//.test(agent):
+        case /edg\//i.test(agent):
             return "Edge ( chromium based)";
         case /opr/.test(agent) && !!window.opr:
             return "Opera";
