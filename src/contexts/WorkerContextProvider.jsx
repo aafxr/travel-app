@@ -24,7 +24,6 @@ export default function WorkerContextProvider() {
         if (window.Worker) {
             const w = new Worker(new URL('../workers/worker.js', import.meta.url))
 
-            // new Worker(new URL('../workers/actions-worker.js', import.meta.url))
 
             if (w){
                 state.worker = w

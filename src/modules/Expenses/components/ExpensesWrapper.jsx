@@ -14,6 +14,7 @@ import {initExpensesThunk} from "../../../redux/expensesStore/initExpensesThunk"
 import {actions} from "../../../redux/store";
 import '../css/Expenses.css'
 import updateCurrency from "../helpers/updateCurrency";
+import expensesDB from "../../../db/expensesDB/expensesDB";
 
 /**
  * @typedef {Object} DispatchType
@@ -40,6 +41,32 @@ export default function ExpensesWrapper() {
 
     usePostMessage(worker, primary_entity_id)
 
+    useEffect(() => {
+        function handleMessage(action){
+            switch (action.type){
+                case constants.store.EXPENSES_ACTUAL:
+                    expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTUAL, primary_entity_id)
+                        .then(items => dispatch(actions.expensesActions.setExpensesActual(items)))
+                    break;
+                case constants.store.EXPENSES_PLAN:
+                    expensesDB.getManyFromIndex(constants.store.EXPENSES_PLAN, primary_entity_id)
+                        .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
+                    break;
+                case constants.store.LIMIT:
+                    expensesDB.getManyFromIndex(constants.store.LIMIT, primary_entity_id)
+                        .then(items => dispatch(actions.expensesActions.setExpensesLimit(items)))
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (worker){
+            worker.addEventListener('message', handleMessage)
+        }
+
+        return () => worker.removeEventListener('message', handleMessage)
+    },[])
+
     // console.log(state)
     useEffect(() => {
         updateCurrency(dispatch)
@@ -60,3 +87,6 @@ export default function ExpensesWrapper() {
 
     return <Outlet/>
 }
+
+
+

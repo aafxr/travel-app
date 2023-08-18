@@ -1,8 +1,7 @@
-import {useContext, useState} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import clsx from "clsx";
 
-import {UserContext} from "../../contexts/UserContextProvider";
 import MenuIconList from "../MenuIconList/MenuIconList";
 import {MenuIcon} from "../svg";
 
@@ -14,9 +13,12 @@ import errorReport from "../../controllers/ErrorReport";
 import aFetch from "../../axios";
 
 import './Menu.css'
+import {useDispatch, useSelector} from "react-redux";
+import {actions} from "../../redux/store";
 
 export default function Menu() {
-    const {user, setUser} = useContext(UserContext)
+    const dispatch = useDispatch()
+    const {user} = useSelector(state => state[constants.redux.USER])
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
@@ -31,7 +33,7 @@ export default function Menu() {
                         })
                             .then(() => {
                                 localStorage.setItem(USER_AUTH, JSON.stringify(null))
-                                setUser(null)
+                                dispatch(actions.userActions.updateUser(null))
                                 navigate('/')
                             })
                             .catch(err => {

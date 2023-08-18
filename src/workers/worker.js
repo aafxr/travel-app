@@ -2,6 +2,10 @@ import {actionsProcess} from "./actionsProcess";
 import getActionsList from "./getActionsList";
 import functionDurationTest from "../utils/functionDurationTest";
 import constants from "../static/constants";
+import expensesDB from "../db/expensesDB/expensesDB";
+import aFetch from "../axios";
+import travelDB from "../db/travelDB/travelDB";
+import distinctValues from "../utils/distinctValues";
 
 console.log('====worker=====')
 
@@ -19,4 +23,64 @@ onmessage = function (e) {
         type === 'action' && actionsProcess(message)
     }
     type === 'fetch' && fetchActions(message)
+}
+
+
+//=================================== проверка и попытка отправить Expenses Actions ====================================
+setInterval(async () => {
+    try {
+        const actions = await expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTIONS, constants.indexes.SYNCED, 0)
+        if (actions && actions.length) {
+            const response = await aFetch.post('/actions/add/', actions)
+            console.log(response.data)
+            const {ok, result} = response.data
+
+            if (ok) {
+                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                    .map(a => {
+                        a.synced = 1
+                        return a
+                    })
+                await Promise.all( sendedActions.map(a => expensesDB.editElement(constants.store.EXPENSES_ACTIONS, a)))
+                    .then(() => actionsUpdatedNotification(sendedActions))
+            }
+        }
+    } catch (err) {
+        console.error(err)
+    }
+}, 4000)
+
+
+//=================================== проверка и попытка отправить Travels Actions =====================================
+setInterval(async () => {
+    try {
+        const actions = await travelDB.getManyFromIndex(constants.store.TRAVEL_ACTIONS, constants.indexes.SYNCED, 0)
+        if (actions && actions.length) {
+            const response = await aFetch.post('/actions/add/', actions)
+            console.log(response.data)
+            const {ok, result} = response.data
+
+            if (ok) {
+                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                    .map(a => {
+                        a.synced = 1
+                        return a
+                    })
+                await Promise.all( sendedActions.map(a => travelDB.editElement(constants.store.TRAVEL_ACTIONS, a)))
+                    .then(() => actionsUpdatedNotification(sendedActions))
+            }
+        }
+    } catch (err) {
+        console.error(err)
+    }
+
+}, 8000)
+
+
+//================================== Отправка уведомления об обновлении actions ========================================
+function actionsUpdatedNotification(actions) {
+    const entity = distinctValues(actions, a => a.entity)
+    entity.forEach(e =>
+        postMessage({type: e})
+    )
 }

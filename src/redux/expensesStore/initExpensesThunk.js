@@ -36,7 +36,6 @@ export const initExpensesThunk = createAsyncThunk(
                 }
                     return acc
             }, {})
-            console.log('++++ ', currency)
             const sections = await expensesDB.getAll(constants.store.SECTION)
 
             return {
