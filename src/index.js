@@ -35,6 +35,8 @@ if (+version !== CACHE_VERSION) {
     }).catch(err => errorReport.sendError(err))
 }
 
+navigator.vibrate([100,100,300,100])
+
 serviceWorkerRegistration.register()
 
 

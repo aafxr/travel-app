@@ -12,6 +12,7 @@ import useResize from "../../hooks/useResize";
  * @param {number} maxOpenPercent 0 - 1
  * @param {number} defaultOffsetPX px
  * @param {number} defaultOffsetPercents 0 - 1
+ * @param {number} duration default 300ms
  * @return {JSX.Element}
  * @constructor
  */
@@ -21,12 +22,15 @@ export default function Curtain({
                                     maxScroll,
                                     maxOpenPercent,
                                     defaultOffsetPX = 0,
-                                    defaultOffsetPercents = 0
+                                    defaultOffsetPercents = 0,
+                                    duration = 300
                                 }) {
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const cRef = useRef()
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const cTopRef = useRef()
+    /**@type{React.MutableRefObject<HTMLDivElement>}*/
+    const curtainRef = useRef()
 
     const [topOffset, setTopOffset] = useState(minOffset)
 
@@ -41,13 +45,18 @@ export default function Curtain({
 
     useEffect(() => {
         if (topOffset > minOffset) {
-            setTopOffset(calcTopOffset())
+            const t = calcTopOffset()
+            setTopOffset(t)
+            curtainRef.current.style.top = t + 'px'
         }
     }, [windowSize])
 
     function calcTopOffset() {
+        //высота, которую потнциально может занимать шторка
         const curtainHeight = cRef.current.getBoundingClientRect().height
+        //высота кнопки шторки
         const cTopHeight = cTopRef.current.getBoundingClientRect().height
+        //смещение относительно верха при полностью открытой шторки
         let top = curtainHeight - cTopHeight
         if (maxScroll) {
             top = Math.min(top, maxScroll)
@@ -60,8 +69,12 @@ export default function Curtain({
     function curtainHandler() {
         if (topOffset > minOffset) {
             setTopOffset(minOffset)
+            animateTop(curtainRef.current, minOffset, duration)()
         } else {
-            setTopOffset(calcTopOffset())
+            const t = calcTopOffset()
+            setTopOffset(t)
+            animateTop(curtainRef.current, t, duration)()
+
         }
     }
 
@@ -74,6 +87,7 @@ export default function Curtain({
     return (
         <div ref={cRef} className='curtain'>
             <div
+                ref={curtainRef}
                 className={clsx('curtain-container', {'scrolled': topOffset})}
                 style={curtainStyle}
             >
@@ -90,4 +104,27 @@ export default function Curtain({
         </div>
 
     )
+}
+
+/**
+ *
+ * @param {HTMLElement} el
+ * @param {number} topTarget
+ * @param {number} duration
+ */
+function animateTop(el, topTarget, duration){
+    const start = Date.now()
+    let elementTop = el.getBoundingClientRect().top
+    const delta = (topTarget - elementTop) / duration
+
+    return function calc(){
+        const now = Date.now()
+        const deltaTime = now - start
+        el.style.top = elementTop + delta * deltaTime + 'px'
+        if(deltaTime < duration){
+            requestAnimationFrame(calc)
+        } else {
+            el.style.top = topTarget + 'px'
+        }
+    }
 }
