@@ -112,16 +112,16 @@ export default function Curtain({
  * @param {number} topTarget
  * @param {number} duration
  */
-function animateTop(el, topTarget, duration){
+function animateTop(el, topTarget, duration) {
     const start = Date.now()
     let elementTop = el.getBoundingClientRect().top
     const delta = (topTarget - elementTop) / duration
 
-    return function calc(){
+    return function calc() {
         const now = Date.now()
         const deltaTime = now - start
         el.style.top = elementTop + delta * deltaTime + 'px'
-        if(deltaTime < duration){
+        if (deltaTime < duration) {
             requestAnimationFrame(calc)
         } else {
             el.style.top = topTarget + 'px'

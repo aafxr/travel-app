@@ -3,14 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {PageHeader, Tab} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 
-import {TravelContext} from "../../../Travel/contextProviders/TravelContextProvider";
-import toArray from "../../../../utils/toArray";
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import updateTravels from "../../../Travel/helpers/updateTravels";
 import useDefaultTravels from "../../../Travel/hooks/useDefaultTravels";
 import constants, {USER_AUTH} from "../../../../static/constants";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {useDispatch, useSelector} from "react-redux";

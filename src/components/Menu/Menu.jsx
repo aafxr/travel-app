@@ -12,9 +12,9 @@ import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import errorReport from "../../controllers/ErrorReport";
 import aFetch from "../../axios";
 
-import './Menu.css'
 import {useDispatch, useSelector} from "react-redux";
 import {actions} from "../../redux/store";
+import './Menu.css'
 
 export default function Menu() {
     const dispatch = useDispatch()

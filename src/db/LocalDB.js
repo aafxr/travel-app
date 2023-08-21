@@ -40,6 +40,18 @@ async function openDataBase(dbname, version, stores) {
                 });
             });
         },
+        blocked(currentVersion, blockedVersion, event) {
+            // …
+            pushAlertMessage({type:'danger',message: `[DB blocked] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`})
+        },
+        blocking(currentVersion, blockedVersion, event) {
+            // …
+            pushAlertMessage({type:'danger',message: `[DB blocking] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`})
+        },
+        terminated() {
+            // …
+            pushAlertMessage({type:'danger',message: `[DB terminated]`})
+        },
     });
 }
 
@@ -101,7 +113,7 @@ export class LocalDB {
             })
             .catch((err) => {
                 onError && onError(err)
-                pushAlertMessage({type:'danger', message: 'Ошибка при инициализации БД'})
+                pushAlertMessage({type:'danger', message: `Ошибка при инициализации БД\n${err.message}`})
             });
     }
 

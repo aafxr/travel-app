@@ -9,6 +9,9 @@
     width: auto;
     display: inline-block;
 }
+.user-card.compact + .user-card.compact{
+    margin-left: -24px;
+}
 
 .user-card-info{
     flex: 1;

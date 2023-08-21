@@ -27,18 +27,12 @@ export default function ActionsList() {
 
     useEffect(() => {
         async function onExpenses() {
-            const expensesActions = await expensesDB.getManyFromIndex(
-                constants.store.EXPENSES_ACTIONS,
-                constants.indexes.SYNCED,
-                0)
+            const expensesActions = await expensesDB.getAll(constants.store.EXPENSES_ACTIONS)
             expensesActions && setExpensesList(expensesActions)
         }
 
         async function onTravel() {
-            const travelActions = await travelDB.getManyFromIndex(
-                constants.store.TRAVEL_ACTIONS,
-                constants.indexes.SYNCED,
-                0)
+            const travelActions = await travelDB.getAll(constants.store.TRAVEL_ACTIONS)
             travelActions && setTravelsList(travelActions)
         }
 
@@ -79,7 +73,7 @@ export default function ActionsList() {
                             key={e.id}
                             topDescription={e.entity + ' - ' + e.action}
                             time={e.datetime}
-                            icon={e.synced ? <CheckIcon/> : <Loader/>}
+                            icon={e.synced ? <CheckIcon success /> : <Loader/>}
                         >
                             {e.data.title || e.data.value || ''}
                         </ListItem>

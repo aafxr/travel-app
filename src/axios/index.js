@@ -51,13 +51,7 @@ aFetch.interceptors.request.use(async (c) => {
             storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
         ])
     }
-    if (aFetch.refresh) {
-        return new Promise((res) => {
-            setTimeout(() => res(c), 1500)
-        })
-    } else {
-        return c;
-    }
+    return c
 }, err => console.error(err))
 
 
@@ -67,43 +61,43 @@ aFetch.interceptors.response.use(
         if (urlWithAuth.includes(url)) {
             const {ok, data} = response.data
             if (ok) {
-                saveTokensToDB(data)
-                    .catch(console.error)
+                saveTokensToDB(data).catch(console.error)
             }
         }
         return response
     },
-    err => {
+    async (err) => {
         const originalRequest = err.config;
         if (err.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             aFetch.refresh = true
-            return axios.get(baseURL + '/user/auth/refresh/', {
-                headers: {
-                    Authorization: refresh_token ? `Bearer ${refresh_token}` : '',
-                }
-            }).then((response) => {
+            try {
+                const response = await axios.get(baseURL + '/user/auth/refresh/', {
+                    headers: {
+                        Authorization: refresh_token ? `Bearer ${refresh_token}` : '',
+                    }
+                })
+
                 const {ok, data: userAuth} = response.data
                 if (ok) {
-                    axios.get(baseURL + '/user/auth/refresh/confirm/', {
+                    await axios.get(baseURL + '/user/auth/refresh/confirm/', {
                         headers: {
                             Authorization: `Bearer ${userAuth.refresh_token}`,
                         }
-                    }).then(() => {
-                        saveTokensToDB(userAuth)
-                            .catch(console.error)
-                        originalRequest.headers['Authorization'] = `Bearer ${userAuth.token}`;
                     })
-                    return axios(originalRequest);
+                    await saveTokensToDB(userAuth)
+                    return await aFetch(originalRequest);
                 } else if (window) {
                     window.localStorage.setItem(USER_AUTH, JSON.stringify(null))
                 } else if (postMessage) {
                     postMessage({type: UNAUTHORIZED})
                 }
+            } catch (err) {
                 return originalRequest
-            }).finally(() => aFetch.refresh = false)
+            }finally{
+                aFetch.refresh = false
+            }
         }
-        return Promise.reject(err);
     })
 
 export default aFetch

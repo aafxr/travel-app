@@ -5,7 +5,7 @@ import Button from "../../components/ui/Button/Button";
 import {useEffect, useState} from "react";
 import {CRITICAL_ERROR} from "../../static/constants";
 
-export default function ErrorPage() {
+export default function ErrorPage({resetError}) {
     const navigate = useNavigate()
 
     /**@type {[Error, function]}*/
@@ -16,6 +16,11 @@ export default function ErrorPage() {
         setError(e)
     }, [])
 
+
+    function handleReset(){
+        resetError && resetError()
+        navigate('/')
+    }
 
     return (
         <div className='wrapper'>
@@ -36,7 +41,7 @@ export default function ErrorPage() {
                     )}
             </Container>
             <Container className='footer footer-btn-container'>
-                <Button onClick={() => navigate('/')}>
+                <Button onClick={handleReset}>
                     На главную
                 </Button>
             </Container>

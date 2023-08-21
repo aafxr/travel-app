@@ -1,7 +1,6 @@
 import {Provider} from 'react-redux'
 import React, {useEffect} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
-import aFetch from "./axios";
 
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";

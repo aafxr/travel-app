@@ -1,10 +1,9 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import {Chip, PageHeader, Tab} from "../../../../components/ui";
-import UserCard from "../../components/UserCard/UserCard";
+import {Chip, PageHeader} from "../../../../components/ui";
 
 import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
 import MenuIconList from "../../../../components/MenuIconList/MenuIconList";
@@ -16,11 +15,11 @@ import './TravelDetails.css'
 export default function TravelDetails() {
     const [compact, setCompact] = useState(false)
 
-    const items = [
-        {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
-        {id: 2, entityType: 'Кафе', entityName: 'Malina'},
-        {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
-    ]
+    // const items = [
+    //     {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
+    //     {id: 2, entityType: 'Кафе', entityName: 'Malina'},
+    //     {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
+    // ]
 
     return (
         <>

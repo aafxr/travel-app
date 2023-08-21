@@ -26,55 +26,57 @@ onmessage = function (e) {
 }
 
 
-//=================================== проверка и попытка отправить Expenses Actions ====================================
-setInterval(async () => {
-    try {
-        const actions = await expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTIONS, constants.indexes.SYNCED, 0)
-        if (actions && actions.length) {
-            const response = await aFetch.post('/actions/add/', actions)
-            console.log(response.data)
-            const {ok, result} = response.data
+if (process.env.NODE_ENV === 'production') {
+    //=================================== проверка и попытка отправить Expenses Actions ====================================
+    setInterval(async () => {
+        try {
+            const actions = await expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTIONS, constants.indexes.SYNCED, 0)
+            if (actions && actions.length) {
+                const response = await aFetch.post('/actions/add/', actions)
+                console.log(response.data)
+                const {ok, result} = response.data
 
-            if (ok) {
-                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
-                    .map(a => {
-                        a.synced = 1
-                        return a
-                    })
-                await Promise.all( sendedActions.map(a => expensesDB.editElement(constants.store.EXPENSES_ACTIONS, a)))
-                    .then(() => actionsUpdatedNotification(sendedActions))
+                if (ok) {
+                    const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                        .map(a => {
+                            a.synced = 1
+                            return a
+                        })
+                    await Promise.all(sendedActions.map(a => expensesDB.editElement(constants.store.EXPENSES_ACTIONS, a)))
+                        .then(() => actionsUpdatedNotification(sendedActions))
+                }
             }
+        } catch (err) {
+            console.error(err)
         }
-    } catch (err) {
-        console.error(err)
-    }
-}, 4000)
+    }, 4000)
 
 
 //=================================== проверка и попытка отправить Travels Actions =====================================
-setInterval(async () => {
-    try {
-        const actions = await travelDB.getManyFromIndex(constants.store.TRAVEL_ACTIONS, constants.indexes.SYNCED, 0)
-        if (actions && actions.length) {
-            const response = await aFetch.post('/actions/add/', actions)
-            console.log(response.data)
-            const {ok, result} = response.data
+    setInterval(async () => {
+        try {
+            const actions = await travelDB.getManyFromIndex(constants.store.TRAVEL_ACTIONS, constants.indexes.SYNCED, 0)
+            if (actions && actions.length) {
+                const response = await aFetch.post('/actions/add/', actions)
+                console.log(response.data)
+                const {ok, result} = response.data
 
-            if (ok) {
-                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
-                    .map(a => {
-                        a.synced = 1
-                        return a
-                    })
-                await Promise.all( sendedActions.map(a => travelDB.editElement(constants.store.TRAVEL_ACTIONS, a)))
-                    .then(() => actionsUpdatedNotification(sendedActions))
+                if (ok) {
+                    const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                        .map(a => {
+                            a.synced = 1
+                            return a
+                        })
+                    await Promise.all(sendedActions.map(a => travelDB.editElement(constants.store.TRAVEL_ACTIONS, a)))
+                        .then(() => actionsUpdatedNotification(sendedActions))
+                }
             }
+        } catch (err) {
+            console.error(err)
         }
-    } catch (err) {
-        console.error(err)
-    }
 
-}, 8000)
+    }, 8000)
+}
 
 
 //================================== Отправка уведомления об обновлении actions ========================================

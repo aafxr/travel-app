@@ -11,10 +11,10 @@ export default function browserName(agent) {
             return "Edge ( chromium based)";
         case /opr/.test(agent) && !!window.opr:
             return "Opera";
-        case /safari/i.test(agent):
-            return "Safari";
         case /chrome/i.test(agent) && !!window.chrome:
             return "Chrome";
+        case /safari/i.test(agent):
+            return "Safari";
         case /trident/i.test(agent):
             return "MS IE";
         case /firefox/i.test(agent):

@@ -1,8 +1,7 @@
-import React, {StrictMode} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
 
 import App from './App';
 
@@ -34,8 +33,6 @@ if (+version !== CACHE_VERSION) {
             .then(() => window.location.reload())
     }).catch(err => errorReport.sendError(err))
 }
-
-navigator.vibrate([100,100,300,100])
 
 serviceWorkerRegistration.register()
 

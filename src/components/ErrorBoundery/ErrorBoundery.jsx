@@ -2,6 +2,7 @@ import React from 'react'
 import ErrorReport from "../../controllers/ErrorReport";
 import {CRITICAL_ERROR} from "../../static/constants";
 import errorToObject from "../../utils/errorToObject";
+import ErrorPage from "../../modules/Error/ErrorPage";
 
 export default class ErrorBoundary extends React.Component {
 
@@ -29,10 +30,9 @@ export default class ErrorBoundary extends React.Component {
 
     render() {
         if (this.state.hasError) {
-            this.state.hasError = false
-            window.location.href = '/error/'
+            this.setState({hasError: false})
+            return <ErrorPage />
         }
-
         return this.props.children;
     }
 }

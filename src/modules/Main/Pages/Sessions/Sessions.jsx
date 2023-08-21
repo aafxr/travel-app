@@ -7,11 +7,8 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import aFetch from "../../../../axios";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
-
-import ListItem from "../../../../components/ListItem/ListItem";
-import browserName from "../../../../utils/browserName";
 import SessionItem from "../../../../components/SessionItem/SessionItem";
+import {openDB} from "idb";
 
 /**
  * @typedef {object} SessionDataType
@@ -32,15 +29,16 @@ export default function Sessions() {
     const [currentSession, setCurrentSession] = useState(null)
     const [authList, setAuthList] = useState([])
 
+
     useEffect(() => {
         if (user) {
             storeDB.getOne(constants.store.STORE, REFRESH_TOKEN)
                 .then(rt => {
-                    aFetch.post('/user/auth/getList/', {[REFRESH_TOKEN]: rt.value})
+                    aFetch.post('/user/auth/getList/', {[REFRESH_TOKEN]: rt?.value || ''})
                         .then(res => res.data)
                         .then(({ok, data}) => {
                             console.log({ok, data})
-                            if(ok){
+                            if (ok) {
                                 setCurrentSession(data.find(a => a.active))
                                 setAuthList(data.filter(a => !a.active).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)))
                             }
@@ -63,7 +61,7 @@ export default function Sessions() {
     return (
         <Container>
             <PageHeader arrowBack title='Активные сеансы'/>
-            {!!currentSession && <SessionItem className='bg-grey-light' sessionData={currentSession} />}
+            {!!currentSession && <SessionItem className='bg-grey-light color-black' sessionData={currentSession}/>}
             {!!authList.length && authList.map(
                 /**@param{SessionDataType} a*/
                 a => (
@@ -73,7 +71,7 @@ export default function Sessions() {
                         onRemove={() => removeSessionHandler(a)}
                         rightButton
                     >
-                        <SessionItem sessionData={a} />
+                        <SessionItem sessionData={a}/>
                     </Swipe>
                 )
             )}
