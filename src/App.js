@@ -31,6 +31,9 @@ import {actions, store} from './redux/store'
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
+import ChangeName from "./modules/Main/Pages/Profile/ChangeName";
+import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
+import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 
 
 function App() {
@@ -50,7 +53,7 @@ function App() {
 
     return (
         <Provider store={store}>
-            <ErrorBoundary>
+            <>
                 <Routes>
                     <Route element={<UserContextProvider/>}>
                         <Route element={<WorkerContextProvider/>}>
@@ -84,6 +87,9 @@ function App() {
                                            element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                                 </Route>
                                 <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeName/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
                                 <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
                                 <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
                                 <Route path={'/login/'} element={<Login/>}/>
@@ -94,7 +100,7 @@ function App() {
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
                 </Routes>
                 <Alerts count={3}/>
-            </ErrorBoundary>
+            </>
         </Provider>
     );
 }

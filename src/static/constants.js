@@ -14,7 +14,9 @@ const constants = {
         TRAVEL_ACTIONS: 'travelActions',
 
         STORE: 'store',
-        CURRENCY: 'currency'
+        CURRENCY: 'currency',
+        IMAGES: 'images',
+        IMAGES_ACTIONS: 'imagesActions'
     },
     indexes: {
         SECTION_ID: 'section_id',
@@ -44,12 +46,11 @@ export const reducerConstants = {
     UPDATE_EXPENSES_SECTIONS: 'UPDATE_EXPENSES_SECTIONS',
     UPDATE_EXPENSES_DEFAULT_SECTION: 'UPDATE_EXPENSES_DEFAULT_SECTION',
     UPDATE_CURRENCY: 'UPDATE_CURRENCY',
-
 }
 
 export default constants
 
-
+export const MAX_UPLOAD_FILE_SIZE = 1024 * 1024 * 5 // 5Mb
 export const actionsBlackList = [constants.store.SECTION, constants.store.LIMIT]
 export const actionsWhiteList = [constants.store.EXPENSES_ACTUAL, constants.store.EXPENSES_PLAN]
 

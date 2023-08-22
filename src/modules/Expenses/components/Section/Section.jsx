@@ -74,8 +74,10 @@ function Section({
                                         <div className='section-subtitle'>Лимит {formatter.format(limit)} ₽</div>
                                         {
                                             balance >= 0
-                                                ? <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
-                                                : <div className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} ₽</div>
+                                                ?
+                                                <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
+                                                : <div
+                                                    className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} ₽</div>
                                         }
 
                                     </div>
@@ -133,24 +135,21 @@ function SectionItem({expense, isPlan, user_id}) {
         : `/travel/${primary_entity_id}/expenses/edit/${id}/`
 
 
-
-
-    function handleRemove(){
+    async function handleRemove() {
         if (expense) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-            expensesDB.removeElement(storeName, expense.id)
-            expensesDB.removeElement(
+            await expensesDB.removeElement(storeName, expense.id).catch(console.error)
+            await expensesDB.addElement(
                 constants.store.EXPENSES_ACTIONS,
                 createAction(storeName, user_id, 'remove', expense)
             )
-                .then(() => {
-                    const action = isPlan
-                        ? actions.expensesActions.removeExpensePlan
-                        : actions.expensesActions.removeExpenseActual
-                    dispatch(action(expense))
-                    pushAlertMessage({type: 'success', message: `Успешно удалено`})
-                })
+            
+            const action = isPlan
+                ? actions.expensesActions.removeExpensePlan
+                : actions.expensesActions.removeExpenseActual
+            dispatch(action(expense))
+            pushAlertMessage({type: 'success', message: `Успешно удалено`})
         }
     }
 

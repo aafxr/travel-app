@@ -1,14 +1,16 @@
-import Container from "../../../../components/Container/Container";
-import {PageHeader} from "../../../../components/ui";
-import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import constants, {REFRESH_TOKEN} from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
-import aFetch from "../../../../axios";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
+import React, {useEffect, useState} from "react";
 
+import {PageHeader} from "../../../../components/ui";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
+import Container from "../../../../components/Container/Container";
 import SessionItem from "../../../../components/SessionItem/SessionItem";
-import {openDB} from "idb";
+import Loader from "../../../../components/Loader/Loader";
+
+import aFetch from "../../../../axios";
+import storeDB from "../../../../db/storeDB/storeDB";
+import constants, {REFRESH_TOKEN} from "../../../../static/constants";
+
 
 /**
  * @typedef {object} SessionDataType
@@ -28,6 +30,7 @@ export default function Sessions() {
 
     const [currentSession, setCurrentSession] = useState(null)
     const [authList, setAuthList] = useState([])
+    const [loading, setLoading] = useState(true)
 
 
     useEffect(() => {
@@ -41,6 +44,7 @@ export default function Sessions() {
                             if (ok) {
                                 setCurrentSession(data.find(a => a.active))
                                 setAuthList(data.filter(a => !a.active).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)))
+                                setLoading(false)
                             }
                         })
                         .catch(console.error)
@@ -74,6 +78,11 @@ export default function Sessions() {
                         <SessionItem sessionData={a}/>
                     </Swipe>
                 )
+            )}
+            {loading && (
+                <div className='center' >
+                    <Loader />
+                </div>
             )}
         </Container>
     )

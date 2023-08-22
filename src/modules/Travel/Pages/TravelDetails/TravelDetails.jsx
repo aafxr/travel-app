@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import {Chip, PageHeader} from "../../../../components/ui";
+import {Chip, PageHeader, Tab} from "../../../../components/ui";
 
 import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
 import MenuIconList from "../../../../components/MenuIconList/MenuIconList";

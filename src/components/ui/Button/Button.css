@@ -12,12 +12,12 @@
     border-radius: 8px;
     border: none;
 
+    color: var(--color-grey);
+    background-color: var(--color-primary-light);
+
     overflow: hidden;
     transition: var(--tr-all);
     cursor: pointer;
-
-    color: var(--color-grey);
-    background-color: var(--color-primary-light);
 }
 
 .full-screen-btn.active{
@@ -29,5 +29,7 @@
 .full-screen-btn:disabled{
     cursor: default;
     pointer-events: none;
+    color: var(--color-grey);
+    background-color: var(--color-primary-light);
 }
 

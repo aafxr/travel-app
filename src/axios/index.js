@@ -67,6 +67,7 @@ aFetch.interceptors.response.use(
         return response
     },
     async (err) => {
+        console.error(err)
         const originalRequest = err.config;
         if (err.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;

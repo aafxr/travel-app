@@ -1,7 +1,7 @@
 import React from "react";
-import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 
+import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
@@ -11,7 +11,6 @@ import {PageHeader} from "../../../../components/ui";
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 import './Profile.css'
-import ChevronRightIcon from "../../../../components/svg/ChevronRightIcon";
 
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -35,18 +34,9 @@ export default function Profile() {
                 </div>
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>
                     <Container className='column pt-20'>
-                        <Link to={'/profile/actions/'} className='profile-link flex-stretch'>
-                            <span className='flex-1'>Действия</span>
-                            <span className='icon center'>
-                                <ChevronRightIcon/>
-                            </span>
-                        </Link>
-                        <Link to={'/profile/sessions/'} className='profile-link flex-stretch'>
-                            <span className='flex-1'>Активные сеансы</span>
-                            <span className='icon center'>
-                                <ChevronRightIcon/>
-                            </span>
-                        </Link>
+                        <LinkComponent title='Настройки' to='/profile/settings/user/' arrow/>
+                        <LinkComponent title='Действия' to='/profile/actions/' arrow/>
+                        <LinkComponent title='Активные сеансы' to='/profile/sessions/' arrow/>
                     </Container>
                 </Curtain>
             </div>
@@ -54,5 +44,3 @@ export default function Profile() {
         </div>
     )
 }
-
-

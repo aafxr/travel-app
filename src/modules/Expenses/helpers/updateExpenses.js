@@ -7,13 +7,19 @@ import constants from "../../../static/constants";
  * @param {'plan' | 'actual'} type
  * @returns {Promise<[]|*>}
  */
-export default async function updateExpenses(primary_entity_id, type = 'plan') {
+export default function updateExpenses(primary_entity_id, type = 'plan') {
     const isPlan = type === 'plan'
 
     const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-    return await expensesDB.getManyFromIndex(
-        storeName,
-        constants.indexes.PRIMARY_ENTITY_ID,
-        primary_entity_id
-    )
+    return new Promise((resolve, reject) => {
+        expensesDB.onReadySubscribe(() => {
+            expensesDB.getManyFromIndex(
+                storeName,
+                constants.indexes.PRIMARY_ENTITY_ID,
+                primary_entity_id
+            )
+                .then(resolve)
+                .catch(reject)
+        })
+    })
 }

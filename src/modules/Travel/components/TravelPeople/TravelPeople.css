@@ -5,6 +5,14 @@
 .travel-details-people.compact > div {
     display: inline-block;
     position: relative;
-    left: -50%;
-    transform: translateX(-50%);
+    /*left: -50%;*/
+    /*transform: translateX(-50%);*/
+}
+
+.travel-details-people-add{
+    display: inline-block;
+    width: var(--avatar-size)!important;
+    height: var(--avatar-size)!important;
+    /*background-color: #fff!important;*/
+    margin-left: -22px;
 }

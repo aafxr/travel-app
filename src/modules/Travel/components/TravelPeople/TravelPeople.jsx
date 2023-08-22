@@ -1,6 +1,11 @@
 import React from "react";
-import UserCard from "../UserCard/UserCard";
 import clsx from "clsx";
+
+import UserCard from "../UserCard/UserCard";
+import {PlusIcon} from "../../../../components/svg";
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+
+import './TravelPeople.css'
 
 /**
  *
@@ -13,7 +18,7 @@ export default function TravelPeople({compact = false, ...props}){
 
     return (
         <div {...props} className={clsx('travel-details-people', {
-            'compact': compact,
+            'compact row': compact,
             'column gap-0.25': !compact
         })}>
             <UserCard name='Иван' role='админ' status='в поездке'
@@ -36,6 +41,9 @@ export default function TravelPeople({compact = false, ...props}){
                       avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}
                       compact={compact}
             />
+            {
+                compact && <IconButton className='travel-details-people-add' icon={<PlusIcon />} bgVariant='secondary' border={false} shadow={false}/>
+            }
         </div>
     )
 }

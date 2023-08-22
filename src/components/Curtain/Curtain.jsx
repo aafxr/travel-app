@@ -56,7 +56,7 @@ export default function Curtain({
         const curtainHeight = cRef.current.getBoundingClientRect().height
         //высота кнопки шторки
         const cTopHeight = cTopRef.current.getBoundingClientRect().height
-        //смещение относительно верха при полностью открытой шторки
+        //высота области, когда шторка максимально открыта (кнопка в нижнкм положении)
         let top = curtainHeight - cTopHeight
         if (maxScroll) {
             top = Math.min(top, maxScroll)
@@ -92,9 +92,8 @@ export default function Curtain({
                 style={curtainStyle}
             >
                 <div className='wrapper'>
-                    <div ref={cTopRef} className='center'>
-                        <button className='curtain-top-btn'
-                                onClick={(e) => curtainHandler(e)}/>
+                    <div ref={cTopRef} className='center' onClick={(e) => curtainHandler(e)}>
+                        <button className='curtain-top-btn'/>
                     </div>
                     <div className='content'>
                         {children}

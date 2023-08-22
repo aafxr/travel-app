@@ -1,4 +1,4 @@
-import constants from "../../static/constants";
+import constants, {GLOBAL_DB_VERSION} from "../../static/constants";
 
 /**
  * @description - описание структуры бд store
@@ -13,7 +13,7 @@ import constants from "../../static/constants";
  */
 const schema = {
     dbname: 'store',
-    version: 13,
+    version: 13 + GLOBAL_DB_VERSION,
     stores: [
         {
             name: constants.store.STORE,
@@ -24,6 +24,16 @@ const schema = {
             name: constants.store.CURRENCY,
             key: 'date',
             indexes: [],
+        },
+        {
+            name: constants.store.IMAGES,
+            key: 'id',
+            indexes: [],
+        },
+        {
+            name: constants.store.IMAGES_ACTIONS,
+            key: 'id',
+            indexes: ['synced', 'entity', 'action'],
         },
     ],
 };

@@ -10,7 +10,7 @@
     display: inline-block;
 }
 .user-card.compact + .user-card.compact{
-    margin-left: -24px;
+    margin-left: -22px;
 }
 
 .user-card-info{

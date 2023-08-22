@@ -1,20 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useEffect, useState} from 'react'
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
-
+import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
-import '../../css/Expenses.css'
-import constants, {reducerConstants} from "../../../../static/constants";
+import constants from "../../../../static/constants";
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
-import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {defaultFilterValue} from "../../static/vars";
 import updateExpenses from "../../helpers/updateExpenses";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
-import {useDispatch, useSelector} from "react-redux";
 import {actions} from "../../../../redux/store";
+import '../../css/Expenses.css'
 
 
 /**
@@ -31,8 +29,6 @@ export default function ExpensesPlan() {
     const [noDataMessage, setNoDataMessage] = useState('')
 
     const [filter, setFilter] = useState(defaultFilterValue)
-
-    const navigate = useNavigate()
 
     const user_id = user.id
 
@@ -69,7 +65,7 @@ export default function ExpensesPlan() {
             <Container className='pt-20 content column gap-1'>
                 <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
-                    sections && !!sections.length
+                    sectionList && !!sectionList.length
                         ? sections
                             .filter(s => sectionList.includes(s.id))
                             .map(section => (

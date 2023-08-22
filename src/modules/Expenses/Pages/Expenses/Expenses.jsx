@@ -1,22 +1,19 @@
-import React, { useContext, useEffect, useState} from 'react'
+import React, { useEffect, useState} from 'react'
+import {useDispatch, useSelector} from "react-redux";
 import { useParams} from "react-router-dom";
 
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
-
-import constants, {reducerConstants} from "../../../../static/constants";
-
 import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 
-import '../../css/Expenses.css'
 import updateExpenses from "../../helpers/updateExpenses";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
-import {useDispatch, useSelector} from "react-redux";
 import {actions} from "../../../../redux/store";
+import constants from "../../../../static/constants";
+import '../../css/Expenses.css'
 
 
 /**

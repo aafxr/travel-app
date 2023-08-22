@@ -101,6 +101,7 @@ export class LocalDB {
      * @param {function} [onError]          вызывается если бд откылась с ошибок
      */
     constructor({dbname, version, stores}, {onReady, onError}) {
+        this.subscriptions = []
         this.dbname = dbname;
         this.version = version;
         this.stores = stores;
@@ -117,8 +118,22 @@ export class LocalDB {
             });
     }
 
+    onReadySubscribe(cb){
+        if (typeof cb === 'function'){
+            if(this.ready){
+                cb()
+            }else{
+                this.subscriptions.push(cb)
+            }
+        } else {
+            console.warn("[LocalDB.onReadySubscribe] callback must be function!")
+        }
+    }
+
     readyHandler(){
         this.onReady(this.ready)
+        this.subscriptions.forEach(s => s())
+        this.subscriptions = []
     }
 
     /**
