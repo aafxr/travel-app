@@ -49,6 +49,7 @@ export default function UserPhotoEdite() {
             .then(() => {
                 console.log('success write to db')
                 storeDB.getAll(constants.store.IMAGES).then(console.log)
+                setPhoto(URL.createObjectURL(file))
             })
     }
 
