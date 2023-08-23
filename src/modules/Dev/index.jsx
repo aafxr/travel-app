@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {PageHeader} from "../../components/ui";
 import Container from "../../components/Container/Container";
@@ -7,6 +7,8 @@ import Select from "../../components/ui/Select/Select";
 import IconButton from "../../components/ui/IconButton/IconButton";
 import {ChatIcon, ChecklistIcon, Money} from "../../components/svg";
 import SessionItem from "../../components/SessionItem/SessionItem";
+import {TextArea} from "../../components/ui/TextArea/TextArea";
+import AvatarPlaceHolder from "../../components/UserCard/AvatarPlaceholder";
 
 const tepl = {
     created_at: "2023-08-10T04:37:31+03:00",
@@ -25,6 +27,7 @@ export default function Dev({
                                          primary_entity_id
                                      }) {
     const navigate = useNavigate()
+    const [textArea, setTextArea] = useState('')
 
 
     useEffect(() => {
@@ -70,8 +73,9 @@ export default function Dev({
                 <IconButton icon={<ChecklistIcon />} title='Чек-лист' />
                 <IconButton icon={<ChatIcon  badge />} />
                 </div>
-
-                <SessionItem sessionData={tepl}/>
+<div className='column'>
+                <AvatarPlaceHolder variant={'compact'}/>
+</div>
 
             </Container>
         </>

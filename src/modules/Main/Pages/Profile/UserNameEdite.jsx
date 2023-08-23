@@ -29,7 +29,7 @@ export default function UserNameEdite() {
     }, [user, first_name, last_name, disabled])
 
     function handleSave() {
-        const newUserData =  {
+        const newUserData = {
             ...user,
             first_name,
             last_name,
@@ -44,9 +44,17 @@ export default function UserNameEdite() {
             <Container className='content'>
                 <PageHeader arrowBack/>
                 <div className='column gap-1'>
-                    <Input value={first_name} placeholder='Имя' onChange={e => setFirstName(e.target.value)}/>
-                    <Input value={last_name} placeholder='Фамилия' onChange={e => setLastName(e.target.value)}/>
-                    <Input value={username} placeholder='Имя пользователя' onChange={e => setUsername(e.target.value)}/>
+                    <div>
+                        <div className='title-semi-bold'>Имя</div>
+                        <Input value={first_name} placeholder='Имя' onChange={e => setFirstName(e.target.value)}/></div>
+                    <div>
+                        <div className='title-semi-bold'>Фамилия</div>
+                        <Input value={last_name} placeholder='Фамилия' onChange={e => setLastName(e.target.value)}/>
+                    </div>
+                    <div>
+                        <div className='title-semi-bold'>Имя пользователя</div>
+                        <Input value={username} placeholder='Имя пользователя'
+                               onChange={e => setUsername(e.target.value)}/></div>
                 </div>
             </Container>
             <div className='footer-btn-container footer'>

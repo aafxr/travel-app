@@ -1,0 +1,40 @@
+.avatar-placeholder {
+    position: relative;
+
+    border-radius: 3px;
+}
+@keyframes placeHolderSwept {
+    0% {
+        background-position: -400px 0
+    }
+    100% {
+        background-position: 400px 0
+    }
+}
+
+.avatar-placeholder-line {
+    position: relative;
+    margin: 4px 0;
+    height: 1rem;
+    border-radius: 6px 6px 6px 0;
+    /*background: #ffffff;*/
+    overflow: hidden;
+    animation: placeHolderSwept 1s infinite linear forwards;
+    background: #ebebec linear-gradient(to right, #ebebec 0%, #e0e0e2 20%, #ebebec 40%, #ebebec 100%) no-repeat;
+}
+
+.avatar-placeholder-line-2{
+    width: 28%;
+}
+
+
+.avatar-placeholder-circle {
+    position: relative;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+
+    border-radius: 100%;
+    overflow: hidden;
+    animation: placeHolderSwept 1s infinite linear forwards;
+    background: #ebebec linear-gradient(to right, #ebebec 0%, #e0e0e2 20%, #ebebec 60%, #ebebec 100%) no-repeat;
+}

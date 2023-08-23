@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-import Avatar from "../../../../components/Avatar/Avatar";
+import Avatar from "../Avatar/Avatar";
 
 import './UserCard.css'
 

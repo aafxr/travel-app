@@ -7,8 +7,8 @@ import  './Chip.css'
 
 /**
  * компонент для отображения тегов / пометок
- * @param {'orange' | 'green' | 'gray' | 'light-orange' } color
- * @param {string} icon - url иконки
+ * @param {'orange' | 'green' | 'grey' | 'light-orange' } color
+ * @param {string | JSX.Element} icon - url иконки
  * @param {'left' | 'right'} iconPosition - способ расположения иконки (стиль применяется если задан icon) default = 'left'
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
  * @param {boolean} pointer default = false
@@ -18,7 +18,7 @@ import  './Chip.css'
  * @returns {JSX.Element}
  */
 export default ({
-                    color = 'orange', // 'orange' | 'green' | 'gray' | 'light-orange'
+                    color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
                     icon,
                     iconPosition = 'left',// 'left' | 'right'
                     children,
@@ -30,12 +30,12 @@ export default ({
                 }) => {
     const classes = clsx(
         {
-            ['chip']: true,
+            ['chip gap-0.25']: true,
             ['chip-icon']: icon,
             ['chip-pointer']: pointer,
             ['chip-orange']: color === 'orange',
             ['chip-green']: color === 'green',
-            ['chip-gray']: color === 'grey',
+            ['chip-grey']: color === 'grey',
             ['chip-light-orange']: color === 'light-orange',
             ['chip-icon-left']: icon && iconPosition === 'left',
             ['chip-icon-right']: icon && iconPosition === 'right',
@@ -45,7 +45,12 @@ export default ({
     )
 
     return <div className={classes} {...props}>
-        {isString(icon) && <img src={icon} alt="icon"/>}
+        <span className='chip-icon'>
+        {isString(icon)
+            ? <img src={icon} alt="icon"/>
+            : icon
+        }
+        </span>
         <span>{children}</span>
     </div>
 }

@@ -42,6 +42,10 @@ a{
     font-weight: 700;
 }
 
+.title-semi-bold{
+    font-weight: 600;
+}
+
 .link{
     color: var(--color-primary);
     font-size: 1rem;
@@ -236,5 +240,26 @@ a{
     border-radius: var(--br-20);
     object-fit: cover;
     overflow: hidden;
+}
+
+.block{
+    padding-bottom: 20px;
+}
+
+.block + .block{
+    padding-top: 20px;
+}
+
+.block:not(:last-child){
+    border-bottom: 2px solid var(--color-grey-light);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color: var(--color-grey);
+    display: block;
+    vertical-align: center;
+    background: url(../../public/icons/calendar_days.svg) no-repeat;
+    width: var(--icon-size);
+    height: var(--icon-size);
 }
 

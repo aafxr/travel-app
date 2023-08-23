@@ -1,7 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
-import UserCard from "../UserCard/UserCard";
+import UserCard from "../../../../components/UserCard/UserCard";
 import {PlusIcon} from "../../../../components/svg";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 

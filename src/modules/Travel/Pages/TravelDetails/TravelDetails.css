@@ -1,6 +1,8 @@
 .travel-details{
     position: relative;
-    aspect-ratio: 1.25;
+    /*aspect-ratio: 1.25;*/
+    padding-bottom: 56%;
+
 }
 
 .travel-details-header{

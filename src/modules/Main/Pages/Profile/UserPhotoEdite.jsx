@@ -6,8 +6,9 @@ import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
-import uploadFile from "../../../../utils/file/uploadFile";
 import {actions} from "../../../../redux/store";
+import storeDB from "../../../../db/storeDB/storeDB";
+import createId from "../../../../utils/createId";
 
 export default function UserPhotoEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -39,9 +40,16 @@ export default function UserPhotoEdite() {
     function handlePhotoChange(/**@type{ChangeEvent<HTMLInputElement>} */e){
         const file = e.target.files[0]
 
-        uploadFile(file).then(reader => {
-            setPhoto(reader.result)
+        console.log(file.type)
+        storeDB.addElement(constants.store.IMAGES, {
+            id: createId(),
+            blob: file,
+            src: ''
         })
+            .then(() => {
+                console.log('success write to db')
+                storeDB.getAll(constants.store.IMAGES).then(console.log)
+            })
     }
 
     return (

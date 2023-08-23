@@ -34,6 +34,7 @@ import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import ChangeName from "./modules/Main/Pages/Profile/ChangeName";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
+import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
 
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
                                 <Route path={'/dev/'} element={<Dev/>}/>
                                 <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
                                 <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
+                                <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                                 <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                                 <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                                     <Route element={<ExpensesLayout/>}>

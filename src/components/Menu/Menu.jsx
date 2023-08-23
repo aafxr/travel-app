@@ -16,7 +16,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {actions} from "../../redux/store";
 import './Menu.css'
 
-export default function Menu() {
+export default function Menu({children}) {
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])
     const navigate = useNavigate()
@@ -58,11 +58,8 @@ export default function Menu() {
                 <div className='menu-icons row flex-nowrap gap-1 pb-20'>
                     <MenuIconList/>
                 </div>
-
-                <div
-                    className='menu-item'
-                    onClick={handleLogin}
-                >
+                {children}
+                <div className='menu-item' onClick={handleLogin} >
                     {user ? 'Выйти' : 'Войти'}
                 </div>
             </div>

@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import './Checkbox.css'
 import clsx from "clsx";
+
+import './Checkbox.css'
 
 
 /**
- * @param {JSX.Element} children
+ * @param {JSX.Element | string} children
  * @param {string} className
  * @param {boolean} checked
  * @param {boolean} left - default = right сторона с которой отображается гконка
@@ -21,11 +22,10 @@ function Checkbox({
                       onChange,
                       ...props
                   }, ref) {
-    const [checkedState, setChecked] = useState(checked)
 
     const styles = clsx({
             ['checkbox']: true,
-            ['checked']: checkedState,
+            ['checked']: checked,
             ['left']: left,
             ['right']: !left,
         },
@@ -33,13 +33,12 @@ function Checkbox({
     )
 
     function handler(e) {
-        setChecked(prev => !prev)
-        onChange && onChange(!checkedState)
+        onChange && onChange(!checked)
     }
 
     return (
         <div className={styles} onClick={handler}>
-            <input ref={ref} type="checkbox" checked={checkedState} onChange={handler} hidden/>
+            <input ref={ref} type="checkbox" checked={checked} onChange={handler} hidden/>
             <label>
                 {children}
             </label>

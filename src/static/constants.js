@@ -16,7 +16,9 @@ const constants = {
         STORE: 'store',
         CURRENCY: 'currency',
         IMAGES: 'images',
-        IMAGES_ACTIONS: 'imagesActions'
+        IMAGES_ACTIONS: 'imagesActions',
+
+        USERS: 'users'
     },
     indexes: {
         SECTION_ID: 'section_id',

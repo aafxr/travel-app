@@ -5,7 +5,8 @@
     padding: 8px 9px;
 
     color: var(--color-secondary);
-    font-size: .6rem;
+    stroke: white;
+    font-size: .7rem;
     line-height: 1;
     font-weight: 700;
     white-space: nowrap;
@@ -14,50 +15,50 @@
     transition: opasity .3s;
     cursor: default;
 }
-.chip:hover{
-    opacity: .8;
-}
-.chip img{
-    stroke: var(--color-secondary);
+/*.chip:hover{*/
+/*    opacity: .8;*/
+/*}*/
+.chip-icon img,
+.chip-icon svg{
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    /*color: var(--color-secondary);*/
+    /*stroke: var(--color-secondary);*/
+    /*fill: var(--color-secondary);*/
 }
 
 .chip.chip-icon{
     padding: 4px 9px;
 }
 
-.chip-icon img{
-    flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-}
-.chip-icon.chip-icon-left span{
-    margin-left: -16px;
-}
-.chip-icon.chip-icon-right span{
-    margin-right: -16px;
-}
-.chip-icon-left span{
-    padding-left: 20px;
-}
-.chip-icon-right span{
-    padding-right: 20px;
-}
+/*.chip-icon.chip-icon-left span{*/
+/*    margin-left: -16px;*/
+/*}*/
+/*.chip-icon.chip-icon-right span{*/
+/*    margin-right: -16px;*/
+/*}*/
+/*.chip-icon-left span{*/
+/*    padding-left: 20px;*/
+/*}*/
+/*.chip-icon-right span{*/
+/*    padding-right: 20px;*/
+/*}*/
 .chip-rounded{
     border-radius: 30.5rem;
 }
 .chip-orange {
+    color: white;
     background-color: var(--color-primary);
 }
 .chip-green {
     background-color: var(--color-green);
 }
 
-.chip-gray{
-    color: var(--color-grey);
+.chip-grey{
+    color: var(--color-text);
+    /*letter-spacing: .2px;*/
     background-color: var(--color-grey-light);
-}
-.chip-gray img{
-    stroke: var(--color-grey);
 }
 
 .chip-light-orange{
@@ -65,7 +66,7 @@
     background-color: var(--color-text);
 }
 .chip-light-orange img{
-    stroke: var(--color-text);
+    /*stroke: var(--color-text);*/
 }
 
 .chip-pointer{
