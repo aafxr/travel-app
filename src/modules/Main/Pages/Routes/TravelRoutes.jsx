@@ -1,17 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useEffect} from 'react'
 import {useNavigate} from "react-router-dom";
-import {PageHeader, Tab} from "../../../../components/ui";
-import Container from "../../../../components/Container/Container";
+import {useDispatch, useSelector} from "react-redux";
 
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import useDefaultTravels from "../../../Travel/hooks/useDefaultTravels";
-import constants, {USER_AUTH} from "../../../../static/constants";
-import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import {useDispatch, useSelector} from "react-redux";
-import travelDB from "../../../../db/travelDB/travelDB";
+import useDefaultTravels from "../../../Travel/hooks/useDefaultTravels";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import Navigation from "../../../../components/Navigation/Navigation";
+import Container from "../../../../components/Container/Container";
+import constants, {USER_AUTH} from "../../../../static/constants";
+import {updateUser} from "../../../../redux/userStore/updateUser";
+import {PageHeader, Tab} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
+import travelDB from "../../../../db/travelDB/travelDB";
 import {actions} from "../../../../redux/store";
 
 export default function TravelRoutes({
@@ -43,7 +44,7 @@ export default function TravelRoutes({
         if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
             if (us) {
-                dispatch(actions.userActions.updateUser(us))
+                dispatch(updateUser(us))
             }
         }
     }, [user])

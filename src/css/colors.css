@@ -10,7 +10,7 @@
     --color-text-light: #1E1E1E;
     --color-blue: #0075FF;
     --color-navigation-bg: var(--color-secondary);
-    /*#FFE5E5;*/
+    --color-placeholder: #c9c9c9;
 
     --color-success: #52CF37;
     --color-warning: #E3CD00;

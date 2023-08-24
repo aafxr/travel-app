@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {USER_AUTH} from "../../static/constants";
+import {initUser} from "./initUser";
+import {updateUser} from "./updateUser";
 
 /**
  * @typedef {Object} UserAppType
@@ -28,33 +29,15 @@ const initialState = {
 export const userSlice = createSlice({
         name: 'travels',
         initialState,
-        reducers: {
-            /**
-             * @param {UserState} state
-             */
-            initUser(state){
-                if (process.env.NODE_ENV === 'development') {
-                    state.user = {
-                        id: '12',
-                        first_name: 'Иван',
-                        last_name: 'Алексеев'
-                    }
-                } else {
-                    state.user = JSON.parse(localStorage.getItem(USER_AUTH))
-                }
-            },
-
-            /**
-             * @param {UserState} state
-             * @param action
-             */
-            updateUser(state, action){
-                localStorage.setItem(USER_AUTH, JSON.stringify(action.payload))
-                state.user = action.payload
-            }
-        },
-
+        reducers: {},
         extraReducers: (builder) => {
+            builder.addCase(initUser.fulfilled, (state, action) => {
+                state.user = action.payload
+            })
+
+            builder.addCase(updateUser.fulfilled, (state, action) => {
+                state.user = action.payload
+            })
         }
     }
 )

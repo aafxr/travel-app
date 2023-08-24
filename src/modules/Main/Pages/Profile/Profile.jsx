@@ -8,13 +8,14 @@ import Curtain from "../../../../components/Curtain/Curtain";
 import Menu from "../../../../components/Menu/Menu";
 import {PageHeader} from "../../../../components/ui";
 
+import usePhoto from "../../../../hooks/usePhoto";
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 import './Profile.css'
 
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
-
+    const photoURL = usePhoto(user?.photo)
 
     return (
         <div className='wrapper'>
@@ -25,7 +26,7 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <img src={user?.photo || DEFAULT_IMG_URL} alt="Фото"/>
+                        <img src={photoURL || DEFAULT_IMG_URL} alt="Фото"/>
                     </div>
                     <div className='profile-user-name center'>
                         <span>{user?.first_name}</span>&nbsp;

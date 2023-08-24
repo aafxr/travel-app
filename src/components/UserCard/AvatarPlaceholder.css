@@ -1,6 +1,6 @@
 .avatar-placeholder {
     position: relative;
-
+    width: 100%;
     border-radius: 3px;
 }
 @keyframes placeHolderSwept {
@@ -20,7 +20,7 @@
     /*background: #ffffff;*/
     overflow: hidden;
     animation: placeHolderSwept 1s infinite linear forwards;
-    background: #ebebec linear-gradient(to right, #ebebec 0%, #e0e0e2 20%, #ebebec 40%, #ebebec 100%) no-repeat;
+    background: var(--color-placeholder) linear-gradient(to right, var(--color-placeholder) 0%, #e0e0e2 20%, var(--color-placeholder) 80%, var(--color-placeholder) 100%) no-repeat;
 }
 
 .avatar-placeholder-line-2{
@@ -35,6 +35,7 @@
 
     border-radius: 100%;
     overflow: hidden;
+    background-size: 400px;
     animation: placeHolderSwept 1s infinite linear forwards;
-    background: #ebebec linear-gradient(to right, #ebebec 0%, #e0e0e2 20%, #ebebec 60%, #ebebec 100%) no-repeat;
+    background: var(--color-placeholder) linear-gradient(to right, var(--color-placeholder) 0%, #e0e0e2 20%, var(--color-placeholder) 80%, var(--color-placeholder) 100%) no-repeat;
 }

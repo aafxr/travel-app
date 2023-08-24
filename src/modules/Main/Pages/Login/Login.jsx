@@ -1,12 +1,12 @@
 import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
 
+import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
+import {updateUser} from "../../../../redux/userStore/updateUser";
 import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../TelegramAuth";
-import Navigation from "../../../../components/Navigation/Navigation";
 import aFetch from "../../../../axios";
-import {useDispatch} from "react-redux";
-import {actions} from "../../../../redux/store";
 
 export default function Login() {
     const navigate = useNavigate()
@@ -19,7 +19,7 @@ export default function Login() {
             .then(res => {
                 const {ok, data} = res
                 if (ok) {
-                    dispatch(actions.userActions.updateUser(data))
+                    dispatch(updateUser(data))
                     navigate(-1)
                 }
             })

@@ -1,14 +1,14 @@
 import React, {useEffect} from 'react'
 import {useNavigate} from "react-router-dom";
-import {PageHeader} from "../../../../components/ui";
-import Container from "../../../../components/Container/Container";
-
-import constants, {USER_AUTH} from "../../../../static/constants";
-import Navigation from "../../../../components/Navigation/Navigation";
-import IconButton from "../../../../components/ui/IconButton/IconButton";
-import Menu from "../../../../components/Menu/Menu";
 import {useDispatch, useSelector} from "react-redux";
-import {actions} from "../../../../redux/store";
+
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+import Navigation from "../../../../components/Navigation/Navigation";
+import Container from "../../../../components/Container/Container";
+import constants, {USER_AUTH} from "../../../../static/constants";
+import {updateUser} from "../../../../redux/userStore/updateUser";
+import {PageHeader} from "../../../../components/ui";
+import Menu from "../../../../components/Menu/Menu";
 
 export default function Main({
                                  primary_entity_type,
@@ -22,7 +22,7 @@ export default function Main({
         if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
             if (!us) {
-                dispatch(actions.userActions.updateUser(us))
+                dispatch(updateUser(us))
             }
         }
     }, [user, dispatch])

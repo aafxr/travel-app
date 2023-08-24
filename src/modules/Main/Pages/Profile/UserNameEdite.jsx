@@ -1,12 +1,12 @@
+import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import Container from "../../../../components/Container/Container";
-import {Input, PageHeader} from "../../../../components/ui";
+import {updateUser} from "../../../../redux/userStore/updateUser";
 import Button from "../../../../components/ui/Button/Button";
+import {Input, PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
-import {useNavigate} from "react-router-dom";
 
 export default function UserNameEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -35,7 +35,7 @@ export default function UserNameEdite() {
             last_name,
             username
         }
-        dispatch(actions.userActions.updateUser(newUserData))
+        dispatch(updateUser(newUserData))
         navigate('/profile/')
     }
 

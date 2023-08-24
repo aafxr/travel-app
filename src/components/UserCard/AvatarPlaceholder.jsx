@@ -1,21 +1,25 @@
-import './AvatarPlaceholder.css'
 import clsx from "clsx";
+import './AvatarPlaceholder.css'
 
 /**
  *
+ * @param {string} className default = "horizontal"
  * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
  * @returns {JSX.Element}
  * @constructor
  */
-export default function AvatarPlaceHolder({variant = "horizontal"}) {
+export default function AvatarPlaceHolder({className, variant = "horizontal"}) {
     const classNames = clsx(
         'avatar-placeholder gap-0.25',
         {
             'flex-stretch': variant === 'horizontal',
             'column center': variant === 'vertical',
             'row': variant === 'compact'
-        }
+        },
+        className
     )
+
+
     return (
         <div className={classNames}>
             <div className='avatar-placeholder-circle flex-0'/>

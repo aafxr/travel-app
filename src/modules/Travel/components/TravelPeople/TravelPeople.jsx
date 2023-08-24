@@ -9,40 +9,44 @@ import './TravelPeople.css'
 
 /**
  *
+ * @param {string[]} peopleList массив id участников путешествия
  * @param {boolean} compact
  * @param {React.HTMLAttributes} props
  * @return {JSX.Element}
  * @constructor
  */
-export default function TravelPeople({compact = false, ...props}){
+export default function TravelPeople({peopleList = [], compact = false, ...props}) {
 
     return (
         <div {...props} className={clsx('travel-details-people', {
             'compact row': compact,
             'column gap-0.25': !compact
         })}>
-            <UserCard name='Иван' role='админ' status='в поездке'
-                      vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                      avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}
-                      compact={compact}
-            />
-            <UserCard name='Иван' role='админ' status='в поездке'
-                      vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                      avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}
-                      compact={compact}
-            />
-            <UserCard name='Иван' role='админ' status='в поездке'
-                      vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                      avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}
-                      compact={compact}
-            />
-            <UserCard name='Иван' role='админ' status='в поездке'
-                      vehicle={process.env.PUBLIC_URL + '/icons/directions_car.svg'}
-                      avatarURL={process.env.PUBLIC_URL + '/images/Ellipse 4.png'}
-                      compact={compact}
-            />
             {
-                compact && <IconButton className='travel-details-people-add' icon={<PlusIcon />} bgVariant='secondary' border={false} shadow={false}/>
+                (peopleList && peopleList.length && compact)
+                    ? peopleList.slice(0, 3).map(p => (
+                        <UserCard
+                            key={p}
+                            id={p}
+                            variant='compact'
+                        />
+                    ))
+                    : peopleList.map(p => (
+                        <UserCard
+                            key={p}
+                            id={p}
+                            variant='horizontal'
+                        />
+                    ))
+            }
+            {
+                compact && !!peopleList.length && <IconButton
+                    className='travel-details-people-add'
+                    icon={<PlusIcon/>}
+                    bgVariant='secondary'
+                    border={false}
+                    shadow={false}
+                />
             }
         </div>
     )

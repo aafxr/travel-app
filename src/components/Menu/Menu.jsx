@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import clsx from "clsx";
+import {useDispatch, useSelector} from "react-redux";
 
 import MenuIconList from "../MenuIconList/MenuIconList";
 import {MenuIcon} from "../svg";
@@ -12,8 +13,7 @@ import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import errorReport from "../../controllers/ErrorReport";
 import aFetch from "../../axios";
 
-import {useDispatch, useSelector} from "react-redux";
-import {actions} from "../../redux/store";
+import {updateUser} from "../../redux/userStore/updateUser";
 import './Menu.css'
 
 export default function Menu({children}) {
@@ -33,7 +33,7 @@ export default function Menu({children}) {
                         })
                             .then(() => {
                                 localStorage.setItem(USER_AUTH, JSON.stringify(null))
-                                dispatch(actions.userActions.updateUser(null))
+                                dispatch(updateUser(null))
                                 navigate('/')
                             })
                             .catch(err => {
