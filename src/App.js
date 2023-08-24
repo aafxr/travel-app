@@ -60,6 +60,7 @@ function App() {
             store.dispatch(initTravelsThunk())
         }
     }, [ready])
+    console.log(ready)
 
     if(!ready){
         return null

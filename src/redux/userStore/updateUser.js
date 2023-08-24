@@ -1,6 +1,6 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import storeDB from "../../db/storeDB/storeDB";
-import constants from "../../static/constants";
+import constants, {USER_AUTH} from "../../static/constants";
 
 export const updateUser = createAsyncThunk('updateUser', async (userData, thunkApi) => {
     try {
@@ -12,6 +12,8 @@ export const updateUser = createAsyncThunk('updateUser', async (userData, thunkA
             newUserData = {...user, ...newUserData}
         }
         await storeDB.editElement(constants.store.USERS, newUserData)
+        localStorage.setItem(USER_AUTH, JSON.stringify(newUserData))
+
         return newUserData
     } catch (err) {
         console.error(err)

@@ -6,11 +6,11 @@ import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
 import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
 import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import usePhoto from "../../../../hooks/usePhoto";
+import {updateUser} from "../../../../redux/userStore/updateUser";
 
 export default function UserPhotoEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -38,14 +38,14 @@ export default function UserPhotoEdite() {
     function handleSave() {
         const newUserData = {
             ...user,
-            photo: photo.id
+            photo: newPhoto.id
         }
 
         Promise.all([
             storeDB.editElement(constants.store.USERS, newUserData),
             storeDB.editElement(constants.store.IMAGES, newPhoto)
         ])
-            .then(() => dispatch(actions.userActions.updateUser(newUserData)))
+            .then(() => dispatch(updateUser(newUserData)))
             .catch(err => {
                 ErrorReport.sendError(err)
                 console.error(err)
@@ -66,6 +66,8 @@ export default function UserPhotoEdite() {
         }
     }
 
+
+    console.log({user, photo, newPhoto})
     return (
         <div className='wrapper'>
             <Container className='content'>
@@ -77,7 +79,7 @@ export default function UserPhotoEdite() {
                 </div>
             </Container>
             <div className='footer-btn-container footer'>
-                <Button onClick={handleSave} disabled={!user || !photo || photo === newPhoto}>Сохранить</Button>
+                <Button onClick={handleSave} disabled={!user || photo === newPhoto}>Сохранить</Button>
             </div>
         </div>
     )
