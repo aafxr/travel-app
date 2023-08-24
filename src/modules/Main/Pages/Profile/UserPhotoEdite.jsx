@@ -73,7 +73,7 @@ export default function UserPhotoEdite() {
                 <div className='column center gap-1 pt-20'>
                     <img className='photo' src={photoURL || DEFAULT_IMG_URL} alt="Фото"
                          onClick={e => inputRef.current?.click()}/>
-                    <input ref={inputRef} type="file" hidden onChange={handlePhotoChange}/>
+                    <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/*'}/>
                 </div>
             </Container>
             <div className='footer-btn-container footer'>

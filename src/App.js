@@ -37,24 +37,33 @@ import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
 import {initUser} from "./redux/userStore/initUser";
 import {USER_AUTH} from "./static/constants";
+import useDBReady from "./hooks/useDBReady";
 
 
 function App() {
+    const ready = useDBReady()
+
     useEffect(() => {
-        const user = process.env.NODE_ENV === 'development'
-            ? {
-                id: '12',
-                first_name: 'Иван',
-                last_name: 'Алексеев'
+        if(ready){
+            const user = process.env.NODE_ENV === 'development'
+                ? {
+                    id: '12',
+                    first_name: 'Иван',
+                    last_name: 'Алексеев'
+                }
+                : JSON.parse(localStorage[USER_AUTH])
+
+            if (process.env.NODE_ENV === 'development') {
+                store.dispatch(initUser(user))
+
             }
-            : JSON.parse(localStorage[USER_AUTH])
-
-        if (process.env.NODE_ENV === 'development') {
-            store.dispatch(initUser(user))
-
+            store.dispatch(initTravelsThunk())
         }
-        store.dispatch(initTravelsThunk())
-    }, [])
+    }, [ready])
+
+    if(!ready){
+        return null
+    }
 
     // useEffect(() => {
     //     const prefetch = [

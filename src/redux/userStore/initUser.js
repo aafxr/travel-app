@@ -10,8 +10,8 @@ export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) 
         let newUserData = userData
         if (user) {
             newUserData = {...user, ...newUserData}
-            await storeDB.editElement(constants.store.USERS, newUserData)
         }
+        await storeDB.editElement(constants.store.USERS, newUserData)
         return newUserData
     } catch (err) {
         console.error(err)

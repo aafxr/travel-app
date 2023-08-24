@@ -2,18 +2,18 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";
 
-export const updateUser = createAsyncThunk('updateUser', async (userData, thunkApi) =>{
+export const updateUser = createAsyncThunk('updateUser', async (userData, thunkApi) => {
     try {
-        if(!userData) return null
+        if (!userData) return null
 
         const user = await storeDB.getOne(constants.store.USERS, userData.id)
         let newUserData = userData
-        if(user){
+        if (user) {
             newUserData = {...user, ...newUserData}
-            await storeDB.editElement(constants.store.USERS, newUserData)
         }
+        await storeDB.editElement(constants.store.USERS, newUserData)
         return newUserData
-    }catch(err){
+    } catch (err) {
         console.error(err)
         thunkApi.abort()
     }
