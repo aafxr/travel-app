@@ -6,6 +6,7 @@ import expensesDB from "../db/expensesDB/expensesDB";
 import aFetch from "../axios";
 import travelDB from "../db/travelDB/travelDB";
 import distinctValues from "../utils/distinctValues";
+import storeDB from "../db/storeDB/storeDB";
 
 console.log('====worker=====')
 
@@ -75,8 +76,34 @@ if (process.env.NODE_ENV === 'production') {
             console.error(err)
         }
 
-    }, 8000)
+    }, 10000)
 }
+
+//=================================== проверка и попытка отправить Travels Actions =====================================
+setInterval(async () => {
+    try {
+        const actions = await storeDB.getManyFromIndex(constants.store.STORE_ACTIONS, constants.indexes.SYNCED, 0)
+        if (actions && actions.length) {
+            const response = await aFetch.post('/actions/add/', actions)
+            console.log(response.data)
+            const {ok, result} = response.data
+
+            if (ok) {
+                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                    .map(a => {
+                        a.synced = 1
+                        return a
+                    })
+                await Promise.all(sendedActions.map(a => travelDB.editElement(constants.store.STORE_ACTIONS, a)))
+                    .then(() => actionsUpdatedNotification(sendedActions))
+            }
+        }
+    } catch (err) {
+        console.error(err)
+    }
+
+}, 8000)
+
 
 
 //================================== Отправка уведомления об обновлении actions ========================================

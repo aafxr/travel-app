@@ -1,5 +1,5 @@
 export const GLOBAL_DB_VERSION = 1;
-export const CACHE_VERSION = 15;
+export const CACHE_VERSION = 16 + GLOBAL_DB_VERSION;
 
 
 const constants = {
@@ -16,7 +16,7 @@ const constants = {
         STORE: 'store',
         CURRENCY: 'currency',
         IMAGES: 'images',
-        IMAGES_ACTIONS: 'imagesActions',
+        STORE_ACTIONS: 'storeActions',
 
         USERS: 'users'
     },

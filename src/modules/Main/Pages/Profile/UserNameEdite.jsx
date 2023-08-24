@@ -7,6 +7,9 @@ import {updateUser} from "../../../../redux/userStore/updateUser";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
+import storeDB from "../../../../db/storeDB/storeDB";
+import {actions} from "../../../../redux/store";
+import createAction from "../../../../utils/createAction";
 
 export default function UserNameEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
@@ -36,6 +39,17 @@ export default function UserNameEdite() {
             username
         }
         dispatch(updateUser(newUserData))
+        const changedFields = Object.keys(newUserData).reduce((acc, key) => {
+            if (key === 'id'){
+                acc[key] = newUserData[key]
+            }  else if(newUserData[key] !== user[key]){
+                acc[key] = newUserData[key]
+            }
+            return acc
+        }, {})
+        console.log(changedFields)
+        const action = createAction(constants.store.USERS, user.id, 'update', changedFields)
+        storeDB.addElement(constants.store.STORE_ACTIONS, action)
         navigate('/profile/')
     }
 

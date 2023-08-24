@@ -13,7 +13,7 @@ import constants, {GLOBAL_DB_VERSION} from "../../static/constants";
  */
 const schema = {
     dbname: 'store',
-    version: 14 + GLOBAL_DB_VERSION,
+    version: 15 + GLOBAL_DB_VERSION,
     stores: [
         {
             name: constants.store.STORE,
@@ -36,7 +36,7 @@ const schema = {
             indexes: [],
         },
         {
-            name: constants.store.IMAGES_ACTIONS,
+            name: constants.store.STORE_ACTIONS,
             key: 'id',
             indexes: ['synced', 'entity', 'action'],
         },
