@@ -9,32 +9,29 @@
 
 
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
-import {StaleWhileRevalidate, NetworkFirst, CacheFirst} from 'workbox-strategies';
+import {StaleWhileRevalidate,  CacheFirst} from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {registerRoute} from 'workbox-routing';
-import {clientsClaim, setCacheNameDetails} from 'workbox-core';
 
 import {CACHE_VERSION, GLOBAL_DB_VERSION} from "./static/constants";
-import {CacheableResponsePlugin} from "workbox-cacheable-response";
 
 
 const version = CACHE_VERSION + GLOBAL_DB_VERSION
 
-const CACHE_NAME = 'TravelerCache_v' + CACHE_VERSION;
-const PRECACHE_NAME = 'Precache';
+// const CACHE_NAME = 'TravelerCache_v' + CACHE_VERSION;
+// const PRECACHE_NAME = 'Precache';
 
-setCacheNameDetails({
-    prefix: PRECACHE_NAME,
-    suffix: 'v' + CACHE_VERSION,
-})
-
+// setCacheNameDetails({
+//     prefix: PRECACHE_NAME,
+//     suffix: 'v' + CACHE_VERSION,
+// })
 
 // const prefetch = [
 //     process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
 //     process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
 // ]
 
-clientsClaim();
+// clientsClaim();
 // eslint-disable-next-line no-restricted-globals
 // const WB_MANIFEST = self.__WB_MANIFEST
 
@@ -90,62 +87,20 @@ registerRoute(
     })
 );
 
+const apiCache = [
+    '/main/currency/getList/',
+    '/expenses/getSections/'
+]
 registerRoute(
-    // проверяем, что цель запроса - это таблица стилей, скрипт или воркер
-    ({ request }) =>
-request.destination === 'style' ||
-request.destination === 'document' ||
-request.destination === 'script' ||
-request.destination === 'worker',
-    new CacheFirst({
-        // помещаем файлы в кеш с названием 'assets'
-        cacheName: 'assets',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [200]
-            }),
-            new ExpirationPlugin({ maxAgeSeconds: 1 * 60}), // 1 минута
-        ]
-    })
-)
-
-registerRoute(
-    ({url}) => url.origin === self.location.origin && /\.(html|css|js)$/i.test(url.pathname),
-    new StaleWhileRevalidate({
-        cacheName: 'src',
-        plugins: [
-            new ExpirationPlugin({ maxAgeSeconds: 30 * 24 * 60 * 60}),
-        ],
-    })
-);
-
-registerRoute(
-    ({url}) => url.origin === self.location.origin && /\/main\/currency\/getList\/$/i.test(url.pathname),
+    ({url}) => url.origin === self.location.origin && apiCache.includes(url.pathname),
     new CacheFirst({
         cacheName: 'api',
         plugins: [
-            new ExpirationPlugin({maxAgeSeconds: 24 * 60 * 60}),
+            new ExpirationPlugin({maxAgeSeconds:  60}),
         ],
     })
 );
 
-registerRoute(
-    ({url}) => {
-        if (url.origin.includes('api')) {
-            return (
-                url.pathname.includes('getSections')
-                || url.pathname.includes('currency/getList/')
-            )
-        }
-        return false
-    },
-    new NetworkFirst({
-        cacheName: CACHE_NAME,
-        plugins:[
-            new ExpirationPlugin({maxAgeSeconds:  24 * 60 * 60})
-        ]
-    })
-)
 
 
 // This allows the web app to trigger skipWaiting via
@@ -161,24 +116,35 @@ self.addEventListener('message', (event) => {
 
 // Establish a cache name
 
-self.addEventListener('fetch', (event) => {
-    // Check if this is a navigation request
-    if (event.request.mode === 'navigate') {
-        // Open the cache
-        event.respondWith(caches.open(CACHE_NAME).then((cache) => {
-            // Go to the network first
-            return fetch(event.request.url).then((fetchedResponse) => {
-                cache.put(event.request, fetchedResponse.clone());
+// self.addEventListener('install', (event) => {
+//     const cacheName = cacheNames.runtime
+//     console.log(cacheName)
+//     console.log(cacheNames.runtime)
+//     event.waitUntil(
+//         caches
+//             .keys()
+//             .then(keys => keys.map(key => key !== cacheName && caches.delete(key)))
+//     )
+// })
 
-                return fetchedResponse;
-            }).catch(() => {
-                // If the network is unavailable, get
-                return cache.match(event.request.url);
-            });
-        }));
-    }
-
-});
+// self.addEventListener('fetch', (event) => {
+//     // Check if this is a navigation request
+//     if (event.request.mode === 'navigate') {
+//         // Open the cache
+//         event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+//             // Go to the network first
+//             return fetch(event.request.url).then((fetchedResponse) => {
+//                 cache.put(event.request, fetchedResponse.clone());
+//
+//                 return fetchedResponse;
+//             }).catch(() => {
+//                 // If the network is unavailable, get
+//                 return cache.match(event.request.url);
+//             });
+//         }));
+//     }
+//
+// });
 
 // self.addEventListener('install', (e) => {
 //     console.log(prefetch)

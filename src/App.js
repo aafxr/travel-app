@@ -57,7 +57,7 @@ function App() {
                     first_name: 'Иван',
                     last_name: 'Алексеев'
                 }
-                : JSON.parse(localStorage[USER_AUTH])
+                : JSON.parse(localStorage.getItem(USER_AUTH))
 
             if (process.env.NODE_ENV === 'development') {
                 store.dispatch(initUser(user))
@@ -66,7 +66,6 @@ function App() {
             store.dispatch(initTravelsThunk())
         }
     }, [ready])
-    console.log(ready)
 
     if(!ready){
         return null
