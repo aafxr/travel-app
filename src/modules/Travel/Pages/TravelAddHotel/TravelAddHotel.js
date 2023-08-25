@@ -21,8 +21,20 @@ export default function TravelAddHotel() {
                 <div className='column gap-0.25'>
                     <Input type='text' placeholder='Откуда'/>
                     <div className='flex-stretch'>
-                        <Input className='br-right-0' type='date' placeholder='Дата'/>
-                        <Input className='br-left-0' type='time' placeholder='Время'/>
+                        <Input
+                            className='br-right-0'
+                            type='text'
+                            placeholder='Дата'
+                            onFocus={e => e.target.type = 'date'}
+                            onBlure={e => e.target.type = 'text'}
+                        />
+                        <Input
+                            className='br-left-0'
+                            type='text'
+                            placeholder='Время'
+                            onFocus={e => e.target.type = 'time'}
+                            onBlure={e => e.target.type = 'text'}
+                        />
                     </div>
                 </div>
                 <div className='row gap-1'>
@@ -34,9 +46,9 @@ export default function TravelAddHotel() {
                 </div>
             </Container>
             <Container className='content column gap-1'>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'} />
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'} />
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'} />
+                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
+                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
+                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave}>Добавить</Button>

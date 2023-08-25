@@ -15,6 +15,7 @@ import {registerRoute} from 'workbox-routing';
 import {clientsClaim, setCacheNameDetails} from 'workbox-core';
 
 import {CACHE_VERSION, GLOBAL_DB_VERSION} from "./static/constants";
+import {CacheableResponsePlugin} from "workbox-cacheable-response";
 
 
 const version = CACHE_VERSION + GLOBAL_DB_VERSION
@@ -88,6 +89,25 @@ registerRoute(
         ],
     })
 );
+
+registerRoute(
+    // проверяем, что цель запроса - это таблица стилей, скрипт или воркер
+    ({ request }) =>
+request.destination === 'style' ||
+request.destination === 'document' ||
+request.destination === 'script' ||
+request.destination === 'worker',
+    new CacheFirst({
+        // помещаем файлы в кеш с названием 'assets'
+        cacheName: 'assets',
+        plugins: [
+            new CacheableResponsePlugin({
+                statuses: [200]
+            }),
+            new ExpirationPlugin({ maxAgeSeconds: 1 * 60}), // 1 минута
+        ]
+    })
+)
 
 registerRoute(
     ({url}) => url.origin === self.location.origin && /\.(html|css|js)$/i.test(url.pathname),

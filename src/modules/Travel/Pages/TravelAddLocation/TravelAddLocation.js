@@ -21,8 +21,20 @@ export default function TravelAddLocation() {
                 <div className='column gap-0.25'>
                     <Input type='text' placeholder='Выберите место'/>
                     <div className='flex-stretch'>
-                        <Input className='br-right-0' type='date' placeholder='Дата'/>
-                        <Input className='br-left-0' type='time' placeholder='Время'/>
+                        <Input
+                            className='br-right-0'
+                            type='text'
+                            placeholder='Дата'
+                            onFocus={e => e.target.type = 'date'}
+                            onBlure={e => e.target.type = 'text'}
+                        />
+                        <Input
+                            className='br-left-0'
+                            type='text'
+                            placeholder='Время'
+                            onFocus={e => e.target.type = 'time'}
+                            onBlure={e => e.target.type = 'text'}
+                        />
                     </div>
                 </div>
                 <div className='row gap-1'>
