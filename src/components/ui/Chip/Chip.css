@@ -56,7 +56,7 @@
 }
 
 .chip-grey{
-    color: var(--color-text);
+    color: var(--color-black);
     /*letter-spacing: .2px;*/
     background-color: var(--color-grey-light);
 }

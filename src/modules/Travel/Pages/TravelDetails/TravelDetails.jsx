@@ -20,7 +20,7 @@ export default function TravelDetails() {
 
 
     const menu = (
-        <Menu>
+        <Menu >
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Параметры'}/>
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
         </Menu>

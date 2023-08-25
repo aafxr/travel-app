@@ -9,6 +9,7 @@
     --color-text-secondary: #FFF;
     --color-text-light: #1E1E1E;
     --color-blue: #0075FF;
+    --color-black: #000000;
     --color-navigation-bg: var(--color-secondary);
     --color-placeholder: #c9c9c9;
     --color-link: var(--color-primary);

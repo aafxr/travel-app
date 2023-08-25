@@ -16,7 +16,7 @@ import aFetch from "../../axios";
 import {updateUser} from "../../redux/userStore/updateUser";
 import './Menu.css'
 
-export default function Menu({children}) {
+export default function Menu({children, className}) {
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])
     const navigate = useNavigate()
@@ -50,7 +50,7 @@ export default function Menu({children}) {
 
 
     return (
-        <div ref={ref} className={clsx('menu', {'open': isOpen})}>
+        <div ref={ref} className={clsx('menu', {'open': isOpen}, className)}>
             <div className='menu-dots' onClick={() => setIsOpen(!isOpen)}>
                 <MenuIcon/>
             </div>
