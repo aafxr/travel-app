@@ -15,7 +15,7 @@ export default function TravelWaypoint() {
     return (
         <>
             <div className='travel wrapper'>
-                <div className='content'>
+                <Container className='content'>
                     <PageHeader arrowBack title='Направление' />
                     <Container className='column'>
                         <Link className='travel-link' to={'*'}>
@@ -38,8 +38,8 @@ export default function TravelWaypoint() {
                         </Link>
                     </Container>
 
-                </div>
-                <div className='footer'>
+                </Container>
+                <div className='footer footer-btn-container'>
                     <Button>Продолжить</Button>
                 </div>
             </div>

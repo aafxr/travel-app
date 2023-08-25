@@ -1,11 +1,12 @@
+import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import {Chip} from "../../../../components/ui";
 
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
-
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {PlusIcon} from "../../../../components/svg";
 import './LocationCard.css'
 
-export default function LocationCard({imgURL, dateStart, dateEnd, title, entityType, children}) {
+export default function LocationCard({imgURL, dateStart, dateEnd, title, entityType, children, onAdd}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
@@ -19,6 +20,18 @@ export default function LocationCard({imgURL, dateStart, dateEnd, title, entityT
             <div className='location-title'>{title}</div>
             <div className='location-entity-type'>{entityType}</div>
             {children}
+            {
+                !!onAdd && (
+                    <IconButton
+                        className='location-add-button'
+                        iconClass='location-add-button-icon'
+                        icon={<PlusIcon/>}
+                        border={true}
+                        shadow={false}
+                        small
+                    />
+                )
+            }
         </div>
     )
 }

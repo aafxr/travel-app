@@ -38,6 +38,7 @@
 }
 
 .location-title{
+    margin-top: .5rem;
     font-size: 1.125rem;
     font-weight: 600;
 }
@@ -46,4 +47,18 @@
     color: var(--color-grey);
     font-size: 0.75rem;
     font-weight: 600;
+}
+
+.location-add-button{
+    padding: 4px!important;
+    width: 40px!important;
+    height: 40px!important;
+    position: absolute;
+    right: 0.5rem;
+    bottom: .5rem;
+}
+
+.location-add-button-icon{
+    width: 14px!important;
+    height: 14px!important;
 }

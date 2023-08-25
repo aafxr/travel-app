@@ -8,14 +8,16 @@
 // service worker, and the Workbox build step will be skipped.
 
 
-import {precacheAndRoute, createHandlerBoundToURL, cleanupOutdatedCaches,} from 'workbox-precaching';
+import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
 import {StaleWhileRevalidate, NetworkFirst, CacheFirst} from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {registerRoute} from 'workbox-routing';
 import {clientsClaim, setCacheNameDetails} from 'workbox-core';
 
-import {CACHE_VERSION} from "./static/constants";
+import {CACHE_VERSION, GLOBAL_DB_VERSION} from "./static/constants";
 
+
+const version = CACHE_VERSION + GLOBAL_DB_VERSION
 
 const CACHE_NAME = 'TravelerCache_v' + CACHE_VERSION;
 const PRECACHE_NAME = 'Precache';

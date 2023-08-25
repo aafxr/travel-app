@@ -10,6 +10,7 @@ import './IconButton.css'
  * @param {'transparent' | 'secondary' | 'primary'} bgVariant
  * @param {string} [title]
  * @param {string} className
+ * @param {string} iconClass
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -23,6 +24,7 @@ export default function IconButton({
                                        bgVariant = 'transparent',
                                        title = '',
                                        className,
+                                       iconClass,
                                        ...props
                                    }) {
 
@@ -42,7 +44,7 @@ export default function IconButton({
         <button {...props} className={classes}>
             <div className='flex-stretch gap-0.25'>
                 {!!icon && (
-                    <div className='icon flex-0'>{icon}</div>
+                    <div className={clsx('icon flex-0', iconClass)}>{icon}</div>
                 )}
                 {title}
             </div>

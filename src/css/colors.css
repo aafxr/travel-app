@@ -11,6 +11,7 @@
     --color-blue: #0075FF;
     --color-navigation-bg: var(--color-secondary);
     --color-placeholder: #c9c9c9;
+    --color-link: var(--color-primary);
 
     --color-success: #52CF37;
     --color-warning: #E3CD00;

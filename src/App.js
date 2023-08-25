@@ -38,6 +38,12 @@ import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
 import {initUser} from "./redux/userStore/initUser";
 import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
+import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
+import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
+import TravelAddMeeting from "./modules/Travel/Pages/TravelAddMeeting/TravelAddMeeting";
+import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
+import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
+import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 
 
 function App() {
@@ -92,6 +98,12 @@ function App() {
                                 <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                                 <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                                 <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
+                                <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
+                                <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
+                                <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
+                                <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
+                                <Route path={'/travel/:travelCode/add/meeting/'} element={<TravelAddMeeting/>}/>
+                                <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                                 <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                                     <Route element={<ExpensesLayout/>}>
                                         <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import {Link, useNavigate} from "react-router-dom";
-import {PageHeader} from "../../components/ui";
+import {Input, PageHeader} from "../../components/ui";
 import Container from "../../components/Container/Container";
 
 import Select from "../../components/ui/Select/Select";
@@ -20,10 +20,10 @@ import AvatarPlaceHolder from "../../components/UserCard/AvatarPlaceholder";
 // }
 
 export default function Dev({
-                                         user_id,
-                                         primary_entity_type,
-                                         primary_entity_id
-                                     }) {
+                                user_id,
+                                primary_entity_type,
+                                primary_entity_id
+                            }) {
     const navigate = useNavigate()
 
 
@@ -31,7 +31,7 @@ export default function Dev({
         if (process.env.NODE_ENV === 'production') {
             navigate('/')
         }
-    },[navigate])
+    }, [navigate])
 
     if (process.env.NODE_ENV === 'production') {
         return null
@@ -63,16 +63,20 @@ export default function Dev({
 
                 </div>
 
-                <Select options={['AFN','RUB','KZT','USD', 'EUR']} defaultValue={'RUB'} />
+                <Select options={['AFN', 'RUB', 'KZT', 'USD', 'EUR']} defaultValue={'RUB'}/>
 
                 <div className='flex-between gap-0.75'>
-                <IconButton icon={<Money />} title='Расходы' />
-                <IconButton icon={<ChecklistIcon />} title='Чек-лист' />
-                <IconButton icon={<ChatIcon  badge />} />
+                    <IconButton icon={<Money/>} title='Расходы'/>
+                    <IconButton icon={<ChecklistIcon/>} title='Чек-лист'/>
+                    <IconButton icon={<ChatIcon badge/>}/>
                 </div>
-<div className='column'>
-                <AvatarPlaceHolder variant={'horizontal'}/>
-</div>
+                <div className='column'>
+                    <AvatarPlaceHolder variant={'horizontal'}/>
+                </div>
+                <div className='flex-stretch'>
+                <Input className='br-right-0' type={'date'} placeholder={'Дата'}/>
+                <Input className='br-left-0' type={'time'} placeholder={'Время'}/>
+                </div>
 
             </Container>
         </>

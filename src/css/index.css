@@ -47,7 +47,7 @@ a{
 }
 
 .link{
-    color: var(--color-primary);
+    color: var(--color-link);
     font-size: 1rem;
     font-weight: 600;
 }
@@ -263,3 +263,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: var(--icon-size);
 }
 
+.br-left-0{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.br-right-0{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

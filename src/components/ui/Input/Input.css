@@ -5,7 +5,12 @@
     padding-left: 16px;
     width: 100%;
     caret-color: var(--color-primary);
-    border-radius: var(--border-radius);
+
+    border-top-left-radius: var(--br-10);
+    border-bottom-left-radius: var(--br-10);
+    border-top-right-radius: var(--br-10);
+    border-bottom-right-radius: var(--br-10);
+
     border: 2px solid var(--color-grey-light);
     background-color: var(--color-secondary);
     outline: none;
