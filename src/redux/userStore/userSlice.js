@@ -22,7 +22,8 @@ import {updateUser} from "./updateUser";
  * @type UserState
  */
 const initialState = {
-    user: null
+    user: null,
+    loading: true
 }
 
 
@@ -31,8 +32,19 @@ export const userSlice = createSlice({
         initialState,
         reducers: {},
         extraReducers: (builder) => {
+            builder.addCase(initUser.pending, (state, action) => {
+                state.user = action.payload
+                state.loading = true
+            })
+
             builder.addCase(initUser.fulfilled, (state, action) => {
                 state.user = action.payload
+                state.loading = false
+            })
+
+            builder.addCase(initUser.rejected, (state, action) => {
+                state.user = null
+                state.loading = false
             })
 
             builder.addCase(updateUser.fulfilled, (state, action) => {
