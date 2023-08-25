@@ -50,7 +50,7 @@ function App() {
     const ready = useDBReady()
 
     useEffect(() => {
-        if(ready){
+        if (ready) {
             const user = process.env.NODE_ENV === 'development'
                 ? {
                     id: '12',
@@ -59,15 +59,12 @@ function App() {
                 }
                 : JSON.parse(localStorage.getItem(USER_AUTH))
 
-            if (process.env.NODE_ENV === 'development') {
-                store.dispatch(initUser(user))
-
-            }
+            store.dispatch(initUser(user))
             store.dispatch(initTravelsThunk())
         }
     }, [ready])
 
-    if(!ready){
+    if (!ready) {
         return null
     }
 

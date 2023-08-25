@@ -39,6 +39,10 @@
     color: var(--color-grey);
 }
 
+.travel-menu svg{
+    color: var(--color-black)!important;
+}
+
 @media (prefers-color-scheme: dark) {
     .travel-details-backface{
         color: var(--color-text-secondary)
