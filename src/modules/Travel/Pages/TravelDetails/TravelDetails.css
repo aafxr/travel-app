@@ -41,6 +41,7 @@
 
 .travel-menu svg{
     color: var(--color-black)!important;
+    mix-blend-mode: difference;
 }
 
 @media (prefers-color-scheme: dark) {
