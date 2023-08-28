@@ -45,7 +45,7 @@ function Section({
 
     const totalExpenses = expenses
         .reduce((acc, item) => {
-            const cur = currency[new Date().toLocaleDateString()].find(c => c.symbol === item.currency)?.value || 1
+            const cur = currency[new Date().toLocaleDateString()]?.find(c => c.symbol === item.currency)?.value || 1
             return acc + item.value * cur
         }, 0)
 

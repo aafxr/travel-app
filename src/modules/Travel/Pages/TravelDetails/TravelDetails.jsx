@@ -33,7 +33,7 @@ export default function TravelDetails() {
 
     return (
         <>
-            <Container className='travel-details-header'>
+            <Container className='travel-details-header black'>
                 <PageHeader arrowBack MenuEl={menu('travel-menu')}/>
             </Container>
             <Container className='travel-details-backface '>
@@ -56,8 +56,8 @@ export default function TravelDetails() {
                                 className='link'
                                 onClick={() => setCompact(!compact)}
                             >
-                        {compact ? 'Развернуть' : 'Свернуть'}
-                    </span>
+                                {compact ? 'Развернуть' : 'Свернуть'}
+                            </span>
                         </div>
                     </div>
                     <div className='flex-between flex-nowrap gap-0.5 footer'>

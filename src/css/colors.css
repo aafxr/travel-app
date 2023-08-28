@@ -6,6 +6,7 @@
     --color-grey: #A2A2A2;
     --color-grey-light: #F0F0F0;
     --color-text: #000;
+    --color-text-50: rgba(30, 30, 30, 0.50);
     --color-text-secondary: #FFF;
     --color-text-light: #1E1E1E;
     --color-blue: #0075FF;
@@ -13,6 +14,7 @@
     --color-navigation-bg: var(--color-secondary);
     --color-placeholder: #c9c9c9;
     --color-link: var(--color-primary);
+    --color-star: #E3CD00;
 
     --color-success: #52CF37;
     --color-warning: #E3CD00;

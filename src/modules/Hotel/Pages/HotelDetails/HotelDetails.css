@@ -1,0 +1,55 @@
+.hotel-image{
+    padding-bottom: 95.5%;
+    border-radius: var(--br-16);
+    overflow: hidden;
+}
+
+.hotel-image img{
+    object-fit: cover;
+}
+
+.hotel-audio{
+    justify-self: center;
+    height: 32px;
+}
+
+.hotel-audio-icon{
+    color: var(--color-secondary);
+    stroke-width: 2px;
+    width: 32px!important;
+    height: 32px!important;
+}
+
+.hotel-days{
+    font-size: 0.75rem;
+    color: var(--color-text-50);
+}
+
+.hotel-rating-container{
+    align-items: center;
+}
+
+.hotel-rating,
+.hotel-revues{
+    color: var(--color-text-50);
+}
+
+.hotel-rating{
+
+}
+
+.hotel-revues{
+    font-size: 0.75rem;
+}
+
+.hotel-favorite{
+    width: var(--icon-size);
+    height: var(--icon-size);
+    stroke: var(--color-secondary);
+    stroke-width: 2px;
+    color: transparent;
+}
+
+.selected .hotel-favorite{
+    color: var(--color-secondary);
+}

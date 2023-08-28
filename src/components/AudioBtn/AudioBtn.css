@@ -1,0 +1,18 @@
+.audio-btn{
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.audio-btn-icon{
+    color: var(--color-secondary);
+    stroke: var(--color-text);
+    stroke-width: 2px;
+    width: 32px;
+    height: 32px;
+}

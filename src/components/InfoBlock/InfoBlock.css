@@ -1,0 +1,13 @@
+.info-block-title{
+
+}
+
+.info-block-description{
+    color: var(--color-text-50);
+    overflow: hidden;
+}
+
+.info-block-description, .info-block-description span{
+    font-size: 0.75rem;
+    font-weight: 600;
+}

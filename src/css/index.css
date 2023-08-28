@@ -216,14 +216,18 @@ a{
     z-index: 100;
 }
 
-.icon svg,
-.icon img{
+.icon{
     width: var(--icon-size);
     height: var(--icon-size);
 }
 
 .bg-grey-light{
     background-color: var(--color-grey-light);
+}
+
+.black{
+    color: var(--color-black)!important;
+    stroke: var(--color-black)!important;
 }
 
 .small{

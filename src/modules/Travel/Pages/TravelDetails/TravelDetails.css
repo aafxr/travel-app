@@ -1,8 +1,6 @@
 .travel-details{
     position: relative;
-    /*aspect-ratio: 1.25;*/
     padding-bottom: 56%;
-
 }
 
 .travel-details-header{
@@ -23,6 +21,11 @@
     overflow-y: auto;
 }
 
+.travel-details-backface svg{
+    color: var(--color-black)!important;
+    stroke: var(--color-black)!important;
+}
+
 .travel-details img{
     border-radius: var(--br-20);
     object-fit: cover;
@@ -41,6 +44,8 @@
 
 .travel-menu svg{
     color: var(--color-black)!important;
+    stroke: var(--color-black)!important;
+    fill: var(--color-black)!important;
 }
 
 @media (prefers-color-scheme: dark) {

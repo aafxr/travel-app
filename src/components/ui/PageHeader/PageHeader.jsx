@@ -55,7 +55,7 @@ export default function PageHeader({
 
     return (
         <div className={styles} {...props}>
-            <div className='page-header-icon' onClick={backHandler}>
+            <div className='page-header-icon' onClick={arrowBack ? backHandler : ()=>{}}>
                 {!!arrowBack && <ArrowBackIcon/>}
             </div>
             {!!title &&

@@ -1,0 +1,17 @@
+.rating{
+    display: flex;
+    height: 14px;
+}
+.rating svg{
+    width: 14px;
+    height: 14px;
+    color: var(--color-grey);
+}
+
+.rating svg.fill{
+    color: var(--color-star);
+}
+
+.rating svg.fill-half{
+    color: var(--color-star);
+}

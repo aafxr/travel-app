@@ -44,6 +44,7 @@ import TravelAddMeeting from "./modules/Travel/Pages/TravelAddMeeting/TravelAddM
 import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
 import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
+import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 
 
 function App() {
@@ -100,6 +101,8 @@ function App() {
                                 <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
                                 <Route path={'/travel/:travelCode/add/meeting/'} element={<TravelAddMeeting/>}/>
                                 <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
+                                <Route path={'/hotels/:hotelCode/'} element={<HotelDetails />}/>
+
                                 <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                                     <Route element={<ExpensesLayout/>}>
                                         <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
