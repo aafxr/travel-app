@@ -19,8 +19,8 @@ export default function TravelDetails() {
     const navigate = useNavigate()
 
 
-    const menu = (
-        <Menu className='travel-menu '>
+    const menu = (className) => (
+        <Menu className={className}>
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Параметры'}/>
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
         </Menu>
@@ -34,20 +34,20 @@ export default function TravelDetails() {
     return (
         <>
             <Container className='travel-details-header'>
-                <PageHeader arrowBack MenuEl={menu}/>
+                <PageHeader arrowBack MenuEl={menu('travel-menu')}/>
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
-                <div className='travel-details'>
-                    <img className='img-abs' src={process.env.PUBLIC_URL + '/images/travel-img.png'} alt="details"/>
-                </div>
-                <div className='travel-details-title column center'>
-                    <h2 onClick={() => navigate('')}>Едем на Алтай</h2>
-                    <div className='travel-details-subtitle center'>из Новосибирска - на авто</div>
-                </div>
-                <div className='center'>
-                    <Chip className='center' color='orange' rounded>17-21 июля</Chip>
-                </div>
+                    <div className='travel-details'>
+                        <img className='img-abs' src={process.env.PUBLIC_URL + '/images/travel-img.png'} alt="details"/>
+                    </div>
+                    <div className='travel-details-title column center'>
+                        <h2 onClick={() => navigate('')}>Едем на Алтай</h2>
+                        <div className='travel-details-subtitle center'>из Новосибирска - на авто</div>
+                    </div>
+                    <div className='center'>
+                        <Chip className='center' color='orange' rounded>17-21 июля</Chip>
+                    </div>
                     <div className='content'>
                         <TravelPeople compact={compact}/>
                         <div className='flex-between'>

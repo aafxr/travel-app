@@ -1,6 +1,7 @@
 import axios from 'axios'
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, UNAUTHORIZED, USER_AUTH} from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
+import sleep from "../utils/sleep";
 
 const baseURL = process.env.REACT_APP_SERVER_URL
 
@@ -43,6 +44,13 @@ async function saveTokensToDB(userAuth) {
 aFetch.refresh = false
 
 aFetch.interceptors.request.use(async (c) => {
+    //задержка для запросов  во время обновления токенов (для исключения повторного отправления refresh)
+    if (!c.url.includes('/user/auth/refresh/')){
+        while(aFetch.refresh){
+            await sleep(200)
+        }
+    }
+
     await getTokensFromDB()
     c.headers.Authorization = access_token ? `Bearer ${access_token}` : ''
     if (c.url.includes('/user/auth/remove/') && c.data.refresh_token) {

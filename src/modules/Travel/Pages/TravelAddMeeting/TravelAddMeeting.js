@@ -5,10 +5,13 @@ import Button from "../../../../components/ui/Button/Button";
 import Container from "../../../../components/Container/Container";
 import {Input, PageHeader} from "../../../../components/ui";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
+import useChangeInputType from "../../hooks/useChangeInputType";
 
 export default function TravelAddMeeting() {
     const {travelCode} = useParams()
     const [textarea, setTextarea] = useState('')
+    const dateHandlers = useChangeInputType('date')
+    const timeHandlers = useChangeInputType('time')
 
     function handleSave() {
 
@@ -27,15 +30,13 @@ export default function TravelAddMeeting() {
                             className='br-right-0'
                             type='text'
                             placeholder='Дата'
-                            onFocus={e => e.target.type = 'date'}
-                            onBlure={e => e.target.type = 'text'}
+                            {...dateHandlers}
                         />
                         <Input
                             className='br-left-0'
                             type='text'
                             placeholder='Время'
-                            onFocus={e => e.target.type = 'time'}
-                            onBlure={e => e.target.type = 'text'}
+                            {...timeHandlers}
                         />
                     </div>
                 </div>

@@ -259,8 +259,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: block;
     vertical-align: center;
     background: url(../../public/icons/calendar_days.svg) no-repeat;
-    width: var(--icon-size);
-    height: var(--icon-size);
+    width: 20px;
+    height: 20px;
 }
 
 .br-left-0{

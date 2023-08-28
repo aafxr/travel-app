@@ -4,9 +4,12 @@ import {useParams} from "react-router-dom";
 import Button from "../../../../components/ui/Button/Button";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
+import useChangeInputType from "../../hooks/useChangeInputType";
 
 export default function TravelAddPlane() {
     const {travelCode} = useParams()
+    const dateHandlers = useChangeInputType('date')
+    const timeHandlers = useChangeInputType('time')
 
     function handleSave() {
 
@@ -28,15 +31,13 @@ export default function TravelAddPlane() {
                             className='br-right-0'
                             type='text'
                             placeholder='Дата'
-                            onFocus={e => e.target.type = 'date'}
-                            onBlure={e => e.target.type = 'text'}
+                            {...dateHandlers}
                         />
                         <Input
                             className='br-left-0'
                             type='text'
                             placeholder='Время'
-                            onFocus={e => e.target.type = 'time'}
-                            onBlure={e => e.target.type = 'text'}
+                            {...timeHandlers}
                         />
                     </div>
                 </div>
@@ -48,14 +49,14 @@ export default function TravelAddPlane() {
                             type='text'
                             placeholder='Дата'
                             onFocus={e => e.target.type = 'date'}
-                            onBlure={e => e.target.type = 'text'}
+                            onBlur={e => e.target.type = 'text'}
                         />
                         <Input
                             className='br-left-0'
                             type='text'
                             placeholder='Время'
                             onFocus={e => e.target.type = 'time'}
-                            onBlure={e => e.target.type = 'text'}
+                            onBlur={e => e.target.type = 'text'}
                         />
                     </div>
                 </div>
