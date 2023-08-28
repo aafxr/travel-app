@@ -20,7 +20,8 @@ export default function Login() {
                 const {ok, data} = res
                 if (ok) {
                     dispatch(updateUser(data))
-                    navigate(-1)
+                    setTimeout(() => navigate(-1), 500)
+
                 }
             })
             .catch(err => console.error(err))
