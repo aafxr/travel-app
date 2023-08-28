@@ -15,6 +15,16 @@ import {registerRoute} from 'workbox-routing';
 
 import {CACHE_VERSION, GLOBAL_DB_VERSION} from "./static/constants";
 
+self.addEventListener('install', e => {
+    e.waitUntil(
+        caches.keys().then(cacheNames => {
+            cacheNames.forEach(cacheName => {
+                caches.delete(cacheName);
+            })
+        })
+    )
+})
+
 
 const version = CACHE_VERSION + GLOBAL_DB_VERSION
 
@@ -91,3 +101,4 @@ self.addEventListener('message', (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
