@@ -3,9 +3,9 @@ import {useNavigate} from "react-router-dom";
 
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import uploadFile from "../../../../utils/file/uploadFile";
 
 import './TravelCard.css'
-import uploadFile from "../../../../utils/file/uploadFile";
 
 const defaultImage = process.env.PUBLIC_URL + '/images/travel-placeholder.jpg'
 export default function TravelCard({id, title, onRemove, url}) {

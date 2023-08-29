@@ -43,9 +43,7 @@
 }
 
 .travel-menu svg{
-    color: var(--color-black)!important;
-    stroke: var(--color-black)!important;
-    fill: var(--color-black)!important;
+    color: var(--color-icon-alt)!important;
 }
 
 @media (prefers-color-scheme: dark) {

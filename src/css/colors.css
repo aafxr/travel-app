@@ -3,6 +3,8 @@
     --color-primary: #FF8E09;
     --color-primary-light: #FFF3E4;
     --color-secondary: #FFF;
+    --color-background: #FFF;
+    --color-background-alt: var(--color-grey-light);
     --color-grey: #A2A2A2;
     --color-grey-light: #F0F0F0;
     --color-text: #000;
@@ -15,6 +17,9 @@
     --color-placeholder: #c9c9c9;
     --color-link: var(--color-primary);
     --color-star: #E3CD00;
+
+    --color-icon: var(--color-text);
+    --color-icon-alt: #ffffff;
 
     --color-success: #52CF37;
     --color-warning: #E3CD00;
@@ -35,6 +40,30 @@
         --color-text-secondary: #000;
         --color-text-light: #E1E1E1;
         --color-text-50: rgba(235, 235, 235, 0.50);
+        --color-icon-alt: var(--color-black);
 
+        --box-shadow: 0 0 16px rgba(30,30,30, .7);
     }
+}
+
+.light-theme{
+    --color-text: #000;
+    --color-text-50: rgba(30, 30, 30, 0.50);
+    --color-background: #fff;
+    --color-background-alt: var(--color-grey-light);
+    --color-navigation-bg: var(--color-secondary);
+    --color-icon: var(--color-text);
+    --color-icon-alt: #000;
+}
+
+.dark-theme{
+    --color-text: #fff;
+    --color-text-50: rgba(235, 235, 235, 0.50);
+    --color-background: #0f0f0f;
+    --color-background-alt: var(--color-grey-light);
+    --color-navigation-bg: rgb(30,30,30);
+    --color-icon: var(--color-text);
+    --color-icon-alt: #000;
+    --box-shadow: 0 0 16px rgba(90,90,90, .7);
+
 }

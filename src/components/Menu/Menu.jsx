@@ -3,17 +3,15 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
+import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
+import {updateUser} from "../../redux/userStore/updateUser";
+import errorReport from "../../controllers/ErrorReport";
 import MenuIconList from "../MenuIconList/MenuIconList";
+import useOutside from "../../hooks/useOutside";
+import storeDB from "../../db/storeDB/storeDB";
+import aFetch from "../../axios";
 import {MenuIcon} from "../svg";
 
-import useOutside from "../../hooks/useOutside";
-
-import storeDB from "../../db/storeDB/storeDB";
-import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
-import errorReport from "../../controllers/ErrorReport";
-import aFetch from "../../axios";
-
-import {updateUser} from "../../redux/userStore/updateUser";
 import './Menu.css'
 
 export default function Menu({children, className}) {

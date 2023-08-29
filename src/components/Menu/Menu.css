@@ -8,17 +8,13 @@
     z-index: 2000;
 }
 
-.menu:hover {
-
-}
-
 .menu-container {
     padding: 20px;
     position: fixed;
     top: 0;
     right: 0;
 
-    background-color: var(--color-secondary);
+    background-color: var(--color-background);
 
     transition: max-height 1s;
     overflow: hidden;
@@ -57,6 +53,9 @@
 }
 
 .menu-icons {
+    color: var(--color-icon);
+    stroke: var(--color-icon);
+    fill: var(--color-icon);
     cursor: pointer;
 }
 

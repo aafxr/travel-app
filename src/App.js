@@ -24,14 +24,14 @@ import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 import Login from "./modules/Main/Pages/Login/Login";
 import AuthRequired from "./hoc/AuthRequired";
-import TravelRoutes from "./modules/Main/Pages/Routes/TravelRoutes";
+import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import Events from "./modules/Main/Pages/Events/Events";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import {store} from './redux/store'
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
-import ChangeName from "./modules/Main/Pages/Profile/ChangeName";
+import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
@@ -123,14 +123,10 @@ function App() {
                                            element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                                 </Route>
                                 <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                                <Route path={'/profile/settings/user/'}
-                                       element={<AuthRequired><ChangeName/></AuthRequired>}/>
-                                <Route path={'/profile/settings/user/name/edite/'}
-                                       element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
-                                <Route path={'/profile/settings/user/photo/edite/'}
-                                       element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
-                                <Route path={'/profile/actions/'}
-                                       element={<AuthRequired><ActionsList/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                                <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
+                                <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
                                 <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
                                 <Route path={'/login/'} element={<Login/>}/>
                             </Route>

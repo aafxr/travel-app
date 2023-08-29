@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import Checkbox from "../ui/Checkbox/Checkbox";
 
@@ -11,13 +11,35 @@ import Checkbox from "../ui/Checkbox/Checkbox";
  * @param {function} onChange
  * @param {'right' | 'left'} position default = 'right'
  * @param {boolean} multy
+ * @param {string | string[]} initValue
  * @returns {JSX.Element|null}
  * @constructor
  */
-export default function RadioButtonGroup({className, title, checklist, onChange, position = 'right', multy = false}) {
+export default function RadioButtonGroup({
+                                             className,
+                                             title,
+                                             checklist,
+                                             onChange,
+                                             position = 'right',
+                                             multy = false,
+                                             initValue
+                                         }) {
     const classNames = clsx('column', className)
     const isLeft = position === 'left'
     const [selected, setSelected] = useState(multy ? [] : '')
+
+
+    useEffect(() => {
+        if (initValue) {
+            if (multy && initValue && !Array.isArray(initValue)) {
+                console.warn('[RadioButtonGroup] initValue must be array')
+            } else if (!multy && initValue && typeof initValue !== 'string') {
+                console.warn('[RadioButtonGroup] initValue must be string')
+            } else {
+                setSelected(initValue)
+            }
+        }
+    }, [])
 
     if (!checklist || !checklist.length) {
         console.warn('RadioButtonGroup list empty.')

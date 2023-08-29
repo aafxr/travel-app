@@ -19,8 +19,8 @@ export default function TravelDetails() {
     const navigate = useNavigate()
 
 
-    const menu = (className) => (
-        <Menu className={className}>
+    const menu =  (
+        <Menu >
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Параметры'}/>
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
         </Menu>
@@ -33,8 +33,8 @@ export default function TravelDetails() {
 
     return (
         <>
-            <Container className='travel-details-header black'>
-                <PageHeader arrowBack MenuEl={menu('travel-menu')}/>
+            <Container className='travel-details-header'>
+                <PageHeader className='travel-menu' arrowBack MenuEl={menu}/>
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>

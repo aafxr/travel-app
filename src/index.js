@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
+import {CACHE_VERSION, THEME} from "./static/constants";
+import setFixedVH from "./utils/setFixedVH";
+import errorReport from "./controllers/ErrorReport";
+
 import App from './App';
 
-import setFixedVH from "./utils/setFixedVH";
-
-import errorReport from "./controllers/ErrorReport";
-import {CACHE_VERSION} from "./static/constants";
 import './css/index.css';
+
+const theme = localStorage.getItem(THEME)
+console.log(theme)
+document.body.classList.add(theme)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

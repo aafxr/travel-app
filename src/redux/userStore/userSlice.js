@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {initUser} from "./initUser";
 import {updateUser} from "./updateUser";
+import {THEME} from "../../static/constants";
 
 /**
  * @typedef {Object} UserAppType
@@ -23,14 +24,24 @@ import {updateUser} from "./updateUser";
  */
 const initialState = {
     user: null,
-    loading: true
+    loading: true,
+    theme: ''
 }
 
 
 export const userSlice = createSlice({
         name: 'travels',
         initialState,
-        reducers: {},
+        reducers: {
+            changeTheme(state, action) {
+                localStorage.setItem(THEME, action.payload.toString())
+
+                state.theme && document.body.classList.remove(state.theme)
+                document.body.classList.add(action.payload)
+
+                state.theme = action.payload
+            }
+        },
         extraReducers: (builder) => {
             builder.addCase(initUser.pending, (state, action) => {
                 state.user = action.payload
@@ -38,8 +49,11 @@ export const userSlice = createSlice({
             })
 
             builder.addCase(initUser.fulfilled, (state, action) => {
-                state.user = action.payload
-                state.loading = false
+                if (action.payload) {
+                    state.user = action.payload.user
+                    state.loading = false
+                    state.theme = action.payload.theme
+                }
             })
 
             builder.addCase(initUser.rejected, (state, action) => {
@@ -48,7 +62,7 @@ export const userSlice = createSlice({
             })
 
             builder.addCase(updateUser.fulfilled, (state, action) => {
-                state.user = action.payload
+                state.user = action.payload.user
             })
         }
     }

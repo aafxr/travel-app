@@ -63,27 +63,29 @@ export default function Sessions() {
     }
 
     return (
-        <Container>
+        <Container className='wrapper'>
             <PageHeader arrowBack title='Активные сеансы'/>
-            {!!currentSession && <SessionItem className='bg-grey-light color-black' sessionData={currentSession}/>}
-            {!!authList.length && authList.map(
-                /**@param{SessionDataType} a*/
-                a => (
-                    <Swipe
-                        key={a.uid}
-                        className='auth-item'
-                        onRemove={() => removeSessionHandler(a)}
-                        rightButton
-                    >
-                        <SessionItem sessionData={a}/>
-                    </Swipe>
-                )
-            )}
-            {loading && (
-                <div className='center' >
-                    <Loader />
-                </div>
-            )}
+            <div className='content'>
+                {!!currentSession && <SessionItem className='bg-grey-light color-black' sessionData={currentSession}/>}
+                {!!authList.length && authList.map(
+                    /**@param{SessionDataType} a*/
+                    a => (
+                        <Swipe
+                            key={a.uid}
+                            className='auth-item'
+                            onRemove={() => removeSessionHandler(a)}
+                            rightButton
+                        >
+                            <SessionItem sessionData={a}/>
+                        </Swipe>
+                    )
+                )}
+                {loading && (
+                    <div className='center'>
+                        <Loader/>
+                    </div>
+                )}
+            </div>
         </Container>
     )
 }
