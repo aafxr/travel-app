@@ -7,15 +7,21 @@ import IconButton from "../../../../components/ui/IconButton/IconButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import {Chip, PageHeader} from "../../../../components/ui";
+import {Chip, PageHeader, Tab} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './TravelDetails.css'
+import Curtain from "../../../../components/Curtain/Curtain";
+import Button from "../../../../components/ui/Button/Button";
+import LocationCard from "../../components/LocationCard/LocationCard";
+import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
+import clsx from "clsx";
 
 
 export default function TravelDetails() {
     const {travelCode} = useParams()
     const [compact, setCompact] = useState(false)
+    const [curtainOpen, setCurtainOpen] = useState(false)
     const navigate = useNavigate()
 
 
@@ -25,16 +31,16 @@ export default function TravelDetails() {
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
         </Menu>
     )
-    // const items = [
-    //     {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
-    //     {id: 2, entityType: 'Кафе', entityName: 'Malina'},
-    //     {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
-    // ]
+    const items = [
+        {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
+        {id: 2, entityType: 'Кафе', entityName: 'Malina'},
+        {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
+    ]
 
     return (
         <>
             <Container className='travel-details-header'>
-                <PageHeader className='travel-menu' arrowBack MenuEl={menu}/>
+                <PageHeader className={clsx('travel-menu', {'curtain-closed': !curtainOpen})} arrowBack MenuEl={menu}/>
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
@@ -60,7 +66,7 @@ export default function TravelDetails() {
                             </span>
                         </div>
                     </div>
-                    <div className='flex-between flex-nowrap gap-0.5 footer'>
+                    <div className='flex-between flex-nowrap gap-0.5 footer pb-20'>
                         <IconButton icon={<Money/>} title='Расходы'/>
                         <IconButton icon={<ChecklistIcon/>} title='Чек-лист'/>
                         <IconButton icon={<ChatIcon badge/>}/>
@@ -69,46 +75,49 @@ export default function TravelDetails() {
 
             </Container>
 
-            {/*<Curtain>*/}
-            {/*    <Container>*/}
-            {/*        <div className='flex-between gap-1'>*/}
-            {/*            <Button>по дням</Button>*/}
-            {/*            <Button>на карте</Button>*/}
-            {/*            <Button>все места</Button>*/}
-            {/*        </div>*/}
-            {/*    </Container>*/}
-            {/*    <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>*/}
-            {/*        <Tab name='1 день'/>*/}
-            {/*        <Tab name='2 день'/>*/}
-            {/*        <Tab name='3 день'/>*/}
-            {/*        <Tab name='4 день'/>*/}
-            {/*        <Tab name='5 день'/>*/}
-            {/*        <Tab name='6 день'/>*/}
-            {/*        <Tab name='7 день'/>*/}
-            {/*    </div>*/}
-            {/*    <Container className='pt-20 pb-20'>*/}
-            {/*        <LocationCard*/}
-            {/*            title='Новосибирск-Сочи'*/}
-            {/*            entityType='Перелет'*/}
-            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2}*/}
-            {/*            dateEnd={Date.now()}*/}
-            {/*        />*/}
-            {/*        <RecommendLocation items={items}/>*/}
-            {/*        <LocationCard*/}
-            {/*            title='Новосибирск-Сочи'*/}
-            {/*            entityType='Перелет'*/}
-            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2.1}*/}
-            {/*            dateEnd={Date.now()}*/}
-            {/*        />*/}
-            {/*        <RecommendLocation items={items}/>*/}
-            {/*        <LocationCard*/}
-            {/*            title='Новосибирск-Сочи'*/}
-            {/*            entityType='Перелет'*/}
-            {/*            dateStart={Date.now() - 1000 * 60 * 60 * 2.1}*/}
-            {/*        />*/}
-            {/*        <AddButton>Добавить локацию</AddButton>*/}
-            {/*    </Container>*/}
-            {/*</Curtain>*/}
+            <Curtain
+                onChange={setCurtainOpen}
+                defaultOffsetPercents={1}
+            >
+                <Container>
+                    <div className='flex-between gap-1'>
+                        <Button>по дням</Button>
+                        <Button>на карте</Button>
+                        <Button>все места</Button>
+                    </div>
+                </Container>
+                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                    <Tab name='1 день'/>
+                    <Tab name='2 день'/>
+                    <Tab name='3 день'/>
+                    <Tab name='4 день'/>
+                    <Tab name='5 день'/>
+                    <Tab name='6 день'/>
+                    <Tab name='7 день'/>
+                </div>
+                <Container className='pt-20 pb-20'>
+                    <LocationCard
+                        title='Новосибирск-Сочи'
+                        entityType='Перелет'
+                        dateStart={Date.now() - 1000 * 60 * 60 * 2}
+                        dateEnd={Date.now()}
+                    />
+                    <RecommendLocation items={items}/>
+                    <LocationCard
+                        title='Новосибирск-Сочи'
+                        entityType='Перелет'
+                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
+                        dateEnd={Date.now()}
+                    />
+                    <RecommendLocation items={items}/>
+                    <LocationCard
+                        title='Новосибирск-Сочи'
+                        entityType='Перелет'
+                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
+                    />
+                    <AddButton>Добавить локацию</AddButton>
+                </Container>
+            </Curtain>
         </>
     )
 }

@@ -45,6 +45,9 @@
 .travel-menu svg{
     color: var(--color-icon-alt)!important;
 }
+.travel-menu.curtain-closed svg{
+    color: var(--color-icon)!important;
+}
 
 @media (prefers-color-scheme: dark) {
     .travel-details-backface{

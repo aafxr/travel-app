@@ -13,6 +13,7 @@ import useResize from "../../hooks/useResize";
  * @param {number} defaultOffsetPX px
  * @param {number} defaultOffsetPercents 0 - 1
  * @param {number} duration default 300ms
+ * @param {Function} onChange callback (шторка открыта / закрыта)
  * @return {JSX.Element}
  * @constructor
  */
@@ -23,7 +24,8 @@ export default function Curtain({
                                     maxOpenPercent,
                                     defaultOffsetPX = 0,
                                     defaultOffsetPercents = 0,
-                                    duration = 300
+                                    duration = 300,
+    onChange
                                 }) {
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const cRef = useRef()
@@ -72,10 +74,12 @@ export default function Curtain({
     function curtainHandler() {
         if (topOffset > minOffset) {
             setTopOffset(minOffset)
+            onChange && onChange(false)
             animateTop(curtainRef.current, minOffset, duration)()
         } else {
             const t = calcTopOffset()
             setTopOffset(t)
+            onChange && onChange(true)
             animateTop(curtainRef.current, t, duration)()
 
         }
