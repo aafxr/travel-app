@@ -80,7 +80,7 @@ export default function TravelDetails() {
                 defaultOffsetPercents={1}
             >
                 <Container>
-                    <div className='flex-between gap-1'>
+                    <div className='flex-between gap-1 pt-20'>
                         <Button>по дням</Button>
                         <Button>на карте</Button>
                         <Button>все места</Button>

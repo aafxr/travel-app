@@ -15,7 +15,7 @@ export default function LocationCard({imgURL, dateStart, dateEnd, title, entityT
             {!!start && <Chip className='location-date-start'>{start}</Chip>}
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
-                <img className='img-abs' src={imgURL || DEFAULT_IMG_URL} alt="location image"/>
+                <img className='img-abs' src={imgURL || DEFAULT_IMG_URL} alt="location image" />
             </div>
             <div className='location-title'>{title}</div>
             <div className='location-entity-type'>{entityType}</div>

@@ -48,7 +48,6 @@ export default function IconButton({
                 )}
                 {title}
             </div>
-
         </button>
     )
 }
