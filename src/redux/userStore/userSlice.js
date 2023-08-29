@@ -25,7 +25,7 @@ import {THEME} from "../../static/constants";
 const initialState = {
     user: null,
     loading: true,
-    theme: ''
+    theme: 'default'
 }
 
 
@@ -34,10 +34,11 @@ export const userSlice = createSlice({
         initialState,
         reducers: {
             changeTheme(state, action) {
+                const themeName = action.payload === 'default' ? 'light-theme' : action.payload
                 localStorage.setItem(THEME, action.payload.toString())
 
                 state.theme && document.body.classList.remove(state.theme)
-                document.body.classList.add(action.payload)
+                document.body.classList.add(themeName)
 
                 state.theme = action.payload
             }
@@ -63,6 +64,9 @@ export const userSlice = createSlice({
 
             builder.addCase(updateUser.fulfilled, (state, action) => {
                 state.user = action.payload.user
+            })
+            builder.addCase(updateUser.rejected, (state, action) => {
+                console.log('updateUser rejected')
             })
         }
     }

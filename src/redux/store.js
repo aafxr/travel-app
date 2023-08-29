@@ -13,9 +13,4 @@ export const store = configureStore({
     },
 })
 
-/**
- * @typedef {{expenses: {controller: (ActionController|null), defaultSection: (SectionType|null), expensesPlan: (Array<ExpenseType>|[]), currency: Array<CurrencyType>, expensesActual: (Array<ExpenseType>|[]), sections: (Array<SectionType>|[]), limits: (Array<LimitType>|[])}, travel: {travels: import('../models/travel/TravelType').TravelType[], travelController: (ActionController|null), travel: import('../models/travel/TravelType').TravelType}} & ExtractStateExtensions<[((next: StoreEnhancerStoreCreator) => StoreEnhancerStoreCreator<{}, {}>)]>} ReduxStateType
- */
-const state = store.getState()
-
 export const actions = {expensesActions,travelActions,userActions}

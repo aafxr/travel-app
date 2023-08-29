@@ -9,15 +9,18 @@ import constants from "../../../../static/constants";
 import {actions} from "../../../../redux/store";
 
 const variants = [
-    'Темная тема',
-    'Светлая тема'
+    'По умолчанию',
+    'Темная',
+    'Светлая'
 ]
 
 const themeConvertor = {
-    ['Темная тема']: 'dark-theme',
-    ['Светлая тема']: 'light-theme',
-    ['dark-theme']: 'Темная тема',
-    ['light-theme']: 'Светлая тема'
+    ['Темная']: 'dark-theme',
+    ['Светлая']: 'light-theme',
+    ['По умолчанию']: 'default',
+    ['dark-theme']: 'Темная',
+    ['light-theme']: 'Светлая',
+    ['default']:'По умолчанию'
 }
 
 export default function ChangeUserPreferences() {
@@ -37,10 +40,12 @@ export default function ChangeUserPreferences() {
                 <LinkComponent title={'Изменить имя'} to='/profile/settings/user/name/edite/' arrow/>
                 <LinkComponent title={'Изменить фото'} to='/profile/settings/user/photo/edite/' arrow/>
                 <RadioButtonGroup
+                    groupClassNames='pt-20'
                     title={'Изменить тему'}
                     checklist={variants}
                     onChange={handleThemeChange}
                     initValue={themeConvertor[theme]}
+                    position='left'
                 />
             </Container>
         </div>

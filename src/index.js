@@ -11,8 +11,8 @@ import App from './App';
 
 import './css/index.css';
 
-const theme = localStorage.getItem(THEME)
-console.log(theme)
+let theme = localStorage.getItem(THEME)
+theme = theme === 'default' ? 'light-theme' : theme
 document.body.classList.add(theme)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

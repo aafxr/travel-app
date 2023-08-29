@@ -5,17 +5,21 @@ import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
-import Menu from "../../../../components/Menu/Menu";
+import Photo from "../../../../components/Poto/Photo";
 import {PageHeader} from "../../../../components/ui";
+import storeDB from "../../../../db/storeDB/storeDB";
+import Menu from "../../../../components/Menu/Menu";
 
-import usePhoto from "../../../../hooks/usePhoto";
-import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
+import constants from "../../../../static/constants";
 
 import './Profile.css'
 
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
-    const photoURL = usePhoto(user?.photo)
+
+    function handlePhotoChange(photo){
+        storeDB.editElement(constants.store.IMAGES, photo)
+    }
 
     return (
         <div className='wrapper'>
@@ -26,7 +30,7 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <img src={photoURL || DEFAULT_IMG_URL} alt="Фото"/>
+                        <Photo id={user?.photo} onChange={handlePhotoChange} />
                     </div>
                     <div className='profile-user-name center'>
                         <span>{user?.first_name}</span>&nbsp;

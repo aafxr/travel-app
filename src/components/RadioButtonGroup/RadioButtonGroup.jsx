@@ -5,6 +5,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
 
 /**
  * компонент для отрисовки чеклиста
+ * @param {string} groupClassNames
  * @param {string} className
  * @param {string} title
  * @param {string[]} checklist
@@ -16,6 +17,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
  * @constructor
  */
 export default function RadioButtonGroup({
+                                             groupClassNames,
                                              className,
                                              title,
                                              checklist,
@@ -64,7 +66,7 @@ export default function RadioButtonGroup({
     }
 
     return (
-        <div>
+        <div className={groupClassNames}>
             <div className='title-bold'>{title}</div>
             <div className={classNames}>
                 {

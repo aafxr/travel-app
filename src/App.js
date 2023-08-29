@@ -135,7 +135,7 @@ function App() {
                     <Route path={'/error/'} element={<ErrorPage/>}/>
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
                 </Routes>
-                <Alerts count={3}/>
+                <Alerts count={2}/>
             </>
         </Provider>
     );

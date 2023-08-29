@@ -4,7 +4,9 @@ import constants, {USER_AUTH} from "../../static/constants";
 
 export const updateUser = createAsyncThunk('updateUser', async (userData, thunkApi) => {
     try {
-        if (!userData) return null
+        if (!userData) {
+            thunkApi.abort()
+        }
 
         const user = await storeDB.getOne(constants.store.USERS, userData.id)
         let newUserData = userData
@@ -14,7 +16,7 @@ export const updateUser = createAsyncThunk('updateUser', async (userData, thunkA
         await storeDB.editElement(constants.store.USERS, newUserData)
         localStorage.setItem(USER_AUTH, JSON.stringify(newUserData))
 
-        return newUserData
+        return {user: newUserData}
     } catch (err) {
         console.error(err)
         thunkApi.abort()
