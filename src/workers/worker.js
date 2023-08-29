@@ -94,7 +94,7 @@ setInterval(async () => {
                         a.synced = 1
                         return a
                     })
-                await Promise.all(sendedActions.map(a => travelDB.editElement(constants.store.STORE_ACTIONS, a)))
+                await Promise.all(sendedActions.map(a => storeDB.editElement(constants.store.STORE_ACTIONS, a)))
                     .then(() => actionsUpdatedNotification(sendedActions))
             }
         }
