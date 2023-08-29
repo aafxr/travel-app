@@ -186,7 +186,7 @@ a{
 .footer-btn-container{
     position: relative;
     padding: 10px 20px;
-    background-color: var(--color-secondary);
+    background-color: var(--color-background);
     box-shadow: 0 -10px 30px 0 rgba(0, 0, 0, 0.10);
     z-index: 2;
 }
