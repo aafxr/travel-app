@@ -7,7 +7,7 @@ import './IconButton.css'
  * @param {boolean} small
  * @param {boolean} border
  * @param {boolean} shadow
- * @param {'transparent' | 'secondary' | 'primary'} bgVariant
+ * @param {'transparent' | 'secondary' | 'primary' | 'bg-default'} bgVariant
  * @param {string} [title]
  * @param {string} className
  * @param {string} iconClass
@@ -36,6 +36,7 @@ export default function IconButton({
             'bg-transparent': bgVariant === 'transparent',
             'bg-secondary': bgVariant === 'secondary',
             'bg-primary': bgVariant === 'primary',
+            'bg-default': bgVariant === 'bg-default',
             'shadow': shadow,
         },
         className)

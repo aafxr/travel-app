@@ -25,6 +25,10 @@
     background-color: var(--color-primary);
 }
 
+.icon-button.bg-primary{
+    background-color: var(--color-background);
+}
+
 .icon-button.shadow{
     box-shadow: var(--box-shadow);
 }

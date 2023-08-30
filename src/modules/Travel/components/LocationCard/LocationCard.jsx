@@ -1,12 +1,12 @@
+import IconButton from "../../../../components/ui/IconButton/IconButton";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import Photo from "../../../../components/Poto/Photo";
+import {PlusIcon} from "../../../../components/svg";
 import {Chip} from "../../../../components/ui";
 
-import IconButton from "../../../../components/ui/IconButton/IconButton";
-import {PlusIcon} from "../../../../components/svg";
 import './LocationCard.css'
 
-export default function LocationCard({imgURL, dateStart, dateEnd, title, entityType, children, onAdd}) {
+export default function LocationCard({imgID, dateStart, dateEnd, title, entityType, children, onAdd}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
@@ -15,7 +15,7 @@ export default function LocationCard({imgURL, dateStart, dateEnd, title, entityT
             {!!start && <Chip className='location-date-start'>{start}</Chip>}
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
-                <img className='img-abs' src={imgURL || DEFAULT_IMG_URL} alt="location" />
+                <Photo id={imgID} className={'img-abs'}/>
             </div>
             <div className='location-title'>{title}</div>
             <div className='location-entity-type'>{entityType}</div>

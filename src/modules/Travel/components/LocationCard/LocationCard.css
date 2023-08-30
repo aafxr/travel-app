@@ -4,7 +4,7 @@
     padding-bottom: 1.25rem;
     padding-left: 0.5rem;
     border-radius: var(--br-20);
-    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.10);
+    box-shadow: var(--box-shadow);
 }
 
 .location-date-start,

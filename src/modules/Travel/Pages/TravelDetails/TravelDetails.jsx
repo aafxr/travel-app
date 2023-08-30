@@ -60,7 +60,6 @@ export default function TravelDetails() {
         {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
     ]
 
-    console.log(travel)
 
     function handleTravelPhotoChange(photo){
         if (travel){
