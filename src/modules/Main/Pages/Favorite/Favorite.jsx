@@ -3,26 +3,18 @@ import {useNavigate} from "react-router-dom";
 import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 
-import  {USER_AUTH} from "../../../../static/constants";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
+import constants from "../../../../static/constants";
 import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {useSelector} from "react-redux";
 
 export default function Favorite({
                                    primary_entity_type,
                                    primary_entity_id
                                }) {
     const navigate = useNavigate()
-    const {user, setUser} = useContext(UserContext)
+    const {user} = useSelector(state => state[constants.redux.USER])
 
-    useEffect(() => {
-        if (!user) {
-            const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (!us) {
-                setUser(us)
-            }
-        }
-    }, [user])
 
     return (
         <div className='wrapper'>

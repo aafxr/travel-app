@@ -7,6 +7,10 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * @param {boolean} withMonth
  */
 export default  function dateToStringFormat(dateTime, withMonth = true){
+    if(!dateTime){
+        return ''
+    }
+
     let time = new Date(dateTime)
     let minutes = time.getMinutes().toString()
     let result

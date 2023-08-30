@@ -1,28 +1,51 @@
-import React, {useState} from "react";
+import clsx from "clsx";
+import {useSelector} from "react-redux";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
+import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
 import {Chip, PageHeader, Tab} from "../../../../components/ui";
-import Menu from "../../../../components/Menu/Menu";
-
-import './TravelDetails.css'
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
-import LocationCard from "../../components/LocationCard/LocationCard";
-import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
-import clsx from "clsx";
+import changedFields from "../../../../utils/changedFields";
+import createAction from "../../../../utils/createAction";
+import travelDB from "../../../../db/travelDB/travelDB";
+import Photo from "../../../../components/Poto/Photo";
+import storeDB from "../../../../db/storeDB/storeDB";
+import constants from "../../../../static/constants";
+import Menu from "../../../../components/Menu/Menu";
+import dateRange from "../../../../utils/dateRange";
+
+import './TravelDetails.css'
 
 
 export default function TravelDetails() {
+    const {user} = useSelector(state => state[constants.redux.USER])
     const {travelCode} = useParams()
+    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
+    const [travel, setTravel] = useState(null)
     const [compact, setCompact] = useState(false)
-    const [curtainOpen, setCurtainOpen] = useState(false)
+    const [curtainOpen, setCurtainOpen] = useState(true)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        async function tryFindTravel(){
+            let currentTravel = travels?.find(t => t.id === travelCode)
+
+            if(!currentTravel){
+                currentTravel = await travelDB.getOne(constants.store.TRAVEL, travelCode)
+            }
+            setTravel(currentTravel || null)
+        }
+        tryFindTravel()
+    }, [])
 
 
     const menu =  (
@@ -37,6 +60,27 @@ export default function TravelDetails() {
         {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
     ]
 
+    console.log(travel)
+
+    function handleTravelPhotoChange(photo){
+        if (travel){
+            const newTravelData = {...travel, photo: photo.id}
+            const keys = changedFields(travel,newTravelData, ['id', 'photo'])
+            const updateTravelData = keys.reduce((acc, k) => {
+                acc[k] = newTravelData[k]
+                return acc
+            }, {})
+            const action = createAction(constants.store.TRAVEL, user.id, 'update', updateTravelData)
+
+            Promise.all([
+                travelDB.editElement(constants.store.TRAVEL, newTravelData),
+                travelDB.addElement(constants.store.TRAVEL_ACTIONS, action),
+                storeDB.editElement(constants.store.IMAGES, photo)
+            ]).catch(console.error)
+        }
+    }
+
+
     return (
         <>
             <Container className='travel-details-header'>
@@ -45,17 +89,19 @@ export default function TravelDetails() {
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='travel-details'>
-                        <img className='img-abs' src={process.env.PUBLIC_URL + '/images/travel-img.png'} alt="details"/>
+                        <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange} />
                     </div>
-                    <div className='travel-details-title column center'>
-                        <h2 onClick={() => navigate('')}>Едем на Алтай</h2>
-                        <div className='travel-details-subtitle center'>из Новосибирска - на авто</div>
+                    <div className='travel-details-title column center gap-0.25'>
+                        <h2 onClick={() => navigate('')}>{travel?.title}</h2>
+                        <div className='travel-details-subtitle center'>{travel?.description}</div>
                     </div>
                     <div className='center'>
-                        <Chip className='center' color='orange' rounded>17-21 июля</Chip>
+                        <Chip className='center' color='orange' rounded>
+                            {dateRange(travel?.start, travel?.end)}
+                        </Chip>
                     </div>
-                    <div className='content'>
-                        <TravelPeople compact={compact}/>
+                    <div className='content column gap-0.5'>
+                        <TravelPeople peopleList={[travel?.owner_id]}  compact={compact}/>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
                             <span

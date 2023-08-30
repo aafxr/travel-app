@@ -47,7 +47,7 @@ export default function UserPhotoEdite() {
             <Container className='content'>
                 <PageHeader arrowBack/>
                 <div className='column center gap-1 pt-20'>
-                    <Photo id={user?.photo} onChange={handlePhotoChange}/>
+                    <Photo className='photo' id={user?.photo} onChange={handlePhotoChange}/>
                 </div>
             </Container>
             <div className='footer-btn-container footer'>

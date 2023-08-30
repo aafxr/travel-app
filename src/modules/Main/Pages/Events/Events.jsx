@@ -1,28 +1,19 @@
-import React, {useContext, useEffect} from 'react'
+import React from 'react'
+import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {PageHeader} from "../../../../components/ui";
-import Container from "../../../../components/Container/Container";
 
-import  {USER_AUTH} from "../../../../static/constants";
-import {UserContext} from "../../../../contexts/UserContextProvider.jsx";
-import Navigation from "../../../../components/Navigation/Navigation";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import Navigation from "../../../../components/Navigation/Navigation";
+import Container from "../../../../components/Container/Container";
+import constants from "../../../../static/constants";
+import {PageHeader} from "../../../../components/ui";
 
 export default function Events({
                                  primary_entity_type,
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
-    const {user, setUser} = useContext(UserContext)
-
-    useEffect(() => {
-        if (!user) {
-            const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (!us) {
-                setUser(us)
-            }
-        }
-    }, [user])
+    const {user} = useSelector(state => state[constants.redux.USER])
 
     return (
         <div className='wrapper'>

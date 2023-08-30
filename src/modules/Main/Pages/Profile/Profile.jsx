@@ -18,6 +18,7 @@ export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
 
     function handlePhotoChange(photo){
+
         storeDB.editElement(constants.store.IMAGES, photo)
     }
 
@@ -30,7 +31,7 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <Photo id={user?.photo} onChange={handlePhotoChange} />
+                        <Photo className='photo' id={user?.photo} onChange={handlePhotoChange} />
                     </div>
                     <div className='profile-user-name center'>
                         <span>{user?.first_name}</span>&nbsp;

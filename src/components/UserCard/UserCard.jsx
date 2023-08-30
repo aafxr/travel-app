@@ -4,8 +4,11 @@ import AvatarPlaceHolder from "./AvatarPlaceholder";
 import Avatar from "../Avatar/Avatar";
 
 import useUserInfo from "../../hooks/useUserInfo";
-import {DEFAULT_IMG_URL} from "../../static/constants";
+import constants, {DEFAULT_IMG_URL} from "../../static/constants";
 import './UserCard.css'
+import Photo from "../Poto/Photo";
+import {useEffect, useState} from "react";
+import storeDB from "../../db/storeDB/storeDB";
 
 
 /**
@@ -17,17 +20,23 @@ import './UserCard.css'
  * @constructor
  */
 export default function UserCard({className, id, variant = 'horizontal'}) {
-    const {user, photo, loading} = useUserInfo(id)
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        if(id){
+            storeDB.getOne(constants.store.USERS, id)
+                .then(u =>  u && setUser(u))
+        }
+    }, [id])
 
     return (
         <div className={classNames(variant, className)}>
             {
-                loading
+                !user
                     ? <AvatarPlaceHolder variant={variant}/>
                     : (
                         <>
-                            <Avatar className='flex-0' src={photo ? photo.src || photo.blob : DEFAULT_IMG_URL}
-                                    alt='avatar'/>
+                            <Photo id={user.photo} className='avatar' />
                             {variant !== 'compact' && (
                                 <>
                                     <div className='user-card-info column'>

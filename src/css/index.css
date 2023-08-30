@@ -275,3 +275,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
+
+.avatar{
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    border-radius: 50%;
+    object-fit: contain;
+}

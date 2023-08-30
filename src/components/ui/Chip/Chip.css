@@ -1,7 +1,7 @@
 .chip{
     display: flex;
     align-items: center;
-    justify-content: center;
+    /*justify-content: center;*/
     padding: 8px 9px;
 
     color: var(--color-secondary);
@@ -15,35 +15,22 @@
     transition: opasity .3s;
     cursor: default;
 }
-/*.chip:hover{*/
-/*    opacity: .8;*/
-/*}*/
-.chip-icon img,
-.chip-icon svg{
+
+.chip-with-icon{
+    padding: 4px 9px;
+}
+
+.chip-icon{
+    position: relative;
     flex: 0 0 auto;
-    width: 16px;
-    height: 16px;
-    /*color: var(--color-secondary);*/
-    /*stroke: var(--color-secondary);*/
-    /*fill: var(--color-secondary);*/
+    width: var(--icon-size-small);
+    height: var(--icon-size-small);
 }
 
 .chip.chip-icon{
     padding: 4px 9px;
 }
 
-/*.chip-icon.chip-icon-left span{*/
-/*    margin-left: -16px;*/
-/*}*/
-/*.chip-icon.chip-icon-right span{*/
-/*    margin-right: -16px;*/
-/*}*/
-/*.chip-icon-left span{*/
-/*    padding-left: 20px;*/
-/*}*/
-/*.chip-icon-right span{*/
-/*    padding-right: 20px;*/
-/*}*/
 .chip-rounded{
     border-radius: 30.5rem;
 }
@@ -57,7 +44,6 @@
 
 .chip-grey{
     color: var(--color-black);
-    /*letter-spacing: .2px;*/
     background-color: var(--color-grey-light);
 }
 

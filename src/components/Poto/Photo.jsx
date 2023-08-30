@@ -4,7 +4,7 @@ import constants, {DEFAULT_IMG_URL} from "../../static/constants";
 import storeDB from "../../db/storeDB/storeDB";
 import createId from "../../utils/createId";
 
-export default function Photo({id, onChange}) {
+export default function Photo({className, id, onChange, ...props}) {
     const [photo, setPhoto] = useState(null)
     const [photoURL, setPhotoURL] = useState('')
     const inputRef = useRef(/**@type{HTMLInputElement}*/null)
@@ -48,7 +48,7 @@ export default function Photo({id, onChange}) {
 
     return (
         <>
-            <img className='photo' src={photoURL || DEFAULT_IMG_URL} alt="Фото"
+            <img {...props} className={className} src={photoURL || DEFAULT_IMG_URL} alt="Фото"
                  onClick={e => inputRef.current?.click()}/>
             {!!onChange && <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/*'}/>}
         </>

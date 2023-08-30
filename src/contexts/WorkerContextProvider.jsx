@@ -29,6 +29,7 @@ export default function WorkerContextProvider() {
                 state.worker = w
                 setState(state)
                 w.onerror = console.error
+                process.env.NODE_ENV === 'production' && w.postMessage({type: 'init'})
             }
 
         }

@@ -20,23 +20,22 @@ export default function TravelRoutes({
                                          primary_entity_id
                                      }) {
     const navigate = useNavigate()
-    const {travelController, travels} = useSelector(state => state[constants.redux.TRAVEL])
+    const { travels} = useSelector(state => state[constants.redux.TRAVEL])
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
 
     useDefaultTravels()
 
     function handleRemove(travel) {
-        if (travelController && user) {
+        if (user) {
             Promise.all([
             travelDB.removeElement(constants.store.TRAVEL, travel.id),
-            travelDB.editElement(
-                constants.store.TRAVEL_ACTIONS,
-                createAction(constants.store.TRAVEL, user.id, 'remove', travel)
-                )
+            travelDB.editElement(constants.store.TRAVEL_ACTIONS, createAction(constants.store.TRAVEL, user.id, 'remove', travel))
                 .then(() => pushAlertMessage({type: "success", message: `${travel.title} удфлено.`}))
                 .then(() => dispatch(actions.travelActions.removeTravels(travels)))
-            ]).catch(console.error)
+            ])
+                .then(() => dispatch(actions.travelActions.removeTravels(travel)))
+                .catch(console.error)
         }
     }
 
@@ -68,8 +67,7 @@ export default function TravelRoutes({
                                     !!travels.length && travels.map(t => (
                                         <TravelCard
                                             key={t.id}
-                                            id={t.id}
-                                            title={t.title}
+                                            travel={t}
                                             onRemove={() => handleRemove(t)}
                                         />
                                     ))

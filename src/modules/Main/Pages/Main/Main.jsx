@@ -21,7 +21,7 @@ export default function Main({
     useEffect(() => {
         if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (!us) {
+            if (us) {
                 dispatch(updateUser(us))
             }
         }

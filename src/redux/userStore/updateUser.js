@@ -4,8 +4,14 @@ import constants, {USER_AUTH} from "../../static/constants";
 
 export const updateUser = createAsyncThunk('updateUser', async (userData, thunkApi) => {
     try {
-        if (!userData) {
+        if (typeof userData === 'undefined') {
             thunkApi.abort()
+        }
+
+        if (userData === null){
+            return {
+                user: null
+            }
         }
 
         const user = await storeDB.getOne(constants.store.USERS, userData.id)

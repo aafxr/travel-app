@@ -24,10 +24,14 @@ onmessage = function (e) {
         type === 'action' && actionsProcess(message)
     }
     type === 'fetch' && fetchActions(message)
+    type === 'init' && init()
 }
 
+function init(){
+    sendActions()
+}
 
-if (process.env.NODE_ENV === 'production') {
+function sendActions(){
     //=================================== проверка и попытка отправить Expenses Actions ====================================
     setInterval(async () => {
         try {
@@ -77,33 +81,32 @@ if (process.env.NODE_ENV === 'production') {
         }
 
     }, 10000)
-}
 
 //=================================== проверка и попытка отправить Travels Actions =====================================
-setInterval(async () => {
-    try {
-        const actions = await storeDB.getManyFromIndex(constants.store.STORE_ACTIONS, constants.indexes.SYNCED, 0)
-        if (actions && actions.length) {
-            const response = await aFetch.post('/actions/add/', actions)
-            console.log(response.data)
-            const {ok, result} = response.data
+    setInterval(async () => {
+        try {
+            const actions = await storeDB.getManyFromIndex(constants.store.STORE_ACTIONS, constants.indexes.SYNCED, 0)
+            if (actions && actions.length) {
+                const response = await aFetch.post('/actions/add/', actions)
+                console.log(response.data)
+                const {ok, result} = response.data
 
-            if (ok) {
-                const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
-                    .map(a => {
-                        a.synced = 1
-                        return a
-                    })
-                await Promise.all(sendedActions.map(a => storeDB.editElement(constants.store.STORE_ACTIONS, a)))
-                    .then(() => actionsUpdatedNotification(sendedActions))
+                if (ok) {
+                    const sendedActions = actions.filter(a => result[a.id] && result[a.id].ok)
+                        .map(a => {
+                            a.synced = 1
+                            return a
+                        })
+                    await Promise.all(sendedActions.map(a => storeDB.editElement(constants.store.STORE_ACTIONS, a)))
+                        .then(() => actionsUpdatedNotification(sendedActions))
+                }
             }
+        } catch (err) {
+            console.error(err)
         }
-    } catch (err) {
-        console.error(err)
-    }
 
-}, 8000)
-
+    }, 8000)
+}
 
 
 //================================== Отправка уведомления об обновлении actions ========================================

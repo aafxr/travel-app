@@ -12,7 +12,7 @@
     border-bottom-right-radius: var(--br-10);
 
     border: 2px solid var(--color-grey-light);
-    background-color: var(--color-secondary);
+    background-color: var(--color-background);
     outline: none;
     resize: none;
 }

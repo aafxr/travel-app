@@ -23,7 +23,7 @@ export default function TravelPeople({peopleList = [], compact = false, ...props
             'column gap-0.25': !compact
         })}>
             {
-                (peopleList && peopleList.length && compact)
+                (peopleList && peopleList.length) && compact
                     ? peopleList.slice(0, 3).map(p => (
                         <UserCard
                             key={p}

@@ -1,8 +1,9 @@
-import React from 'react'
 import clsx from 'clsx'
+import React from 'react'
+
 import isString from "../../../utils/validation/isString";
 
-import  './Chip.css'
+import './Chip.css'
 
 
 /**
@@ -17,21 +18,21 @@ import  './Chip.css'
  * @param props
  * @returns {JSX.Element}
  */
-export default ({
-                    color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
-                    icon,
-                    iconPosition = 'left',// 'left' | 'right'
-                    children,
-                    rounded,// boolean
-                    pointer = false,
-                    className,
-                    ...props
+export default function Chip({
+                                 color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
+                                 icon,
+                                 iconPosition = 'left',// 'left' | 'right'
+                                 children,
+                                 rounded,// boolean
+                                 pointer = false,
+                                 className,
+                                 ...props
 
-                }) => {
+                             }) {
     const classes = clsx(
         {
             ['chip gap-0.25']: true,
-            ['chip-icon']: icon,
+            ['chip-with-icon']: icon,
             ['chip-pointer']: pointer,
             ['chip-orange']: color === 'orange',
             ['chip-green']: color === 'green',
@@ -45,12 +46,15 @@ export default ({
     )
 
     return <div className={classes} {...props}>
-        <span className='chip-icon'>
-        {isString(icon)
-            ? <img src={icon} alt="icon"/>
-            : icon
-        }
-        </span>
+        {icon && (
+            <span className='chip-icon'>
+                {
+                    isString(icon)
+                        ? <img src={icon} alt="icon"/>
+                        : icon
+                }
+            </span>
+        )}
         <span>{children}</span>
     </div>
 }
