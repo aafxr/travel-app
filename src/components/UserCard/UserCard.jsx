@@ -1,14 +1,12 @@
 import clsx from "clsx";
+import {useEffect, useState} from "react";
 
 import AvatarPlaceHolder from "./AvatarPlaceholder";
-import Avatar from "../Avatar/Avatar";
-
-import useUserInfo from "../../hooks/useUserInfo";
-import constants, {DEFAULT_IMG_URL} from "../../static/constants";
-import './UserCard.css'
-import Photo from "../Poto/Photo";
-import {useEffect, useState} from "react";
 import storeDB from "../../db/storeDB/storeDB";
+import constants from "../../static/constants";
+import Photo from "../Poto/Photo";
+
+import './UserCard.css'
 
 
 /**
