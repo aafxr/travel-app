@@ -4,6 +4,10 @@
     pointer-events: none;
 }
 
+.curtain-header{
+    cursor: grab;
+}
+
 .curtain-container{
     position: absolute;
     /*top: 0;*/

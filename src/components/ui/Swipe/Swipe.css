@@ -51,7 +51,7 @@
 
 .checkmark-svg,
 .trash-svg{
-    color: white;
+    color: white!important;
     width: var(--icon-size);
     height: var(--icon-size);
 }

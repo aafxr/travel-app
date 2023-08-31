@@ -1,8 +1,9 @@
 import {useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 
-import './Curtain.css'
 import useResize from "../../hooks/useResize";
+
+import './Curtain.css'
 
 /**
  *
@@ -25,7 +26,7 @@ export default function Curtain({
                                     defaultOffsetPX = 0,
                                     defaultOffsetPercents = 0,
                                     duration = 300,
-    onChange
+                                    onChange
                                 }) {
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const cRef = useRef()
@@ -36,6 +37,11 @@ export default function Curtain({
 
     const [topOffset, setTopOffset] = useState(minOffset)
 
+    const [init, setInit] = useState(false)
+    const [dragStart, setDragStart] = useState(0)
+    const [dragEnd, setDragEnd] = useState(0)
+
+
     const windowSize = useResize()
 
     useEffect(() => {
@@ -45,6 +51,7 @@ export default function Curtain({
             const height = curtainHeight - topButtonHeight
 
             setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * height))
+            setInit(true)
         }
     }, [])
 
@@ -91,15 +98,91 @@ export default function Curtain({
         maxHeight: `calc(100% - ${topOffset}px - ${minOffset})`
     }
 
+    //================= drag handlers ============================================================================
+    function handleTouchStart(e) {
+        startPosition(e.touches[0].pageY)
+    }
+
+    function handleTouchEnd(e) {
+        endPosition(e.touches[0]?.pageY)
+    }
+
+    function handleTouchMove(e) {
+        movePosition(e.touches[0].pageY)
+    }
+
+    //====================================
+    function handleDragStart(e) {
+        startPosition(e.pageY)
+    }
+
+    function handleDragEnd(e) {
+        endPosition(e.pageY)
+    }
+
+    function handleDrag(e) {
+        movePosition(e.pageY)
+    }
+
+    //====================================
+
+    function startPosition(y) {
+        setDragStart(y)
+    }
+
+    function endPosition(y) {
+        const curtainHeight = cRef.current.getBoundingClientRect().height
+        const diff = dragStart - dragEnd
+        if (Math.abs(diff) / curtainHeight > 0.1){
+            if (diff < 0){
+                setTopOffset(calcTopOffset())
+                const t = calcTopOffset()
+                animateTop(curtainRef.current, t, duration)()
+            } else{
+                setTopOffset(minOffset || 0)
+                const t = minOffset || 0
+                animateTop(curtainRef.current, t, duration)()
+            }
+        } else {
+            if (diff > 0){
+                setTopOffset(calcTopOffset())
+                const t = calcTopOffset()
+                animateTop(curtainRef.current, t, duration)()
+            } else{
+                setTopOffset(minOffset || 0)
+                const t = minOffset || 0
+                animateTop(curtainRef.current, t, duration)()
+            }
+        }
+    }
+
+    function movePosition(y) {
+        setDragEnd(y)
+        setTopOffset(y)
+    }
+
+    //================= drag handlers end ========================================================================
+
+
     return (
-        <div ref={cRef} className='curtain'>
+        <div ref={cRef} className={clsx('curtain', {'hidden': !init})}>
             <div
                 ref={curtainRef}
                 className={clsx('curtain-container', {'scrolled': topOffset})}
                 style={curtainStyle}
             >
                 <div className='wrapper'>
-                    <div ref={cTopRef} className='center' onClick={(e) => curtainHandler(e)}>
+                    <div
+                        ref={cTopRef}
+                        className='curtain-header center'
+                        onClick={(e) => curtainHandler(e)}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onDrag={handleDrag}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                        onTouchMove={handleTouchMove}
+                    >
                         <button className='curtain-top-btn'/>
                     </div>
                     <div className='content'>

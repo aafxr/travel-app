@@ -32,6 +32,11 @@ a{
 
 #root {
     height: 100%;
+    overflow-y: hidden;
+}
+
+.hidden{
+    visibility: hidden;
 }
 
 .title {

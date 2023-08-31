@@ -106,7 +106,7 @@ export default function TravelDetails() {
                         </div>
                     }
                     <div className='content column gap-0.5'>
-                        <TravelPeople peopleList={[travel?.owner_id]} compact={compact}/>
+                        <TravelPeople peopleList={travel?.owner_id && [travel?.owner_id]} compact={compact}/>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
                             <span
