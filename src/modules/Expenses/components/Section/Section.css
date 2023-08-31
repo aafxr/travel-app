@@ -29,6 +29,7 @@
     padding: 0 10px;
     font-size: 0.875rem;
     font-weight: 600;
+    background-color: var(--color-background);
 }
 
 .section-item  span{

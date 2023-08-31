@@ -27,6 +27,7 @@ export default function TravelCard({travel, onRemove}) {
             <Swipe
                 onRemove={handleRemove}
                 rightButton
+                leftButton
                 onClick={() => navigate(`/travel/${travel.id}/`)}
             >
                 <div className='travel-item gap-1'>

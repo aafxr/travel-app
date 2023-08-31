@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {useSwipeable} from "react-swipeable";
 import clsx from "clsx";
+import {useSwipeable} from "react-swipeable";
+import React, {useEffect, useState} from "react";
 
 import useOutside from "../../../hooks/useOutside";
-
-import './Swipe.css'
 import TrashIcon from "../../svg/TrashIcon";
 import CheckIcon from "../../svg/CheckIcon";
+
+import './Swipe.css'
 
 let defaultMargin = 40
 
@@ -21,7 +21,11 @@ let defaultMargin = 40
  * @param {number} [marginMax] default = var(--x) * 2 || 40
  * @param {boolean} [small]
  * @param {boolean} [leftButton]
+ * @param {JSX.Element} [leftElement]
+ * @param {string} [lElemBg]
  * @param {boolean} [rightButton]
+ * @param {JSX.Element} [rightElement]
+ * @param {string} [rElemBg]
  * @param {boolean} [multy]
  * @returns {JSX.Element}
  * @constructor
@@ -35,7 +39,12 @@ export default function Swipe({
                                   marginMax,
                                   small,
                                   leftButton,
+                                  leftElement,
+                                  lElemBg,
                                   rightButton,
+                                  rightElement,
+                                  rElemBg,
+
                                   multy = false
                               }) {
     const [marginLeft, setMarginLeft] = useState(0)
@@ -116,14 +125,38 @@ export default function Swipe({
     )
 
 
+    const classNames = clsx(
+        'swiper-controls ',
+        {
+            [lElemBg ? lElemBg : 'success']: leftButton && marginLeft > 0,
+            [rElemBg ? rElemBg : 'danger']: rightButton && marginLeft < 0
+        }
+    )
+
+
     return (
         <div ref={ref} className={styles}>
-            <div className='swiper-controls flex-between'>
-                <div className='swiper-button checkmark center success' onClick={handleConfirm}>
-                    <div className='checkmark-svg'><CheckIcon /></div>
-                </div>
-                <div className='swiper-button  center danger' onClick={handleRemove}>
-                    <div className='trash-svg'><TrashIcon /></div>
+            <div className={classNames}>
+                <div className='flex-between h-full'>
+                    <div className={
+                        clsx('swiper-button swiper-button-left center flex-1',
+                            lElemBg ? lElemBg : 'success')} onClick={handleConfirm}>
+                        {
+                            leftElement
+                                ? leftElement
+                                : <div className='checkmark-svg'><CheckIcon/></div>
+                        }
+                    </div>
+                    <div className={
+                        clsx(
+                        'swiper-button swiper-button-right center flex-1',
+                            rElemBg ? rElemBg : 'danger')} onClick={handleRemove}>
+                        {
+                            rightElement
+                                ? rightElement
+                                : <div className='trash-svg'><TrashIcon/></div>
+                        }
+                    </div>
                 </div>
             </div>
             <div

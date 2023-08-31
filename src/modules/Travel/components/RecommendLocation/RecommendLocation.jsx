@@ -23,7 +23,7 @@ export default function RecommendLocation({to, items }) {
             <IconButton
                 className='recommend-location-add'
                 icon={<PlusIcon/>}
-                bgVariant='secondary'
+                bgVariant='bg-default'
                 border={false}
                 shadow
             />

@@ -35,21 +35,24 @@ export default function TravelDetails() {
     const [curtainOpen, setCurtainOpen] = useState(true)
     const navigate = useNavigate()
 
+    const travelDurationLabel = dateRange(travel?.start, travel?.end)
+
     useEffect(() => {
-        async function tryFindTravel(){
+        async function tryFindTravel() {
             let currentTravel = travels?.find(t => t.id === travelCode)
 
-            if(!currentTravel){
+            if (!currentTravel) {
                 currentTravel = await travelDB.getOne(constants.store.TRAVEL, travelCode)
             }
             setTravel(currentTravel || null)
         }
+
         tryFindTravel()
     }, [])
 
 
-    const menu =  (
-        <Menu >
+    const menu = (
+        <Menu>
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Детали путешествия'}/>
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
         </Menu>
@@ -61,10 +64,10 @@ export default function TravelDetails() {
     ]
 
 
-    function handleTravelPhotoChange(photo){
-        if (travel){
+    function handleTravelPhotoChange(photo) {
+        if (travel) {
             const newTravelData = {...travel, photo: photo.id}
-            const keys = changedFields(travel,newTravelData, ['id', 'photo'])
+            const keys = changedFields(travel, newTravelData, ['id', 'photo'])
             const updateTravelData = keys.reduce((acc, k) => {
                 acc[k] = newTravelData[k]
                 return acc
@@ -88,19 +91,22 @@ export default function TravelDetails() {
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='travel-details'>
-                        <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange} />
+                        <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
                     </div>
                     <div className='travel-details-title column center gap-0.25'>
                         <h2 onClick={() => navigate('')}>{travel?.title}</h2>
                         <div className='travel-details-subtitle center'>{travel?.description}</div>
                     </div>
-                    <div className='center'>
-                        <Chip className='center' color='orange' rounded>
-                            {dateRange(travel?.start, travel?.end)}
-                        </Chip>
-                    </div>
+                    {
+                        travelDurationLabel &&
+                        <div className='center'>
+                            <Chip className='center' color='orange' rounded>
+                                {travelDurationLabel}
+                            </Chip>
+                        </div>
+                    }
                     <div className='content column gap-0.5'>
-                        <TravelPeople peopleList={[travel?.owner_id]}  compact={compact}/>
+                        <TravelPeople peopleList={[travel?.owner_id]} compact={compact}/>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
                             <span
