@@ -103,6 +103,21 @@ export default function TravelEdite() {
         }
     }
 
+    function handleStartDateChange(e){
+        if(start && end){
+            const start_date = new Date(start)
+            const end_date = new Date(end)
+            const diff = end_date - start_date
+
+
+            setStart(e.target.value)
+            setEnd(new Date(end_date.getTime() + diff).toISOString().split("T").shift())
+        } else{
+            setStart(e.target.value)
+        }
+    }
+
+    console.log(start)
 
     return (
         <div className='wrapper'>

@@ -35,6 +35,14 @@ export default function TravelDetails() {
     const [curtainOpen, setCurtainOpen] = useState(true)
     const navigate = useNavigate()
 
+    //переменная для задания количества табов (по дням)
+    let travelDaysCount
+    if (travel) {
+        if (travel.start && travel.end) {
+            travelDaysCount = (new Date(travel.end) - new Date(travel.start)) / (1000 * 60 * 60 * 24)
+        }
+    }
+
     const travelDurationLabel = dateRange(travel?.start, travel?.end)
 
     useEffect(() => {
@@ -137,15 +145,19 @@ export default function TravelDetails() {
                         <Button>все места</Button>
                     </div>
                 </Container>
-                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                    <Tab name='1 день'/>
-                    <Tab name='2 день'/>
-                    <Tab name='3 день'/>
-                    <Tab name='4 день'/>
-                    <Tab name='5 день'/>
-                    <Tab name='6 день'/>
-                    <Tab name='7 день'/>
-                </div>
+                {
+                    !!travelDaysCount &&
+                    <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                        {
+                            !!travelDaysCount &&
+                            new Array(travelDaysCount)
+                                .fill(0)
+                                .map(
+                                    (_, i) => (<Tab key={i} name={`${i + 1} день`}/>)
+                                )
+                        }
+                    </div>
+                }
                 <Container className='pt-20 pb-20'>
                     <LocationCard
                         title='Новосибирск-Сочи'
