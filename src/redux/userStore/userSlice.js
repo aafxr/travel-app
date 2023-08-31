@@ -2,6 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {initUser} from "./initUser";
 import {updateUser} from "./updateUser";
 import {THEME} from "../../static/constants";
+import defaultThemeClass from "../../utils/defaultThemeClass";
 
 /**
  * @typedef {Object} UserAppType
@@ -34,7 +35,7 @@ export const userSlice = createSlice({
         initialState,
         reducers: {
             changeTheme(state, action) {
-                const themeName = action.payload === 'default' ? 'light-theme' : action.payload
+                const themeName = action.payload === 'default' ? defaultThemeClass() : action.payload
                 localStorage.setItem(THEME, action.payload.toString())
 
                 state.theme && document.body.classList.remove(state.theme)

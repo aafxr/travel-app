@@ -76,7 +76,7 @@ aFetch.interceptors.response.use(
             }
         }
         if (response.data.message === "Unauthorized") {
-            console.log("Пользователь не авторизован (token expired). Попытка отправить повторный запрос...", !response.data.ok && !(response.data.message === "Unauthorized"))
+            console.log("Пользователь не авторизован (token expired). Попытка отправить повторный запрос...")
             try {
                 await refreshAuth()
                 const retryResponse = await aFetch(response.config)

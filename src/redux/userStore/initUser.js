@@ -1,6 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import storeDB from "../../db/storeDB/storeDB";
 import constants, {THEME} from "../../static/constants";
+import defaultThemeClass from "../../utils/defaultThemeClass";
 
 export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) => {
     try {
@@ -16,11 +17,7 @@ export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) 
         //инициализация темы приложения (пибо выбранная пользователем, либо default)
         let theme = localStorage.getItem(THEME)
         if (!theme) {
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                theme = 'dark-theme'
-            } else {
-                theme = 'light-theme'
-            }
+            theme = defaultThemeClass()
         }
         return {user: newUserData, theme}
     } catch (err) {
