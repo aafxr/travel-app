@@ -139,23 +139,27 @@ export default function Swipe({
             <div className={classNames}>
                 <div className='flex-between h-full'>
                     <div className={
-                        clsx('swiper-button swiper-button-left center flex-1',
+                        clsx('swiper-button swiper-button-left center flex-0',
                             lElemBg ? lElemBg : 'success')} onClick={handleConfirm}>
-                        {
-                            leftElement
-                                ? leftElement
-                                : <div className='checkmark-svg'><CheckIcon/></div>
-                        }
+                        <div>
+                            {
+                                leftElement
+                                    ? leftElement
+                                    : <div className='checkmark-svg'><CheckIcon/></div>
+                            }
+                        </div>
                     </div>
                     <div className={
                         clsx(
-                        'swiper-button swiper-button-right center flex-1',
+                        'swiper-button swiper-button-right center flex-0',
                             rElemBg ? rElemBg : 'danger')} onClick={handleRemove}>
-                        {
-                            rightElement
-                                ? rightElement
-                                : <div className='trash-svg'><TrashIcon/></div>
-                        }
+                        <div>
+                            {
+                                rightElement
+                                    ? rightElement
+                                    : <div className='trash-svg'><TrashIcon/></div>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
