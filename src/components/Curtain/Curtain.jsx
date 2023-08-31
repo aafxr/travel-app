@@ -37,7 +37,9 @@ export default function Curtain({
 
     const [topOffset, setTopOffset] = useState(minOffset)
 
+    //флаг для первой отрисовки (убирает скачек из верхнего положения в дефольное )
     const [init, setInit] = useState(false)
+    //переменные для drag / touch events
     const [dragStart, setDragStart] = useState(0)
     const [dragEnd, setDragEnd] = useState(0)
 
@@ -53,6 +55,8 @@ export default function Curtain({
             setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * height))
             setInit(true)
         }
+        document.body.style.overscrollBehaviorY = 'none'
+        return () => document.body.style.overscrollBehaviorY = 'auto'
     }, [])
 
     useEffect(() => {
