@@ -108,16 +108,15 @@ export default function TravelEdite() {
             const start_date = new Date(start)
             const end_date = new Date(end)
             const diff = end_date - start_date
-
-
+            const current_date = new Date(e.target.value)
             setStart(e.target.value)
-            setEnd(new Date(end_date.getTime() + diff).toISOString().split("T").shift())
+            setEnd(new Date(current_date.getTime() + diff).toISOString().split("T").shift())
         } else{
             setStart(e.target.value)
         }
     }
 
-    console.log(start)
+    console.log({start,end})
 
     return (
         <div className='wrapper'>
@@ -142,7 +141,7 @@ export default function TravelEdite() {
                             placeholder={'Начало'}
                             value={start}
                             min={currentDay}
-                            onChange={e => setStart(e.target.value)}
+                            onChange={e => handleStartDateChange(e)}
                             // onFocus={e => e.target.type = 'date'}
                             // onBlur={e => e.target.type = 'text'}
                         />
