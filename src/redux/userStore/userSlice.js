@@ -52,9 +52,9 @@ export const userSlice = createSlice({
             builder.addCase(initUser.fulfilled, (state, action) => {
                 if (action.payload) {
                     state.user = action.payload.user
-                    state.loading = false
                     state.theme = action.payload.theme
                 }
+                    state.loading = false
             })
 
             builder.addCase(initUser.rejected, (state, action) => {

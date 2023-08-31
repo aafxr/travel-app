@@ -2,6 +2,8 @@ import axios from 'axios'
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, UNAUTHORIZED, USER_AUTH} from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import sleep from "../utils/sleep";
+import {retry} from "@reduxjs/toolkit/query";
+import clearUserData from "../utils/clearUserData";
 
 const baseURL = process.env.REACT_APP_SERVER_URL
 
@@ -45,14 +47,15 @@ aFetch.refresh = false
 
 aFetch.interceptors.request.use(async (c) => {
     //задержка для запросов  во время обновления токенов (для исключения повторного отправления refresh)
-    if (!c.url.includes('/user/auth/refresh/')){
-        while(aFetch.refresh){
+    if (!c.url.includes('/user/auth/refresh/')) {
+        while (aFetch.refresh) {
             await sleep(200)
         }
     }
 
     await getTokensFromDB()
-    c.headers.Authorization = access_token ? `Bearer ${access_token}` : ''
+
+    access_token && (c.headers.Authorization = `Bearer ${access_token}`)
     if (c.url.includes('/user/auth/remove/') && c.data.refresh_token) {
         await Promise.all([
             storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
@@ -64,12 +67,24 @@ aFetch.interceptors.request.use(async (c) => {
 
 
 aFetch.interceptors.response.use(
-    response => {
+    async (response) => {
         const url = response.config.url
         if (urlWithAuth.includes(url)) {
             const {ok, data} = response.data
             if (ok) {
                 saveTokensToDB(data).catch(console.error)
+            }
+        }
+        if (response.data.message === "Unauthorized") {
+            console.log("Пользователь не авторизован (token expired). Попытка отправить повторный запрос...", !response.data.ok && !(response.data.message === "Unauthorized"))
+            try {
+                await refreshAuth()
+                const retryResponse = await aFetch(response.config)
+                console.log('Результат повторного запроса ', retryResponse)
+                return retryResponse
+            } catch (err) {
+                clearUserData()
+                return response
             }
         }
         return response
@@ -79,34 +94,48 @@ aFetch.interceptors.response.use(
         const originalRequest = err.config;
         if (err.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-            aFetch.refresh = true
             try {
-                const response = await axios.get(baseURL + '/user/auth/refresh/', {
-                    headers: {
-                        Authorization: refresh_token ? `Bearer ${refresh_token}` : '',
-                    }
-                })
-
-                const {ok, data: userAuth} = response.data
-                if (ok) {
-                    await axios.get(baseURL + '/user/auth/refresh/confirm/', {
-                        headers: {
-                            Authorization: `Bearer ${userAuth.refresh_token}`,
-                        }
-                    })
-                    await saveTokensToDB(userAuth)
-                    return await aFetch(originalRequest);
-                } else if (window) {
-                    window.localStorage.setItem(USER_AUTH, JSON.stringify(null))
-                } else if (postMessage) {
-                    postMessage({type: UNAUTHORIZED})
-                }
+                await refreshAuth()
+                return await aFetch(originalRequest)
             } catch (err) {
-                return originalRequest
-            }finally{
-                aFetch.refresh = false
+                return err
             }
         }
     })
 
 export default aFetch
+
+
+function refreshAuth() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            aFetch.refresh = true
+
+            await getTokensFromDB()
+
+            const response = await axios.post(baseURL + '/user/auth/refresh/', {refresh_token}, {
+                headers: {Authorization: refresh_token ? `Bearer ${refresh_token}` : ''}
+            })
+
+            const {ok, data: userAuth} = response.data
+            if (ok) {
+                await axios.get(baseURL + '/user/auth/refresh/confirm/', {
+                    headers: {
+                        Authorization: `Bearer ${userAuth.refresh_token}`,
+                    }
+                })
+                await saveTokensToDB(userAuth)
+                return resolve()
+            } else if (window) {
+                window.localStorage.setItem(USER_AUTH, JSON.stringify(null))
+            } else if (postMessage) {
+                postMessage({type: UNAUTHORIZED})
+            }
+            return reject(response)
+        } catch (err) {
+            return reject(err)
+        } finally {
+            aFetch.refresh = false
+        }
+    })
+}
