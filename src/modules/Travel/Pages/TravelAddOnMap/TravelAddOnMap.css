@@ -1,4 +1,6 @@
 .travel-map{
+    --color-text: white;
+    --color-background: white;
     background-color: var(--color-grey-light);
 }
 

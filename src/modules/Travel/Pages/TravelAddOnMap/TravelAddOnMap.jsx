@@ -10,6 +10,7 @@ export default function TravelAddOnMap() {
     const mapRef = useRef()
     const [travelMap, setTravelMap] = useState()
 
+
     useEffect(() => {
         let script
 
@@ -54,7 +55,7 @@ export default function TravelAddOnMap() {
 
 
     useEffect(() => {
-        if (travelMap){
+        if (travelMap) {
             travelMap.events.add('click', e => {
                 const coords = e.get('coords')
                 console.log(coords)
@@ -143,13 +144,12 @@ export default function TravelAddOnMap() {
             // });
 
 
-
             console.log(myPlacemark)
 
             travelMap.geoObjects.add(myPlacemark)
 
 
-                // travelMap.geoObjects.add(myPlacemark);
+            // travelMap.geoObjects.add(myPlacemark);
         }
     }
 
