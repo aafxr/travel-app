@@ -22,6 +22,11 @@ html, body {
     box-sizing: border-box;
 }
 
+.disable-reload {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
 a{
     text-decoration: none;
 }

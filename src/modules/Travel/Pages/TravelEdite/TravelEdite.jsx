@@ -116,7 +116,6 @@ export default function TravelEdite() {
         }
     }
 
-    console.log({start,end})
 
     return (
         <div className='wrapper'>

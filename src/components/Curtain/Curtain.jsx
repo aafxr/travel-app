@@ -27,7 +27,7 @@ export default function Curtain({
                                     defaultOffsetPX = 0,
                                     defaultOffsetPercents = 0,
                                     duration = 300,
-    scrollDiff = 0.1,
+                                    scrollDiff = 0.1,
                                     onChange
                                 }) {
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
@@ -57,8 +57,6 @@ export default function Curtain({
             setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * height))
             setInit(true)
         }
-        document.body.style.overscrollBehaviorY = 'none'
-        return () => document.body.style.overscrollBehaviorY = 'auto'
     }, [])
 
     useEffect(() => {
@@ -106,10 +104,12 @@ export default function Curtain({
 
     //================= drag handlers ============================================================================
     function handleTouchStart(e) {
+        document.documentElement.classList.add('disable-reload')
         startPosition(e.touches[0].pageY)
     }
 
     function handleTouchEnd(e) {
+        document.documentElement.classList.remove('disable-reload')
         endPosition(e.touches[0]?.pageY)
     }
 
@@ -137,27 +137,29 @@ export default function Curtain({
     }
 
     function endPosition(y) {
-        const curtainHeight = cRef.current.getBoundingClientRect().height
         const diff = dragStart - dragEnd
-        if (Math.abs(diff) / curtainHeight > scrollDiff){
-            if (diff < 0){
+        //минимальное смещение в пикселях, на которое не реагирует шторка
+        const scrollDiffHeight = calcTopOffset() * scrollDiff
+        if (Math.abs(diff) > scrollDiffHeight) {
+            if (diff < 0) {
                 setTopOffset(calcTopOffset())
                 const t = calcTopOffset()
                 animateTop(curtainRef.current, t, duration)()
-            } else{
+            } else {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
             }
         } else {
-            if (diff > 0 || Math.abs(diff) < scrollDiff){
-                setTopOffset(calcTopOffset())
-                const t = calcTopOffset()
-                animateTop(curtainRef.current, t, duration)()
-            } else{
+            if (Math.abs(minOffset - dragEnd) < scrollDiffHeight) {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
+            } else {
+                setTopOffset(calcTopOffset())
+                const t = calcTopOffset()
+                animateTop(curtainRef.current, t, duration)()
+
             }
         }
     }
@@ -188,6 +190,7 @@ export default function Curtain({
                         onTouchStart={handleTouchStart}
                         onTouchEnd={handleTouchEnd}
                         onTouchMove={handleTouchMove}
+                        draggable
                     >
                         <button className='curtain-top-btn'/>
                     </div>
