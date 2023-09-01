@@ -1,0 +1,7 @@
+.travel-map{
+    background-color: var(--color-grey-light);
+}
+
+#map{
+    height: 100%;
+}

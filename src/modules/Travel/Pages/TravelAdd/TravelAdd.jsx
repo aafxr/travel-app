@@ -1,5 +1,5 @@
 import React, { useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import Container from "../../../../components/Container/Container";
@@ -60,7 +60,13 @@ export default function TravelAdd() {
                             />
                         </div>
                     </PageHeader>
-                    <div className='column gap'>
+                    <div className='column gap-1'>
+                        <Link className='travel-link' to={'/travel/add/map/'}>
+                            <div className='icon'>
+                                <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
+                            </div>
+                            Указать на карте
+                        </Link>
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>

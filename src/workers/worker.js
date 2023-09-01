@@ -1,12 +1,12 @@
-import {actionsProcess} from "./actionsProcess";
-import getActionsList from "./getActionsList";
 import functionDurationTest from "../utils/functionDurationTest";
-import constants from "../static/constants";
-import expensesDB from "../db/expensesDB/expensesDB";
-import aFetch from "../axios";
-import travelDB from "../db/travelDB/travelDB";
 import distinctValues from "../utils/distinctValues";
+import expensesDB from "../db/expensesDB/expensesDB";
+import {actionsProcess} from "./actionsProcess";
+import travelDB from "../db/travelDB/travelDB";
+import getActionsList from "./getActionsList";
 import storeDB from "../db/storeDB/storeDB";
+import constants from "../static/constants";
+import aFetch from "../axios";
 
 console.log('====worker=====')
 
@@ -18,11 +18,11 @@ onmessage = function (e) {
     const message = e.data
     const {type, data} = message
 
-    console.log(message)
+    // console.log(message)
 
-    if (Array.isArray(data)) {
-        type === 'action' && actionsProcess(message)
-    }
+    // if (Array.isArray(data)) {
+    //     type === 'action' && actionsProcess(message)
+    // }
     type === 'fetch' && fetchActions(message)
     type === 'init' && init()
 }

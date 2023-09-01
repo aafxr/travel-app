@@ -16,6 +16,6 @@ export default function clearUserData(){
     ])
         .catch(err => {
             console.error(err)
-            ErrorReport.sendError(err)
+            // ErrorReport.sendError(err)
         })
 }

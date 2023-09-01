@@ -201,6 +201,16 @@ a{
     z-index: 2;
 }
 
+.fixed-bottom-button{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 20px 10px;
+    background-color: transparent;
+    z-index: 2;
+}
+
 .hide-scroll{
     -ms-overflow-style: none;
     scrollbar-width: none;

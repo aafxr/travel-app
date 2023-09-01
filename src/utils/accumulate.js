@@ -13,7 +13,7 @@
 export default function accumulate(data, CB) {
     if (data) {
         if (Array.isArray(data)) {
-            return data.reduce((acc, item) => CB(item) + acc, 0)
+            return data.reduce((acc, item) => item ? CB(item) + acc : acc, 0)
         } else {
             return CB(data)
         }
