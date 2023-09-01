@@ -302,3 +302,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 50%;
     object-fit: contain;
 }
+
+[class*='copyrights']{
+    visibility: hidden;
+}

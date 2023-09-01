@@ -21,7 +21,7 @@
 }
 
 .full-screen-btn.active{
-    color: var(--color-secondary);
+    color: var(--color-primary-button);
     background-color: var(--color-primary);
 
 }
