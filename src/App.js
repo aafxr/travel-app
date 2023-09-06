@@ -80,7 +80,7 @@ function App() {
 
     return (
         <Provider store={store}>
-            <ErrorBoundary>
+            <>
                 <Routes>
                     <Route element={<WorkerContextProvider/>}>
                         <Route element={<TravelContextProvider/>}>
@@ -126,7 +126,7 @@ function App() {
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
                 </Routes>
                 <Alerts count={2}/>
-            </ErrorBoundary>
+            </>
         </Provider>
     );
 }
