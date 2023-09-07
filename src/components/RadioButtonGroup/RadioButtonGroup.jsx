@@ -34,8 +34,6 @@ export default function RadioButtonGroup({
         if (initValue) {
             if (multy && initValue && !Array.isArray(initValue)) {
                 console.warn('[RadioButtonGroup] initValue must be array')
-            } else if (!multy && initValue && typeof initValue !== 'string') {
-                console.warn('[RadioButtonGroup] initValue must be string')
             } else {
                 setSelected(initValue)
             }

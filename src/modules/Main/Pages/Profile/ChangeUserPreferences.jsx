@@ -9,9 +9,9 @@ import constants from "../../../../static/constants";
 import {actions} from "../../../../redux/store";
 
 const variants = [
-    'По умолчанию',
-    'Темная',
-    'Светлая'
+    {id: 1,title:'По умолчанию'},
+    {id: 2,title:'Темная'},
+    {id: 3,title:'Светлая'}
 ]
 
 const themeConvertor = {
@@ -29,7 +29,7 @@ export default function ChangeUserPreferences() {
 
     function handleThemeChange(newTheme) {
         if (variants.includes(newTheme)) {
-            dispatch(actions.userActions.changeTheme(themeConvertor[newTheme]))
+            dispatch(actions.userActions.changeTheme(themeConvertor[newTheme.title]))
         }
     }
 
@@ -44,7 +44,7 @@ export default function ChangeUserPreferences() {
                     title={'Изменить тему'}
                     checklist={variants}
                     onChange={handleThemeChange}
-                    initValue={themeConvertor[theme]}
+                    initValue={variants.find(v => v.title === themeConvertor[theme])}
                     position='left'
                 />
             </Container>
