@@ -19,7 +19,6 @@ import {formatter} from "../../../../utils/currencyFormat";
 import {updateLimits} from "../../helpers/updateLimits";
 import {useDispatch, useSelector} from "react-redux";
 import storeDB from "../../../../db/storeDB/storeDB";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
 import createAction from "../../../../utils/createAction";
 import {actions} from "../../../../redux/store";
 
@@ -145,8 +144,8 @@ export default function LimitsEdit({
             if (limitObj) {
                 const data = {...limitObj, value: value}
                 Promise.all([
-                    expensesDB.editElement(constants.store.LIMIT, data),
-                    expensesDB.addElement(
+                    storeDB.editElement(constants.store.LIMIT, data),
+                    storeDB.addElement(
                         constants.store.EXPENSES_ACTIONS,
                         createAction(constants.store.LIMIT, user_id, 'update', data)
                     )
@@ -162,8 +161,8 @@ export default function LimitsEdit({
                     id: createId(user_id)
                 }
                 Promise.all([
-                    expensesDB.editElement(constants.store.LIMIT, data),
-                    expensesDB.addElement(
+                    storeDB.editElement(constants.store.LIMIT, data),
+                    storeDB.addElement(
                         constants.store.EXPENSES_ACTIONS,
                         createAction(constants.store.LIMIT, user_id, 'add', data)
                     )

@@ -14,7 +14,7 @@ import {initExpensesThunk} from "../../../redux/expensesStore/initExpensesThunk"
 import {actions} from "../../../redux/store";
 import '../css/Expenses.css'
 import updateCurrency from "../helpers/updateCurrency";
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 
 /**
  * @typedef {Object} DispatchType
@@ -45,15 +45,15 @@ export default function ExpensesWrapper() {
         function handleMessage(action){
             switch (action.type){
                 case constants.store.EXPENSES_ACTUAL:
-                    expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTUAL, primary_entity_id)
+                    storeDB.getManyFromIndex(constants.store.EXPENSES_ACTUAL, primary_entity_id)
                         .then(items => dispatch(actions.expensesActions.setExpensesActual(items)))
                     break;
                 case constants.store.EXPENSES_PLAN:
-                    expensesDB.getManyFromIndex(constants.store.EXPENSES_PLAN, primary_entity_id)
+                    storeDB.getManyFromIndex(constants.store.EXPENSES_PLAN, primary_entity_id)
                         .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
                     break;
                 case constants.store.LIMIT:
-                    expensesDB.getManyFromIndex(constants.store.LIMIT, primary_entity_id)
+                    storeDB.getManyFromIndex(constants.store.LIMIT, primary_entity_id)
                         .then(items => dispatch(actions.expensesActions.setExpensesLimit(items)))
                     break;
                 default:

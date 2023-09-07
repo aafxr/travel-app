@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import constants from "../../../static/constants";
 import ErrorReport from "../../../controllers/ErrorReport";
 import aFetch from "../../../axios";
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 import {useDispatch} from "react-redux";
 import {actions} from "../../../redux/store";
 
@@ -33,7 +33,7 @@ export default function useDefaultSection(primary_entity_id, user_id) {
 
 
                 try {
-                Promise.all(sectionList.map(s => expensesDB.editElement(constants.store.SECTION, s)))
+                Promise.all(sectionList.map(s => storeDB.editElement(constants.store.SECTION, s)))
                     .then(dispatch(actions.expensesActions.setSections(sectionList)))
                 } catch (err) {
                     await ErrorReport.sendError(err)

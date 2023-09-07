@@ -7,7 +7,7 @@ import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 
 import createTravel from "../../helpers/createTravel";
-import travelDB from "../../../../db/travelDB/travelDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import constants from "../../../../static/constants";
@@ -37,8 +37,8 @@ export default function TravelAdd() {
             const data = createTravel(title, user_id)
             const action = createAction(constants.store.TRAVEL, user_id, 'add', data)
 
-            await travelDB.editElement(constants.store.TRAVEL, data)
-            await travelDB.editElement(constants.store.TRAVEL_ACTIONS, action)
+            await storeDB.editElement(constants.store.TRAVEL, data)
+            await storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
 
             dispatch(actions.travelActions.addTravels(data))
             navigate('/travels/current/')

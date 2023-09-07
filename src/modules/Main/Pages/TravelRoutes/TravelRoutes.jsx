@@ -12,7 +12,7 @@ import constants, {USER_AUTH} from "../../../../static/constants";
 import {updateUser} from "../../../../redux/userStore/updateUser";
 import {PageHeader, Tab} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
-import travelDB from "../../../../db/travelDB/travelDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 
 export default function TravelRoutes({
@@ -29,8 +29,8 @@ export default function TravelRoutes({
     function handleRemove(travel) {
         if (user) {
             Promise.all([
-            travelDB.removeElement(constants.store.TRAVEL, travel.id),
-            travelDB.editElement(constants.store.TRAVEL_ACTIONS, createAction(constants.store.TRAVEL, user.id, 'remove', travel))
+            storeDB.removeElement(constants.store.TRAVEL, travel.id),
+            storeDB.editElement(constants.store.TRAVEL_ACTIONS, createAction(constants.store.TRAVEL, user.id, 'remove', travel))
                 .then(() => pushAlertMessage({type: "success", message: `${travel.title} удфлено.`}))
                 .then(() => dispatch(actions.travelActions.removeTravels(travels)))
             ])

@@ -82,7 +82,8 @@ export default function Curtain({
         return top
     }
 
-    function curtainHandler() {
+    function curtainHandler(e) {
+        e.stopPropagation()
         if (topOffset > minOffset) {
             setTopOffset(minOffset)
             onChange && onChange(false)

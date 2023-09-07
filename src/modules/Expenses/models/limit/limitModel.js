@@ -1,8 +1,8 @@
 import Model from "../../../../models/Model";
 import constants from "../../../../static/constants";
 import limitValidationObj from "./validation";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 
-const limitModel = new Model(expensesDB, constants.store.LIMIT, limitValidationObj)
+const limitModel = new Model(storeDB, constants.store.LIMIT, limitValidationObj)
 
 export default limitModel

@@ -1,11 +1,12 @@
+import {useEffect, useRef, useState} from "react";
+
+import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
+import YandexMap from "../../../../api/YandexMap";
 
 import './TravelAddOnMap.css'
-import {useEffect, useRef, useState} from "react";
-import YandexMap from "../../../../api/YandexMap";
-import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
 
 export default function TravelAddOnMap() {
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -14,7 +15,8 @@ export default function TravelAddOnMap() {
     useEffect(() => {
         if (mapRef.current && !map) {
             YandexMap.init({
-                api_key: '095659f2-4ab0-430f-9098-ade3232714f4',
+                coordsIDElement: 'user-location',
+                api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: undefined,
                 points: []
@@ -45,6 +47,9 @@ export default function TravelAddOnMap() {
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Направление'}/>
                 <Input id={'waypoint_1'} placeholder='Куда едем?'/>
+                <div id='user-location'></div>
+                {!!map && <button onClick={map.userTracking ? map.disableUserTracking.bind(map) : map.enableUserTracking.bind(map)}>location</button>}
+
             </Container>
             <div className='content'>
                 <div

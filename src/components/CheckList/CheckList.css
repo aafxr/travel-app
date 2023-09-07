@@ -1,0 +1,14 @@
+.check-list{
+    position: relative;
+    /*width: 100%;*/
+    /*height: 100%;*/
+}
+
+
+.check-list-content{
+    overflow-y: auto;
+}
+
+.check-list-btn{
+    display: block;
+}

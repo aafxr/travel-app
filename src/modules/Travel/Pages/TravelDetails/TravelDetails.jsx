@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
@@ -16,7 +16,6 @@ import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
 import changedFields from "../../../../utils/changedFields";
 import createAction from "../../../../utils/createAction";
-import travelDB from "../../../../db/travelDB/travelDB";
 import Photo from "../../../../components/Poto/Photo";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
@@ -24,15 +23,19 @@ import Menu from "../../../../components/Menu/Menu";
 import dateRange from "../../../../utils/dateRange";
 
 import './TravelDetails.css'
+import {actions} from "../../../../redux/store";
+import CheckList from "../../../../components/CheckList/CheckList";
 
 
 export default function TravelDetails() {
     const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
     const {travelCode} = useParams()
     const {travels} = useSelector(state => state[constants.redux.TRAVEL])
     const [travel, setTravel] = useState(null)
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
+    const [checkListOpen, setCheckListOpen] = useState(false)
     const navigate = useNavigate()
 
     //переменная для задания количества табов (по дням)
@@ -50,7 +53,7 @@ export default function TravelDetails() {
             let currentTravel = travels?.find(t => t.id === travelCode)
 
             if (!currentTravel) {
-                currentTravel = await travelDB.getOne(constants.store.TRAVEL, travelCode)
+                currentTravel = await storeDB.getOne(constants.store.TRAVEL, travelCode)
             }
             setTravel(currentTravel || null)
         }
@@ -83,10 +86,12 @@ export default function TravelDetails() {
             const action = createAction(constants.store.TRAVEL, user.id, 'update', updateTravelData)
 
             Promise.all([
-                travelDB.editElement(constants.store.TRAVEL, newTravelData),
-                travelDB.addElement(constants.store.TRAVEL_ACTIONS, action),
+                storeDB.editElement(constants.store.TRAVEL, newTravelData),
+                storeDB.addElement(constants.store.TRAVEL_ACTIONS, action),
                 storeDB.editElement(constants.store.IMAGES, photo)
-            ]).catch(console.error)
+            ])
+                .then(() => dispatch(actions.travelActions.updateTravels(newTravelData)))
+                .catch(console.error)
         }
     }
 
@@ -98,23 +103,26 @@ export default function TravelDetails() {
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
-                    <div className='travel-details'>
-                        <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
-                    </div>
-                    <div className='travel-details-title column center gap-0.25'>
-                        <h2 onClick={() => navigate('')}>{travel?.title}</h2>
-                        <div className='travel-details-subtitle center'>{travel?.description}</div>
-                    </div>
-                    {
-                        travelDurationLabel &&
-                        <div className='center'>
-                            <Chip className='center' color='orange' rounded>
-                                {travelDurationLabel}
-                            </Chip>
-                        </div>
-                    }
                     <div className='content column gap-0.5'>
+                        <div className='travel-details'>
+                            <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
+                        </div>
+                        <div className='travel-details-title column center gap-0.25'>
+                            <h2 onClick={() => navigate('')}>{travel?.title}</h2>
+                            <div className='travel-details-subtitle center'>{travel?.description}</div>
+                        </div>
+                        {
+                            travelDurationLabel &&
+                            <div className='center'>
+                                <Chip className='center' color='orange' rounded>
+                                    {travelDurationLabel}
+                                </Chip>
+                            </div>
+                        }
+                        <div>
+
                         <TravelPeople peopleList={travel?.owner_id && [travel?.owner_id]} compact={compact}/>
+                        </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
                             <span
@@ -127,12 +135,16 @@ export default function TravelDetails() {
                     </div>
                     <div className='flex-between flex-nowrap gap-0.5 footer pb-20'>
                         <IconButton icon={<Money/>} title='Расходы'/>
-                        <IconButton icon={<ChecklistIcon/>} title='Чек-лист'/>
+                        <IconButton
+                            icon={<ChecklistIcon/>}
+                            title='Чек-лист'
+                            onClick={() => setCheckListOpen(true)}
+                        />
                         <IconButton icon={<ChatIcon badge/>}/>
                     </div>
                 </div>
-
             </Container>
+            {checkListOpen && <CheckList isVisible={checkListOpen} close={() => setCheckListOpen(false)}/>}
 
             <Curtain
                 onChange={setCurtainOpen}

@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import constants from "../../../static/constants";
 import aFetch from "../../../axios";
-import travelDB from "../../../db/travelDB/travelDB";
+import storeDB from "../../../db/storeDB/storeDB";
 import {useDispatch} from "react-redux";
 import {actions} from "../../../redux/store";
 
@@ -23,7 +23,7 @@ async function fetchTravels(controller, user_id) {
 
     if (ok && travels && travels.length) {
         await Promise.all(
-            travels.map(travel => travelDB.editElement(constants.store.TRAVEL, travel))
+            travels.map(travel => storeDB.editElement(constants.store.TRAVEL, travel))
         )
         return travels
     }

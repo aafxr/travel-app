@@ -15,9 +15,10 @@
 
 .modal-wrapper {
     position: fixed;
+    width: calc(100vw - 20px *2);
+    height: calc(100% - 20px *2);
     left: 50%;
     top: 50%;
-    padding: 20px;
     background-color: var(--color-secondary);
     transform: translate(-50%, -50%);
 }

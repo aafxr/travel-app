@@ -1,18 +1,18 @@
 import {useEffect, useState} from "react";
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 
 /**
- * @returns {{expensesDB: LocalDB, ready: boolean}}
+ * @returns {{storeDB: LocalDB, ready: boolean}}
  */
-export default function useExpensesDB(){
+export default function usestoreDB(){
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
-        expensesDB.onReadySubscribe(() => setReady(true))
+        storeDB.onReadySubscribe(() => setReady(true))
     }, [])
 
     return {
-        expensesDB,
+        storeDB,
         ready
     }
 }

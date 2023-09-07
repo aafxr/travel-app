@@ -16,7 +16,7 @@ export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) 
 
         //инициализация темы приложения (пибо выбранная пользователем, либо default)
         let theme = localStorage.getItem(THEME)
-        if (!theme) {
+        if (!theme || theme === 'default') {
             theme = defaultThemeClass()
         }
         return {user: newUserData, theme}

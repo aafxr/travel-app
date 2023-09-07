@@ -1,14 +1,14 @@
 import React, {useEffect, useMemo, useState} from "react";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
-import constants from "../../../../static/constants";
-import travelDB from "../../../../db/travelDB/travelDB";
-import errorReport from "../../../../controllers/ErrorReport";
+
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import Loader from "../../../../components/Loader/Loader";
-import {PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 import ListItem from "../../../../components/ListItem/ListItem";
+import errorReport from "../../../../controllers/ErrorReport";
 import CheckIcon from "../../../../components/svg/CheckIcon";
+import Loader from "../../../../components/Loader/Loader";
+import constants from "../../../../static/constants";
+import storeDB from "../../../../db/storeDB/storeDB";
+import {PageHeader} from "../../../../components/ui";
 
 
 const convertor = {
@@ -27,12 +27,12 @@ export default function ActionsList() {
 
     useEffect(() => {
         async function onExpenses() {
-            const expensesActions = await expensesDB.getAll(constants.store.EXPENSES_ACTIONS)
+            const expensesActions = await storeDB.getAll(constants.store.EXPENSES_ACTIONS)
             expensesActions && setExpensesList(expensesActions)
         }
 
         async function onTravel() {
-            const travelActions = await travelDB.getAll(constants.store.TRAVEL_ACTIONS)
+            const travelActions = await storeDB.getAll(constants.store.TRAVEL_ACTIONS)
             travelActions && setTravelsList(travelActions)
         }
 

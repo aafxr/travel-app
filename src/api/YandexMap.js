@@ -5,6 +5,7 @@ import ErrorReport from "../controllers/ErrorReport";
 export default class YandexMap extends IMap {
     constructor({
                     mapContainerID,
+                    coordsIDElement,
                     iconClass,
                     placemarks,
                     map,
@@ -12,7 +13,8 @@ export default class YandexMap extends IMap {
                 }) {
         super();
 
-
+        this.coordsIDElement = coordsIDElement
+        this.coordElement = document.getElementById(coordsIDElement)
         this.projection = map.options.get('projection');
         this.script = script
         this.locationWatchID = 0
@@ -115,7 +117,8 @@ export default class YandexMap extends IMap {
 
     enableUserTracking() {
         if ('geolocation' in navigator) {
-            this.locationWatchID = navigator.geolocation.watchPosition(this.locationTracking.bind(this),
+            console.log(this)
+            this.locationWatchID = navigator.geolocation.watchPosition((this.locationTracking).bind(this),
                 err => ErrorReport.sendReport()
             )
         }
@@ -133,6 +136,10 @@ export default class YandexMap extends IMap {
     locationTracking(location) {
         if (!this.userTracking)
             this.userTracking = true
+        if(this.coordElement && location.coords){
+            const {coords} = location
+            this.coordElement.innerText = [coords.latitude, coords.longitude].toString()
+        }
     }
 
     destroyMap() {
@@ -146,6 +153,7 @@ export default class YandexMap extends IMap {
 YandexMap.init = function init({
                                    api_key,
                                    mapContainerID,
+    coordsIDElement,
                                    iconClass,
                                    points
                                }) {
@@ -181,6 +189,7 @@ YandexMap.init = function init({
 
                 const yandexMap = new YandexMap({
                     mapContainerID,
+                    coordsIDElement,
                     iconClass,
                     placemarks,
                     map,

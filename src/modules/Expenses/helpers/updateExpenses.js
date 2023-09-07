@@ -1,4 +1,4 @@
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 import constants from "../../../static/constants";
 
 /**
@@ -12,8 +12,8 @@ export default function updateExpenses(primary_entity_id, type = 'plan') {
 
     const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
     return new Promise((resolve, reject) => {
-        expensesDB.onReadySubscribe(() => {
-            expensesDB.getManyFromIndex(
+        storeDB.onReadySubscribe(() => {
+            storeDB.getManyFromIndex(
                 storeName,
                 constants.indexes.PRIMARY_ENTITY_ID,
                 primary_entity_id

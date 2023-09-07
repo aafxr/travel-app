@@ -1,8 +1,5 @@
 import functionDurationTest from "../utils/functionDurationTest";
 import distinctValues from "../utils/distinctValues";
-import expensesDB from "../db/expensesDB/expensesDB";
-import {actionsProcess} from "./actionsProcess";
-import travelDB from "../db/travelDB/travelDB";
 import getActionsList from "./getActionsList";
 import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
@@ -16,7 +13,7 @@ function fetchActions(message) {
 
 onmessage = function (e) {
     const message = e.data
-    const {type, data} = message
+    const {type} = message
 
     // console.log(message)
 
@@ -35,7 +32,7 @@ function sendActions(){
     //=================================== проверка и попытка отправить Expenses Actions ====================================
     setInterval(async () => {
         try {
-            const actions = await expensesDB.getManyFromIndex(constants.store.EXPENSES_ACTIONS, constants.indexes.SYNCED, 0)
+            const actions = await storeDB.getManyFromIndex(constants.store.EXPENSES_ACTIONS, constants.indexes.SYNCED, 0)
             if (actions && actions.length) {
                 const response = await aFetch.post('/actions/add/', actions)
                 console.log(response.data)
@@ -47,7 +44,7 @@ function sendActions(){
                             a.synced = 1
                             return a
                         })
-                    await Promise.all(sendedActions.map(a => expensesDB.editElement(constants.store.EXPENSES_ACTIONS, a)))
+                    await Promise.all(sendedActions.map(a => storeDB.editElement(constants.store.EXPENSES_ACTIONS, a)))
                         .then(() => actionsUpdatedNotification(sendedActions))
                 }
             }
@@ -60,7 +57,7 @@ function sendActions(){
 //=================================== проверка и попытка отправить Travels Actions =====================================
     setInterval(async () => {
         try {
-            const actions = await travelDB.getManyFromIndex(constants.store.TRAVEL_ACTIONS, constants.indexes.SYNCED, 0)
+            const actions = await storeDB.getManyFromIndex(constants.store.TRAVEL_ACTIONS, constants.indexes.SYNCED, 0)
             if (actions && actions.length) {
                 const response = await aFetch.post('/actions/add/', actions)
                 console.log(response.data)
@@ -72,7 +69,7 @@ function sendActions(){
                             a.synced = 1
                             return a
                         })
-                    await Promise.all(sendedActions.map(a => travelDB.editElement(constants.store.TRAVEL_ACTIONS, a)))
+                    await Promise.all(sendedActions.map(a => storeDB.editElement(constants.store.TRAVEL_ACTIONS, a)))
                         .then(() => actionsUpdatedNotification(sendedActions))
                 }
             }

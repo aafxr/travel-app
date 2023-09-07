@@ -1,5 +1,5 @@
 import constants from "../../../../static/constants";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 
 /**
@@ -36,8 +36,8 @@ export default async function handleEditExpense(isPlan, user_id, primary_entity_
             }
 
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-            await expensesDB.editElement(storeName, data)
-            await expensesDB.editElement(constants.store.EXPENSES_ACTIONS, createAction(storeName,user_id,'update', data))
+            await storeDB.editElement(storeName, data)
+            await storeDB.editElement(constants.store.EXPENSES_ACTIONS, createAction(storeName,user_id,'update', data))
             return data
         }
     } else {

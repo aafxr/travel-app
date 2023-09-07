@@ -1,5 +1,5 @@
 // import Model from "../Model";
-// import storeDB from "../../expensesDB/storeDB/storeDB";
+// import storeDB from "../../storeDB/storeDB/storeDB";
 // import validation from "./validation";
 // import constants from "../../static/constants";
 //

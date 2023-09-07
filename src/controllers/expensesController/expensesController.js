@@ -1,8 +1,8 @@
 import ActionController from "../ActionController";
-import expensesDB from "../../db/expensesDB/expensesDB";
+import storeDB from "../../db/storeDB/storeDB";
 import options from "./controllerOptions";
 
-const expensesController = new ActionController(expensesDB, options)
+const expensesController = new ActionController(storeDB, options)
 
 
 export default expensesController

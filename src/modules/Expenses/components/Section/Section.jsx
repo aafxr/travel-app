@@ -12,7 +12,7 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {useDispatch, useSelector} from "react-redux";
 
 import './Section.css'
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 import {actions} from "../../../../redux/store";
 
@@ -139,8 +139,8 @@ function SectionItem({expense, isPlan, user_id}) {
         if (expense) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
 
-            await expensesDB.removeElement(storeName, expense.id).catch(console.error)
-            await expensesDB.addElement(
+            await storeDB.removeElement(storeName, expense.id).catch(console.error)
+            await storeDB.addElement(
                 constants.store.EXPENSES_ACTIONS,
                 createAction(storeName, user_id, 'remove', expense)
             )

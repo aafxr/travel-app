@@ -1,7 +1,7 @@
 import ActionController from "../ActionController";
-import travelDB from "../../db/travelDB/travelDB";
+import storeDB from "../../db/storeDB/storeDB";
 import options from "./controllerOptions";
 
-const travelController =  new ActionController(travelDB, options)
+const travelController =  new ActionController(storeDB, options)
 
 export default travelController

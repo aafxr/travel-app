@@ -8,7 +8,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
  * @param {string} groupClassNames
  * @param {string} className
  * @param {string} title
- * @param {string[]} checklist
+ * @param {Object[]} checklist
  * @param {function} onChange
  * @param {'right' | 'left'} position default = 'right'
  * @param {boolean} multy
@@ -30,7 +30,6 @@ export default function RadioButtonGroup({
     const isLeft = position === 'left'
     const [selected, setSelected] = useState(multy ? [] : '')
 
-
     useEffect(() => {
         if (initValue) {
             if (multy && initValue && !Array.isArray(initValue)) {
@@ -41,10 +40,10 @@ export default function RadioButtonGroup({
                 setSelected(initValue)
             }
         }
-    }, [])
+    }, [initValue, multy])
 
     if (!checklist || !checklist.length) {
-        console.warn('RadioButtonGroup list empty.')
+        console.log('[RadioButtonGroup] list empty.')
         return null
     }
 
@@ -67,17 +66,17 @@ export default function RadioButtonGroup({
 
     return (
         <div className={groupClassNames}>
-            <div className='title-bold'>{title}</div>
+            {!!title && <div className='title-bold'>{title}</div>}
             <div className={classNames}>
                 {
                     checklist.map(c => (
                         <Checkbox
-                            key={c}
+                            key={c.id}
                             left={isLeft}
                             onChange={() => handleChange(c)}
                             checked={multy ? selected.includes(c) : selected === c}
                         >
-                            {c}
+                            {c.title}
                         </Checkbox>
                     ))
                 }

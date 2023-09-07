@@ -1,6 +1,6 @@
 import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 
 
@@ -36,8 +36,8 @@ export default async function handleAddExpense(isPlan, user_id, primary_entity_t
                 id: createId(user_id)
         }
 
-        await expensesDB.editElement(storeName, data)
-        await expensesDB.editElement(constants.store.EXPENSES_ACTIONS, createAction(storeName,user_id,'add', data))
+        await storeDB.editElement(storeName, data)
+        await storeDB.editElement(constants.store.EXPENSES_ACTIONS, createAction(storeName,user_id,'add', data))
 
         return data
     } else {

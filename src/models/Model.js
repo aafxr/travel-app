@@ -31,7 +31,7 @@ import ErrorReport from "../controllers/ErrorReport";
  *
  * Параметры:
  *
- * expensesDB экзепляр бд LocalDB
+ * storeDB экзепляр бд LocalDB
  *
  * ============
  *

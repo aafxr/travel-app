@@ -1,5 +1,5 @@
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 import createAction from "../../../utils/createAction";
 import limitsModel from '../models/limit/limitModel'
 import constants from "../../../static/constants";
@@ -16,7 +16,7 @@ export function updateLimits(primary_entity_id, user_id = {}) {
         return new Promise(async (resolve, reject) => {
             try {
                 const currency = store.getState().expenses.currency
-                const expenses_plan = await expensesDB.getManyFromIndex(
+                const expenses_plan = await storeDB.getManyFromIndex(
                     constants.store.EXPENSES_PLAN,
                     constants.indexes.PRIMARY_ENTITY_ID,
                     primary_entity_id
@@ -100,8 +100,8 @@ export function updateLimits(primary_entity_id, user_id = {}) {
                         limit.value = maxLimitPlan
                         const action = createAction(constants.store.LIMIT, user_id, 'update', limit)
                         await Promise.all([
-                            expensesDB.editElement(constants.store.LIMIT, limit),
-                            expensesDB.addElement(constants.store.EXPENSES_ACTIONS, action)
+                            storeDB.editElement(constants.store.LIMIT, limit),
+                            storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)
                         ])
                     }
                 }
@@ -118,8 +118,8 @@ export function updateLimits(primary_entity_id, user_id = {}) {
                         limit.value = maxLimitPlan
                         const action = createAction(constants.store.LIMIT, user_id, 'add', limit)
                         await Promise.all([
-                            expensesDB.editElement(constants.store.LIMIT, limit),
-                            expensesDB.addElement(constants.store.EXPENSES_ACTIONS, action)
+                            storeDB.editElement(constants.store.LIMIT, limit),
+                            storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)
                         ])
                     }
                 }

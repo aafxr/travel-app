@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import constants from "../../../static/constants";
-import expensesDB from "../../../db/expensesDB/expensesDB";
+import storeDB from "../../../db/storeDB/storeDB";
 
 
 /**
@@ -16,7 +16,7 @@ export default function useExpense(id, type = 'plan') {
     const isPlan = type === 'plan'
         if (id) {
             const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-            expensesDB.getOne(storeName, id)
+            storeDB.getOne(storeName, id)
                 .then(e => e && setExpense(e))
         }
     }, [id, type])

@@ -12,7 +12,7 @@ import BusIcon from "../../../../components/svg/BusIcon";
 import constants from "../../../../static/constants";
 import changedFields from "../../../../utils/changedFields";
 import createAction from "../../../../utils/createAction";
-import travelDB from "../../../../db/travelDB/travelDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 
 const defaultTags = [
@@ -79,8 +79,8 @@ export default function TravelEdite() {
             //создаем  action и пишем в ДБ
             const action = createAction(constants.store.TRAVEL, user.id, 'update', result)
             Promise.all([
-                travelDB.editElement(constants.store.TRAVEL, newTravelData),
-                travelDB.editElement(constants.store.TRAVEL_ACTIONS, action)
+                storeDB.editElement(constants.store.TRAVEL, newTravelData),
+                storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
             ])
                 .then(() => {
                     dispatch(actions.travelActions.updateTravels(newTravelData))

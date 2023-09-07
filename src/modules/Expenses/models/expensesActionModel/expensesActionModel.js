@@ -1,8 +1,8 @@
 import Model from "../../../../models/Model";
 import constants from "../../../../static/constants";
 import validationObj from "../../../../models/action/validation";
-import expensesDB from "../../../../db/expensesDB/expensesDB";
+import storeDB from "../../../../db/storeDB/storeDB";
 
-const expensesActionModel = new Model(expensesDB, constants.store.EXPENSES_ACTIONS, validationObj)
+const expensesActionModel = new Model(storeDB, constants.store.EXPENSES_ACTIONS, validationObj)
 
 export default expensesActionModel
