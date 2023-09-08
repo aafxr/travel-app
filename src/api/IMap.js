@@ -11,7 +11,7 @@ export default class IMap {
     //     console.warn('[IMap] getPlaces not override')
     // }
 
-    //управление варкерами (добавление, удаление, список)
+    //управление маркерами (добавление, удаление, список)
     addMarker() {
         console.warn('[IMap] addMarker not override')
     }
@@ -30,6 +30,26 @@ export default class IMap {
 
     getMarkers() {
         console.warn('[IMap] getMarkers not override')
+    }
+
+    setZoom(){
+        console.warn('[IMap] setZoom not override')
+    }
+
+    getZoom(){
+        console.warn('[IMap] getZoom not override')
+    }
+
+    autoZoom(){
+        console.warn('[IMap] autoZoom not override')
+    }
+
+    setSuggestsTo(elementID){
+        console.warn('[IMap] setSuggestsTo not override')
+    }
+
+    focusOnPoint(coords, zoomLevel){
+        console.warn('[IMap] focusOnPoint not override')
     }
 
     // построить маршрут

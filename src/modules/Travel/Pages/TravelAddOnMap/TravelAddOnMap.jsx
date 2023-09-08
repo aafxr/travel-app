@@ -15,11 +15,12 @@ export default function TravelAddOnMap() {
     useEffect(() => {
         if (mapRef.current && !map) {
             YandexMap.init({
-                coordsIDElement: 'user-location',
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: undefined,
-                points: []
+                points: [],
+                suggestElementID: 'waypoint_1',
+                markerClassName: 'location-marker'
             }).then(newMap => {
                 window.map = newMap
                 setMap(newMap)
@@ -46,17 +47,18 @@ export default function TravelAddOnMap() {
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Направление'}/>
-                <Input id={'waypoint_1'} placeholder='Куда едем?'/>
-                <div id='user-location'></div>
-                {!!map && <button onClick={map.userTracking ? map.disableUserTracking.bind(map) : map.enableUserTracking.bind(map)}>location</button>}
+                <Input
+                    id='waypoint_1'
+                    placeholder='Куда едем?'
+                />
 
             </Container>
             <div className='content'>
                 <div
                     ref={mapRef}
                     id='map'
-                    onClick={handleMapClick}
-                    onTouchEnd={handleMapTouchEnd}
+                    // onClick={handleMapClick}
+                    // onTouchEnd={handleMapTouchEnd}
                 />
             </div>
             <div className='fixed-bottom-button'>
