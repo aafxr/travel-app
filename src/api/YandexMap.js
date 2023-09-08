@@ -68,7 +68,8 @@ export default class YandexMap extends IMap {
             hintContent: textAddress,
             balloonContent: textAddress,
         }, {
-            iconLayout: this.markerLayout,
+            preset: 'islands#darkOrangeIcon',
+            // iconLayout: this.markerLayout,
             draggable: true,
             cursor: 'pointer',
         })
@@ -199,7 +200,7 @@ export default class YandexMap extends IMap {
                 hintContent: textAddress,
                 balloonContent: textAddress,
             }, {
-                iconLayout: this.markerLayout,
+                preset: 'islands#darkOrangeIcon',
                 cursor: 'pointer',
             })
 
@@ -301,7 +302,8 @@ YandexMap.init = function init({
                             hintContent: point.hintContent,
                             balloonContent: point.ballonContent,
                         }, {
-                            iconLayout: this.markerLayout
+                            preset: 'islands#darkOrangeIcon'
+                            // iconLayout: this.markerLayout
                         })
                         map.geoObjects.add(placemark)
                         placemarks.push(placemark)
