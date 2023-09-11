@@ -24,6 +24,10 @@ export default class IMap {
         console.warn('[IMap] removeMarkerByLocalCoords not override')
     }
 
+    addMarkerByAddress(){
+        console.warn('[IMap] addMarkerByAddress not override')
+    }
+
     removeMarker() {
         console.warn('[IMap] removeMarker not override')
     }

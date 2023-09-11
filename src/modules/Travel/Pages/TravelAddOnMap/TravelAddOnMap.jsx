@@ -7,10 +7,12 @@ import {Input, PageHeader} from "../../../../components/ui";
 import YandexMap from "../../../../api/YandexMap";
 
 import './TravelAddOnMap.css'
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 export default function TravelAddOnMap() {
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
     const [map, setMap] = useState(/**@type{IMap}*/ null)
+    const [inputValue, setInputValue ] = useState('')
 
     useEffect(() => {
         if (mapRef.current && !map) {
@@ -43,6 +45,29 @@ export default function TravelAddOnMap() {
         map.addMarkerByLocalCoords([x, y])
     }
 
+    // обработка ввода input ===========================================================================================
+    async function handleKeyDown(e){
+        if(e.keyCode === 13){
+            e.stopPropagation()
+            const marker = await map.addMarkerByAddress(inputValue)
+            if(marker){
+                setInputValue('')
+                map.focusOnPoint(marker.coords, 14)
+                console.log(marker)
+                console.log(e)
+                console.log(e.target.focus)
+                e.target.focus()
+            } else {
+                pushAlertMessage({type:"warning", message: 'не удалось определить адрес'})
+            }
+        }
+    }
+
+    function handleInputChange(e){
+        setInputValue(e.target.value)
+    }
+
+
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
@@ -50,7 +75,11 @@ export default function TravelAddOnMap() {
                 <Input
                     id='waypoint_1'
                     placeholder='Куда едем?'
+                    value={inputValue}
+                    onKeyDown={handleKeyDown}
+                    onChange={handleInputChange}
                 />
+                <button onClick={() => map.autoZoom()}>Весь маршрут</button>
 
             </Container>
             <div className='content'>

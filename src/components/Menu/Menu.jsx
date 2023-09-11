@@ -57,7 +57,7 @@ export default function Menu({children, className}) {
                     <MenuIconList/>
                 </div>
                 {children}
-                <div className='menu-item' onClick={handleLogin} >
+                <div className='menu-item title-semi-bold' onClick={handleLogin} >
                     {user ? 'Выйти' : 'Войти'}
                 </div>
             </div>

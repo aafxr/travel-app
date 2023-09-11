@@ -56,13 +56,25 @@ export default class YandexMap extends IMap {
         }
 
         const geocode = await window.ymaps.geocode(coords)
+        const geoObject = geocode.geoObjects.get(0)
+
+        const markInfo = this._newMarker(geoObject)
+
+        this.placemarks.push(markInfo)
+        this.map.geoObjects.add(markInfo.placemark)
+        this.autoZoom()
+    }
+
+    _newMarker(geoObject){
+        if (!geoObject || typeof geoObject !== 'object'){
+            throw new Error('[YandexMap._newMarker] geoObject shoould be define and typeof "object"')
+        }
+
+        const coords = geoObject.geometry.getCoordinates()
         const {
             text: textAddress,
             kind
-        } = geocode.geoObjects.get(0).properties.getAll().metaDataProperty.GeocoderMetaData
-        console.log(geocode)
-        console.log({textAddress, kind})
-
+        } = geoObject.properties.getAll().metaDataProperty.GeocoderMetaData
 
         const placemark = new window.ymaps.Placemark(coords, {
             hintContent: textAddress,
@@ -76,17 +88,7 @@ export default class YandexMap extends IMap {
 
         placemark.events.add('dragend', this._handlePlacemarkDrag.bind(this))
 
-
-        const markInfo = {
-            placemark,
-            coords,
-            textAddress,
-            kind
-        }
-
-        this.placemarks.push(markInfo)
-        this.map.geoObjects.add(placemark)
-        this.autoZoom()
+        return {placemark, coords, textAddress, kind }
     }
 
     _handlePlacemarkDrag(e) {
@@ -99,6 +101,31 @@ export default class YandexMap extends IMap {
             this.addMarker(coords)
         }
 
+    }
+
+    async addMarkerByAddress(address){
+        const geocoder = window.ymaps.geocode(address)
+        return  await geocoder
+            .then(res => {
+                if(this.tempPlacemark){
+                    this.map.geoObjects.remove(this.tempPlacemark)
+                    this.tempPlacemark = null
+                }
+
+                const geoObject = res.geoObjects.get(0)
+                if(geoObject){
+                    const newMarker = this._newMarker(geoObject)
+                    this.placemarks.push(newMarker)
+                    this.map.geoObjects.add(newMarker.placemark)
+                    return newMarker
+                } else {
+                    return null
+                }
+            })
+            .catch((err) => {
+                console.error(err)
+                return null
+            })
     }
 
     addMarkerByLocalCoords(coords) {
@@ -132,19 +159,16 @@ export default class YandexMap extends IMap {
 
 
     // удаление ближайшей к указанным координатам точки
-    removeMarker(coords) {
-        if (!coords || !Array.isArray(coords) || coords.length !== 2)
+    removeMarker(placemark) {
+        if (!placemark || typeof placemark !== 'object')
             throw new Error(`
-            [YandexMap] не коректный формат координат
-            получено: ${coords},
-            ожидается массив вида: [latitude, longitude]
+            [YandexMap] не коректный формат данных
+            получено: ${placemark},
+            ожидается объект (возвращаемые методом "getMarkers".
             `)
 
-        const removePlacemark = window.ymaps.geoQuery(this.placemarks.placemark).getClosestTo(coords)
-        if (removePlacemark) {
-            this.placemarks = this.placemarks.filter(p => p.placemark !== removePlacemark)
-            this.map.geoObjects.remove(removePlacemark)
-        }
+            this.placemarks = this.placemarks.filter(p => p !== placemark)
+            this.map.geoObjects.remove(placemark.placemark)
     }
 
     getMarkers() {
