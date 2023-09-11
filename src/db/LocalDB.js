@@ -1,5 +1,6 @@
 import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
+import sleep from "../utils/sleep";
 
 /**
  * @typedef {object} StoreInfo
@@ -177,6 +178,8 @@ export class LocalDB {
      * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getElement(storeName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -197,6 +200,8 @@ export class LocalDB {
      * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getOne(storeName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -213,6 +218,8 @@ export class LocalDB {
      * @returns { Promise<[]>}   возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getMany(storeName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -228,6 +235,8 @@ export class LocalDB {
      * @returns {Promise<[]>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getAll(storeName) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -245,6 +254,8 @@ export class LocalDB {
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
     async getFromIndex(storeName, indexName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
@@ -270,6 +281,8 @@ export class LocalDB {
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
     async getOneFromIndex(storeName, indexName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
@@ -290,6 +303,8 @@ export class LocalDB {
      * @returns {Promise<[]>}                     Promise с результатом поиска либо ошибкой
      */
     async getManyFromIndex(storeName, indexName, query) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
@@ -308,6 +323,8 @@ export class LocalDB {
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
     async getAllFromIndex(storeName, indexName) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
@@ -326,6 +343,8 @@ export class LocalDB {
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>}   Promise с результатом добавления либо ошибкой
      */
     async addElement(storeName, payload) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -341,6 +360,8 @@ export class LocalDB {
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>} Promise с результатом обовления либо ошибкой
      */
     async editElement(storeName, payload) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)
@@ -356,6 +377,8 @@ export class LocalDB {
      * @returns {Promise<void>}
      */
     async removeElement(storeName, key) {
+        while (!this.ready) await sleep(300)
+
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             const db = await openDataBase(this.dbname, this.version, this.stores)

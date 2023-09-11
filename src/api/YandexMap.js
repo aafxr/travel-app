@@ -16,7 +16,7 @@ export default class YandexMap extends IMap {
         super();
 
         this.markerLayout = window.ymaps.templateLayoutFactory.createClass(`<div class="${this.markerClassName || ''}"></div>`);
-        this.defaultZoom = 14
+        this.defaultZoom = map.getZoom() || 14
         this.coordsIDElement = coordsIDElement
         this.coordElement = document.getElementById(coordsIDElement)
         this.projection = map.options.get('projection');
@@ -30,12 +30,10 @@ export default class YandexMap extends IMap {
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
 
-        const zoomControl = new window.ymaps.control.ZoomControl({
-            options: {
-                size: 'small'
-            }
+        this.getUserLocation().then(userLocation => {
+            if (userLocation)
+                this.map.setCenter(userLocation, this.defaultZoom, {duration: 300})
         })
-        this.map.controls.add(zoomControl)
 
         this.map.events.add('dragend', console.log)
     }
@@ -65,8 +63,8 @@ export default class YandexMap extends IMap {
         this.autoZoom()
     }
 
-    _newMarker(geoObject){
-        if (!geoObject || typeof geoObject !== 'object'){
+    _newMarker(geoObject) {
+        if (!geoObject || typeof geoObject !== 'object') {
             throw new Error('[YandexMap._newMarker] geoObject shoould be define and typeof "object"')
         }
 
@@ -88,7 +86,7 @@ export default class YandexMap extends IMap {
 
         placemark.events.add('dragend', this._handlePlacemarkDrag.bind(this))
 
-        return {placemark, coords, textAddress, kind }
+        return {placemark, coords, textAddress, kind}
     }
 
     _handlePlacemarkDrag(e) {
@@ -103,20 +101,21 @@ export default class YandexMap extends IMap {
 
     }
 
-    async addMarkerByAddress(address){
+    async addMarkerByAddress(address) {
         const geocoder = window.ymaps.geocode(address)
-        return  await geocoder
+        return await geocoder
             .then(res => {
-                if(this.tempPlacemark){
+                if (this.tempPlacemark) {
                     this.map.geoObjects.remove(this.tempPlacemark)
                     this.tempPlacemark = null
                 }
 
                 const geoObject = res.geoObjects.get(0)
-                if(geoObject){
+                if (geoObject) {
                     const newMarker = this._newMarker(geoObject)
                     this.placemarks.push(newMarker)
                     this.map.geoObjects.add(newMarker.placemark)
+                    this.autoZoom()
                     return newMarker
                 } else {
                     return null
@@ -167,8 +166,8 @@ export default class YandexMap extends IMap {
             ожидается объект (возвращаемые методом "getMarkers".
             `)
 
-            this.placemarks = this.placemarks.filter(p => p !== placemark)
-            this.map.geoObjects.remove(placemark.placemark)
+        this.placemarks = this.placemarks.filter(p => p !== placemark)
+        this.map.geoObjects.remove(placemark.placemark)
     }
 
     getMarkers() {
@@ -193,6 +192,7 @@ export default class YandexMap extends IMap {
     setZoom(zoomLevel) {
         if (zoomLevel < 0 || zoomLevel > 19) return
         this.defaultZoom = zoomLevel
+        this.map.setZoom(zoomLevel, {duration: 300})
         this._setZoom()
     }
 
@@ -208,7 +208,7 @@ export default class YandexMap extends IMap {
     }
 
     async _selectSuggest(e) {
-        if (this.tempPlacemark){
+        if (this.tempPlacemark) {
             this.map.geoObjects.remove(this.tempPlacemark)
         }
 
@@ -310,7 +310,7 @@ YandexMap.init = function init({
         if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
 
         const script = document.createElement('script')
-        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,control.ZoomControl,SuggestView,templateLayoutFactory`
+        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory`
         script.onload = function () {
             window.ymaps.ready(() => {
                 const map = new window.ymaps.Map(mapContainerID, {

@@ -7,3 +7,9 @@
 #map{
     height: 100%;
 }
+
+.travel-controls{
+    position: absolute;
+    top: 50%;
+    right: 12px;
+}

@@ -1,13 +1,14 @@
 import {useEffect, useRef, useState} from "react";
 
 import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
+import MapControls from "../../../../components/MapControls/MapControls";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import YandexMap from "../../../../api/YandexMap";
 
 import './TravelAddOnMap.css'
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 export default function TravelAddOnMap() {
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -67,6 +68,24 @@ export default function TravelAddOnMap() {
         setInputValue(e.target.value)
     }
 
+    // обработка контроллов карты ======================================================================================
+    function handleZoomPlus(){
+        const zoom = map.getZoom()
+        map.setZoom(zoom + 1)
+    }
+
+    function handleZoomMinus(){
+        const zoom = map.getZoom()
+        map.setZoom(zoom - 1)
+    }
+
+    async function handleUserLocation(){
+        const userCoords = await map.getUserLocation()
+        if(userCoords){
+            map.focusOnPoint(userCoords)
+        }
+    }
+
 
     return (
         <div className='wrapper'>
@@ -79,16 +98,20 @@ export default function TravelAddOnMap() {
                     onKeyDown={handleKeyDown}
                     onChange={handleInputChange}
                 />
-                <button onClick={() => map.autoZoom()}>Весь маршрут</button>
-
             </Container>
             <div className='content'>
                 <div
                     ref={mapRef}
                     id='map'
-                    // onClick={handleMapClick}
-                    // onTouchEnd={handleMapTouchEnd}
-                />
+                    className='relative'
+                >
+                    <MapControls
+                        className='travel-controls'
+                        onPlusClick={handleZoomPlus}
+                        onMinusClick={handleZoomMinus}
+                        onUserLocationClick={handleUserLocation}
+                    />
+                </div>
             </div>
             <div className='fixed-bottom-button'>
                 <Button

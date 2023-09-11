@@ -1,0 +1,38 @@
+.map-controls{
+    /*color: var(--color-primary);*/
+    z-index: 10;
+}
+
+.map-control-btn{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: var(--color-background);
+    filter: drop-shadow(0px 5px 15px rgba(0, 0, 0, 0.10));
+}
+
+.map-control-btn svg{
+    width: 18px;
+    height: 18px;
+}
+
+.map-button, .map-button-location{
+    position: relative;
+    padding: 0;
+    width: 45px!important;
+    height: 45px!important;
+}
+
+.map-button svg{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.map-button-location svg{
+    position: absolute;
+    top: 40%;
+    left: 40%;
+}

@@ -1,8 +1,9 @@
 export default function PlusIcon(props) {
 
     return (
-        <svg {...props} viewBox="0 0 32 32"  xmlns="http://www.w3.org/2000/svg" >
-            < path d="M28,14H18V4c0-1.104-0.896-2-2-2s-2,0.896-2,2v10H4c-1.104,0-2,0.896-2,2s0.896,2,2,2h10v10c0,1.104,0.896,2,2,2  s2-0.896,2-2V18h10c1.104,0,2-0.896,2-2S29.104,14,28,14z" />
-        </svg>
+    <svg viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8" y1="1" x2="8" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="15.0076" y1="8.00798" x2="1.00801" y2="8.12016" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
     )
 }
