@@ -310,7 +310,7 @@ YandexMap.init = function init({
         if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
 
         const script = document.createElement('script')
-        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory`
+        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route`
         script.onload = function () {
             window.ymaps.ready(() => {
                 const map = new window.ymaps.Map(mapContainerID, {

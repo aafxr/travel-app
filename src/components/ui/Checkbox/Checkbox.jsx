@@ -24,7 +24,7 @@ function Checkbox({
                   }, ref) {
 
     const styles = clsx({
-            ['checkbox']: true,
+            ['checkbox gap-0.5']: true,
             ['checked']: checked,
             ['left']: left,
             ['right']: !left,
@@ -39,7 +39,7 @@ function Checkbox({
     return (
         <div className={styles} onClick={handler}>
             <input ref={ref} type="checkbox" checked={checked} onChange={handler} hidden/>
-            <label>
+            <label className='flex-1'>
                 {children}
             </label>
             <div role='img' className={'checkbox-dot'}>

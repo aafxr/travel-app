@@ -11,6 +11,8 @@ import Modal from "../Modal/Modal";
 import {Input} from "../ui";
 
 import './CheckList.css'
+import Checkbox from "../ui/Checkbox/Checkbox";
+import {PlusIcon} from "../svg";
 
 export default function CheckList({isVisible, close}) {
     const {travelCode} = useParams()
@@ -72,14 +74,18 @@ export default function CheckList({isVisible, close}) {
 
 
     // обработка клика по чекбоксу, обновление текущих полей из списка чеклиста ======================================
-    function handleListGroup(items) {
-        const checkedIdList = items.map(item => item.id)
-        const updatedList = checkListItems.map(item => {
-            item.checked = !!checkedIdList.includes(item.id) ? 1 : 0;
-            return item
-        })
-        setCheckListItems(updatedList)
-        setChanged(true)
+    function handleItemCheckChange(item) {
+        const idx = checkListItems.findIndex(el => el === item)
+        checkListItems[idx].checked = !item.checked
+        setCheckListItems([...checkListItems])
+        !changed && setChanged(true)
+    }
+
+    function handleRemoveCheckListItem(e, item) {
+        e.stopPropagation()
+        const newList = checkListItems.filter(el => el !== item)
+        setCheckListItems(newList)
+        !changed && setChanged(true)
     }
 
 
@@ -93,14 +99,25 @@ export default function CheckList({isVisible, close}) {
                     onBlur={e => e.target.focus()}
                     placeholder='Добавить запись'
                 />
-                <div className='content'>
-                    <RadioButtonGroup
-                        multy
-                        position='left'
-                        initValue={checkListItems.filter(item => !!item.checked)}
-                        onChange={handleListGroup}
-                        checklist={checkListItems}
-                    />
+                <div className='content checkbox-content'>
+                    {
+                        checkListItems.map(c => (
+                            <Checkbox
+                                key={c.id}
+                                checked={c.checked}
+                                left
+                                onChange={() => handleItemCheckChange(c)}
+                            >
+                                <div className='flex-between align-center'>
+                                    {c.title}
+                                    <PlusIcon
+                                        className='check-list-item-remove center flex-0'
+                                        onClick={(e) => handleRemoveCheckListItem(e, c)}
+                                    />
+                                </div>
+                            </Checkbox>
+                        ))
+                    }
                 </div>
                 <Button className='footer' onClick={handleSubmit} disabled={!changed}>Сохранить</Button>
             </Container>

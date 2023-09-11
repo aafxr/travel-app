@@ -13,7 +13,7 @@
 }
 
 .checkbox.left label {
-    padding-left: 0.5rem;
+    /*padding-left: 0.5rem;*/
 }
 
 .checkbox.right label {
@@ -48,4 +48,3 @@
 .checkbox.checked .circle {
     visibility: hidden;
 }
-

@@ -53,7 +53,7 @@ export default function TravelAddOnMap() {
             const marker = await map.addMarkerByAddress(inputValue)
             if(marker){
                 setInputValue('')
-                map.focusOnPoint(marker.coords, 14)
+                map.autoZoom() // marker.coords, 14
                 console.log(marker)
                 console.log(e)
                 console.log(e.target.focus)
@@ -81,8 +81,11 @@ export default function TravelAddOnMap() {
 
     async function handleUserLocation(){
         const userCoords = await map.getUserLocation()
+        pushAlertMessage({type: "info", message: userCoords ? userCoords.toString() : 'null'})
         if(userCoords){
             map.focusOnPoint(userCoords)
+        } else{
+            pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})
         }
     }
 

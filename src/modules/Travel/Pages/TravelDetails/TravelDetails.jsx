@@ -1,6 +1,6 @@
 import clsx from "clsx";
-import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
@@ -11,6 +11,7 @@ import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import CheckList from "../../../../components/CheckList/CheckList";
 import {Chip, PageHeader, Tab} from "../../../../components/ui";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
@@ -19,12 +20,10 @@ import createAction from "../../../../utils/createAction";
 import Photo from "../../../../components/Poto/Photo";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
-import Menu from "../../../../components/Menu/Menu";
 import dateRange from "../../../../utils/dateRange";
-
-import './TravelDetails.css'
+import Menu from "../../../../components/Menu/Menu";
 import {actions} from "../../../../redux/store";
-import CheckList from "../../../../components/CheckList/CheckList";
+import './TravelDetails.css'
 
 
 export default function TravelDetails() {
