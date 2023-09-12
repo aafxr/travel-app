@@ -31,7 +31,7 @@
     min-width: var(--x);
     height: var(--x);
     pointer-events: all;
-    color: var(--color-icon);
+    /*color: var(--color-icon);*/
 }
 
 .page-header-icons svg,.page-header-icons img{
@@ -65,7 +65,7 @@
 
 @keyframes icons-animation {
     from{
-        max-width: 0%;
+        max-width: 0;
     }
     to{
         max-width: 100%;

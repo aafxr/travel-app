@@ -98,7 +98,7 @@ export default function TravelDetails() {
     return (
         <>
             <Container className='travel-details-header'>
-                <PageHeader className={clsx('travel-menu', {'curtain-closed': !curtainOpen})} arrowBack MenuEl={menu}/>
+                <PageHeader className={clsx('travel-menu', {'curtain-closed': curtainOpen})} arrowBack MenuEl={menu}/>
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>

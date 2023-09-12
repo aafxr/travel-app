@@ -23,3 +23,8 @@
     height: 12px;
     transform: rotate(-45deg);
 }
+
+.check-list-close-btn{
+    background-color: rgba(0,0,0,0.08)!important;
+    color: var(--color-text) !important;
+}

@@ -1,7 +1,6 @@
 import IMap from "./IMap";
 import userPosition from "../utils/userPosition";
 import ErrorReport from "../controllers/ErrorReport";
-import {pushAlertMessage} from "../components/Alerts/Alerts";
 
 export default class YandexMap extends IMap {
     constructor({
@@ -28,6 +27,7 @@ export default class YandexMap extends IMap {
         this.placemarks = placemarks
         this.mapContainerID = mapContainerID
         this.placemarkIcon = window.ymaps.templateLayoutFactory.createClass(`<div class="${markerClassName}"></div>`);
+        window.pi = this.placemarkIcon
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
 
@@ -66,7 +66,7 @@ export default class YandexMap extends IMap {
 
     _newMarker(geoObject) {
         if (!geoObject || typeof geoObject !== 'object') {
-            throw new Error('[YandexMap._newMarker] geoObject shoould be define and typeof "object"')
+            throw new Error('[YandexMap._newMarker] geoObject should be define and typeof "object"')
         }
 
         const coords = geoObject.geometry.getCoordinates()
@@ -79,8 +79,8 @@ export default class YandexMap extends IMap {
             hintContent: textAddress,
             balloonContent: textAddress,
         }, {
-            preset: 'islands#darkOrangeIcon',
-            // iconLayout: this.markerLayout,
+            // preset: 'islands#darkOrangeIcon',
+            iconLayout: this.placemarkIcon,
             draggable: true,
             cursor: 'pointer',
         })
@@ -225,7 +225,8 @@ export default class YandexMap extends IMap {
                 hintContent: textAddress,
                 balloonContent: textAddress,
             }, {
-                preset: 'islands#darkOrangeIcon',
+                // preset: 'islands#darkOrangeIcon',
+                iconLayout: this.placemarkIcon,
                 cursor: 'pointer',
             })
 
@@ -327,8 +328,9 @@ YandexMap.init = function init({
                             hintContent: point.hintContent,
                             balloonContent: point.ballonContent,
                         }, {
-                            preset: 'islands#darkOrangeIcon'
-                            // iconLayout: this.markerLayout
+                            // preset: 'islands#darkOrangeIcon'
+                            iconLayout: this.placemarkIcon,
+                            draggable: true
                         })
                         map.geoObjects.add(placemark)
                         placemarks.push(placemark)

@@ -4,14 +4,14 @@ import {useParams} from "react-router-dom";
 import Container from "../Container/Container";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";
+import Checkbox from "../ui/Checkbox/Checkbox";
 import createId from "../../utils/createId";
 import Button from "../ui/Button/Button";
 import Modal from "../Modal/Modal";
+import {PlusIcon} from "../svg";
 import {Input} from "../ui";
 
 import './CheckList.css'
-import Checkbox from "../ui/Checkbox/Checkbox";
-import {PlusIcon} from "../svg";
 
 export default function CheckList({isVisible, close}) {
     const {travelCode} = useParams()
@@ -87,15 +87,29 @@ export default function CheckList({isVisible, close}) {
         !changed && setChanged(true)
     }
 
+    // function handleEditChecklistItem(e, item){
+    //     if(e.keyCode === 13){
+    //         e.stopPropagation()
+    //         const newList = checkListItems.map(el => {
+    //             if (el === item){
+    //                 return {...el, title: e.target.innerText}
+    //             }
+    //             return el
+    //         })
+    //         setCheckListItems(newList)
+    //         !changed && setChanged(true)
+    //     }
+    // }
+
 
     return (
         <Modal isVisible={isVisible} close={handleClose} submit={handleSubmit}>
-            <Container className='wrapper pt-20 pb-20'>
+            <Container className='check-list wrapper pt-20 pb-20'>
                 <Input
                     value={value}
                     onChange={e => setValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    onBlur={e => e.target.focus()}
+                    // onBlur={e => e.target.focus()}
                     placeholder='Добавить запись'
                 />
                 <div className='content checkbox-content'>
@@ -108,7 +122,13 @@ export default function CheckList({isVisible, close}) {
                                 onChange={() => handleItemCheckChange(c)}
                             >
                                 <div className='flex-between align-center'>
-                                    {c.title}
+                                    <span
+                                        // contentEditable={true}
+                                        // onKeyDown={e => handleEditChecklistItem(e, c)}
+                                        // inputMode='text'
+                                    >
+                                        {c.title}
+                                    </span>
                                     <PlusIcon
                                         className='check-list-item-remove center flex-0'
                                         onClick={(e) => handleRemoveCheckListItem(e, c)}
@@ -118,7 +138,10 @@ export default function CheckList({isVisible, close}) {
                         ))
                     }
                 </div>
-                <Button className='footer' onClick={handleSubmit} disabled={!changed}>Сохранить</Button>
+                <div className='footer column gap-0.25'>
+                <Button onClick={handleSubmit} disabled={!changed}>Сохранить</Button>
+                <Button className='check-list-close-btn' onClick={() => close && close()}>Закрыть</Button>
+                </div>
             </Container>
         </Modal>
     )

@@ -4,6 +4,7 @@ import clsx from "clsx";
 import useResize from "../../hooks/useResize";
 
 import './Curtain.css'
+import sleep from "../../utils/sleep";
 
 /**
  *
@@ -146,21 +147,24 @@ export default function Curtain({
                 setTopOffset(calcTopOffset())
                 const t = calcTopOffset()
                 animateTop(curtainRef.current, t, duration)()
+                onChange && onChange(false)
             } else {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
+                onChange && onChange(true)
             }
         } else {
             if (Math.abs(minOffset - dragEnd) < scrollDiffHeight) {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
+                onChange && onChange(true)
             } else {
                 setTopOffset(calcTopOffset())
                 const t = calcTopOffset()
                 animateTop(curtainRef.current, t, duration)()
-
+                onChange && onChange(false)
             }
         }
     }

@@ -37,7 +37,7 @@ function Checkbox({
     }
 
     return (
-        <div className={styles} onClick={handler}>
+        <div {...props} className={styles} onClick={handler}>
             <input ref={ref} type="checkbox" checked={checked} onChange={handler} hidden/>
             <label className='flex-1'>
                 {children}

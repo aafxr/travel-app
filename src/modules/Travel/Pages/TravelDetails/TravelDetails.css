@@ -42,11 +42,11 @@
     color: var(--color-grey);
 }
 
-.travel-menu svg{
-    color: var(--color-icon-alt)!important;
+.travel-menu{
+    color: var(--color-text-secondary)!important;
 }
-.travel-menu.curtain-closed svg{
-    color: var(--color-icon)!important;
+.travel-menu.curtain-closed{
+    color: var(--color-text)!important;
 }
 
 @media (prefers-color-scheme: dark) {

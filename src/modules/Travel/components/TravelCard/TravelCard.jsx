@@ -6,6 +6,8 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Photo from "../../../../components/Poto/Photo";
 
 import './TravelCard.css'
+import {CopyIcon} from "../../../../components/svg";
+import TrashIcon from "../../../../components/svg/TrashIcon";
 
 export default function TravelCard({travel, onRemove}) {
 
@@ -30,7 +32,7 @@ export default function TravelCard({travel, onRemove}) {
                 onClick={() => navigate(`/travel/${travel.id}/`)}
             >
                 <div className='travel-item gap-1'>
-                    <Photo className={'travel-image'} id={travel.photo} />
+                    <Photo className={'travel-image'} id={travel.photo}/>
                     <div className='travel-content column title-bold'>
                         {travel.title}
                         <IconButton

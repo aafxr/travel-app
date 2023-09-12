@@ -5,7 +5,6 @@ import clsx from "clsx";
 import {ArrowBackIcon} from "../../svg";
 import isString from "../../../utils/validation/isString";
 
-import useOutside from "../../../hooks/useOutside";
 
 import './PageHeader.css'
 
