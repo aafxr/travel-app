@@ -7,6 +7,7 @@ import {PlusIcon} from "../../../../components/svg";
 
 import './RecommendLocation.css'
 import ChevronRightIcon from "../../../../components/svg/ChevronRightIcon";
+import MapIcon from "../../../../components/svg/MapIcon";
 
 
 /**
@@ -30,7 +31,7 @@ export default function RecommendLocation({to, items }) {
             <div className='column gap-0.5'>
                 <Link className='travel-link' to={''}>
                     <div className='icon'>
-                        <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
+                        <MapIcon />
                     </div>
                     Указать на карте <ChevronRightIcon />
                 </Link>

@@ -248,12 +248,10 @@ export default class YandexMap extends IMap {
                 const coords = await userPosition()
                 resolve(coords)
             } catch (err) {
-                pushAlertMessage({type: "info", message: err.message})
                 window.ymaps.geolocation.get({
                     provider: 'yandex',
                     autoReverseGeocode: true
                 }).then(function (result) {
-                    pushAlertMessage({type: "info", message: 'Location provide by yandex'})
                     const coords = result.geoObjects.get(0).geometry.getCoordinates()
                     resolve(coords)
                 }).catch(reject)

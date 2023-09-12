@@ -5,11 +5,11 @@
 export default function userPosition(){
     return new Promise((resolve, reject) => {
         if(navigator && navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(location => {
-                const {coords} = location
+            navigator.geolocation.getCurrentPosition(loc => {
+                const {coords} = loc
                 const {latitude, longitude} = coords
                 resolve([latitude, longitude])
-            }, reject)
+            }, reject, {enableHighAccuracy: true, maximumAge: 10000})
         }
         reject(new Error('User browser not support geolocation'))
     })

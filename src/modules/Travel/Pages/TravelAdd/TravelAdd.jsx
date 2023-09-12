@@ -11,9 +11,10 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import constants from "../../../../static/constants";
+import {actions} from "../../../../redux/store";
 
 import '../../css/Travel.css'
-import {actions} from "../../../../redux/store";
+import MapIcon from "../../../../components/svg/MapIcon";
 
 export default function TravelAdd() {
     const navigate = useNavigate()
@@ -63,7 +64,7 @@ export default function TravelAdd() {
                     <div className='column gap-1'>
                         <Link className='travel-link' to={'/travel/add/map/'}>
                             <div className='icon'>
-                                <img className={'img-abs'} src={process.env.PUBLIC_URL + '/icons/map.svg'} alt="map"/>
+                                <MapIcon/>
                             </div>
                             Указать на карте
                         </Link>

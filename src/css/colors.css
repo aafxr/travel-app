@@ -9,7 +9,7 @@
     --color-grey-light: #F0F0F0;
     --color-text: #000;
     --color-text-50: rgba(30, 30, 30, 0.50);
-    --color-text-secondary: #FFF;
+    --color-text-secondary: #000;
     --color-text-light: #1E1E1E;
     --color-blue: #0075FF;
     --color-black: #000000;
@@ -43,7 +43,7 @@
 
         --color-text: #fff;
         --color-text-50: rgba(235, 235, 235, 0.50);
-        --color-background: #0f0f0f;
+        --color-background: rgb(30,30,30);
         --color-background-alt: var(--color-grey-light);
         --color-navigation-bg: rgb(30,30,30);
         --color-icon: var(--color-text);
@@ -66,7 +66,7 @@
 .dark-theme{
     --color-text: #fff;
     --color-text-50: rgba(235, 235, 235, 0.50);
-    --color-background: #0f0f0f;
+    --color-background: rgb(30,30,30);
     --color-background-alt: var(--color-grey-light);
     --color-navigation-bg: rgb(30,30,30);
     --color-icon: var(--color-text);
