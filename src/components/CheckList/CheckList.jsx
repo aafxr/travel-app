@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 
-import RadioButtonGroup from "../RadioButtonGroup/RadioButtonGroup";
 import Container from "../Container/Container";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";

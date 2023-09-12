@@ -18,11 +18,13 @@ function validatePayload(data) {
  * @description объект валидации actions
  * @type {import('../../Model').validateObj}
  */
-export default {
+const actionValidationObject =  {
     add: validatePayload,
     update: validatePayload,
     get: validateDBQuery,
     getFromIndex: validateDBQuery,
     remove: isString
 }
+
+export default actionValidationObject
 

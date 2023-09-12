@@ -1,6 +1,5 @@
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
-import ErrorReport from "../controllers/ErrorReport";
 
 /**
  * Данный метод преднозначен для очистки данных ксли пользователь не авторизован

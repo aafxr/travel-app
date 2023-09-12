@@ -24,7 +24,7 @@ import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
-import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
+// import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";

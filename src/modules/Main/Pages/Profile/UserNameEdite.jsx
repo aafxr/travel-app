@@ -6,10 +6,9 @@ import Container from "../../../../components/Container/Container";
 import {updateUser} from "../../../../redux/userStore/updateUser";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
+import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
-import {actions} from "../../../../redux/store";
-import createAction from "../../../../utils/createAction";
 
 export default function UserNameEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])

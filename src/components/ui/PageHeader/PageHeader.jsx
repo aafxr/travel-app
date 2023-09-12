@@ -32,8 +32,8 @@ export default function PageHeader({
                                        ...props
                                    }) {
     const navigate = useNavigate()
-    const [menuOpen, setMenuOpen] = useState(false)
-    const {ref} = useOutside(false, setMenuOpen)
+    // const [_, setMenuOpen] = useState(false)
+    // const {ref} = useOutside(false, setMenuOpen)
 
     const styles = clsx(
         'page-header-container gap-0.25',

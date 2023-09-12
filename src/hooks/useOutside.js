@@ -10,7 +10,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
  * @param {function} cb
  * @returns {{ref: React.MutableRefObject<null>, setIsOutside: (value: (((prevState: boolean) => boolean) | boolean)) => void, isOutside: boolean}}
  */
-export default (initialIsVisible, cb) => {
+export default function useOutside(initialIsVisible, cb) {
     const [isOutside, setIsOutside] = useState(initialIsVisible || false);
     const ref = useRef(null);
 

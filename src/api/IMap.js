@@ -88,38 +88,38 @@ export default class IMap {
 }
 
 
-const org = {
-    name: "Яндекс",
-    description: "ул. Льва Толстого, 16, Москва",
-    boundedBy: [[55.731658, 37.582987], [55.73629, 37.591198]],
-    type: "business",
-    companyMetaData: {
-        id: "1124715036",
-        name: "Яндекс",
-        address: "Москва, улица Льва Толстого, 16",
-        url: "https://ya.ru/",
-        Phones: [{type: "phone", formatted: "8 (800) 250-96-39"}],
-        Hours: {
-            text: "пн-пт 10:00–19:00",
-            Availabilities: [{
-                Intervals: [{from: "10:00:00", "to": "19:00:00"}],
-                Monday: true,
-                Tuesday: true,
-                Wednesday: true,
-                Thursday: true,
-                Friday: true
-            }]
-        }
-    },
-    id: "1124715036",
-    address: "Москва, улица Льва Толстого, 16",
-    url: "https://ya.ru/",
-    categories: ["IT-компания", "Интернет-маркетинг", "Информационный интернет-сайт"],
-    categoriesText: "IT-компания, интернет-маркетинг, информационный интернет-сайт",
-    rating: {ratings: 17174, "reviews": 4056, "score": 5},
-    uri: "ymapsbm1://org?oid=1124715036",
-    point: [37.588144, 55.733842],
-}
+// const org = {
+//     name: "Яндекс",
+//     description: "ул. Льва Толстого, 16, Москва",
+//     boundedBy: [[55.731658, 37.582987], [55.73629, 37.591198]],
+//     type: "business",
+//     companyMetaData: {
+//         id: "1124715036",
+//         name: "Яндекс",
+//         address: "Москва, улица Льва Толстого, 16",
+//         url: "https://ya.ru/",
+//         Phones: [{type: "phone", formatted: "8 (800) 250-96-39"}],
+//         Hours: {
+//             text: "пн-пт 10:00–19:00",
+//             Availabilities: [{
+//                 Intervals: [{from: "10:00:00", "to": "19:00:00"}],
+//                 Monday: true,
+//                 Tuesday: true,
+//                 Wednesday: true,
+//                 Thursday: true,
+//                 Friday: true
+//             }]
+//         }
+//     },
+//     id: "1124715036",
+//     address: "Москва, улица Льва Толстого, 16",
+//     url: "https://ya.ru/",
+//     categories: ["IT-компания", "Интернет-маркетинг", "Информационный интернет-сайт"],
+//     categoriesText: "IT-компания, интернет-маркетинг, информационный интернет-сайт",
+//     rating: {ratings: 17174, "reviews": 4056, "score": 5},
+//     uri: "ymapsbm1://org?oid=1124715036",
+//     point: [37.588144, 55.733842],
+// }
 
 
 // const org = {

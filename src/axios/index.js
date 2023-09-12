@@ -1,9 +1,9 @@
 import axios from 'axios'
+
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, UNAUTHORIZED, USER_AUTH} from "../static/constants";
+import clearUserData from "../utils/clearUserData";
 import storeDB from "../db/storeDB/storeDB";
 import sleep from "../utils/sleep";
-import {retry} from "@reduxjs/toolkit/query";
-import clearUserData from "../utils/clearUserData";
 
 const baseURL = process.env.REACT_APP_SERVER_URL
 

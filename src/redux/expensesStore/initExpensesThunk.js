@@ -1,6 +1,5 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import constants from "../../static/constants";
-import distinctValues from "../../utils/distinctValues";
 import storeDB from "../../db/storeDB/storeDB";
 
 // First, create the thunk

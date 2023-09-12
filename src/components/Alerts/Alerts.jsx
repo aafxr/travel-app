@@ -1,7 +1,7 @@
+import clsx from "clsx";
 import {useCallback, useEffect, useRef, useState} from "react";
 
 import './Alerts.css'
-import clsx from "clsx";
 
 const ALERT_EVENT_NAME = 'alert-message'
 

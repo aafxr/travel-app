@@ -1,7 +1,6 @@
 import {forwardRef, useEffect} from "react";
 
 import {useKeyPress} from "../../hooks/useKeyPress";
-import {PlusIcon} from "../svg";
 
 import "./Modal.css";
 

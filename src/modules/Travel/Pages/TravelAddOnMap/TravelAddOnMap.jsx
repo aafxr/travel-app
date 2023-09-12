@@ -14,6 +14,7 @@ export default function TravelAddOnMap() {
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
     const [map, setMap] = useState(/**@type{IMap}*/ null)
     const [inputValue, setInputValue ] = useState('')
+    const [userCoords, setUserCoords ] = useState([])
 
     useEffect(() => {
         if (mapRef.current && !map) {
@@ -54,9 +55,6 @@ export default function TravelAddOnMap() {
             if(marker){
                 setInputValue('')
                 map.autoZoom() // marker.coords, 14
-                console.log(marker)
-                console.log(e)
-                console.log(e.target.focus)
                 e.target.focus()
             } else {
                 pushAlertMessage({type:"warning", message: 'не удалось определить адрес'})
@@ -81,7 +79,6 @@ export default function TravelAddOnMap() {
 
     async function handleUserLocation(){
         const userCoords = await map.getUserLocation()
-        pushAlertMessage({type: "info", message: userCoords ? userCoords.toString() : 'null'})
         if(userCoords){
             map.focusOnPoint(userCoords)
         } else{
