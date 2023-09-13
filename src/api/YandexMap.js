@@ -79,7 +79,7 @@ export default class YandexMap extends IMap {
             hintContent: textAddress,
             balloonContent: textAddress,
         }, {
-            // preset: 'islands#darkOrangeIcon',
+            preset: 'islands#darkOrangeIcon',
             iconLayout: this.placemarkIcon,
             draggable: true,
             cursor: 'pointer',
@@ -178,12 +178,14 @@ export default class YandexMap extends IMap {
     // метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
     autoZoom() {
         const options = {
-            duration: 300
+            duration: 300,
+            zoom: this.defaultZoom
         }
         if (this.placemarks.length === 1) {
             options.zoom = 14
         }
         this.map.setBounds(this.map.geoObjects.getBounds(), options)
+        this.map.setZoom(this.defaultZoom)
     }
 
     getZoom() {
@@ -225,14 +227,14 @@ export default class YandexMap extends IMap {
                 hintContent: textAddress,
                 balloonContent: textAddress,
             }, {
-                // preset: 'islands#darkOrangeIcon',
+                preset: 'islands#darkOrangeIcon',
                 iconLayout: this.placemarkIcon,
                 cursor: 'pointer',
             })
 
             this.map.geoObjects.add(this.tempPlacemark)
-            this.map.setCenter(coords)
-            this.map.setZoom(14, {duration: 300})
+            this.map.setCenter(coords, this.defaultZoom, {duration: 300})
+            // this.map.setZoom(14, {duration: 300})
         }
     }
 
@@ -326,9 +328,9 @@ YandexMap.init = function init({
                     for (const point of points) {
                         const placemark = new window.ymaps.Placemark(point.coords, {
                             hintContent: point.hintContent,
-                            balloonContent: point.ballonContent,
+                            balloonContent: point.balloonContent,
                         }, {
-                            // preset: 'islands#darkOrangeIcon'
+                            preset: 'islands#darkOrangeIcon',
                             iconLayout: this.placemarkIcon,
                             draggable: true
                         })

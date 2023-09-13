@@ -54,8 +54,8 @@
 
 .menu-icons {
     /*color: var(--color-icon);*/
-    /*stroke: var(--color-icon);*/
-    /*fill: var(--color-icon);*/
+    stroke: var(--color-icon);
+    fill: var(--color-icon);
     cursor: pointer;
 }
 
