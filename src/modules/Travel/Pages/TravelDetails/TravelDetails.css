@@ -45,8 +45,13 @@
 .travel-menu{
     color: var(--color-text-secondary)!important;
 }
-.travel-menu.curtain-closed{
+.travel-menu.curtain-closed,
+.travel-menu.curtain-closed .menu-dots{
     color: var(--color-text)!important;
+}
+
+.travel-menu .menu-dots{
+    color: var(--color-text-secondary);
 }
 
 @media (prefers-color-scheme: dark) {

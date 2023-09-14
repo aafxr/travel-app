@@ -83,6 +83,8 @@ export default class IMap {
         console.warn('[IMap] disableUserTracking not override')
     }
 
+    resize(){}
+
 
     destroyMap(){}
 }

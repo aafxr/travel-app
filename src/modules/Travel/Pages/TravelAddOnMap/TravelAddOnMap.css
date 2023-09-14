@@ -5,10 +5,28 @@
 
 #map{
     height: 100%;
+    overflow: hidden;
 }
 
 .travel-controls{
-    position: absolute;
-    top: 50%;
+    position: fixed;
+    top: 65%;
     right: 12px;
+}
+
+.travel-map-input{
+    padding-right: 40px;
+    background-color: white;
+}
+
+.travel-map-drag-icon{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    transform: translateY(-50%);
+    pointer-events: all;
+    cursor: grab;
+    z-index: 12;
 }

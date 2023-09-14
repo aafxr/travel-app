@@ -1,6 +1,7 @@
 import IMap from "./IMap";
 import userPosition from "../utils/userPosition";
 import ErrorReport from "../controllers/ErrorReport";
+import sleep from "../utils/sleep";
 
 export default class YandexMap extends IMap {
     constructor({
@@ -27,8 +28,7 @@ export default class YandexMap extends IMap {
         this.placemarks = placemarks
         this.mapContainerID = mapContainerID
         this.placemarkIcon = window.ymaps.templateLayoutFactory.createClass(`<div class="${markerClassName}"></div>`);
-        window.pi = this.placemarkIcon
-        this.suggest = null
+        this.suggests = []
         this.setSuggestsTo(suggestElementID)
 
         this.getUserLocation().then(userLocation => {
@@ -103,6 +103,9 @@ export default class YandexMap extends IMap {
     }
 
     async addMarkerByAddress(address) {
+        const existingAddress = this.placemarks.find(p => p.textAddress === address)
+        if (existingAddress) return existingAddress
+
         const geocoder = window.ymaps.geocode(address)
         return await geocoder
             .then(res => {
@@ -110,6 +113,8 @@ export default class YandexMap extends IMap {
                     this.map.geoObjects.remove(this.tempPlacemark)
                     this.tempPlacemark = null
                 }
+                // закрытие подсказок
+                sleep(100).then(() => this.suggests.map(s => s.suggest.state.set('panelClosed', true)))
 
                 const geoObject = res.geoObjects.get(0)
                 if (geoObject) {
@@ -175,6 +180,7 @@ export default class YandexMap extends IMap {
         return this.placemarks//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))
     }
 
+
     // метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
     autoZoom() {
         const options = {
@@ -184,8 +190,14 @@ export default class YandexMap extends IMap {
         if (this.placemarks.length === 1) {
             options.zoom = 14
         }
-        this.map.setBounds(this.map.geoObjects.getBounds(), options)
-        this.map.setZoom(this.defaultZoom)
+        const bounds = this.map.geoObjects.getBounds()
+        if (bounds) {
+            this.map.setBounds(bounds, options)
+            let zoom = this.map.getZoom()
+            zoom > 14 && (zoom = 14)
+            this.defaultZoom = zoom
+            this.map.setZoom(this.defaultZoom)
+        }
     }
 
     getZoom() {
@@ -205,9 +217,13 @@ export default class YandexMap extends IMap {
 
     setSuggestsTo(elementID) {
         if (!elementID || typeof elementID !== 'string') return
-        if (this.suggest) this.suggest.destroy()
-        this.suggest = new window.ymaps.SuggestView(elementID, {results: 3})
-        this.suggest.events.add('select', this._selectSuggest.bind(this))
+
+        const isSuggestExist = !!this.suggests.find(s => s.elementID === elementID)
+        if (!isSuggestExist) {
+            const newSuggest = new window.ymaps.SuggestView(elementID, {results: 3})
+            newSuggest.events.add('select', this._selectSuggest.bind(this))
+            this.suggests.push({elementID, suggest: newSuggest})
+        }
     }
 
     async _selectSuggest(e) {
@@ -217,7 +233,7 @@ export default class YandexMap extends IMap {
 
         const item = e.get('item')
         if (item) {
-            const geocode = await window.ymaps.geocode(item.value)
+            const geocode = await window.ymaps.geocode(item.displayName)
             window.geocode = geocode
             console.log(geocode.geoObjects.get(0))
             const coords = geocode.geoObjects.get(0).geometry.getCoordinates()
@@ -233,8 +249,8 @@ export default class YandexMap extends IMap {
             })
 
             this.map.geoObjects.add(this.tempPlacemark)
-            this.map.setCenter(coords, this.defaultZoom, {duration: 300})
-            // this.map.setZoom(14, {duration: 300})
+            console.log(this)
+            this.map.setCenter(coords, this.defaultZoom || 14, {duration: 300})
         }
     }
 
@@ -290,10 +306,15 @@ export default class YandexMap extends IMap {
         }
     }
 
+    resize() {
+        // this.map.redraw()
+    }
+
     destroyMap() {
         this.locationWatchID && navigator.geolocation.clearWatch(this.locationWatchID)
         this.map && this.map.destroy()
         this.script && this.script.remove()
+        this.suggest && this.suggests.forEach(s => s.suggest.destroy())
     }
 }
 

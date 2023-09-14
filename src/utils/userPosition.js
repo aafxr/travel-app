@@ -9,7 +9,7 @@ export default function userPosition(){
                 const {coords} = loc
                 const {latitude, longitude} = coords
                 resolve([latitude, longitude])
-            }, reject, {enableHighAccuracy: true, maximumAge: 10000})
+            }, reject, { maximumAge: 10000})
         }
         reject(new Error('User browser not support geolocation'))
     })
