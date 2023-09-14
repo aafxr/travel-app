@@ -161,10 +161,12 @@ export default function TravelAddOnMap() {
     }
 
     function handleTouchStart(p) {
+        document.documentElement.classList.add('disable-reload')
         handleDragStart(p)
     }
 
     function handleTouchEnd(e, p) {
+        document.documentElement.classList.remove('disable-reload')
         console.log(e)
         const {clientX, clientY} = e.changedTouches[0]
         const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')

@@ -1,57 +1,88 @@
 export default class IMap {
     async init(){}
 
-
-    // //добавить место на карту
-    // addPlace() {
-    //     console.warn('[IMap] addPlace not override')
-    // }
-    //
-    // getPlaces() {
-    //     console.warn('[IMap] getPlaces not override')
-    // }
-
     //управление маркерами (добавление, удаление, список)
-    addMarker() {
+    /**
+     * дообавить точку на карт по координатам
+     * @param {[number, number]} coords
+     */
+    addMarker(coords) {
         console.warn('[IMap] addMarker not override')
     }
 
-    addMarkerByLocalCoords(){
+    /**
+     * добавить точку на карту по координатам блока-контейнера карты
+     * @param {[number, number]} localCoords
+     */
+    addMarkerByLocalCoords(localCoords){
         console.warn('[IMap] addMarkerByLocalCoords not override')
     }
 
-    removeMarkerByLocalCoords(){
+    /**
+     * удалить точку на карту по координатам блока-контейнера карты
+     * @param {[number, number]} localCoords
+     */
+    removeMarkerByLocalCoords(localCoords){
         console.warn('[IMap] removeMarkerByLocalCoords not override')
     }
 
-    addMarkerByAddress(){
+    /**
+     * добавить точку на карту по указанному адресу
+     * @param {string} address
+     */
+    addMarkerByAddress(address){
         console.warn('[IMap] addMarkerByAddress not override')
     }
 
-    removeMarker() {
+    /**
+     * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
+     * @param {Object} marker
+     */
+    removeMarker(marker) {
         console.warn('[IMap] removeMarker not override')
     }
 
+    /**
+     * возвращает массив объектов, описывающих точки на карте. Каждый объект содержит адрес, координаты
+     * @returns {Object[]}
+     */
     getMarkers() {
         console.warn('[IMap] getMarkers not override')
     }
 
-    setZoom(){
+    /**
+     * @param {number} value
+     */
+    setZoom(value){
         console.warn('[IMap] setZoom not override')
     }
 
+    /**
+     * @returns {number}
+     */
     getZoom(){
         console.warn('[IMap] getZoom not override')
     }
 
+    /**
+     * установка зума карты так, чтобы все точки на карте попадали в область блока-контейнера карты
+     */
     autoZoom(){
         console.warn('[IMap] autoZoom not override')
     }
 
+    /**
+     * добавление подсказок к полю ввода адреса
+     * @param {string} elementID - id  поля ввода
+     */
     setSuggestsTo(elementID){
         console.warn('[IMap] setSuggestsTo not override')
     }
 
+    /**
+     * @param {[number, number]} coords
+     * @param {number} zoomLevel
+     */
     focusOnPoint(coords, zoomLevel){
         console.warn('[IMap] focusOnPoint not override')
     }
@@ -70,6 +101,9 @@ export default class IMap {
     //     console.warn('[IMap] setUserLocation not override')
     // }
 
+    /**
+     * @returns {Promise<[number, number]>}
+     */
     async getUserLocation() {
         console.warn('[IMap] getUserLocation not override')
     }
