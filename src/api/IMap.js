@@ -79,6 +79,10 @@ export default class IMap {
         console.warn('[IMap] setSuggestsTo not override')
     }
 
+    removeSuggest(){
+        console.warn('[IMap] removeSuggest not override')
+    }
+
     /**
      * @param {[number, number]} coords
      * @param {number} zoomLevel

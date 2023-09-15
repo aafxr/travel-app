@@ -28,7 +28,7 @@ export default class YandexMap extends IMap {
         this.placemarks = placemarks
         this.mapContainerID = mapContainerID
         this.placemarkIcon = window.ymaps.templateLayoutFactory.createClass(`<div class="${markerClassName}"></div>`);
-        this.suggests = []
+        this.suggest = null
         this.setSuggestsTo(suggestElementID)
 
         this.getUserLocation().then(userLocation => {
@@ -113,12 +113,11 @@ export default class YandexMap extends IMap {
                     this.map.geoObjects.remove(this.tempPlacemark)
                     this.tempPlacemark = null
                 }
-                // закрытие подсказок
-                sleep(100).then(() => this.suggests.map(s => s.suggest.state.set('panelClosed', true)))
 
                 const geoObject = res.geoObjects.get(0)
                 if (geoObject) {
                     const newMarker = this._newMarker(geoObject)
+                    console.log('newMarker ', newMarker)
                     this.placemarks.push(newMarker)
                     this.map.geoObjects.add(newMarker.placemark)
                     this.autoZoom()
@@ -183,19 +182,14 @@ export default class YandexMap extends IMap {
 
     // метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
     autoZoom() {
-        const options = {
-            duration: 300,
-            zoom: this.defaultZoom
-        }
-        if (this.placemarks.length === 1) {
-            options.zoom = 14
-        }
-        const bounds = this.map.geoObjects.getBounds()
+        console.log('autozoom', this)
+        const bounds = this.map.getBounds()
+        console.log(bounds)
         if (bounds) {
-            this.map.setBounds(bounds, options)
+            this.map.setBounds(bounds)
             let zoom = this.map.getZoom()
             zoom > 14 && (zoom = 14)
-            this.defaultZoom = zoom
+            this.defaultZoom = Math.floor(zoom)
             this.map.setZoom(this.defaultZoom)
         }
     }
@@ -218,11 +212,15 @@ export default class YandexMap extends IMap {
     setSuggestsTo(elementID) {
         if (!elementID || typeof elementID !== 'string') return
 
-        const isSuggestExist = !!this.suggests.find(s => s.elementID === elementID)
-        if (!isSuggestExist) {
-            const newSuggest = new window.ymaps.SuggestView(elementID, {results: 3})
-            newSuggest.events.add('select', this._selectSuggest.bind(this))
-            this.suggests.push({elementID, suggest: newSuggest})
+        const newSuggest = new window.ymaps.SuggestView(elementID, {results: 3})
+        newSuggest.events.add('select', this._selectSuggest.bind(this))
+        this.suggest = newSuggest
+    }
+
+    removeSuggest() {
+        if (this.suggest) {
+            this.suggest.destroy()
+            this.suggest = null
         }
     }
 
@@ -314,7 +312,7 @@ export default class YandexMap extends IMap {
         this.locationWatchID && navigator.geolocation.clearWatch(this.locationWatchID)
         this.map && this.map.destroy()
         this.script && this.script.remove()
-        this.suggest && this.suggests.forEach(s => s.suggest.destroy())
+        this.suggest && this.suggest.destroy()
     }
 }
 

@@ -11,9 +11,9 @@ import DragIcon from "../../../../components/svg/DragIcon";
 import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
+import sleep from "../../../../utils/sleep";
 
 import './TravelAddOnMap.css'
-import sleep from "../../../../utils/sleep";
 
 /**
  * @typedef {Object} InputPoint
@@ -30,8 +30,7 @@ export default function TravelAddOnMap() {
     // список точек на карте
     const [points, setPoints] = useState(/**@type{InputPoint[]} */[])
     // const [userCoords, setUserCoords ] = useState([])
-    const [draggingPoint, setDraggingPoin] = useState(null)
-    const [dragOverPoint, setDraggOverPoin] = useState(null)
+    const drag = useRef({})
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
@@ -132,12 +131,12 @@ export default function TravelAddOnMap() {
 
     // обработка перетаскивания ========================================================================================
     function handleDragStart(item) {
-        setDraggingPoin(item)
+        drag.current.draggingPoint = item
     }
 
     function handleDragEnd(item) {
-        const draggingIDX = points.findIndex(p => p === draggingPoint)
-        const overIDX = points.findIndex(p => p === dragOverPoint)
+        const draggingIDX = points.findIndex(p => !!drag.current.draggingPoint && p.id === drag.current.draggingPoint.id)
+        const overIDX = points.findIndex(p =>  !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         if (~draggingIDX && ~overIDX) {
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
@@ -147,39 +146,37 @@ export default function TravelAddOnMap() {
             /**
              * логика по устаноке нового порядка точек на карте ...
              */
+            drag.current = {}
             setPoints(newPoints)
-            setDraggingPoin(null)
-            setDraggOverPoin(null)
         }
     }
 
     function handleDragOver(item) {
-        setDraggOverPoin(item)
+        drag.current.draggOverPoint = item
     }
 
     function handleDragLeave(item) {
     }
 
-    function handleTouchStart(p) {
+    function handleTouchStart(e, item) {
         document.documentElement.classList.add('disable-reload')
-        handleDragStart(p)
+        handleDragStart(item)
     }
 
     function handleTouchEnd(e, p) {
         document.documentElement.classList.remove('disable-reload')
-        console.log(e)
         const {clientX, clientY} = e.changedTouches[0]
         const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')
-        console.log(container)
         if (container) {
             const pointID = container.dataset.id
             const point = points.find(p => p.id === pointID)
-            if(point){
-                setDraggOverPoin(point)
+            if (point) {
+                drag.current.draggOverPoint = point
                 handleDragEnd(point)
             }
         }
     }
+
 
 
     return (
@@ -190,7 +187,8 @@ export default function TravelAddOnMap() {
                     points.map(p => (
                         <div
                             key={p.id}
-                            onClick={()=>{}}
+                            onClick={() => {
+                            }}
                             className='travel-map-input-container relative'
                             onDragOver={() => handleDragOver(p)}
                             onDragLeave={() => handleDragLeave(p)}
@@ -204,10 +202,12 @@ export default function TravelAddOnMap() {
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}
                                 onFocus={() => map.setSuggestsTo(p.id)}
+                                onBlur={() => map.removeSuggest()}
                             />
                             <div
                                 className='travel-map-drag-icon'
-                                onTouchStart={() => handleTouchStart(p)}
+                                onClick={() => {}}
+                                onTouchStart={(e) => handleTouchStart(e,p)}
                                 onTouchEnd={(e) => handleTouchEnd(e, p)}
                                 onDragStart={() => handleDragStart(p)}
                                 onDragEnd={() => handleDragEnd(p)}
