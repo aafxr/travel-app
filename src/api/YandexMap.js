@@ -1,7 +1,6 @@
 import IMap from "./IMap";
 import userPosition from "../utils/userPosition";
 import ErrorReport from "../controllers/ErrorReport";
-import sleep from "../utils/sleep";
 
 export default class YandexMap extends IMap {
     constructor({
@@ -305,7 +304,7 @@ export default class YandexMap extends IMap {
     }
 
     resize() {
-        // this.map.redraw()
+        this.map.container.fitToViewport()
     }
 
     destroyMap() {

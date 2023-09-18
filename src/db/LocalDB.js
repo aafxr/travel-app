@@ -109,10 +109,11 @@ export class LocalDB {
         this.ready = false
         this.onReady = onReady || (()=>{})
         openDataBase(dbname, version, stores)
-            .then(() => {
+            .then(function () {
+                console.log(this)
                 this.ready = true
                 this.readyHandler()
-            })
+            }.bind(this))
             .catch((err) => {
                 onError && onError(err)
                 pushAlertMessage({type:'danger', message: `Ошибка при инициализации БД\n${err.message}`})

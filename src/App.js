@@ -24,7 +24,7 @@ import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
-// import ErrorBoundary from "./components/ErrorBoundery/ErrorBoundery";
+// import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
@@ -44,7 +44,7 @@ import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
 import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
-
+import Loader from "./components/Loader/Loader";
 
 
 function App() {
@@ -66,7 +66,15 @@ function App() {
     }, [ready])
 
     if (!ready) {
-        return null
+        return (
+            <div className='wrapper'>
+                <div className='content center'>
+                    <div className='loader'>
+                        <Loader/>
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     // useEffect(() => {
@@ -101,22 +109,31 @@ function App() {
                             <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
                             <Route path={'/travel/:travelCode/add/meeting/'} element={<TravelAddMeeting/>}/>
                             <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
-                            <Route path={'/hotels/:hotelCode/'} element={<HotelDetails />}/>
+                            <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                             <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                                 <Route element={<ExpensesLayout/>}>
                                     <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
                                     <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                                 </Route>
-                                <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
+                                <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'}
+                                       element={<LimitsEdit primary_entity_type={'travel'}/>}/>
+                                <Route path={'/travel/:travelCode/expenses/add/'}
+                                       element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>
+                                <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'}
+                                       element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual'
+                                                             edit/>}/>
+                                <Route path={'/travel/:travelCode/expenses/plan/add/'}
+                                       element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
+                                <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'}
+                                       element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                             </Route>
                             <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
+                            <Route path={'/profile/settings/user/'}
+                                   element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
+                            <Route path={'/profile/settings/user/name/edite/'}
+                                   element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                            <Route path={'/profile/settings/user/photo/edite/'}
+                                   element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
                             <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
                             <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
                             <Route path={'/login/'} element={<Login/>}/>

@@ -10,7 +10,7 @@ export default function AuthRequired({children}) {
         return (
             <div className='wrapper'>
                 <div className='content center'>
-                    <div className='loader icon'>
+                    <div className='loader'>
                         <Loader/>
                     </div>
                 </div>
