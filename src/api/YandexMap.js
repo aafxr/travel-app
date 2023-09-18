@@ -80,6 +80,7 @@ export default class YandexMap extends IMap {
         }, {
             preset: 'islands#darkOrangeIcon',
             iconLayout: this.placemarkIcon,
+            iconOffset: [-16, -32],
             draggable: true,
             cursor: 'pointer',
         })
@@ -182,7 +183,7 @@ export default class YandexMap extends IMap {
     // метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
     autoZoom() {
         console.log('autozoom', this)
-        const bounds = this.map.getBounds()
+        const bounds = this.map.geoObjects.getBounds()
         console.log(bounds)
         if (bounds) {
             this.map.setBounds(bounds)
@@ -242,6 +243,7 @@ export default class YandexMap extends IMap {
             }, {
                 preset: 'islands#darkOrangeIcon',
                 iconLayout: this.placemarkIcon,
+                iconOffset: [-16, -32],
                 cursor: 'pointer',
             })
 
@@ -350,6 +352,7 @@ YandexMap.init = function init({
                         }, {
                             preset: 'islands#darkOrangeIcon',
                             iconLayout: this.placemarkIcon,
+                            iconOffset: [-16, -32],
                             draggable: true
                         })
                         map.geoObjects.add(placemark)
