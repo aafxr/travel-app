@@ -31,6 +31,7 @@ export default function TravelAddOnMap() {
     const [points, setPoints] = useState(/**@type{InputPoint[]} */[])
     // const [userCoords, setUserCoords ] = useState([])
     const drag = useRef({})
+    const currentDragElement = useRef(null)
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
@@ -136,7 +137,7 @@ export default function TravelAddOnMap() {
 
     function handleDragEnd(item) {
         const draggingIDX = points.findIndex(p => !!drag.current.draggingPoint && p.id === drag.current.draggingPoint.id)
-        const overIDX = points.findIndex(p =>  !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
+        const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         if (~draggingIDX && ~overIDX) {
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
@@ -160,10 +161,32 @@ export default function TravelAddOnMap() {
 
     function handleTouchStart(e, item) {
         document.documentElement.classList.add('disable-reload')
+        const el = e.target.closest('.travel-map-input-container')
+        if (el) {
+            const elRect = el.getBoundingClientRect()
+            currentDragElement.current = el.cloneNode(true)
+            currentDragElement.current.style.opacity = 0.9
+            currentDragElement.current.style.position = 'fixed'
+            currentDragElement.current.style.zIndex = 40000
+            currentDragElement.current.style.widths = elRect.width
+            currentDragElement.current.style.height = elRect.height
+            currentDragElement.current.style.backgroundColor = 'white'
+            document.body.appendChild(currentDragElement.current)
+        }
         handleDragStart(item)
     }
 
+    function handleTouchMove(e){
+        if (currentDragElement.current){
+        console.log(e.changedTouches[0])
+            currentDragElement.current.style.right = e.changedTouches[0].clientX
+            currentDragElement.current.style.top = e.changedTouches[0].clientY
+        }
+    }
+
     function handleTouchEnd(e, p) {
+        if(currentDragElement.current) currentDragElement.current.remove()
+
         document.documentElement.classList.remove('disable-reload')
         const {clientX, clientY} = e.changedTouches[0]
         const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')
@@ -178,11 +201,15 @@ export default function TravelAddOnMap() {
     }
 
 
-
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Направление'}/>
+                {/*<div*/}
+                {/*    className='link'*/}
+                {/*    onClick={handleAddNewPoint}*/}
+                {/*>+ Указать точку отправления*/}
+                {/*</div>*/}
                 {
                     points.map(p => (
                         <div
@@ -206,9 +233,11 @@ export default function TravelAddOnMap() {
                             />
                             <div
                                 className='travel-map-drag-icon'
-                                onClick={() => {}}
-                                onTouchStart={(e) => handleTouchStart(e,p)}
+                                onClick={() => {
+                                }}
+                                onTouchStart={(e) => handleTouchStart(e, p)}
                                 onTouchEnd={(e) => handleTouchEnd(e, p)}
+                                onTouchMove={handleTouchMove}
                                 onDragStart={() => handleDragStart(p)}
                                 onDragEnd={() => handleDragEnd(p)}
                                 draggable
