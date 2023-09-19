@@ -1,3 +1,15 @@
+/**
+ * @typedef {Object} Point
+ * @property {[number, number]} coords
+ * @property {string} kind
+ * @property {string} textAddress
+ * @property {Object} placemark
+ */
+
+
+/**
+ * интерфейс для работы с картами. карта создается при помощи метода init
+ */
 export default class IMap {
     async init(){}
 
@@ -5,7 +17,7 @@ export default class IMap {
     /**
      * дообавить точку на карт по координатам
      * @param {[number, number]} coords
-     * @returns{Promise}
+     * @returns{Promise<Point | null>}
      */
     addMarker(coords) {
         console.warn('[IMap] addMarker not override')
@@ -14,6 +26,7 @@ export default class IMap {
     /**
      * добавить точку на карту по координатам блока-контейнера карты
      * @param {[number, number]} localCoords
+     * @returns {Point | null}
      */
     addMarkerByLocalCoords(localCoords){
         console.warn('[IMap] addMarkerByLocalCoords not override')
@@ -30,6 +43,7 @@ export default class IMap {
     /**
      * добавить точку на карту по указанному адресу
      * @param {string} address
+     * @returns {Point | null}
      */
     addMarkerByAddress(address){
         console.warn('[IMap] addMarkerByAddress not override')
@@ -45,7 +59,7 @@ export default class IMap {
 
     /**
      * возвращает массив объектов, описывающих точки на карте. Каждый объект содержит адрес, координаты
-     * @returns {Object[]}
+     * @returns {Point[]}
      */
     getMarkers() {
         console.warn('[IMap] getMarkers not override')
@@ -80,6 +94,9 @@ export default class IMap {
         console.warn('[IMap] setSuggestsTo not override')
     }
 
+    /**
+     * удаление подсказок
+     */
     removeSuggest(){
         console.warn('[IMap] removeSuggest not override')
     }
@@ -122,9 +139,11 @@ export default class IMap {
         console.warn('[IMap] disableUserTracking not override')
     }
 
+    /** вызывается если размеры контейнера ищменилися */
     resize(){}
 
 
+    /** очистка ресурсов выделенных под карту */
     destroyMap(){}
 }
 

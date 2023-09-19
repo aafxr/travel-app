@@ -49,7 +49,6 @@ export default function TravelAddOnMap() {
 
     const [fromUserLocation, setFromUserLocation] = useState(false)
 
-
     // слушатель на событие выбора точки с помощью подсказки ===========================================================
     useEffect(() => {
         const pointSelectHandler = async (e) => {
