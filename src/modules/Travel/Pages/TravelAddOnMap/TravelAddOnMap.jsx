@@ -23,21 +23,30 @@ import './TravelAddOnMap.css'
 
 export default function TravelAddOnMap() {
     const {user} = useSelector(state => state[constants.redux.USER])
-    //референс на контайнер карты
+
+    /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
-    // интерфейс для взаимодействия с картой
-    const [map, setMap] = useState(/**@type{IMap}*/ null)
-    // список точек на карте
+
+    /** интерфейс для взаимодействия с картой */
+    const [map, setMap] = useState(/**@type{IMap} */ null)
+
+    /** список точек на карте */
     const [points, setPoints] = useState(/**@type{InputPoint[]} */[])
+
     // const [userCoords, setUserCoords ] = useState([])
+
+    /** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
-    const currentDragElement = useRef(null)
+
+    /** clone - react ref  на HTMLElement, который планируем перетаскивать */
+    const clone = useRef(null)
+
+    /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
+    const offset = useRef(null)
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
-        if (user) {
-            setPoints([{id: user.id, text: ''}])
-        }
+        if (user) setPoints([{id: user.id, text: ''}])
     }, [user])
 
     // инициализация карты =============================================================================================
@@ -135,9 +144,23 @@ export default function TravelAddOnMap() {
         drag.current.draggingPoint = item
     }
 
+    /**
+     * @param item - точка, которую перетаскивали
+     */
     function handleDragEnd(item) {
+        /**
+         * индекс перетаскиваемого элемента
+         * @type {number}
+         */
         const draggingIDX = points.findIndex(p => !!drag.current.draggingPoint && p.id === drag.current.draggingPoint.id)
+        /**
+         * индекс элемента, на который навели
+         * @type {number}
+         */
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
+        /**
+         * если оба индекса существуют ( индексы !== -1), то меняем элементы местами
+         */
         if (~draggingIDX && ~overIDX) {
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
@@ -152,6 +175,7 @@ export default function TravelAddOnMap() {
         }
     }
 
+
     function handleDragOver(item) {
         drag.current.draggOverPoint = item
     }
@@ -164,28 +188,27 @@ export default function TravelAddOnMap() {
         const el = e.target.closest('.travel-map-input-container')
         if (el) {
             const elRect = el.getBoundingClientRect()
-            currentDragElement.current = el.cloneNode(true)
-            currentDragElement.current.style.opacity = 0.9
-            currentDragElement.current.style.position = 'fixed'
-            currentDragElement.current.style.zIndex = 40000
-            currentDragElement.current.style.widths = elRect.width
-            currentDragElement.current.style.height = elRect.height
-            currentDragElement.current.style.backgroundColor = 'white'
-            document.body.appendChild(currentDragElement.current)
+            clone.current = cloneNode(el)
+            document.body.appendChild(clone.current)
+
+            const {clientX, clientY} = e.changedTouches[0]
+            const top = clientY - elRect.top - elRect.height
+            const right = clientX - elRect.left - elRect.width
+            offset.current = {top,right}
         }
         handleDragStart(item)
     }
 
     function handleTouchMove(e){
-        if (currentDragElement.current){
-        console.log(e.changedTouches[0])
-            currentDragElement.current.style.right = e.changedTouches[0].clientX
-            currentDragElement.current.style.top = e.changedTouches[0].clientY
+        if (clone.current){
+            const {clientX, clientY} = e.changedTouches[0]
+            clone.current.style.right =window.innerWidth -  clientX + (offset.current?.right || 0) + 'px'
+            clone.current.style.top = clientY + (offset.current?.top || 0) + 'px'
         }
     }
 
     function handleTouchEnd(e, p) {
-        if(currentDragElement.current) currentDragElement.current.remove()
+        if(clone.current) clone.current.remove()
 
         document.documentElement.classList.remove('disable-reload')
         const {clientX, clientY} = e.changedTouches[0]
@@ -278,4 +301,24 @@ export default function TravelAddOnMap() {
             </div>
         </div>
     )
+}
+
+/**
+ * возвращает полную копию переданного элмента
+ * @param {HTMLElement} el
+ * @returns {HTMLElement}
+ */
+function cloneNode(el){
+    if(!el) return null
+
+    const elRect = el.getBoundingClientRect()
+    const clone = el.cloneNode(true)
+    clone.style.opacity = 0.5
+    clone.style.position = 'fixed'
+    clone.style.overflow = 'hidden'
+    clone.style.zIndex = 1000
+    clone.style.width = elRect.width + 'px'
+    clone.style.height = elRect.height + 'px'
+
+    return clone
 }

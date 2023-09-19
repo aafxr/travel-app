@@ -56,11 +56,12 @@ export default class YandexMap extends IMap {
         const geocode = await window.ymaps.geocode(coords)
         const geoObject = geocode.geoObjects.get(0)
 
-        const markInfo = this._newMarker(geoObject)
+        const markerInfo = this._newMarker(geoObject)
 
-        this.placemarks.push(markInfo)
-        this.map.geoObjects.add(markInfo.placemark)
+        this.placemarks.push(markerInfo)
+        this.map.geoObjects.add(markerInfo.placemark)
         this.autoZoom()
+        return markerInfo
     }
 
     _newMarker(geoObject) {
