@@ -2,7 +2,19 @@ import IMap from "./IMap";
 import userPosition from "../utils/userPosition";
 import ErrorReport from "../controllers/ErrorReport";
 
+
 export default class YandexMap extends IMap {
+    /**
+     * обертка для работы с api yandex maps
+     * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
+     * @param {string} mapContainerID       - id контецнера карты
+     * @param {string} coordsIDElement
+     * @param {string} iconClass
+     * @param {Point[]} placemarks
+     * @param {object} map                  - инстанс карты созданный с помощью api
+     * @param {HTMLScriptElement} script
+     * @param {string} markerClassName      - класс для кастомного маркера на карте
+     */
     constructor({
                     suggestElementID,
                     mapContainerID,
