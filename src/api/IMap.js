@@ -5,6 +5,7 @@ export default class IMap {
     /**
      * дообавить точку на карт по координатам
      * @param {[number, number]} coords
+     * @returns{Promise}
      */
     addMarker(coords) {
         console.warn('[IMap] addMarker not override')

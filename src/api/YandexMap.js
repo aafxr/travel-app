@@ -118,7 +118,6 @@ export default class YandexMap extends IMap {
                 const geoObject = res.geoObjects.get(0)
                 if (geoObject) {
                     const newMarker = this._newMarker(geoObject)
-                    console.log('newMarker ', newMarker)
                     this.placemarks.push(newMarker)
                     this.map.geoObjects.add(newMarker.placemark)
                     this.autoZoom()
@@ -183,9 +182,7 @@ export default class YandexMap extends IMap {
 
     // метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
     autoZoom() {
-        console.log('autozoom', this)
         const bounds = this.map.geoObjects.getBounds()
-        console.log(bounds)
         if (bounds) {
             this.map.setBounds(bounds)
             let zoom = this.map.getZoom()
@@ -230,11 +227,12 @@ export default class YandexMap extends IMap {
             this.map.geoObjects.remove(this.tempPlacemark)
         }
 
+        window.selectTarget = e.originalEvent.target
+
         const item = e.get('item')
         if (item) {
             const geocode = await window.ymaps.geocode(item.displayName)
             window.geocode = geocode
-            console.log(geocode.geoObjects.get(0))
             const coords = geocode.geoObjects.get(0).geometry.getCoordinates()
             const {text: textAddress} = geocode.geoObjects.get(0).properties.getAll().metaDataProperty.GeocoderMetaData
 
@@ -251,6 +249,7 @@ export default class YandexMap extends IMap {
             this.map.geoObjects.add(this.tempPlacemark)
             console.log(this)
             this.map.setCenter(coords, this.defaultZoom || 14, {duration: 300})
+            document.dispatchEvent(new CustomEvent('point', {detail: textAddress}))
         }
     }
 
@@ -281,7 +280,6 @@ export default class YandexMap extends IMap {
 
     enableUserTracking() {
         if ('geolocation' in navigator) {
-            console.log(this)
             this.locationWatchID = navigator.geolocation.watchPosition((this.locationTracking).bind(this),
                 err => ErrorReport.sendReport()
             )

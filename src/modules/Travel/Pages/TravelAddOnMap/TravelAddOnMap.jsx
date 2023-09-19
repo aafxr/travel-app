@@ -44,6 +44,37 @@ export default function TravelAddOnMap() {
     /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
 
+    /** react ref на последний input элемент, который был в фокусе */
+    const lastFocusedElement = useRef(null)
+
+    const [fromUserLocation, setFromUserLocation] = useState(false)
+
+
+    // слушатель на событие выбора точки с помощью подсказки ===========================================================
+    useEffect(() => {
+        const pointSelectHandler = async (e) => {
+            if (!map) return
+
+            const address = e.detail
+            console.log('address', address)
+
+            const marker = await map.addMarkerByAddress(address)
+            if (marker) {
+                const id = lastFocusedElement.current.dataset.id
+                const newPoints = points.map(p => {
+                    if (p.id === id) {
+                        return {id, text: marker.textAddress}
+                    }
+                    return p
+                })
+                setPoints(newPoints)
+            }
+        }
+
+        document.addEventListener('point', pointSelectHandler)
+        return () => document.removeEventListener('point', pointSelectHandler)
+    }, [])
+
     // начальное значение первой точки =================================================================================
     useEffect(() => {
         if (user) setPoints([{id: user.id, text: ''}])
@@ -69,6 +100,10 @@ export default function TravelAddOnMap() {
     }, [mapRef, map])
 
     //=============================== click handlers ===================================================================
+    /**
+     * обработчик добавляет точку по клику по карте
+     * @param {MouseEvent} e
+     */
     function handleMapClick(e) {
         const {clientX, clientY, target} = e
         const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
@@ -82,10 +117,17 @@ export default function TravelAddOnMap() {
     }
 
     // обработка ввода input ===========================================================================================
+    /**
+     * при нажатии Enter (keyCode = 13) добавляет точку на карту
+     * @param {KeyboardEvent<HTMLInputElement>} e
+     * @param item - элемент из массива points
+     * @returns {Promise<void>}
+     */
     async function handleKeyDown(e, item) {
         if (e.keyCode === 13) {
             const marker = await map.addMarkerByAddress(item.text)
             if (marker) {
+                /** обновляем адресс в массиве points по полученным данным от api карты */
                 const newPoints = points.map(p => {
                     if (p === item) {
                         return {...item, text: marker.textAddress}
@@ -99,11 +141,14 @@ export default function TravelAddOnMap() {
         }
     }
 
+    /**
+     * обработка input event
+     * @param {InputEvent} e
+     * @param item - элемент из массива points
+     */
     function handleInputChange(e, item) {
         const newPoints = points.map(p => {
-            if (p === item) {
-                return {...item, text: e.target.value}
-            }
+            if (p === item) return {...item, text: e.target.value}
             return p
         })
         setPoints(newPoints)
@@ -123,6 +168,7 @@ export default function TravelAddOnMap() {
     async function handleUserLocation() {
         const userCoords = await map.getUserLocation()
         if (userCoords) {
+            console.log(userCoords)
             map.focusOnPoint(userCoords)
         } else {
             pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})
@@ -158,9 +204,7 @@ export default function TravelAddOnMap() {
          * @type {number}
          */
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
-        /**
-         * если оба индекса существуют ( индексы !== -1), то меняем элементы местами
-         */
+        /**  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
@@ -183,37 +227,47 @@ export default function TravelAddOnMap() {
     function handleDragLeave(item) {
     }
 
+
     function handleTouchStart(e, item) {
         document.documentElement.classList.add('disable-reload')
         const el = e.target.closest('.travel-map-input-container')
         if (el) {
             const elRect = el.getBoundingClientRect()
+            /** создаем копию элемента */
             clone.current = cloneNode(el)
             document.body.appendChild(clone.current)
 
             const {clientX, clientY} = e.changedTouches[0]
+            /** смещение относительно правого верхнего угла блока-контейнерв */
             const top = clientY - elRect.top - elRect.height
+            /** смещение относительно правого верхнего угла блока-контейнерв */
             const right = clientX - elRect.left - elRect.width
-            offset.current = {top,right}
+            offset.current = {top, right}
         }
         handleDragStart(item)
     }
 
-    function handleTouchMove(e){
-        if (clone.current){
+    /**
+     * обработчик для позиционирования клона перемещаемого объекта
+     * @param {TouchEvent} e
+     */
+    function handleTouchMove(e) {
+        if (clone.current) {
             const {clientX, clientY} = e.changedTouches[0]
-            clone.current.style.right =window.innerWidth -  clientX + (offset.current?.right || 0) + 'px'
+            clone.current.style.right = window.innerWidth - clientX + (offset.current?.right || 0) + 'px'
             clone.current.style.top = clientY + (offset.current?.top || 0) + 'px'
         }
     }
 
     function handleTouchEnd(e, p) {
-        if(clone.current) clone.current.remove()
+        if (clone.current) clone.current.remove()
 
         document.documentElement.classList.remove('disable-reload')
         const {clientX, clientY} = e.changedTouches[0]
+        /** поиск обертки input элемента  */
         const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')
         if (container) {
+            /** достаем id  из data-атрибута id */
             const pointID = container.dataset.id
             const point = points.find(p => p.id === pointID)
             if (point) {
@@ -224,15 +278,60 @@ export default function TravelAddOnMap() {
     }
 
 
+    // обработка фокуса на input =======================================================================================
+    /**
+     * @param {FocusEvent} e
+     * @param item
+     */
+    function handleFocus(e, item) {
+        map.setSuggestsTo(item.id)
+        lastFocusedElement.current = e.target
+    }
+
+    function handleBlur(e, item) {
+        map.removeSuggest()
+    }
+
+    async function handleUserLocationPoint() {
+        const coords = await map.getUserLocation()
+        console.log('coords', coords)
+        map
+            .addMarker(coords)
+            .then(point => {
+                console.log(point)
+                const newPoint = {id: createId(user.id), text: point.textAddress}
+                setPoints([newPoint, ...points])
+                setFromUserLocation(true)
+            })
+    }
+
+    // обработка зума при прокрутки колесика мыши
+    function handleWheel(e) {
+        if (e.deltaY) {
+            e.preventDefault()
+            const zoom = map.getZoom()
+            if (e.deltaY < 0) {
+                map.setZoom(zoom + 1)
+            } else {
+                map.setZoom(zoom - 1)
+            }
+        }
+    }
+
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Направление'}/>
-                {/*<div*/}
-                {/*    className='link'*/}
-                {/*    onClick={handleAddNewPoint}*/}
-                {/*>+ Указать точку отправления*/}
-                {/*</div>*/}
+                {
+                    !fromUserLocation && (
+                        <div
+                            className='link'
+                            onClick={handleUserLocationPoint}
+                        >
+                            + Текущая позиция
+                        </div>
+                    )
+                }
                 {
                     points.map(p => (
                         <div
@@ -251,8 +350,8 @@ export default function TravelAddOnMap() {
                                 value={p.text}
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}
-                                onFocus={() => map.setSuggestsTo(p.id)}
-                                onBlur={() => map.removeSuggest()}
+                                onFocus={(e) => handleFocus(e, p)}
+                                onBlur={(e) => handleBlur(e, p)}
                             />
                             <div
                                 className='travel-map-drag-icon'
@@ -282,6 +381,7 @@ export default function TravelAddOnMap() {
                     ref={mapRef}
                     id='map'
                     className='relative'
+                    onWheel={handleWheel}
                 >
                     <MapControls
                         className='travel-controls'
@@ -295,6 +395,7 @@ export default function TravelAddOnMap() {
                 <Button
                     onClick={() => {
                     }}
+                    disabled={!points.length}
                 >
                     Продолжить
                 </Button>
@@ -308,12 +409,12 @@ export default function TravelAddOnMap() {
  * @param {HTMLElement} el
  * @returns {HTMLElement}
  */
-function cloneNode(el){
-    if(!el) return null
+function cloneNode(el) {
+    if (!el) return null
 
     const elRect = el.getBoundingClientRect()
     const clone = el.cloneNode(true)
-    clone.style.opacity = 0.5
+    clone.style.opacity = 0.7
     clone.style.position = 'fixed'
     clone.style.overflow = 'hidden'
     clone.style.zIndex = 1000
