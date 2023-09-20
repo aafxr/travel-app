@@ -356,6 +356,7 @@ export default function TravelAddOnMap() {
                 map.removeMarker(point)
                 const newPoints = points.filter((p, idx) => idx !== pointidx)
                 setPoints(newPoints)
+                map.autoZoom()
             }
         }
     }
