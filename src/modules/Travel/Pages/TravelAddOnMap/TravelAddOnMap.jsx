@@ -1,5 +1,6 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 
 import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
 import MapControls from "../../../../components/MapControls/MapControls";
@@ -8,25 +9,24 @@ import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import DragIcon from "../../../../components/svg/DragIcon";
+import createAction from "../../../../utils/createAction";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
+import createTravel from "../../helpers/createTravel";
 import constants from "../../../../static/constants";
+import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
+import {actions} from "../../../../redux/store";
 import sleep from "../../../../utils/sleep";
 
-import createTravel from "../../helpers/createTravel";
-import createTravelPoints from "../../helpers/createTravelPoints";
-import storeDB from "../../../../db/storeDB/storeDB";
-
 import './TravelAddOnMap.css'
-import {actions} from "../../../../redux/store";
-import createAction from "../../../../utils/createAction";
-import {useNavigate} from "react-router-dom";
 
 window.onerror = console.error
 /**
  * @typedef {Object} InputPoint
  * @property {string} id
  * @property {string} text
+ * @property {Point} point
  */
 
 export default function TravelAddOnMap() {
@@ -139,7 +139,7 @@ export default function TravelAddOnMap() {
                 /** обновляем адресс в массиве points по полученным данным от api карты */
                 const newPoints = points.map(p => {
                     if (p === item) {
-                        return {...item, text: marker.textAddress}
+                        return {...item, text: marker.textAddress, point: marker}
                     }
                     return p
                 })
@@ -308,7 +308,7 @@ export default function TravelAddOnMap() {
             .addMarker(coords)
             .then(point => {
                 console.log(point)
-                const newPoint = {id: createId(user.id), text: point.textAddress}
+                const newPoint = {id: createId(user.id), text: point.textAddress, point}
                 setPoints([newPoint, ...points])
                 setFromUserLocation(true)
             })
@@ -329,7 +329,7 @@ export default function TravelAddOnMap() {
 
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
-    function handleRouteSubmit(){
+    function handleRouteSubmit() {
         // const travelPoints = createTravelPoints(travel.id, points)
         const travelPoints = map.getMarkers().map(p => {
             delete p.placemark
@@ -348,6 +348,20 @@ export default function TravelAddOnMap() {
             .catch(console.error)
     }
 
+    function handleRemovePoint(item){
+        if(map){
+            const pointidx = points.findIndex(p => p === item)
+            if(~pointidx){
+                const point = points[pointidx].point
+                map.removeMarker(point)
+                const newPoints = points.filter((p, idx) => idx !== pointidx)
+                setPoints(newPoints)
+            }
+        }
+    }
+
+    console.log(points)
+
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
@@ -364,40 +378,44 @@ export default function TravelAddOnMap() {
                 }
                 {
                     points.map(p => (
-                        <div
+                        <Swipe
                             key={p.id}
-                            onClick={() => {
-                            }}
-                            className='travel-map-input-container relative'
-                            onDragOver={() => handleDragOver(p)}
-                            onDragLeave={() => handleDragLeave(p)}
-                            data-id={p.id}
+                            onRemove={() => handleRemovePoint(p)}
+                            rightButton
                         >
-                            <Input
-                                id={p.id}
-                                className='travel-map-input'
-                                placeholder='Куда едем?'
-                                value={p.text}
-                                onKeyDown={(e) => handleKeyDown(e, p)}
-                                onChange={(e) => handleInputChange(e, p)}
-                                autoComplete='off'
-                                // onFocus={(e) => handleFocus(e, p)}
-                                // onBlur={(e) => handleBlur(e, p)}
-                            />
                             <div
-                                className='travel-map-drag-icon'
-                                onClick={() => {
-                                }}
-                                onTouchStart={(e) => handleTouchStart(e, p)}
-                                onTouchEnd={(e) => handleTouchEnd(e, p)}
-                                onTouchMove={handleTouchMove}
-                                onDragStart={() => handleDragStart(p)}
-                                onDragEnd={() => handleDragEnd(p)}
-                                draggable
+                                onClick={() => {}}
+                                className='travel-map-input-container relative'
+                                onDragOver={() => handleDragOver(p)}
+                                onDragLeave={() => handleDragLeave(p)}
+                                data-id={p.id}
                             >
-                                <DragIcon/>
+                                <Input
+                                    id={p.id}
+                                    className='travel-map-input'
+                                    placeholder='Куда едем?'
+                                    value={p.text}
+                                    onKeyDown={(e) => handleKeyDown(e, p)}
+                                    onChange={(e) => handleInputChange(e, p)}
+                                    autoComplete='off'
+                                    // onFocus={(e) => handleFocus(e, p)}
+                                    // onBlur={(e) => handleBlur(e, p)}
+                                />
+                                <div
+                                    className='travel-map-drag-icon'
+                                    onClick={() => {
+                                    }}
+                                    onTouchStart={(e) => handleTouchStart(e, p)}
+                                    onTouchEnd={(e) => handleTouchEnd(e, p)}
+                                    onTouchMove={handleTouchMove}
+                                    onDragStart={() => handleDragStart(p)}
+                                    onDragEnd={() => handleDragEnd(p)}
+                                    draggable
+                                >
+                                    <DragIcon/>
+                                </div>
                             </div>
-                        </div>
+                        </Swipe>
                     ))
                 }
 
