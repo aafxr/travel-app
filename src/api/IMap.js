@@ -1,4 +1,5 @@
 /**
+ * @description предпологаемое описание объекта
  * @typedef {Object} Point
  * @property {[number, number]} coords
  * @property {string} kind
@@ -66,6 +67,7 @@ export default class IMap {
     }
 
     /**
+     * установка зума карты
      * @param {number} value
      */
     setZoom(value){
@@ -73,6 +75,7 @@ export default class IMap {
     }
 
     /**
+     * получение текущего зума карты
      * @returns {number}
      */
     getZoom(){
@@ -102,6 +105,7 @@ export default class IMap {
     }
 
     /**
+     * установка фокуса на точке (точка утанавливается по центру экрана)
      * @param {[number, number]} coords
      * @param {number} zoomLevel
      */

@@ -9,7 +9,6 @@ import Photo from "../../../../components/Poto/Photo";
 import {PageHeader} from "../../../../components/ui";
 import storeDB from "../../../../db/storeDB/storeDB";
 import Menu from "../../../../components/Menu/Menu";
-
 import constants from "../../../../static/constants";
 
 import './Profile.css'

@@ -2,19 +2,18 @@ import React, { useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-
+import createAction from "../../../../utils/createAction";
+import MapIcon from "../../../../components/svg/MapIcon";
 import createTravel from "../../helpers/createTravel";
 import storeDB from "../../../../db/storeDB/storeDB";
-import createAction from "../../../../utils/createAction";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import constants from "../../../../static/constants";
 import {actions} from "../../../../redux/store";
 
 import '../../css/Travel.css'
-import MapIcon from "../../../../components/svg/MapIcon";
 
 export default function TravelAdd() {
     const navigate = useNavigate()
@@ -23,8 +22,8 @@ export default function TravelAdd() {
 
     const [title, setTitle] = useState('')
 
-
-    async function handler() {
+    /** обработчик добавления нового маршрута */
+    async function handleAddRoute() {
         if (!user) {
             pushAlertMessage({type: "danger", message: "Необходимо авторизоваться"})
             return
@@ -71,7 +70,7 @@ export default function TravelAdd() {
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handler} disabled={!title}>Продолжить</Button>
+                    <Button onClick={handleAddRoute} disabled={!title}>Продолжить</Button>
                 </div>
             </div>
         </>

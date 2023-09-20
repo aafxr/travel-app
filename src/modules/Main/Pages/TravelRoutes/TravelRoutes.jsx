@@ -24,16 +24,18 @@ export default function TravelRoutes({
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
 
-    useDefaultTravels()
+    // useDefaultTravels()
 
     function handleRemove(travel) {
         if (user) {
+            /** удаление путешествия из бд и добавление экшена об удалении */
             Promise.all([
             storeDB.removeElement(constants.store.TRAVEL, travel.id),
             storeDB.editElement(constants.store.TRAVEL_ACTIONS, createAction(constants.store.TRAVEL, user.id, 'remove', travel))
-                .then(() => pushAlertMessage({type: "success", message: `${travel.title} удфлено.`}))
+                .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
                 .then(() => dispatch(actions.travelActions.removeTravels(travels)))
             ])
+                /** обновление global store после успешного удаления */
                 .then(() => dispatch(actions.travelActions.removeTravels(travel)))
                 .catch(console.error)
         }

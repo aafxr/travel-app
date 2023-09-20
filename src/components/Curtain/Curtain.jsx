@@ -4,16 +4,15 @@ import clsx from "clsx";
 import useResize from "../../hooks/useResize";
 
 import './Curtain.css'
-import sleep from "../../utils/sleep";
 
 /**
- *
+ * компонент обертка, добавляет шторку
  * @param children
  * @param {number} minOffset минимальное смещение в пикселях (px) от верхнего положения
  * @param {number} maxScroll максимальное значение в px на которое открывается шторка
- * @param {number} maxOpenPercent 0 - 1
- * @param {number} defaultOffsetPX px
- * @param {number} defaultOffsetPercents 0 - 1
+ * @param {number} maxOpenPercent 0 - 1 , величина, на которую открывается шторка
+ * @param {number} defaultOffsetPX px , начальное состояние шторки (на сколько она открыта)
+ * @param {number} defaultOffsetPercents 0 - 1 , начальное состояние шторки (на сколько она открыта)
  * @param {number} duration default 300ms
  * @param {number} scrollDiff default 0.1 минимальное смещение (drag events), на которое реагирует шторка
  * @param {Function} onChange callback (шторка открыта / закрыта)
@@ -31,9 +30,15 @@ export default function Curtain({
                                     scrollDiff = 0.1,
                                     onChange
                                 }) {
-    /**@type{React.MutableRefObject<HTMLDivElement>}*/
+    /**
+     * react ref на основной блок-контейнер шторки
+     * @type{React.MutableRefObject<HTMLDivElement>}
+     */
     const cRef = useRef()
-    /**@type{React.MutableRefObject<HTMLDivElement>}*/
+    /**
+     * react ref на верхнюю кнопку
+     * @type{React.MutableRefObject<HTMLDivElement>}
+     */
     const cTopRef = useRef()
     /**@type{React.MutableRefObject<HTMLDivElement>}*/
     const curtainRef = useRef()

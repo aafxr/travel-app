@@ -1,4 +1,4 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef, useState} from "react";
 
 import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
@@ -13,8 +13,16 @@ import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
 import sleep from "../../../../utils/sleep";
 
-import './TravelAddOnMap.css'
+import createTravel from "../../helpers/createTravel";
+import createTravelPoints from "../../helpers/createTravelPoints";
+import storeDB from "../../../../db/storeDB/storeDB";
 
+import './TravelAddOnMap.css'
+import {actions} from "../../../../redux/store";
+import createAction from "../../../../utils/createAction";
+import {useNavigate} from "react-router-dom";
+
+window.onerror = console.error
 /**
  * @typedef {Object} InputPoint
  * @property {string} id
@@ -23,6 +31,8 @@ import './TravelAddOnMap.css'
 
 export default function TravelAddOnMap() {
     const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -76,7 +86,7 @@ export default function TravelAddOnMap() {
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
-        if (user) setPoints([{id: user.id, text: ''}])
+        if (user) setPoints([{id: createId(user.id), text: ''}])
     }, [user])
 
     // инициализация карты =============================================================================================
@@ -317,6 +327,27 @@ export default function TravelAddOnMap() {
         }
     }
 
+    //==================================================================================================================
+    /** добавление маршрута с заданными местами для посещения */
+    function handleRouteSubmit(){
+        // const travelPoints = createTravelPoints(travel.id, points)
+        const travelPoints = map.getMarkers().map(p => {
+            delete p.placemark
+            return p
+        })
+        const travel = createTravel('', user.id, {waypoints: travelPoints})
+        const action = createAction(constants.store.TRAVEL, user.id, 'add', travel)
+
+        Promise.all([
+            storeDB.addElement(constants.store.TRAVEL, travel),
+            // storeDB.addElement(constants.store.TRAVEL_WAYPOINTS, travelPoints),
+            storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
+        ])
+            .then(() => dispatch(actions.travelActions.addTravels(travel)))
+            .then(() => navigate('/'))
+            .catch(console.error)
+    }
+
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
@@ -349,8 +380,9 @@ export default function TravelAddOnMap() {
                                 value={p.text}
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}
-                                onFocus={(e) => handleFocus(e, p)}
-                                onBlur={(e) => handleBlur(e, p)}
+                                autoComplete='off'
+                                // onFocus={(e) => handleFocus(e, p)}
+                                // onBlur={(e) => handleBlur(e, p)}
                             />
                             <div
                                 className='travel-map-drag-icon'
@@ -392,8 +424,7 @@ export default function TravelAddOnMap() {
             </div>
             <div className='fixed-bottom-button'>
                 <Button
-                    onClick={() => {
-                    }}
+                    onClick={handleRouteSubmit}
                     disabled={!points.length}
                 >
                     Продолжить

@@ -18,11 +18,12 @@ import createId from "./createId";
  * @param {string} user_id
  * @param {'add' | 'update' | 'get' | 'remove'} action
  * @param {Object} data
+ * @param {Object} [extraFields]
  * @returns {null | ActionType}
  */
-export default function createAction(storeName, user_id, action, data) {
+export default function createAction(storeName, user_id, action, data, extraFields = {}) {
     if (storeName && user_id && action && data) {
-        return {
+        const newAction = {
             id: createId(user_id),
             action: action,
             data: data,
@@ -31,6 +32,8 @@ export default function createAction(storeName, user_id, action, data) {
             synced: 0,
             user_id: user_id
         }
+        Object.keys(extraFields).forEach(key => newAction[key] = extraFields[key])
+        return newAction
     } else {
         return null
     }

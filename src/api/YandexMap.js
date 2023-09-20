@@ -188,7 +188,7 @@ export default class YandexMap extends IMap {
     }
 
     getMarkers() {
-        return this.placemarks//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))
+        return [...this.placemarks]//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))
     }
 
 
@@ -364,7 +364,7 @@ YandexMap.init = function init({
                             preset: 'islands#darkOrangeIcon',
                             iconLayout: this.placemarkIcon,
                             iconOffset: [-16, -32],
-                            draggable: true
+                            draggable: true,
                         })
                         map.geoObjects.add(placemark)
                         placemarks.push(placemark)

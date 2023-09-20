@@ -81,7 +81,7 @@ export default function Sessions() {
                     )
                 )}
                 {loading && (
-                    <div className='center'>
+                    <div className='center loader'>
                         <Loader/>
                     </div>
                 )}

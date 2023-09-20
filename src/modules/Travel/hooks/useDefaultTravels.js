@@ -1,10 +1,17 @@
 import {useEffect} from "react";
-import constants from "../../../static/constants";
-import aFetch from "../../../axios";
-import storeDB from "../../../db/storeDB/storeDB";
 import {useDispatch} from "react-redux";
-import {actions} from "../../../redux/store";
 
+import constants from "../../../static/constants";
+import storeDB from "../../../db/storeDB/storeDB";
+import {actions} from "../../../redux/store";
+import aFetch from "../../../axios";
+
+
+/**
+ *
+ * @param travelController
+ * @param user_id
+ */
 export default function useDefaultTravels(travelController, user_id) {
 const dispatch = useDispatch()
 

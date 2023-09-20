@@ -13,7 +13,7 @@ import constants, {GLOBAL_DB_VERSION} from "../../static/constants";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 18 + GLOBAL_DB_VERSION,
+    version: 19 + GLOBAL_DB_VERSION,
     stores: [
         {
             name: constants.store.STORE,
@@ -42,45 +42,50 @@ const schema = {
         },
         //================ expenses ===================================================================================
         {
-            name: 'section',
+            name: constants.store.SECTION,
             key: 'id',
             indexes: [],
         },
         {
-            name: 'limit',
+            name: constants.store.LIMIT,
             key: 'id',
             indexes: ['section_id', 'personal','primary_entity_id', "user_id"],
         },
         {
-            name: 'expenses_actual',
+            name: constants.store.EXPENSES_ACTUAL,
             key: 'id',
             indexes: ['user_id', 'primary_entity_id', 'section_id'],
         },
         {
-            name: 'expenses_plan',
+            name: constants.store.EXPENSES_PLAN,
             key: 'id',
             indexes: ['user_id', 'primary_entity_id', 'section_id'],
         },
         {
-            name: 'expensesActions',
+            name: constants.store.EXPENSES_ACTIONS,
             key: 'id',
             indexes: ['synced', 'entity', 'action'],
         },
         //================ travels ===================================================================================
         {
-            name: 'travel',
+            name: constants.store.TRAVEL,
             key: 'id',
             indexes: [],
         },
         {
-            name: 'travelActions',
+            name: constants.store.TRAVEL_ACTIONS,
             key: 'id',
             indexes: ['synced', 'entity', 'action'],
         },
         {
-            name: 'checklist',
+            name: constants.store.CHECKLIST,
             key: 'id',
             indexes: ['primary_entity_id'],
+        },
+        {
+            name: constants.store.TRAVEL_WAYPOINTS,
+            key: 'id',
+            indexes: ['primary_entity_id']
         }
     ],
 };

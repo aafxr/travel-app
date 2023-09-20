@@ -1,18 +1,26 @@
 import {createAsyncThunk} from '@reduxjs/toolkit'
 import constants from "../../static/constants";
-import aFetch from "../../axios";
 import storeDB from "../../db/storeDB/storeDB";
+import aFetch from "../../axios";
 
+
+/**
+ * redux action который загружает в глобальное хранилище существующие маршруты
+ */
 export const initTravelsThunk = createAsyncThunk(
     'initTravelsThunk',
     async (_, thunkAPI) => {
         try {
+            /**response - результат запроса на получение списока маршрутов от api */
             const response = await aFetch.get('/travel/getList/')
-            let travels = response.data.ok ? response.data.data : []
+            let travels
+            if(response) {
+                travels = response.data.ok ? response.data.data : []
+                await Promise.all(travels.map(t => storeDB.editElement(constants.store.TRAVEL, t)))
+            }
 
-            await Promise.all(travels.map(t => storeDB.editElement(constants.store.TRAVEL, t)))
-
-            if (!travels.length) {
+            /** если не удалось загрузить список маршрутов через api используем маршруты, сохраненные в локальной базе */
+            if (!travels || !travels.length) {
                 travels = await storeDB.getAll(constants.store.TRAVEL)
             }
             return {
