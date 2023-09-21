@@ -3,6 +3,9 @@ import {useSelector} from "react-redux";
 import constants from "../static/constants";
 import Loader from "../components/Loader/Loader";
 
+/**
+ * hoc component обертка, если пользователь не авторизован перенаправляет пользователя на страницу авторизации
+ */
 export default function AuthRequired({children}) {
     const {user, loading} = useSelector(state => state[constants.redux.USER])
 

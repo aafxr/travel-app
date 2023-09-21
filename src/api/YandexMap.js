@@ -8,9 +8,7 @@ export default class YandexMap extends IMap {
      * обертка для работы с api yandex maps
      * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
      * @param {string} mapContainerID       - id контецнера карты
-     * @param {string} coordsIDElement
-     * @param {string} iconClass
-     * @param {Point[]} placemarks
+     * @param {Point[]} placemarks          - массив добавленных на карту точек, при вызове метода init
      * @param {object} map                  - инстанс карты созданный с помощью api
      * @param {HTMLScriptElement} script
      * @param {string} markerClassName      - класс для кастомного маркера на карте
@@ -18,8 +16,6 @@ export default class YandexMap extends IMap {
     constructor({
                     suggestElementID,
                     mapContainerID,
-                    coordsIDElement,
-                    iconClass,
                     placemarks,
                     map,
                     script,
@@ -27,31 +23,42 @@ export default class YandexMap extends IMap {
                 }) {
         super();
 
-        this.markerLayout = window.ymaps.templateLayoutFactory.createClass(`<div class="${this.markerClassName || ''}"></div>`);
-        this.defaultZoom = map.getZoom() || 14
-        this.coordsIDElement = coordsIDElement
-        this.coordElement = document.getElementById(coordsIDElement)
+        /** текущий зум карты */
+        this.zoom = map.getZoom() || 14
+        /** данная сущность использууется для трансформации координат блока-контейнера в мировые координаты  карты  */
         this.projection = map.options.get('projection');
+        /** ссылка на DOM Node Element yandex maps api */
         this.script = script
+        /** id - генерируемый api браузерв при вызове  navigator.geolocation.watchPosition */
         this.locationWatchID = 0
+        /** флаг о включенном трэкинге геолокации пользователя */
         this.userTracking = false
+        /** сущность предстаавлябщая карту */
         this.map = map
+        /** массив с информацией о добавленных на карту точках */
         this.placemarks = placemarks
+        /** id HTMLElement-а контейнера карты */
         this.mapContainerID = mapContainerID
+        /** LayoutClass для отображения кастомного маркера на карте */
         this.placemarkIcon = window.ymaps.templateLayoutFactory.createClass(`<div class="${markerClassName}"></div>`);
+        /**  выпадающая панель с поисковыми подсказками, которая прикрепляется к HTML-элементу <input type="text">. */
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
 
         this.getUserLocation().then(userLocation => {
             if (userLocation)
-                this.map.setCenter(userLocation, this.defaultZoom, {duration: 300})
+                this.map.setCenter(userLocation, this.zoom, {duration: 300})
         })
 
         this.map.events.add('dragend', console.log)
     }
 
 
-    // добавление маркера на карту
+    /**
+     * добавление маркера на карту
+     * @param {number, number} coords
+     * @returns {Promise<Point>}
+     */
     async addMarker(coords) {
         if (!coords || !Array.isArray(coords) || coords.length !== 2)
             throw new Error(`
@@ -60,14 +67,16 @@ export default class YandexMap extends IMap {
             ожидается массив вида: [latitude, longitude]
             `)
 
+
         if (this.tempPlacemark) {
             this.map.geoObjects.remove(this.tempPlacemark)
             this.tempPlacemark = null
         }
 
+        /** получвем информацию о месте */
         const geocode = await window.ymaps.geocode(coords)
         const geoObject = geocode.geoObjects.get(0)
-
+        /** преобразованная информация о месте */
         const markerInfo = this._newMarker(geoObject)
 
         this.placemarks.push(markerInfo)
@@ -76,6 +85,12 @@ export default class YandexMap extends IMap {
         return markerInfo
     }
 
+    /**
+     * Метод извлекаут информацию из геообъекта полученного от api
+     * @param {Object} geoObject
+     * @returns {Point}
+     * @private
+     */
     _newMarker(geoObject) {
         if (!geoObject || typeof geoObject !== 'object') {
             throw new Error('[YandexMap._newMarker] geoObject should be define and typeof "object"')
@@ -199,24 +214,24 @@ export default class YandexMap extends IMap {
             this.map.setBounds(bounds)
             let zoom = this.map.getZoom()
             zoom > 14 && (zoom = 14)
-            this.defaultZoom = Math.floor(zoom)
-            this.map.setZoom(this.defaultZoom)
+            this.zoom = Math.floor(zoom)
+            this.map.setZoom(this.zoom)
         }
     }
 
     getZoom() {
-        return this.defaultZoom
+        return this.zoom
     }
 
     setZoom(zoomLevel) {
         if (zoomLevel < 0 || zoomLevel > 19) return
-        this.defaultZoom = zoomLevel
+        this.zoom = zoomLevel
         this.map.setZoom(zoomLevel, {duration: 300})
         this._setZoom()
     }
 
     _setZoom() {
-        this.map.setZoom(this.defaultZoom, {duration: 300})
+        this.map.setZoom(this.zoom, {duration: 300})
     }
 
     setSuggestsTo(elementID) {
@@ -260,15 +275,15 @@ export default class YandexMap extends IMap {
 
             this.map.geoObjects.add(this.tempPlacemark)
             console.log(this)
-            this.map.setCenter(coords, this.defaultZoom || 14, {duration: 300})
-            document.dispatchEvent(new CustomEvent('point', {detail: textAddress}))
+            this.map.setCenter(coords, this.zoom || 14, {duration: 300})
+            document.dispatchEvent(new CustomEvent('selected-point', {detail: textAddress}))
         }
     }
 
 
     // метод фокусируется на точке
     focusOnPoint(coords, zoomLevel) {
-        this.map.setCenter(coords, zoomLevel || this.defaultZoom, {duration: 300})
+        this.map.setCenter(coords, zoomLevel || this.zoom, {duration: 300})
     }
 
     //метод пытается получить координаты средствами браузера или средствами yandex maps api
@@ -373,7 +388,6 @@ YandexMap.init = function init({
 
                 const yandexMap = new YandexMap({
                     mapContainerID,
-                    coordsIDElement,
                     suggestElementID,
                     iconClass,
                     placemarks,

@@ -60,28 +60,31 @@ export default function TravelAddOnMap() {
     const [fromUserLocation, setFromUserLocation] = useState(false)
 
     // слушатель на событие выбора точки с помощью подсказки ===========================================================
+    /** при выборе адреса из блока подсказки эмитится событие "selected-point" */
     useEffect(() => {
         const pointSelectHandler = async (e) => {
             if (!map) return
 
             const address = e.detail
-            console.log('address', address)
-
             const marker = await map.addMarkerByAddress(address)
             if (marker) {
+                /** id элемента из массива points, input которого последний раз был в фокусе */
                 const id = lastFocusedElement.current.dataset.id
+
+                /** новый массив точек с обновленными данными
+                 * @type{InputPoint[]}
+                 */
                 const newPoints = points.map(p => {
-                    if (p.id === id) {
-                        return {id, text: marker.textAddress}
-                    }
+                    if (p.id === id)
+                        return {id, text: marker.textAddress, point: marker}
                     return p
                 })
                 setPoints(newPoints)
             }
         }
 
-        document.addEventListener('point', pointSelectHandler)
-        return () => document.removeEventListener('point', pointSelectHandler)
+        document.addEventListener('selected-point', pointSelectHandler)
+        return () => document.removeEventListener('selected-point', pointSelectHandler)
     }, [])
 
     // начальное значение первой точки =================================================================================
@@ -338,25 +341,41 @@ export default function TravelAddOnMap() {
         const travel = createTravel('', user.id, {waypoints: travelPoints})
         const action = createAction(constants.store.TRAVEL, user.id, 'add', travel)
 
+        /** запись в бд новой сущности travel и добавление соответствующего action */
         Promise.all([
             storeDB.addElement(constants.store.TRAVEL, travel),
-            // storeDB.addElement(constants.store.TRAVEL_WAYPOINTS, travelPoints),
             storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
         ])
+            /** запись новой сущности travel в redux store */
             .then(() => dispatch(actions.travelActions.addTravels(travel)))
             .then(() => navigate('/'))
             .catch(console.error)
     }
 
+    /**
+     * удаление точки с карты
+     * @param {InputPoint} item
+     */
     function handleRemovePoint(item){
         if(map){
-            const pointidx = points.findIndex(p => p === item)
-            if(~pointidx){
-                const point = points[pointidx].point
-                map.removeMarker(point)
-                const newPoints = points.filter((p, idx) => idx !== pointidx)
-                setPoints(newPoints)
+            /**
+             * индекс удаляемой точки
+             * @type{number}
+             */
+            const pointIdx = points.findIndex(p => p === item)
+            /** проверка на  pointIdx !== -1 */
+            if(~pointIdx){
+                /** удаляемая точка с карты */
+                const point = points[pointIdx].point
+                /** point может не существовать (если не нажата кнопка Enter) */
+                point && map.removeMarker(point)
+                /** обновленный массив точек */
+                const newPoints = points.filter((p, idx) => idx !== pointIdx)
+                /** обновляем зум карты */
                 map.autoZoom()
+                /** если массив точек пуст добавляем пустое поле для новой точки */
+                newPoints.length === 0 && newPoints.push({id: createId(user.id), text: '', point:undefined})
+                setPoints(newPoints)
             }
         }
     }
