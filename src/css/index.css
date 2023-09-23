@@ -329,4 +329,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 40px;
     height: 40px;
     color: var(--color-grey);
+<<<<<<< HEAD
+=======
+}
+
+#map{
+    height: 100%;
+    overflow: hidden;
+}
+
+.map-controls{
+    position: fixed;
+    top: 65%;
+    right: 12px;
+>>>>>>> 07eb42e (22/09)
 }

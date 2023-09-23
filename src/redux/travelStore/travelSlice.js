@@ -1,5 +1,9 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {initTravelsThunk} from "./initTravelsThunk";
+<<<<<<< HEAD
+=======
+import createTravel from "../../modules/Travel/helpers/createTravel";
+>>>>>>> 07eb42e (22/09)
 
 /**
  * @typedef {Object} TravelState
@@ -13,6 +17,10 @@ import {initTravelsThunk} from "./initTravelsThunk";
 const initialState = {
     travels: [],
     travel: null,
+<<<<<<< HEAD
+=======
+    buildTravel: null
+>>>>>>> 07eb42e (22/09)
 }
 
 
@@ -64,6 +72,30 @@ export const travelsSlice = createSlice({
                     console.error(new Error('Travels must be array'))
                 state.travels = action.payload
             },
+<<<<<<< HEAD
+=======
+            // redux actions сосздания нового маршрута =================================================================
+            buildTravelInit(state, action){
+                if (!action.payload.user) {
+                    console.error(new Error('Пользователь не авторизован'))
+                    return
+                }
+                state.buildTravel = createTravel(action.payload.user.id)
+            },
+            buildTravelAddWaypoint(state, action){
+                if(!state.buildTravel.waypoints) state.buildTravel.waypoints = []
+
+                state.buildTravel.waypoints.push(action.payload)
+            },
+            buildTravelSetWaypoints(state, action){
+                if(Array.isArray(action.payload)){
+                    state.buildTravel.waypoints = action.payload
+                } else {
+                    console.error(new Error('buildTravelSetWaypoints ожидает получить массив точек, получил: ', + action.payload))
+                }
+            }
+
+>>>>>>> 07eb42e (22/09)
         },
 
         extraReducers: (builder) => {

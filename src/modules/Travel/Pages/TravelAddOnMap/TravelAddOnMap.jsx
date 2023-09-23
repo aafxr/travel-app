@@ -2,6 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
+<<<<<<< HEAD
 import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
 import MapControls from "../../../../components/MapControls/MapControls";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -11,17 +12,32 @@ import {Input, PageHeader} from "../../../../components/ui";
 import DragIcon from "../../../../components/svg/DragIcon";
 import createAction from "../../../../utils/createAction";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
+=======
+import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
+import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
+import MapControls from "../../../../components/MapControls/MapControls";
+import Container from "../../../../components/Container/Container";
+import Button from "../../../../components/ui/Button/Button";
+import {Input, PageHeader} from "../../../../components/ui";
+import createAction from "../../../../utils/createAction";
+>>>>>>> 07eb42e (22/09)
 import createTravel from "../../helpers/createTravel";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
 import {actions} from "../../../../redux/store";
+<<<<<<< HEAD
 import sleep from "../../../../utils/sleep";
 
 import './TravelAddOnMap.css'
 
 window.onerror = console.error
+=======
+
+import './TravelAddOnMap.css'
+
+>>>>>>> 07eb42e (22/09)
 /**
  * @typedef {Object} InputPoint
  * @property {string} id
@@ -45,6 +61,7 @@ export default function TravelAddOnMap() {
 
     // const [userCoords, setUserCoords ] = useState([])
 
+<<<<<<< HEAD
     /** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
 
@@ -54,6 +71,8 @@ export default function TravelAddOnMap() {
     /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
 
+=======
+>>>>>>> 07eb42e (22/09)
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
 
@@ -89,7 +108,11 @@ export default function TravelAddOnMap() {
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
+<<<<<<< HEAD
         if (user) setPoints([{id: createId(user.id), text: ''}])
+=======
+        if (user) setPoints([{id: createId(user.id), text: '', point: undefined}])
+>>>>>>> 07eb42e (22/09)
     }, [user])
 
     // инициализация карты =============================================================================================
@@ -111,6 +134,7 @@ export default function TravelAddOnMap() {
         return () => map && map.destroyMap()
     }, [mapRef, map])
 
+<<<<<<< HEAD
     //=============================== click handlers ===================================================================
     /**
      * обработчик добавляет точку по клику по карте
@@ -288,6 +312,28 @@ export default function TravelAddOnMap() {
             }
         }
     }
+=======
+    //обработка события drag-point =====================================================================================
+    useEffect(() => {
+        const handleDragPoint = (e) => {
+            const {point: draggedPoint, index} = e.detail
+            if (draggedPoint) {
+                setPoints(prev => {
+                    prev.map((p, i) =>{
+                        if(i === index){
+                            return {...p, text: draggedPoint.textAddress, point: draggedPoint}
+                        } else{
+                            return p
+                        }
+                    })
+                } )
+            }
+        }
+
+        document.addEventListener('drag-point', handleDragPoint)
+        return () => document.removeEventListener('drag-point', handleDragPoint)
+    }, [])
+>>>>>>> 07eb42e (22/09)
 
 
     // обработка фокуса на input =======================================================================================
@@ -352,6 +398,7 @@ export default function TravelAddOnMap() {
             .catch(console.error)
     }
 
+<<<<<<< HEAD
     /**
      * удаление точки с карты
      * @param {InputPoint} item
@@ -380,6 +427,41 @@ export default function TravelAddOnMap() {
         }
     }
 
+=======
+    //=============================== click handlers ===================================================================
+    /**
+     * обработчик добавляет точку по клику по карте
+     * @param {MouseEvent} e
+     */
+    function handleMapClick(e) {
+        const {clientX, clientY, target} = e
+        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+        map.addMarkerByLocalCoords([x, y])
+    }
+
+    function handleMapTouchEnd(e) {
+        const {clientX, clientY, target} = e.changedTouches[0]
+        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+        map.addMarkerByLocalCoords([x, y])
+    }
+
+    // добавление новой точки ==========================================================================================
+    function handleAddNewPoint() {
+        navigate('/travel/add/waypoint/')
+        // const newPoint = {
+        //     id: createId(user.id),
+        //     text: ''
+        // }
+        // setPoints([...points, newPoint])
+        // map.resize()
+    }
+
+    function handlePointListChange(newPoints){
+        setPoints(newPoints)
+    }
+
+
+>>>>>>> 07eb42e (22/09)
     console.log(points)
 
     return (
@@ -396,6 +478,7 @@ export default function TravelAddOnMap() {
                         </div>
                     )
                 }
+<<<<<<< HEAD
                 {
                     points.map(p => (
                         <Swipe
@@ -443,6 +526,18 @@ export default function TravelAddOnMap() {
                     className='link'
                     onClick={handleAddNewPoint}
                 >+ Добавить точку маршрута
+=======
+                <MapPointsInputList
+                    map={map}
+                    pointsList={points}
+                    onListChange={handlePointListChange}
+                />
+                <div
+                    className='link'
+                    onClick={handleAddNewPoint}
+                >
+                    + Добавить точку маршрута
+>>>>>>> 07eb42e (22/09)
                 </div>
             </Container>
             <div className='content'>
@@ -452,18 +547,26 @@ export default function TravelAddOnMap() {
                     className='relative'
                     onWheel={handleWheel}
                 >
+<<<<<<< HEAD
                     <MapControls
                         className='travel-controls'
                         onPlusClick={handleZoomPlus}
                         onMinusClick={handleZoomMinus}
                         onUserLocationClick={handleUserLocation}
                     />
+=======
+                    <MapControls className='map-controls' map={map} />
+>>>>>>> 07eb42e (22/09)
                 </div>
             </div>
             <div className='fixed-bottom-button'>
                 <Button
                     onClick={handleRouteSubmit}
+<<<<<<< HEAD
                     disabled={!points.length}
+=======
+                    disabled={!map || !map.getMarkers().length}
+>>>>>>> 07eb42e (22/09)
                 >
                     Продолжить
                 </Button>
@@ -471,6 +574,7 @@ export default function TravelAddOnMap() {
         </div>
     )
 }
+<<<<<<< HEAD
 
 /**
  * возвращает полную копию переданного элмента
@@ -491,3 +595,5 @@ function cloneNode(el) {
 
     return clone
 }
+=======
+>>>>>>> 07eb42e (22/09)
