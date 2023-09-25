@@ -146,7 +146,6 @@ export default function TravelAddOnMap() {
         document.addEventListener('drag-point', handleDragPoint)
         return () => document.removeEventListener('drag-point', handleDragPoint)
     }, [])
-    Успехи, личный вызов
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
