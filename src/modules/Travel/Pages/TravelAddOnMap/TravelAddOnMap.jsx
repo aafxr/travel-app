@@ -114,17 +114,17 @@ export default function TravelAddOnMap() {
      * обработчик добавляет точку по клику по карте
      * @param {MouseEvent} e
      */
-    function handleMapClick(e) {
-        const {clientX, clientY, target} = e
-        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-        map.addMarkerByLocalCoords([x, y])
-    }
-
-    function handleMapTouchEnd(e) {
-        const {clientX, clientY, target} = e.changedTouches[0]
-        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-        map.addMarkerByLocalCoords([x, y])
-    }
+    // function handleMapClick(e) {
+    //     const {clientX, clientY, target} = e
+    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+    //     map.addMarkerByLocalCoords([x, y])
+    // }
+    //
+    // function handleMapTouchEnd(e) {
+    //     const {clientX, clientY, target} = e.changedTouches[0]
+    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+    //     map.addMarkerByLocalCoords([x, y])
+    // }
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -201,17 +201,17 @@ export default function TravelAddOnMap() {
      * обработчик добавляет точку по клику по карте
      * @param {MouseEvent} e
      */
-    function handleMapClick(e) {
-        const {clientX, clientY, target} = e
-        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-        map.addMarkerByLocalCoords([x, y])
-    }
-
-    function handleMapTouchEnd(e) {
-        const {clientX, clientY, target} = e.changedTouches[0]
-        const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-        map.addMarkerByLocalCoords([x, y])
-    }
+    // function handleMapClick(e) {
+    //     const {clientX, clientY, target} = e
+    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+    //     map.addMarkerByLocalCoords([x, y])
+    // }
+    //
+    // function handleMapTouchEnd(e) {
+    //     const {clientX, clientY, target} = e.changedTouches[0]
+    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
+    //     map.addMarkerByLocalCoords([x, y])
+    // }
 
     // добавление новой точки ==========================================================================================
     function handleAddNewPoint() {
