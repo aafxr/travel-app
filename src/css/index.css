@@ -330,3 +330,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 40px;
     color: var(--color-grey);
 }
+
+#map{
+    height: 100%;
+    overflow: hidden;
+}
+
+.map-controls{
+    position: fixed;
+    top: 65%;
+    right: 12px;
+}

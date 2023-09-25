@@ -45,6 +45,7 @@ import {store} from './redux/store'
 import Dev from "./modules/Dev";
 import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 import Loader from "./components/Loader/Loader";
+import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
 
 
 function App() {
@@ -100,6 +101,7 @@ function App() {
                             <Route path={'/dev/'} element={<Dev/>}/>
                             <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
                             <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
+                            <Route path={'/travel/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>

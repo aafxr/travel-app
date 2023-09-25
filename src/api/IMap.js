@@ -45,6 +45,7 @@ export default class IMap {
      * добавить точку на карту по указанному адресу
      * @param {string} address
      * @returns {Point | null}
+     * @returns {Promise<Point | null>}
      */
     addMarkerByAddress(address){
         console.warn('[IMap] addMarkerByAddress not override')
@@ -145,6 +146,9 @@ export default class IMap {
 
     /** вызывается если размеры контейнера ищменилися */
     resize(){}
+
+    /** очистка карты от точек */
+    clear(){}
 
 
     /** очистка ресурсов выделенных под карту */
