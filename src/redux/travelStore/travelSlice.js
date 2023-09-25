@@ -14,7 +14,6 @@ import createTravel from "../../modules/Travel/helpers/createTravel";
 const initialState = {
     travels: [],
     travel: null,
-    buildTravel: null
 }
 
 
@@ -28,6 +27,9 @@ export const travelsSlice = createSlice({
              */
             selectTravel(state, action) {
                 state.travel = action.payload
+            },
+            resetTravel(state) {
+                state.travel = null
             },
 
             /**
@@ -72,12 +74,14 @@ export const travelsSlice = createSlice({
              * @param state
              * @param action - user_id
              */
-            buildTravelInit(state, action) {
-                if (!action.payload.user) {
-                    console.error(new Error('Пользователь не авторизован'))
+            travelInit(state, action) {
+                const user = action.payload
+                if (!user || !user.id) {
+                    console.error(new Error('[Redux/travelInit] Пользователь не авторизован'))
                     return
                 }
-                state.buildTravel = createTravel('', action.payload.user.id, {
+                state.travel = createTravel('', user.id, {
+                    waypoints: [],
                     appointments: [],
                     members: [],
                     hotels: [],
@@ -89,60 +93,80 @@ export const travelsSlice = createSlice({
              * @param state
              * @param {string} payload
              */
-            buildTravelSetTitle(state, {payload}) {
-                if (!payload) {
-                    console.warn('[Redux/buildTravelSetTitle] вызов экшена без заголовка')
+            setTitle(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.title = payload
+                if (!payload) {
+                    console.warn('[Redux/setTitle] вызов экшена без заголовка')
+                    return
+                }
+                state.travel.title = payload
             },
             /**
              * экшен ожидает получить информацию о встрече и добавляет ее в массив встреч "appointments"
              * @param state
              * @param {Object} payload
              */
-            buildTravelAddAppointment(state, {payload}) {
-                if (typeof payload !== 'object') {
-                    console.warn('[Redux/buildTravelAddAppointment] экшен ожидает получить объект, но получил ' + typeof payload)
+            addAppointment(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.appointments.push(payload)
+                if (typeof payload !== 'object') {
+                    console.warn('[Redux/addAppointment] экшен ожидает получить объект, но получил ' + typeof payload)
+                    return
+                }
+                state.travel.appointments.push(payload)
             },
             /**
              * экшен ожидает получить информацию о массиве встреч и перезаписывает "appointments"
              * @param state
              * @param {Object[]} payload
              */
-            buildTravelSetAppointments(state, {payload}) {
-                if (Array.isArray(payload)) {
-                    console.warn('[Redux/buildTravelSetAppointments] экшен ожидает получить массив объектов, но получил ' + typeof payload)
+            setAppointments(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.appointments = [...payload]
+                if (Array.isArray(payload)) {
+                    console.warn('[Redux/setAppointments] экшен ожидает получить массив объектов, но получил ' + typeof payload)
+                    return
+                }
+                state.travel.appointments = [...payload]
             },
             /**
              * экшен ожидает получить информацию о участнике путешествия и добавляет ее в массив участников "members"
              * @param state
              * @param {Object} payload
              */
-            buildTravelAddMember(state, {payload}) {
-                if (typeof payload !== 'object') {
-                    console.warn('[Redux/buildTravelAddMember] экшен ожидает получить объект c информацией о участнике путешествия , но получил ' + typeof payload)
+            addMember(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.members.push(payload)
+                if (typeof payload !== 'object') {
+                    console.warn('[Redux/addMember] экшен ожидает получить объект c информацией о участнике путешествия , но получил ' + typeof payload)
+                    return
+                }
+                state.travel.members.push(payload)
             },
             /**
              * экшен ожидает получить массив c информацией об  участниках и перезаписывает "members"
              * @param state
              * @param {Object[]} payload
              */
-            buildTravelSetMembers(state, {payload}) {
-                if (Array.isArray(payload)) {
-                    console.warn('[Redux/buildTravelSetMembers] экшен ожидает получить массив объектов, но получил ' + typeof payload)
+            setMembers(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.members = [...payload]
+                if (Array.isArray(payload)) {
+                    console.warn('[Redux/setMembers] экшен ожидает получить массив объектов, но получил ' + typeof payload)
+                    return
+                }
+                state.travel.members = [...payload]
             },
 
             /**
@@ -150,46 +174,67 @@ export const travelsSlice = createSlice({
              * @param state
              * @param {Object} payload
              */
-            buildTravelAddHotel(state, {payload}) {
-                if (typeof payload !== 'object') {
-                    console.warn('[Redux/buildTravelAddHotel] экшен ожидает получить объект c информацией об отеле , но получил ' + typeof payload)
+            addHotel(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.hotels.push(payload)
+                if (typeof payload !== 'object') {
+                    console.warn('[Redux/addHotel] экшен ожидает получить объект c информацией об отеле , но получил ' + typeof payload)
+                    return
+                }
+                state.travel.hotels.push(payload)
             },
             /**
              * экшен ожидает получить массив c информацией об  отелях и перезаписывает "hotels"
              * @param state
              * @param {Object[]} payload
              */
-            buildTravelSetHotels(state, {payload}) {
-                if (Array.isArray(payload)) {
-                    console.warn('[Redux/buildTravelSetHotels] экшен ожидает получить массив объектов c информацией об  отелях, но получил ' + typeof payload)
+            setHotels(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
                     return
                 }
-                state.buildTravel.hotels = [...payload]
+                if (Array.isArray(payload)) {
+                    console.warn('[Redux/setHotels] экшен ожидает получить массив объектов c информацией об  отелях, но получил ' + typeof payload)
+                    return
+                }
+                state.travel.hotels = [...payload]
             },
 
             /**
              * добавление новой точки маршрута
              * @param state
-             * @param {Point} payload
+             * @param {InputPoint} payload
              */
-            buildTravelAddWaypoint(state, {payload}) {
-                if (!state.buildTravel.waypoints) state.buildTravel.waypoints = []
+            addWaypoint(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
+                    return
+                }
+                const waypoint = {...payload}
+                if (waypoint.point.placemark) delete waypoint.point.placemark
 
-                state.buildTravel.waypoints.push(payload)
+                state.travel.waypoints.push(waypoint)
             },
             /**
              * установка массива точек маршрута
              * @param state
-             * @param {Point[]} payload
+             * @param {InputPoint[]} payload
              */
-            buildTravelSetWaypoints(state, {payload}) {
+            setWaypoints(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
+                    return
+                }
                 if (Array.isArray(payload)) {
-                    state.buildTravel.waypoints = payload
+                    state.travel.waypoints = payload.map(p => {
+                        const waypoint = {...p}
+                        if (waypoint.point.placemark) delete waypoint.point.placemark
+                        return waypoint
+                    })
                 } else {
-                    console.error(new Error('buildTravelSetWaypoints ожидает получить массив точек, получил: ' + payload))
+                    console.error(new Error('[Redux/setWaypoints] ожидает получить массив точек, получил: ' + payload))
                 }
             },
             /**
@@ -197,11 +242,15 @@ export const travelsSlice = createSlice({
              * @param state
              * @param {Array} payload
              */
-            buildTravelSetMovementTypes(state, {payload}) {
-                if (!Array.isArray(payload)) {
-                    console.warn('[Redux/buildTravelSetMovementTypes] экшен ожидает получить массив c информацией о способах перемещения, но получил ' + typeof payload)
+            setMovementTypes(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
+                    return
                 }
-                state.buildTravel.movementTypes = [...payload]
+                if (!Array.isArray(payload)) {
+                    console.warn('[Redux/setMovementTypes] экшен ожидает получить массив c информацией о способах перемещения, но получил ' + typeof payload)
+                }
+                state.travel.movementTypes = [...payload]
             }
         },
 

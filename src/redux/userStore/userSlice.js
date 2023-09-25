@@ -26,7 +26,8 @@ import defaultThemeClass from "../../utils/defaultThemeClass";
 const initialState = {
     user: null,
     loading: true,
-    theme: 'default'
+    theme: 'default',
+    userLoc: null
 }
 
 
@@ -42,6 +43,17 @@ export const userSlice = createSlice({
                 document.body.classList.add(themeName)
 
                 state.theme = action.payload
+            },
+            /**
+             * координаты пользователя
+             * @param state
+             * @param {[number, number]} payload
+             */
+            setLocation(state, {payload}){
+                if (!Array.isArray(payload)){
+                    console.warn(new Error('[Redux/setLocation] не верный формат координат'))
+                }
+                state.userLocation = [...payload]
             }
         },
         extraReducers: (builder) => {
@@ -54,6 +66,7 @@ export const userSlice = createSlice({
                 if (action.payload) {
                     state.user = action.payload.user
                     state.theme = action.payload.theme
+                    state.userLoc = action.payload.userLoc
                 }
                     state.loading = false
             })

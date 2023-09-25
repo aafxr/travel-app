@@ -84,7 +84,7 @@ export default function TravelEdite() {
             ])
                 .then(() => {
                     dispatch(actions.travelActions.updateTravels(newTravelData))
-                    navigate(-1)
+                    navigate(`/travel/${travel.id}/`)
                 })
         }
     }

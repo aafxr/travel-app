@@ -94,11 +94,18 @@ export default function TravelDetails() {
         }
     }
 
+    useEffect(() => {travel && (window.travel = travel)}, [travel])
+    console.log(travel)
 
     return (
         <>
             <Container className='travel-details-header'>
-                <PageHeader className={clsx('travel-menu', {'curtain-closed': curtainOpen})} arrowBack MenuEl={menu}/>
+                <PageHeader
+                    to='/travels/current/'
+                    className={clsx('travel-menu', {'curtain-closed': curtainOpen})}
+                    arrowBack
+                    MenuEl={menu}
+                />
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
@@ -107,7 +114,7 @@ export default function TravelDetails() {
                             <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center gap-0.25'>
-                            <h2 onClick={() => navigate('')}>{travel?.title}</h2>
+                            <h2 className='' onClick={() => navigate('')}>{travel?.title}</h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
                         </div>
                         {

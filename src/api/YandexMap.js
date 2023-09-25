@@ -1,7 +1,9 @@
 import IMap from "./IMap";
-import userPosition from "../utils/userPosition";
+import userLocation from "../utils/userLocation";
 import ErrorReport from "../controllers/ErrorReport";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
+
+import locationIcon from './place_24px.svg'
 
 
 export default class YandexMap extends IMap {
@@ -79,7 +81,7 @@ export default class YandexMap extends IMap {
         const geocode = await window.ymaps.geocode(coords)
         const geoObject = geocode.geoObjects.get(0)
         /** преобразованная информация о месте */
-        const markerInfo = this._newMarker(geoObject)
+        const markerInfo = this._markerInfo(geoObject)
 
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
@@ -93,9 +95,9 @@ export default class YandexMap extends IMap {
      * @returns {Point}
      * @private
      */
-    _newMarker(geoObject) {
+    _markerInfo(geoObject) {
         if (!geoObject || typeof geoObject !== 'object') {
-            throw new Error('[YandexMap._newMarker] geoObject should be define and typeof "object"')
+            throw new Error('[YandexMap._markerInfo] geoObject should be define and typeof "object"')
         }
 
         const coords = geoObject.geometry.getCoordinates()
@@ -113,14 +115,17 @@ export default class YandexMap extends IMap {
     }
 
 
-    _newPlacemark(coords, address = ''){
+    _newPlacemark(coords, address = '') {
         return new window.ymaps.Placemark(coords, {
             hintContent: address,
             balloonContent: address,
         }, {
             preset: 'islands#darkOrangeIcon',
             // iconLayout: this.placemarkIcon,
-            iconOffset: [-16, -32],
+            // iconLayout: 'default#image',
+            // iconImageHref: locationIcon,
+            // iconImageSize: [24, 24],
+            // iconOffset: [-16, -32],
             draggable: true,
             cursor: 'pointer',
         })
@@ -133,7 +138,7 @@ export default class YandexMap extends IMap {
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
 
         if (~idx) {
-        const point = this.placemarks[idx]
+            const point = this.placemarks[idx]
             /** удаляем точку с пржним адресом */
             this.placemarks = this.placemarks.filter(pm => pm !== point)
             /**
@@ -302,7 +307,7 @@ export default class YandexMap extends IMap {
      * @param {string} message - сообщение, отображаемое во всплывающем сообщении
      * @private
      */
-    _handleError(err, message = 'Не удалось получить информацию о новом месте'){
+    _handleError(err, message = 'Не удалось получить информацию о новом месте') {
         console.error(err)
         ErrorReport.sendReport(err).catch(console.error)
         /** добавление всплывающего сообщения в очередь */
@@ -364,7 +369,7 @@ export default class YandexMap extends IMap {
     getUserLocation() {
         return new Promise(async (resolve, reject) => {
             try {
-                const coords = await userPosition()
+                const coords = await userLocation()
                 resolve(coords)
             } catch (err) {
                 window.ymaps.geolocation.get({
@@ -411,7 +416,7 @@ export default class YandexMap extends IMap {
 
     /** очистка карты от точек */
     clear() {
-        this.placemarks.forEach( p => this.map.geoObjects.remove(p.placemark))
+        this.placemarks.forEach(p => this.map.geoObjects.remove(p.placemark))
         this.placemarks = []
         this.tempPlacemark && this.map.geoObjects.remove(this.tempPlacemark)
         this.tempPlacemark = null
@@ -433,7 +438,8 @@ YandexMap.init = function init({
                                    coordsIDElement,
                                    iconClass,
                                    points,
-                                   markerClassName
+                                   markerClassName,
+                                    location,
                                }) {
     return new Promise((resolve, reject) => {
         if (!mapContainerID) reject(new Error('[YandexMap] mapContainerID is required'))
@@ -441,49 +447,54 @@ YandexMap.init = function init({
         const element = document.getElementById(mapContainerID)
         if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
 
-        const script = document.createElement('script')
-        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route`
-        script.onload = function () {
-            window.ymaps.ready(() => {
-                const map = new window.ymaps.Map(mapContainerID, {
-                    center: [55.76, 37.64],
-                    zoom: 7
-                })
+        if (window.ymaps) resolve(window.ymaps)
+        else {
+            const script = document.createElement('script')
+            script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route`
 
-                //добавление точек на карту
-                const placemarks = []
-                if (points && Array.isArray(points)) {
-                    for (const point of points) {
-                        const placemark = new window.ymaps.Placemark(point.coords, {
-                            hintContent: point.hintContent,
-                            balloonContent: point.balloonContent,
-                        }, {
-                            preset: 'islands#darkOrangeIcon',
-                            iconLayout: this.placemarkIcon,
-                            // iconLayout: this.placemarkIcon,
-                            iconOffset: [-16, -32],
-                            draggable: true,
-                        })
-                        map.geoObjects.add(placemark)
-                        placemarks.push(placemark)
-                    }
-                }
+            //добавление yandex maps api в htmlDOM
+            element.appendChild(script)
 
-                const yandexMap = new YandexMap({
-                    mapContainerID,
-                    suggestElementID,
-                    iconClass,
-                    placemarks,
-                    map,
-                    script,
-                    markerClassName
-                })
-
-                resolve(yandexMap)
-            })
+            script.onload = () => resolve(window.ymaps)
         }
-
-        //добавление yandex maps api в htmlDOM
-        element.appendChild(script)
     })
+        .then(() => {
+            return new Promise(resolve => {
+                window.ymaps.ready(() => {
+                    const map = new window.ymaps.Map(mapContainerID, {
+                        center: location || [55.76, 37.64],
+                        zoom: 7
+                    })
+
+                    //добавление точек на карту
+                    const placemarks = []
+                    if (points && Array.isArray(points)) {
+                        for (const point of points) {
+                            const placemark = new window.ymaps.Placemark(point.coords, {
+                                hintContent: point.hintContent,
+                                balloonContent: point.balloonContent,
+                            }, {
+                                preset: 'islands#darkOrangeIcon',
+                                // iconLayout: this.placemarkIcon,
+                                // iconLayout: this.placemarkIcon,
+                                // iconOffset: [-16, -32],
+                                draggable: true,
+                            })
+                            map.geoObjects.add(placemark)
+                            placemarks.push(placemark)
+                        }
+                    }
+
+                    resolve(new YandexMap({
+                        mapContainerID,
+                        suggestElementID,
+                        iconClass,
+                        placemarks,
+                        map,
+                        markerClassName
+                    }))
+                })
+            })
+
+        })
 }

@@ -1,20 +1,25 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 
 import MapControls from "../../../../components/MapControls/MapControls";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
 import YandexMap from "../../../../api/YandexMap";
 import createId from "../../../../utils/createId";
+import {actions} from "../../../../redux/store";
 
 import './TravelAddWaypoint.css'
 
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const dispatch = useDispatch()
+
+    const {user, userLoc} = useSelector(state => state[constants.redux.USER])
+    const {travel} = useSelector(state => state[constants.redux.TRAVEL])
 
     /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -24,6 +29,11 @@ export default function TravelAddWaypoint() {
 
     /** список точек на карте */
     const [point, setPoint] = useState(/**@type{InputPoint} */ null)
+
+    //==================================================================================================================
+    useEffect(() => {
+        if (!travel) navigate('/travel/add/map/')
+    }, [travel])
 
 
     // начальное значение первой точки =================================================================================
@@ -37,13 +47,13 @@ export default function TravelAddWaypoint() {
             YandexMap.init({
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
+                location: userLoc,
                 points: [],
-                suggestElementID: point?.id,
                 markerClassName: 'location-marker'
             }).then(newMap => {
                 window.map = newMap
                 setMap(newMap)
-            })
+            }).catch(console.error)
         }
 
         return () => map && map.destroyMap()
@@ -70,7 +80,6 @@ export default function TravelAddWaypoint() {
             map.addMarkerByAddress(point.text)
                 .then(markerInfo => {
                     if (markerInfo) {
-                        console.log(markerInfo)
                         /**type{InputPoint} */
                         const newPoint = {...point, text: markerInfo.textAddress, point: markerInfo}
                         setPoint(newPoint)
@@ -84,8 +93,14 @@ export default function TravelAddWaypoint() {
     }
 
     //==================================================================================================================
+    /** обновляем store (добавление) */
     function handleSubmit() {
-        navigate('/travel/add/map/')
+        if(travel && point) {
+            dispatch(actions.travelActions.addWaypoint(point))
+            navigate('/travel/add/map/')
+        } else{
+            pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
+        }
     }
 
 

@@ -36,6 +36,10 @@
     font-weight: 600;
 }
 
+.travel-details-title h2{
+    text-align: center;
+}
+
 .travel-details-subtitle{
     font-size: 12px;
     font-weight: 600;

@@ -2,21 +2,17 @@ import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
+import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import MapControls from "../../../../components/MapControls/MapControls";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
-import { PageHeader} from "../../../../components/ui";
-import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
-import screenCoordsToBlockCoords from "../../../../utils/screenCoordsToBlockCoords";
 import createAction from "../../../../utils/createAction";
-import createTravel from "../../helpers/createTravel";
+import {PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
 import {actions} from "../../../../redux/store";
-import sleep from "../../../../utils/sleep";
 
 import './TravelAddOnMap.css'
 
@@ -28,7 +24,8 @@ import './TravelAddOnMap.css'
  */
 
 export default function TravelAddOnMap() {
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const {user, userLoc} = useSelector(state => state[constants.redux.USER])
+    const {travel} = useSelector(state => state[constants.redux.TRAVEL])
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -42,15 +39,6 @@ export default function TravelAddOnMap() {
     const [points, setPoints] = useState(/**@type{InputPoint[]} */[])
 
     // const [userCoords, setUserCoords ] = useState([])
-
-    /** переменная для хранения информации о draggingPoint и dragOverPoint */
-    const drag = useRef({})
-
-    /** clone - react ref  на HTMLElement, который планируем перетаскивать */
-    const clone = useRef(null)
-
-    /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
-    const offset = useRef(null)
 
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
@@ -85,20 +73,27 @@ export default function TravelAddOnMap() {
         return () => document.removeEventListener('selected-point', pointSelectHandler)
     }, [])
 
+    // создаем новое путешествие =======================================================================================
+    useEffect(() => {
+        if(!travel && user) dispatch(actions.travelActions.travelInit(user))
+    }, [travel, user])
+
     // начальное значение первой точки =================================================================================
     useEffect(() => {
-        if (user) setPoints([{id: createId(user.id), text: '', point: undefined}])
+        if (user) setPoints(travel?.waypoints || [{id: createId(user.id), text: '', point: undefined}])
     }, [user])
 
     // инициализация карты =============================================================================================
     useEffect(() => {
         if (mapRef.current && !map) {
+            const waypoints = travel?.waypoints.map(p => p.point)
             YandexMap.init({
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: [],
-                suggestElementID: points[0]?.id,
+                points: waypoints || [],
+                location: userLoc,
+                // suggestElementID: points[0]?.id,
                 markerClassName: 'location-marker'
             }).then(newMap => {
                 window.map = newMap
@@ -107,24 +102,7 @@ export default function TravelAddOnMap() {
         }
 
         return () => map && map.destroyMap()
-    }, [mapRef, map])
-
-    //=============================== click handlers ===================================================================
-    /**
-     * обработчик добавляет точку по клику по карте
-     * @param {MouseEvent} e
-     */
-    // function handleMapClick(e) {
-    //     const {clientX, clientY, target} = e
-    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-    //     map.addMarkerByLocalCoords([x, y])
-    // }
-    //
-    // function handleMapTouchEnd(e) {
-    //     const {clientX, clientY, target} = e.changedTouches[0]
-    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-    //     map.addMarkerByLocalCoords([x, y])
-    // }
+    }, [mapRef.current, map])
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -133,13 +111,10 @@ export default function TravelAddOnMap() {
             if (draggedPoint) {
                 setPoints(prev => {
                     return prev.map((p, i) =>{
-                        if(i === index){
-                            return {...p, text: draggedPoint.textAddress, point: draggedPoint}
-                        } else{
-                            return p
-                        }
+                        if(i === index) return {...p, text: draggedPoint.textAddress, point: draggedPoint}
+                        else return p
                     })
-                } )
+                })
             }
         }
 
@@ -154,13 +129,15 @@ export default function TravelAddOnMap() {
         map
             .addMarker(coords)
             .then(point => {
-                console.log(point)
                 const newPoint = {id: createId(user.id), text: point.textAddress, point}
-                setPoints([newPoint, ...points])
+                const newPoints = [newPoint, ...points]
+                dispatch(actions.travelActions.setWaypoints(newPoints.filter(p => !!p.point)))
+                setPoints(newPoints)
                 setFromUserLocation(true)
             })
     }
 
+    console.log(points)
     // обработка зума при прокрутки колесика мыши
     function handleWheel(e) {
         if (e.deltaY) {
@@ -177,76 +154,68 @@ export default function TravelAddOnMap() {
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
-        // const travelPoints = createTravelPoints(travel.id, points)
-        const travelPoints = map.getMarkers().map(p => {
-            delete p.placemark
-            return p
-        })
-        const travel = createTravel('', user.id, {waypoints: travelPoints})
-        const action = createAction(constants.store.TRAVEL, user.id, 'add', travel)
+        if(travel){
+            const newTravel = {...travel}
+            newTravel.direction = newTravel.waypoints
+                .map(p => p.text)
+                .reduce((acc, address) => {
+                    let place = address.split(',').filter(pl => !pl.includes('область')).shift() || ''
+                    place = place.trim()
+                    return acc ? acc + ' - ' + place : place
+                }, '')
 
-        /** запись в бд новой сущности travel и добавление соответствующего action */
-        Promise.all([
-            storeDB.addElement(constants.store.TRAVEL, travel),
-            storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
-        ])
-            /** запись новой сущности travel в redux store */
-            .then(() => dispatch(actions.travelActions.addTravels(travel)))
-            .then(() => navigate('/'))
-            .catch(console.error)
+            const action = createAction(constants.store.TRAVEL, user.id, 'add', newTravel)
+            Promise.all([
+                storeDB.addElement(constants.store.TRAVEL, newTravel),
+                storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
+            ])
+                /** запись новой сущности travel в redux store */
+                .then(() => dispatch(actions.travelActions.addTravels(newTravel)))
+                .then(() => navigate(`/travel/${newTravel.id}/edite/`))
+                .catch(console.error)
+        }
     }
-
-    //=============================== click handlers ===================================================================
-    /**
-     * обработчик добавляет точку по клику по карте
-     * @param {MouseEvent} e
-     */
-    // function handleMapClick(e) {
-    //     const {clientX, clientY, target} = e
-    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-    //     map.addMarkerByLocalCoords([x, y])
-    // }
-    //
-    // function handleMapTouchEnd(e) {
-    //     const {clientX, clientY, target} = e.changedTouches[0]
-    //     const {x, y} = screenCoordsToBlockCoords(target, clientX, clientY)
-    //     map.addMarkerByLocalCoords([x, y])
-    // }
 
     // добавление новой точки ==========================================================================================
     function handleAddNewPoint() {
+        dispatch(actions.travelActions.setWaypoints(points.filter(p => !!p.point)))
         navigate('/travel/add/waypoint/')
     }
 
     function handlePointListChange(newPoints){
+        dispatch(actions.travelActions.setWaypoints)
         setPoints(newPoints)
     }
 
+
+    if (!travel) return null
 
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Направление'}/>
-                {
-                    !fromUserLocation && (
-                        <div
-                            className='link'
-                            onClick={handleUserLocationPoint}
-                        >
-                            + Текущая позиция
-                        </div>
-                    )
-                }
-                <MapPointsInputList
-                    map={map}
-                    pointsList={points}
-                    onListChange={handlePointListChange}
-                />
-                <div
-                    className='link'
-                    onClick={handleAddNewPoint}
-                >
-                    + Добавить точку маршрута
+                <div className='column gap-0.5'>
+                    {
+                        !fromUserLocation && (
+                            <div
+                                className='link'
+                                onClick={handleUserLocationPoint}
+                            >
+                                + Текущая позиция
+                            </div>
+                        )
+                    }
+                    <MapPointsInputList
+                        map={map}
+                        pointsList={points}
+                        onListChange={handlePointListChange}
+                    />
+                    <div
+                        className='link'
+                        onClick={handleAddNewPoint}
+                    >
+                        + Добавить точку маршрута
+                    </div>
                 </div>
             </Container>
             <div className='content'>

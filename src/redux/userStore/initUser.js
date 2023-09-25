@@ -2,6 +2,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import storeDB from "../../db/storeDB/storeDB";
 import constants, {THEME} from "../../static/constants";
 import defaultThemeClass from "../../utils/defaultThemeClass";
+import userLocation from "../../utils/userLocation";
 
 export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) => {
     try {
@@ -19,7 +20,8 @@ export const initUser = createAsyncThunk('initUser', async (userData, thunkApi) 
         if (!theme || theme === 'default') {
             theme = defaultThemeClass()
         }
-        return {user: newUserData, theme}
+        const userLoc = await userLocation().catch(err => null)
+        return {user: newUserData, theme, userLoc}
     } catch (err) {
         console.error(err)
         thunkApi.abort()

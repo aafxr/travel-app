@@ -110,7 +110,6 @@ export class LocalDB {
         this.onReady = onReady || (()=>{})
         openDataBase(dbname, version, stores)
             .then(function () {
-                console.log(this)
                 this.ready = true
                 this.readyHandler()
             }.bind(this))

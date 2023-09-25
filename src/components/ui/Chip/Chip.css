@@ -49,7 +49,7 @@
 
 .chip-light-orange{
     color: var(--color-text);
-    background-color: var(--color-text);
+    background-color: var(--color-primary-light);
 }
 .chip-light-orange img{
     /*stroke: var(--color-text);*/

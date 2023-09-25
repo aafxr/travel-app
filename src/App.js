@@ -46,6 +46,7 @@ import Dev from "./modules/Dev";
 import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 import Loader from "./components/Loader/Loader";
 import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
+import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 
 
 function App() {
@@ -103,6 +104,7 @@ function App() {
                             <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
+                            <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>

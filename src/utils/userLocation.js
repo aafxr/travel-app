@@ -2,7 +2,7 @@
  * возвращает промис, который резолвится с координатами пользователя
  * @returns {Promise<[number, number]>}
  */
-export default function userPosition(){
+export default function userLocation(){
     return new Promise((resolve, reject) => {
         if(navigator && navigator.geolocation){
             navigator.geolocation.getCurrentPosition(loc => {
