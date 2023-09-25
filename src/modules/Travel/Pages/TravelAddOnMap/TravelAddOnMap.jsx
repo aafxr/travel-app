@@ -147,7 +147,6 @@ export default function TravelAddOnMap() {
         return () => document.removeEventListener('drag-point', handleDragPoint)
     }, [])
 
-
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
         const coords = await map.getUserLocation()
