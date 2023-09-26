@@ -23,10 +23,10 @@ export const travelsSlice = createSlice({
         reducers: {
             /**
              * @param {TravelState} state
-             * @param action
+             * @param payload -  сущность travel
              */
-            selectTravel(state, action) {
-                state.travel = action.payload
+            selectTravel(state, {payload}) {
+                state.travel = payload
             },
             resetTravel(state) {
                 state.travel = null

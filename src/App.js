@@ -112,8 +112,10 @@ function App() {
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                             <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
                             <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
+                            <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>
                             <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
                             <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
+                            <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>
                             <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                             <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                             <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
