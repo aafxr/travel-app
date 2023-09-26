@@ -3,6 +3,14 @@ import clsx from "clsx";
 
 import './Input.css'
 
+
+/**
+ *
+ * @param {HTMLInputElement} props
+ * @param ref
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function Input(props, ref) {
     const styles = clsx('input', props.className)
 

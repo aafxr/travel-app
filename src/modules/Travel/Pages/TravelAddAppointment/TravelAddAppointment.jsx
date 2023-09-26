@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import {useParams} from "react-router-dom";
 
-import Button from "../../../../components/ui/Button/Button";
-import Container from "../../../../components/Container/Container";
-import {Input, PageHeader} from "../../../../components/ui";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
+import Container from "../../../../components/Container/Container";
 import useChangeInputType from "../../hooks/useChangeInputType";
+import Button from "../../../../components/ui/Button/Button";
+import {Input, PageHeader} from "../../../../components/ui";
 
-export default function TravelAddMeeting() {
+export default function TravelAddAppointment() {
     const {travelCode} = useParams()
     const [textarea, setTextarea] = useState('')
     const dateHandlers = useChangeInputType('date')

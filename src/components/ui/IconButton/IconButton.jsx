@@ -11,7 +11,7 @@ import './IconButton.css'
  * @param {string} [title]
  * @param {string} className
  * @param {string} iconClass
- * @param props
+ * @param {React.HTMLAttributes<HTMLButtonElement>} props
  * @returns {JSX.Element}
  * @constructor
  */

@@ -2,11 +2,15 @@ import {Provider} from 'react-redux'
 import React, {useEffect} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 
+import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
-import TravelAddMeeting from "./modules/Travel/Pages/TravelAddMeeting/TravelAddMeeting";
+import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
+import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
+import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
+import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
@@ -18,13 +22,13 @@ import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
+// import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
-// import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
@@ -37,16 +41,13 @@ import Login from "./modules/Main/Pages/Login/Login";
 import {initUser} from "./redux/userStore/initUser";
 import Main from "./modules/Main/Pages/Main/Main";
 import ErrorPage from "./modules/Error/ErrorPage";
+import Loader from "./components/Loader/Loader";
 import Alerts from "./components/Alerts/Alerts";
 import AuthRequired from "./hoc/AuthRequired";
 import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
-import Loader from "./components/Loader/Loader";
-import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
-import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 
 
 function App() {
@@ -105,13 +106,14 @@ function App() {
                             <Route path={'/travel/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
+                            <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                             <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
                             <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
                             <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
-                            <Route path={'/travel/:travelCode/add/meeting/'} element={<TravelAddMeeting/>}/>
+                            <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
                             <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                             <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                             <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>

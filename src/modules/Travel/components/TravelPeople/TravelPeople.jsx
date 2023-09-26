@@ -8,14 +8,27 @@ import IconButton from "../../../../components/ui/IconButton/IconButton";
 import './TravelPeople.css'
 
 /**
- *
+ * Компонент принимает массив идентификаторов пользователей и отображает информацию о пользователях
  * @param {string[]} peopleList массив id участников путешествия
  * @param {boolean} compact
- * @param {React.HTMLAttributes} props
+ * @param {React.HTMLAttributes<HTMLDivElement>} props
+ * @param {Function} onClick -
  * @return {JSX.Element}
  * @constructor
  */
-export default function TravelPeople({peopleList = [], compact = false, ...props}) {
+export default function TravelPeople({
+                                         peopleList = [],
+                                         compact = false,
+                                         onClick,
+                                         ...props
+                                     }) {
+    /**
+     * поднятие юзер инфо в вышестоящий компонент
+     * @param {UserAppType} user
+     */
+    function handleUserClick(user) {
+        if (user && onClick) onClick(user)
+    }
 
     return (
         <div {...props} className={clsx('travel-details-people', {
@@ -36,6 +49,7 @@ export default function TravelPeople({peopleList = [], compact = false, ...props
                             key={p}
                             id={p}
                             variant='horizontal'
+                            onClick={handleUserClick}
                         />
                     ))
             }

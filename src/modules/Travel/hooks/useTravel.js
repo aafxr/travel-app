@@ -1,25 +1,31 @@
 import {useEffect, useState} from "react";
 import constants from "../../../static/constants";
+import {useSelector} from "react-redux";
+import {useParams} from "react-router-dom";
+import storeDB from "../../../db/storeDB/storeDB";
 
 /**
  * поиск информации о путешествии по id
- * @param {import('../../../controllers/ActionController').ActionController} controller
- * @param {string} id
+ * @param {string} travel_id
  * @returns {import('../models/ExpenseType').ExpenseType | null}
  */
-export default function useTravel(controller, id) {
+export default function useTravel(travel_id) {
+    const {travelCode} = useParams()
+    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
     const [travel, setTravel] = useState(null)
 
     useEffect(() => {
-        if (controller && id) {
-            const storeName = constants.store.TRAVEL
-            controller.read({
-                storeName,
-                id
-            })
-                .then(e => e && setTravel(Array.isArray(e) ? e[0] : e))
+        if (travel_id) {
+            if (travels && Array.isArray(travels)) {
+                const tr = travels.find(t => t.id === travelCode)
+                if(tr) setTravel(tr)
+                else{
+                    storeDB.getOne(constants.store.TRAVEL, travelCode)
+                        .then(tr => tr && setTravel(tr))
+                }
+            }
         }
-    }, [controller, id])
+    }, [travel_id])
 
     return travel
 }

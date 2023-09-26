@@ -8,7 +8,6 @@ import travelController from "../../../controllers/travelController/travelContro
 
 /**
  * @typedef {Object} TravelContextState
- * @property {ActionController | null} travelController
  * @property {import('../models/travel/TravelType').TravelType} travel
  */
 
@@ -16,7 +15,6 @@ import travelController from "../../../controllers/travelController/travelContro
  * @type TravelContextState
  */
 const defaultState = {
-    travelController: null,
     travel: null,
 }
 
@@ -42,7 +40,7 @@ export default function TravelContextProvider() {
     const [dbReady, setDbReady] = useState(false)
     const {worker} = useContext(WorkerContext)
 
-    const travel = useTravel(state.controller, travelCode)
+    const travel = useTravel(travelCode)
 
 
     useEffect(() => {

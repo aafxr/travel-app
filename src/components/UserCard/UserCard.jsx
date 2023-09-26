@@ -10,14 +10,20 @@ import './UserCard.css'
 
 
 /**
- *
+ * компонент осуществляет поиск или пытается загрузить инфо о юзере
  * @param {string} className
- * @param {string} id
+ * @param {string} id - идентификатор пользователя
  * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
+ * @param {Function} onClick - проп-функция (принимает инфо о юзере), генерируется при клике по карточке пользователя
  * @return {JSX.Element}
  * @constructor
  */
-export default function UserCard({className, id, variant = 'horizontal'}) {
+export default function UserCard({
+                                     className,
+                                     id,
+                                     variant = 'horizontal',
+    onClick,
+}) {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
@@ -27,8 +33,14 @@ export default function UserCard({className, id, variant = 'horizontal'}) {
         }
     }, [id])
 
+    function handleUserCardClick(){
+        if(user){
+            onClick && onClick(user)
+        }
+    }
+
     return (
-        <div className={classNames(variant, className)}>
+        <div className={classNames(variant, className)} onClick={handleUserCardClick}>
             {
                 !user
                     ? <AvatarPlaceHolder variant={variant}/>
