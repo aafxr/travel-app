@@ -203,7 +203,7 @@ export default function TravelSettings() {
 
             </Container>
             <div className='footer-btn-container footer'>
-                <Button>Построить маршрут</Button>
+                <Button >Построить маршрут</Button>
             </div>
         </div>
     )

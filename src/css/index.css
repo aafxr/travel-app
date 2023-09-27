@@ -343,6 +343,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     right: 12px;
 }
 
+.share-link{
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+
+.share-link svg{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    transform: translate(-50%, -50%);
+}
+
+.whatsapp-bg{
+    background-color: var(--color-whatsapp);
+}
+
+.telegram-bg{
+    background-color: var(--color-telegram);
+}
+
+.share-link-bg{
+    background-color: var(--color-share-link);
+}
+
+
 .close-button{
     color: var(--color-primary) !important;
     background-color: transparent!important;

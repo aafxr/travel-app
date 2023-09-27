@@ -1,0 +1,24 @@
+.invite-title{
+    padding: 12px 24px;
+    font-weight: 600;
+    border-bottom: 3px solid var(--color-primary);
+}
+
+.invite-child{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.invite-button{
+    font-size: 0.75rem;
+    background-color: var(--color-primary);
+    border: 2px solid var(--color-grey-light);
+    border-left: transparent;
+    outline: none;
+}
+
+.invite-share-title{
+    font-size: 0.75rem;
+}
