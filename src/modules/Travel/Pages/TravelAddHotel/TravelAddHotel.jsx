@@ -40,7 +40,6 @@ export default function TravelAddHotel() {
 
     // handler hotel details ===========================================================================================
     function handleHotelDetailsChange(e, key) {
-        console.log(e, key)
         if (key in hotel) {
             const newHotel = {...hotel}
             newHotel[key] = e.target.value
@@ -51,9 +50,10 @@ export default function TravelAddHotel() {
     //==================================================================================================================
     function handleSave() {
         const newTravel = {...travel}
+        if (!newTravel.hotels) newTravel.hotels = []
+
         const hidx = travel?.hotels.findIndex(h => h.id === hotel.id)
 
-        if (!newTravel.hotels) newTravel.hotels = []
         newTravel.hotels = [...newTravel.hotels]
 
         if (hotelCode && hidx !== -1)  newTravel.hotels[hidx] = hotel
@@ -73,8 +73,6 @@ export default function TravelAddHotel() {
                 pushAlertMessage({type: "warning", message: "Не удалось обновитть путешествие"})
             })
     }
-
-    console.log(hotel)
 
 
     return (

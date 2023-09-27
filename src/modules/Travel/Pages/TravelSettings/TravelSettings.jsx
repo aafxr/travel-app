@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useDispatch} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
@@ -6,11 +6,9 @@ import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
+import {defaultMovementTags} from "../../../../static/constants";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
-import WalkIcon from "../../../../components/svg/WalkIcon";
-import CarIcon from "../../../../components/svg/CarIcon";
-import BusIcon from "../../../../components/svg/BusIcon";
 import dateRange from "../../../../utils/dateRange";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
@@ -18,17 +16,13 @@ import useTravel from "../../hooks/useTravel";
 import './TravelSettings.css'
 
 
-const defaultTags = [
-    {id: 1, icon: <WalkIcon className='img-abs' />, title: 'пешком'},
-    {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},
-    {id: 3, icon: <BusIcon className='img-abs'/>, title: 'общественный транспорт'},
-]
+
 
 export default function TravelSettings() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const travel = useTravel(travelCode)
+    const travel = useTravel()
 
     // const {travels} = useSelector(store => store[constants.redux.TRAVEL])
     // const [travel, setTravel] = useState(null)
@@ -42,9 +36,9 @@ export default function TravelSettings() {
     //     }
     // }, [travels])
 
-    useEffect(() => {
-        if (travel) dispatch(actions.travelActions.selectTravel(travel))
-    }, [travel])
+    // useEffect(() => {
+    //     if (travel) dispatch(actions.travelActions.selectTravel(travel.id))
+    // }, [travel])
 
     /**
      * обработка нажатия на карточку пользователя
@@ -70,14 +64,16 @@ export default function TravelSettings() {
     function handleMovementSelect(movementType){
         if(!travel) return
 
-        if (travel.movementTypes.includes(movementType)){
-            travel.movementTypes = travel.movementTypes.filter(m => m !== movementType)
+        const mt = {...movementType}
+        mt.icon = null
+
+        if (travel.movementTypes.find(m => m.id === mt.id)){
+            dispatch(actions.travelActions.removeMovementType(mt))
         } else{
-            travel.movementTypes = [...travel.movementTypes, movementType]
+            dispatch(actions.travelActions.addMovementType(mt))
         }
     }
 
-    console.log(travel)
 
     return (
         <div className='travel-settings wrapper'>
@@ -182,24 +178,24 @@ export default function TravelSettings() {
                                     </div>
                                 </section>
 
-                                {/*<section className='travel-settings-movement column gap-0.5 block'>*/}
-                                {/*    <h4 className='title-semi-bold'>Способы передвижения</h4>*/}
-                                {/*    <div className='flex-wrap gap-1'>*/}
-                                {/*        {*/}
-                                {/*            defaultTags.map(t => (*/}
-                                {/*                <Chip*/}
-                                {/*                    key={t.id}*/}
-                                {/*                    icon={t.icon}*/}
-                                {/*                    color={travel.movementTypes.includes(t.id) ? 'orange' : 'grey'}*/}
-                                {/*                    rounded*/}
-                                {/*                    onClick={() => handleMovementSelect(t)}*/}
-                                {/*                >*/}
-                                {/*                    {t.title}*/}
-                                {/*                </Chip>*/}
-                                {/*            ))*/}
-                                {/*        }*/}
-                                {/*    </div>*/}
-                                {/*</section>*/}
+                                <section className='travel-settings-movement column gap-0.5 block'>
+                                    <h4 className='title-semi-bold'>Способы передвижения</h4>
+                                    <div className='flex-wrap gap-1'>
+                                        {
+                                            defaultMovementTags.map(dmt => (
+                                                <Chip
+                                                    key={dmt.id}
+                                                    icon={dmt.icon}
+                                                    color={travel.movementTypes.find(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
+                                                    rounded
+                                                    onClick={() => handleMovementSelect(dmt)}
+                                                >
+                                                    {dmt.title}
+                                                </Chip>
+                                            ))
+                                        }
+                                    </div>
+                                </section>
                             </div>
                         )
                         : (<div>загрузка информации о путешествии</div>)

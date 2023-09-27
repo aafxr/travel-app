@@ -2,24 +2,16 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
+import constants, {defaultMovementTags} from "../../../../static/constants";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
-import WalkIcon from "../../../../components/svg/WalkIcon";
-import CarIcon from "../../../../components/svg/CarIcon";
-import BusIcon from "../../../../components/svg/BusIcon";
-import constants from "../../../../static/constants";
 import changedFields from "../../../../utils/changedFields";
 import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 
-const defaultTags = [
-    {id: 1, icon: <WalkIcon className='img-abs' />, title: 'пешком'},
-    {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},
-    {id: 3, icon: <BusIcon className='img-abs'/>, title: 'общественный транспорт'},
-]
 
 export default function TravelEdite() {
     const navigate = useNavigate()
@@ -83,7 +75,7 @@ export default function TravelEdite() {
                 storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
             ])
                 .then(() => {
-                    dispatch(actions.travelActions.updateTravels(newTravelData))
+                    dispatch(actions.travelActions.updateTravel(newTravelData))
                     navigate(`/travel/${travel.id}/`)
                 })
         }
@@ -159,7 +151,7 @@ export default function TravelEdite() {
                     <div className='title-bold'>Способы передвижения</div>
                     <div className='flex-wrap gap-1'>
                         {
-                            defaultTags.map(t => (
+                            defaultMovementTags.map(t => (
                                 <Chip
                                     key={t.id}
                                     icon={t.icon}

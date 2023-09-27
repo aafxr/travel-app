@@ -170,7 +170,7 @@ export default function TravelAddOnMap() {
                 storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
             ])
                 /** запись новой сущности travel в redux store */
-                .then(() => dispatch(actions.travelActions.addTravels(newTravel)))
+                .then(() => dispatch(actions.travelActions.addTravel(newTravel)))
                 .then(() => navigate(`/travel/${newTravel.id}/edite/`))
                 .catch(console.error)
         }

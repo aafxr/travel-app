@@ -40,7 +40,7 @@ export default function TravelAdd() {
             await storeDB.editElement(constants.store.TRAVEL, data)
             await storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
 
-            dispatch(actions.travelActions.addTravels(data))
+            dispatch(actions.travelActions.addTravel(data))
             navigate('/travels/current/')
         }
     }

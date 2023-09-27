@@ -49,8 +49,6 @@ export default function TravelAddAppointment() {
             else if(key === 'time') newAppointment[key] = e.target.value
             else newAppointment[key] = e.target.value
 
-            console.log(newAppointment)
-
             setAppointment(newAppointment)
         }
     }
@@ -58,14 +56,14 @@ export default function TravelAddAppointment() {
     //==================================================================================================================
     function handleSave() {
         const newTravel = {...travel}
+        if (!newTravel.appointments) newTravel.appointments = []
+
         const apidx = newTravel?.appointments.findIndex(a => a.id === appointmentCode)
 
-        if (!newTravel.appointments) newTravel.appointments = []
         newTravel.appointments = [...newTravel.appointments]
 
         if (appointmentCode && apidx !== -1)  newTravel.appointments[apidx] = appointment
         else newTravel.appointments.push(appointment)
-
 
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
         Promise.all([

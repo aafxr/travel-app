@@ -1,31 +1,47 @@
 import {useEffect, useState} from "react";
-import constants from "../../../static/constants";
-import {useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+
+import constants from "../../../static/constants";
 import storeDB from "../../../db/storeDB/storeDB";
+import {actions} from "../../../redux/store";
 
 /**
  * поиск информации о путешествии по id
- * @param {string} travel_id
  * @returns {import('../models/ExpenseType').ExpenseType | null}
  */
-export default function useTravel(travel_id) {
+export default function useTravel() {
+    const dispatch = useDispatch()
+    const {travels, travelID, travelsLoaded} = useSelector(state => state[constants.redux.TRAVEL])
     const {travelCode} = useParams()
-    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
+
     const [travel, setTravel] = useState(null)
 
     useEffect(() => {
-        if (travel_id) {
-            if (travels && Array.isArray(travels)) {
-                const tr = travels.find(t => t.id === travelCode)
-                if(tr) setTravel(tr)
-                else{
-                    storeDB.getOne(constants.store.TRAVEL, travelCode)
-                        .then(tr => tr && setTravel(tr))
-                }
+        if (travelCode && travelsLoaded && !travel && !travelID) dispatch(actions.travelActions.selectTravel(travelCode))
+    }, [travelCode, travelsLoaded, travel])
+
+
+    useEffect(() => {
+        if (travelCode && travelID && Array.isArray(travels)) {
+            let tr = travels.find(t => t.id === travelID)
+
+            if (tr) {
+                tr.id!== travelID && dispatch(actions.travelActions.selectTravel(tr.id))
+                setTravel(tr)
+            }
+            else {
+                storeDB.getOne(constants.store.TRAVEL, travelCode)
+                    .then(t => {
+                        if (t) {
+                            dispatch(actions.travelActions.addTravel(t))
+                            t.id !== travelID && dispatch(actions.travelActions.selectTravel(t.id))
+                            setTravel(t)
+                        }
+                    })
             }
         }
-    }, [travel_id])
+    }, [travelCode, travels])
 
     return travel
 }

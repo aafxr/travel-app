@@ -12,10 +12,15 @@ export const initTravelsThunk = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             /**response - результат запроса на получение списока маршрутов от api */
-            const response = await aFetch.get('/travel/getList/')
+            const response = await aFetch.get('/travel/getList/').catch((err) => {
+                console.error(err)
+                return
+            })
             let travels
             if(response) {
                 travels = response.data.ok ? response.data.data : []
+                console.log(travels)
+                travels.forEach(t => t.id = t.uid )
                 await Promise.all(travels.map(t => storeDB.editElement(constants.store.TRAVEL, t)))
             }
 

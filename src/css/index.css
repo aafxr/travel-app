@@ -175,7 +175,7 @@ a{
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .bb-2-grey {

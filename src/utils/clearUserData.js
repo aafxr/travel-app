@@ -6,7 +6,7 @@ import storeDB from "../db/storeDB/storeDB";
  */
 export default function clearUserData(){
     if (window) {
-        window?.location.reload()
+        // window?.location.reload()
         window?.localStorage.setItem(USER_AUTH, null)
     }
     Promise.all([

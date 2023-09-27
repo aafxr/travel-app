@@ -1,3 +1,9 @@
+import React from "react";
+
+import WalkIcon from "../components/svg/WalkIcon";
+import CarIcon from "../components/svg/CarIcon";
+import BusIcon from "../components/svg/BusIcon";
+
 export const GLOBAL_DB_VERSION = 1;
 export const CACHE_VERSION = 16 + GLOBAL_DB_VERSION;
 
@@ -69,3 +75,9 @@ export const ACCESS_TOKEN = 'token'
 export const REFRESH_TOKEN = 'refresh_token'
 export const UNAUTHORIZED = 'unauthorized'
 export const THEME = 'THEME'
+
+export const defaultMovementTags = [
+    {id: 1, icon: <WalkIcon className='img-abs' />, title: 'пешком'},
+    {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},
+    {id: 3, icon: <BusIcon className='img-abs'/>, title: 'общественный транспорт'},
+]

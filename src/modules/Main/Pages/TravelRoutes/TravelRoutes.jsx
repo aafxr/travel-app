@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from "react-redux";
 
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import useDefaultTravels from "../../../Travel/hooks/useDefaultTravels";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
@@ -33,10 +32,10 @@ export default function TravelRoutes({
             storeDB.removeElement(constants.store.TRAVEL, travel.id),
             storeDB.editElement(constants.store.TRAVEL_ACTIONS, createAction(constants.store.TRAVEL, user.id, 'remove', travel))
                 .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
-                .then(() => dispatch(actions.travelActions.removeTravels(travels)))
+                .then(() => dispatch(actions.travelActions.removeTravel(travels)))
             ])
                 /** обновление global store после успешного удаления */
-                .then(() => dispatch(actions.travelActions.removeTravels(travel)))
+                .then(() => dispatch(actions.travelActions.removeTravel(travel)))
                 .catch(console.error)
         }
     }

@@ -89,7 +89,7 @@ export default function TravelDetails() {
                 storeDB.addElement(constants.store.TRAVEL_ACTIONS, action),
                 storeDB.editElement(constants.store.IMAGES, photo)
             ])
-                .then(() => dispatch(actions.travelActions.updateTravels(newTravelData)))
+                .then(() => dispatch(actions.travelActions.updateTravel(newTravelData)))
                 .catch(console.error)
         }
     }
