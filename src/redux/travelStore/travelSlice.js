@@ -199,7 +199,7 @@ export const travelsSlice = createSlice({
             /**
              * экшен ожидает получить информацию о участнике путешествия и добавляет ее в массив участников "members"
              * @param state
-             * @param {Object} payload
+             * @param {MemberType} payload
              */
             addMember(state, {payload}) {
                 if (!state.travelID) {
@@ -216,7 +216,7 @@ export const travelsSlice = createSlice({
             /**
              * экшен ожидает получить массив c информацией об  участниках и перезаписывает "members"
              * @param state
-             * @param {Object[]} payload
+             * @param {MemberType[]} payload
              */
             setMembers(state, {payload}) {
                 if (!state.travelID) {
@@ -233,7 +233,7 @@ export const travelsSlice = createSlice({
             /**
              * экшен ожидает получить информацию о участнике путешествия и удаляет ее из массива участников "members"
              * @param state
-             * @param {Object} payload
+             * @param {MemberType} payload
              */
             removeMember(state, {payload}) {
                 if (!state.travelID) {

@@ -8,7 +8,7 @@ import {actions} from "../../../redux/store";
 
 /**
  * поиск информации о путешествии по id
- * @returns {import('../models/ExpenseType').ExpenseType | null}
+ * @returns {TravelType | null}
  */
 export default function useTravel() {
     const dispatch = useDispatch()
@@ -41,7 +41,7 @@ export default function useTravel() {
                     })
             }
         }
-    }, [travelCode, travels])
+    }, [travelCode,travelID, travels])
 
     return travel
 }

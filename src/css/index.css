@@ -342,3 +342,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     top: 65%;
     right: 12px;
 }
+
+.close-button{
+    color: var(--color-primary) !important;
+    background-color: transparent!important;
+}

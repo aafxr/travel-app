@@ -1,0 +1,22 @@
+.member-remove-btn{
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-weight: 600;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.member-title{
+    border-bottom: 1px solid var(--color-grey-light);
+}
+
+.member-block{
+    border-bottom: 1px solid var(--color-grey-light);
+}
+
+.member-access-rules{
+    padding-left: 32px;
+}

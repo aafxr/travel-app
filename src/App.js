@@ -48,6 +48,7 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
+import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 
 
 function App() {
@@ -107,6 +108,7 @@ function App() {
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
+                            <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>

@@ -107,8 +107,9 @@ export default function TravelAddAppointment() {
                                         <Input
                                             className='br-left-0'
                                             type='time'
-                                            placeholder='Время'
                                             value={appointment.time}
+                                            placeholder='Время'
+                                            step="60000"
                                             onChange={(e) => handleAppointmentChanges(e, 'time')}
                                         />
                                     </div>

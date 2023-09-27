@@ -19,8 +19,6 @@ export const initTravelsThunk = createAsyncThunk(
             let travels
             if(response) {
                 travels = response.data.ok ? response.data.data : []
-                console.log(travels)
-                travels.forEach(t => t.id = t.uid )
                 await Promise.all(travels.map(t => storeDB.editElement(constants.store.TRAVEL, t)))
             }
 

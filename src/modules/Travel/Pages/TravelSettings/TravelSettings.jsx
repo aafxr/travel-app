@@ -118,7 +118,7 @@ export default function TravelSettings() {
                                     <h4 className='title-semi-bold'>Участники</h4>
                                     <TravelPeople peopleList={[travel.owner_id]} onClick={handleUserClick}/>
                                     <div className='center'>
-                                        <AddButton>Добавить еще</AddButton>
+                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить еще</AddButton>
                                     </div>
                                     <div className='flex-between'>
                                         <span>Взрослые</span>
