@@ -469,6 +469,7 @@ YandexMap.init = function init({
                     //добавление точек на карту
                     const placemarks = []
                     if (points && Array.isArray(points)) {
+                        debugger
                         for (const point of points) {
                             const placemark = new window.ymaps.Placemark(point.coords, {
                                 hintContent: point.hintContent,

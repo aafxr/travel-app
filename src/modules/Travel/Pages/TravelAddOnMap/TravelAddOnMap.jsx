@@ -96,7 +96,7 @@ export default function TravelAddOnMap() {
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: travel.waypoints || [],
+                points: travel.waypoints ? travel.waypoints.map(wp => wp.point): [],
                 location: userLoc,
                 // suggestElementID: points[0]?.id,
                 markerClassName: 'location-marker'
