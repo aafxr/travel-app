@@ -88,7 +88,7 @@ export default function TravelSettings() {
         if (!travel) return
 
         start !== travel.date_start && dispatch(actions.travelActions.setTravelStartDate(start))
-        end !== travel.date_end && dispatch(actions.travelActions.setTravelStartDate(end))
+        end !== travel.date_end && dispatch(actions.travelActions.setTravelEndDate(end))
     }
 
     //==================================================================================================================
