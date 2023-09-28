@@ -462,7 +462,7 @@ YandexMap.init = function init({
             return new Promise(resolve => {
                 window.ymaps.ready(() => {
                     const map = new window.ymaps.Map(mapContainerID, {
-                        center: location || [55.76, 37.64],
+                        center: location || [55.03, 82.92],
                         zoom: 7
                     })
 
