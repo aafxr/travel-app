@@ -481,7 +481,9 @@ YandexMap.init = function init({
                                 draggable: true,
                             })
                             map.geoObjects.add(placemark)
-                            placemarks.push(placemark)
+                            const clonePoint = JSON.parse(JSON.stringify(point))
+                            clonePoint.placemarks = placemark
+                            placemarks.push(clonePoint)
                         }
                     }
 

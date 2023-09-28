@@ -53,8 +53,10 @@
  * @property {MemberType[]} members
  * @property {HotelType[]} hotels
  * @property {MovementType[]} movementTypes
- * @property {Date} date_start
- * @property {Date} date_end
+ * @property {string} date_start
+ * @property {string} date_end
+ * @property {number} adults_count
+ * @property {number} childs_count
  */
 
 // id
@@ -71,3 +73,5 @@
 
 // date_start
 // date_end
+// adults_count
+// childs_count

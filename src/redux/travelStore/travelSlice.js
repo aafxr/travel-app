@@ -107,7 +107,7 @@ export const travelsSlice = createSlice({
             // redux actions сосздания нового маршрута =================================================================
             /**
              *экшен ожидает получить id прользователя для создания нового путешестчия
-             * @param state
+             * @param {TravelState} state
              * @param action - user_id
              */
             travelInit(state, action) {
@@ -121,11 +121,48 @@ export const travelsSlice = createSlice({
                     appointments: [],
                     members: [],
                     hotels: [],
-                    movementTypes: []
+                    movementTypes: [],
+                    date_start: null,
+                    date_end: null,
                 })
-                state.travel = travel.id
+                state.travelID = travel.id
                 state.travels.push(travel)
             },
+            // установка дат маршрута ==================================================================================
+            /**
+             * Установка даты начала путешествия
+             * @param {TravelState} state
+             * @param {string} payload
+             */
+            setTravelStartDate(state, {payload}){
+                if (!state.travelID){
+                    console.warn(new Error('[Redux/setTravelStartDate] путешествие не выбранно'))
+                    return
+                } else if(typeof payload !== 'string'){
+                    console.warn(new Error('[Redux/setTravelStartDate] экшен ожидает получить string, но получил ' + typeof payload))
+                    return
+                }
+                const travel = state.travels.find(t => t.id === state.travelID)
+                if (travel) travel.date_start = payload
+            },
+            /**
+             * Установка даты конца путешествия
+             * @param {TravelState} state
+             * @param {string} payload
+             */
+            setTravelEndDate(state, {payload}){
+                if (!state.travelID){
+                    console.warn(new Error('[Redux/setTravelStartDate] путешествие не выбранно'))
+                    return
+                } else if(typeof payload !== 'string'){
+                    console.warn(new Error('[Redux/setTravelStartDate] экшен ожидает получить string, но получил ' + typeof payload))
+                    return
+                }
+
+                const travel = state.travels.find(t => t.id === state.travelID)
+                if (travel) travel.date_end = payload
+            },
+            // redux actions редактирование заголовка ==================================================================
             /**
              * установка названия путешествия
              * @param state
@@ -142,6 +179,24 @@ export const travelsSlice = createSlice({
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if(travel) travel.title = payload
+            },
+            // redux actions редактирование краткого описания направления ==============================================
+            /**
+             * установка краткого описания направления путешествия
+             * @param state
+             * @param {string} payload
+             */
+            setDirection(state, {payload}) {
+                if (!state.travel) {
+                    console.warn(new Error('Обращение к travel до инициализации'))
+                    return
+                }
+                if (!payload) {
+                    console.warn('[Redux/setDirection] вызов экшена без заголовка')
+                    return
+                }
+                const travel = state.travels.find(t => t.id === state.travelID)
+                if(travel) travel.direction = payload
             },
             // экшены для мутации встреч ===============================================================================
             /**

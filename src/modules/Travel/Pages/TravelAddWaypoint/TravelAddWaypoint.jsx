@@ -13,13 +13,14 @@ import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
 
 import './TravelAddWaypoint.css'
+import useTravel from "../../hooks/useTravel";
 
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
-    const {travel} = useSelector(state => state[constants.redux.TRAVEL])
+    const travel = useTravel()
 
     /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -31,9 +32,9 @@ export default function TravelAddWaypoint() {
     const [point, setPoint] = useState(/**@type{InputPoint} */ null)
 
     //==================================================================================================================
-    useEffect(() => {
-        if (!travel) navigate('/travel/add/map/')
-    }, [travel])
+    // useEffect(() => {
+    //     if (!travel) navigate('/travel/add/map/')
+    // }, [travel])
 
 
     // начальное значение первой точки =================================================================================
@@ -97,7 +98,7 @@ export default function TravelAddWaypoint() {
     function handleSubmit() {
         if(travel && point) {
             dispatch(actions.travelActions.addWaypoint(point))
-            navigate('/travel/add/map/')
+            navigate(`/travel/${travel.id}/add/map/`)
         } else{
             pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
         }
@@ -109,7 +110,7 @@ export default function TravelAddWaypoint() {
             <Container className='waypoint-container'>
                 <PageHeader arrowBack title='Направление'/>
                 <div className='column gap-0.5 pb-20'>
-                    <div className='link'>+ Указать точку отправления</div>
+                    {/*<div className='link'>+ Указать точку отправления</div>*/}
                     <Input
                         id='diraction'
                         placeholder={'Куда едем?'}

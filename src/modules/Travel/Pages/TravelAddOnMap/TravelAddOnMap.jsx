@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -15,6 +15,9 @@ import YandexMap from "../../../../api/YandexMap";
 import {actions} from "../../../../redux/store";
 
 import './TravelAddOnMap.css'
+import useTravel from "../../hooks/useTravel";
+import ErrorReport from "../../../../controllers/ErrorReport";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**
  * @typedef {Object} InputPoint
@@ -24,8 +27,10 @@ import './TravelAddOnMap.css'
  */
 
 export default function TravelAddOnMap() {
+    const {travelCode} = useParams()
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
-    const {travel} = useSelector(state => state[constants.redux.TRAVEL])
+    const {travelID} = useSelector(state => state[constants.redux.TRAVEL])
+    const travel = useTravel(travelID)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -75,23 +80,23 @@ export default function TravelAddOnMap() {
 
     // создаем новое путешествие =======================================================================================
     useEffect(() => {
-        if(!travel && user) dispatch(actions.travelActions.travelInit(user))
-    }, [travel, user])
+        if(!travelCode) dispatch(actions.travelActions.travelInit(user))
+    }, [])
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
-        if (user) setPoints(travel?.waypoints || [{id: createId(user.id), text: '', point: undefined}])
-    }, [user])
+        setPoints(travel?.waypoints || [{id: createId(user.id), text: '', point: undefined}])
+    }, [travel])
 
     // инициализация карты =============================================================================================
     useEffect(() => {
-        if (mapRef.current && !map) {
+        if (mapRef.current && !map && travel) {
             const waypoints = travel?.waypoints.map(p => p.point)
             YandexMap.init({
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: waypoints || [],
+                points: travel.waypoints || [],
                 location: userLoc,
                 // suggestElementID: points[0]?.id,
                 markerClassName: 'location-marker'
@@ -102,7 +107,7 @@ export default function TravelAddOnMap() {
         }
 
         return () => map && map.destroyMap()
-    }, [mapRef.current, map])
+    }, [mapRef.current, map, travel])
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -124,20 +129,24 @@ export default function TravelAddOnMap() {
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
-        const coords = await map.getUserLocation()
+        const coords = await map.getUserLocation().catch((err) => {
+            ErrorReport.sendError(err).catch(console.error)
+            pushAlertMessage({type: "warning", message: 'Не удалось определить геолокацию'})
+        })
         console.log('coords', coords)
         map
             .addMarker(coords)
             .then(point => {
                 const newPoint = {id: createId(user.id), text: point.textAddress, point}
                 const newPoints = [newPoint, ...points]
+                /** перезаписываем массив мест (отфильтровываем пустые поля) */
                 dispatch(actions.travelActions.setWaypoints(newPoints.filter(p => !!p.point)))
                 setPoints(newPoints)
                 setFromUserLocation(true)
             })
+
     }
 
-    console.log(points)
     // обработка зума при прокрутки колесика мыши
     function handleWheel(e) {
         if (e.deltaY) {
@@ -156,7 +165,7 @@ export default function TravelAddOnMap() {
     function handleRouteSubmit() {
         if(travel){
             const newTravel = {...travel}
-            newTravel.direction = newTravel.waypoints
+            const direction = newTravel.waypoints
                 .map(p => p.text)
                 .reduce((acc, address) => {
                     let place = address.split(',').filter(pl => !pl.includes('область')).shift() || ''
@@ -164,14 +173,17 @@ export default function TravelAddOnMap() {
                     return acc ? acc + ' - ' + place : place
                 }, '')
 
+            newTravel.direction = direction
+            dispatch(actions.travelActions.setDirection(direction))
+
             const action = createAction(constants.store.TRAVEL, user.id, 'add', newTravel)
             Promise.all([
-                storeDB.addElement(constants.store.TRAVEL, newTravel),
+                storeDB.editElement(constants.store.TRAVEL, newTravel),
                 storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
             ])
                 /** запись новой сущности travel в redux store */
                 .then(() => dispatch(actions.travelActions.addTravel(newTravel)))
-                .then(() => navigate(`/travel/${newTravel.id}/edite/`))
+                .then(() => navigate(`/travel/${newTravel.id}/settings/`))
                 .catch(console.error)
         }
     }
@@ -179,7 +191,7 @@ export default function TravelAddOnMap() {
     // добавление новой точки ==========================================================================================
     function handleAddNewPoint() {
         dispatch(actions.travelActions.setWaypoints(points.filter(p => !!p.point)))
-        navigate('/travel/add/waypoint/')
+        navigate(`/travel/${travelID}/add/waypoint/`)
     }
 
     function handlePointListChange(newPoints){

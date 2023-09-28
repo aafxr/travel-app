@@ -1,12 +1,13 @@
-import {Provider} from 'react-redux'
-import React, {useEffect} from "react";
+import {Provider, useSelector} from 'react-redux'
+import React, {useEffect, useState} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
+import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
+import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
-import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
 import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
@@ -36,6 +37,7 @@ import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 import Events from "./modules/Main/Pages/Events/Events";
+import constants, {USER_AUTH} from "./static/constants";
 import TelegramAuth from "./modules/Main/TelegramAuth";
 import Login from "./modules/Main/Pages/Login/Login";
 import {initUser} from "./redux/userStore/initUser";
@@ -44,15 +46,18 @@ import ErrorPage from "./modules/Error/ErrorPage";
 import Loader from "./components/Loader/Loader";
 import Alerts from "./components/Alerts/Alerts";
 import AuthRequired from "./hoc/AuthRequired";
-import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 
 
 function App() {
+    const [state, setState] = useState()
     const ready = useDBReady()
+
+    useEffect(() => {
+        store.subscribe(() => setState(store.getState()))
+    }, [])
 
     useEffect(() => {
         if (ready) {
@@ -69,7 +74,8 @@ function App() {
         }
     }, [ready])
 
-    if (!ready) {
+
+    if (!ready || state && !state.travel.travelsLoaded) {
         return (
             <div className='wrapper'>
                 <div className='content center'>
@@ -104,7 +110,8 @@ function App() {
                             <Route path={'/dev/'} element={<Dev/>}/>
                             <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
                             <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
-                            <Route path={'/travel/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
+                            <Route path={'/travel/:travelCode/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
+                            <Route path={'/travel/:travelCode/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>

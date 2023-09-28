@@ -1,27 +1,30 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
+import constants, {defaultMovementTags} from "../../../../static/constants";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import {defaultMovementTags} from "../../../../static/constants";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
+import createAction from "../../../../utils/createAction";
+import storeDB from "../../../../db/storeDB/storeDB";
 import dateRange from "../../../../utils/dateRange";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
-
-
+import ErrorReport from "../../../../controllers/ErrorReport";
 
 
 export default function TravelSettings() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const {user} = useSelector(state => state[constants.redux.USER])
     const travel = useTravel()
 
     // const {travels} = useSelector(store => store[constants.redux.TRAVEL])
@@ -61,17 +64,85 @@ export default function TravelSettings() {
     }
 
     // travel members change handlers ==================================================================================
-    function handleMovementSelect(movementType){
-        if(!travel) return
+    function handleMovementSelect(movementType) {
+        if (!travel) return
 
         const mt = {...movementType}
         mt.icon = null
 
-        if (travel.movementTypes.find(m => m.id === mt.id)){
+        if (travel.movementTypes.find(m => m.id === mt.id)) {
             dispatch(actions.travelActions.removeMovementType(mt))
-        } else{
+        } else {
             dispatch(actions.travelActions.addMovementType(mt))
         }
+    }
+
+    //==================================================================================================================
+    /**
+     * обработчик изменения времени
+     * @param {React.ChangeEvent<HTMLInputElement>} e
+     * @param {'date_start' | 'date_end'}key
+     */
+    function handleDateChange(e, key) {
+        const selectedDate = new Date(e.target.value)
+        let start = travel.date_start
+            ? new Date(travel.date_start)
+            : undefined
+        let end = travel.date_end
+            ? new Date(travel.date_end)
+            : undefined
+
+        if (key === 'date_start') {
+            const delta = start
+                ? selectedDate - start
+                : undefined
+
+            if (delta && end) {
+                const newEnd = new Date(end.getTime() + delta)
+                dispatch(actions.travelActions.setTravelEndDate(newEnd.toISOString()))
+            }
+            dispatch(actions.travelActions.setTravelStartDate(new Date(e.target.value).toISOString()))
+        } else if (key === 'date_end') {
+            dispatch(actions.travelActions.setTravelEndDate(new Date(e.target.value).toISOString()))
+        }
+    }
+
+    //==================================================================================================================
+    /** сохранение параметров путешествия */
+    function handleSaveTravelButton() {
+        if (!travel) {
+            pushAlertMessage({type: 'warning', message: 'Не удалость получить информацию о путешествии'})
+            return
+        } else if (!travel.date_start) {
+            pushAlertMessage({type: 'warning', message: 'Укажите дату начала путешествия'})
+            return
+        } else if (!travel.date_end) {
+            pushAlertMessage({type: 'warning', message: 'Укажите дату конца путешествия'})
+            return
+        } else if (!travel.movementTypes.length) {
+            pushAlertMessage({type: 'warning', message: 'Укажите способ перемещения'})
+            return
+        } else if (!travel.date_end) {
+            pushAlertMessage({type: 'warning', message: 'Укажите дату конца путешествия'})
+            return
+        } else if (!travel.adults_count && !!travel.childs_count) {
+            pushAlertMessage({type: 'warning', message: 'Укажите количество участников путешествия'})
+            return
+        } else if (!user) {
+            pushAlertMessage({type: 'warning', message: 'Авторизуйтесь'})
+            return
+        }
+
+        const action = createAction(constants.store.TRAVEL, user.id, "add", travel)
+        Promise.all([
+            storeDB.editElement(constants.store.TRAVEL, travel),
+            storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
+        ])
+            .then(() => navigate(`/travel/${travel.id}/`))
+            .catch(err => {
+                ErrorReport.sendError(err).catch(console.error)
+                pushAlertMessage({type: 'danger',message: 'Произовла ошибка во время записи путешествия в бд'})
+            })
     }
 
 
@@ -104,11 +175,17 @@ export default function TravelSettings() {
                                         <Input
                                             className='br-right-0'
                                             type='date'
+                                            value={travel.date_start?.split('T').shift()}
+                                            onChange={(e) => handleDateChange(e, 'date_start')}
+                                            min={new Date().toISOString()}
                                             placeholder='Дата'
                                         />
                                         <Input
                                             className='br-left-0'
                                             type='date'
+                                            value={travel.date_end?.split('T').shift()}
+                                            onChange={(e) => handleDateChange(e, 'date_end')}
+                                            min={travel.date_start || ''}
                                             placeholder='Дата'
                                         />
                                     </div>
@@ -203,7 +280,7 @@ export default function TravelSettings() {
 
             </Container>
             <div className='footer-btn-container footer'>
-                <Button >Построить маршрут</Button>
+                <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>
             </div>
         </div>
     )

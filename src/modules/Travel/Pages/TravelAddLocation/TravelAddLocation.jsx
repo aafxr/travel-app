@@ -1,12 +1,12 @@
 import React from "react";
 import {useParams} from "react-router-dom";
 
-import Button from "../../../../components/ui/Button/Button";
+import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import LocationCard from "../../components/LocationCard/LocationCard";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import useChangeInputType from "../../hooks/useChangeInputType";
+import Button from "../../../../components/ui/Button/Button";
+import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 export default function TravelAddLocation() {
     const {travelCode} = useParams()
