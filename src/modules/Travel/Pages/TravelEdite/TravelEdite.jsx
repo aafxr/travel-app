@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -11,6 +11,8 @@ import changedFields from "../../../../utils/changedFields";
 import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
+import DateRange from "../../../../components/DateRange/DateRange";
+import useTravel from "../../hooks/useTravel";
 
 
 export default function TravelEdite() {
@@ -18,33 +20,29 @@ export default function TravelEdite() {
     const dispatch = useDispatch()
 
     const {travelCode} = useParams()
-    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
     const {user} = useSelector(state => state[constants.redux.USER])
-    const [travel, setTravel] = useState('')
+    const travel = useTravel()
 
     const [title, setTitle] = useState('')
     const [start, setStart] = useState('')
     const [end, setEnd] = useState('')
+    const minDateValue = useMemo(() => new Date().toISOString(), [])
     const [description, setDescription] = useState('')
     const [tags, setTags] = useState([])
 
     const currentDay = new Date().toISOString().split('T').shift()
 
     useEffect(() => {
-        if (travels && travels.length) {
-            const travelData = travels.find(t => t.id === travelCode)
-            if (travelData) {
-                setTravel(travelData)
-
-                travelData.title && setTitle(travelData.title)
-                travelData.start && setStart(travelData.start)
-                travelData.end && setEnd(travelData.end)
-                travelData.description && setDescription(travelData.description)
-                travelData.tags && setTags(travelData.tags)
-                //... доьавить остальные поля в будущем
-            }
+        if (travel) {
+            travel.title && setTitle(travel.title)
+            travel.date_start && setStart(travel.date_start)
+            travel.date_end && setEnd(travel.date_end)
+            travel.description && setDescription(travel.description)
+            travel.movementTypes && setTags(travel.movementTypes.map(mt => mt.id))
+            //... доьавить остальные поля в будущем
         }
-    }, [])
+
+    }, [travel])
 
     function handleSave() {
         // Здечь должна быть обработка сохранения изменений
@@ -57,7 +55,15 @@ export default function TravelEdite() {
         ) {
             const newTravelData = {
                 ...travel,
-                title, start, end, description, tags
+                title,
+                date_start: start,
+                date_end: end,
+                description,
+                movementTypes: defaultMovementTags.filter(t => tags.includes(t.id)).map(t => {
+                    const _t = {...t}
+                    delete _t.icon
+                    return _t
+                })
             }
             //измененные поля
             const changedFieldsList = changedFields(travel, newTravelData)
@@ -88,24 +94,21 @@ export default function TravelEdite() {
         setTags(newTagList)
     }
 
-    function getNewTravelData(){
+    function getNewTravelData() {
         return {
-        ...travel,
+            ...travel,
             title, start, end, description, tags
         }
     }
 
-    function handleStartDateChange(e){
-        if(start && end){
-            const start_date = new Date(start)
-            const end_date = new Date(end)
-            const diff = end_date - start_date
-            const current_date = new Date(e.target.value)
-            setStart(e.target.value)
-            setEnd(new Date(current_date.getTime() + diff).toISOString().split("T").shift())
-        } else{
-            setStart(e.target.value)
-        }
+    /**
+     * измененный диапазрн дат (начало - конец)
+     * @param {string} startDate
+     * @param {string} endDate
+     */
+    function handleDateRangeChange({start: startDate, end: endDate}) {
+        startDate && setStart(startDate)
+        endDate && setEnd(endDate)
     }
 
 
@@ -126,26 +129,12 @@ export default function TravelEdite() {
                 </div>
                 <div className='block column gap-0.5'>
                     <div className='title-bold'>Дата поездки</div>
-                    <div className='flex-stretch gap-0.25'>
-                        <Input
-                            type='date'
-                            placeholder={'Начало'}
-                            value={start}
-                            min={currentDay}
-                            onChange={e => handleStartDateChange(e)}
-                            // onFocus={e => e.target.type = 'date'}
-                            // onBlur={e => e.target.type = 'text'}
-                        />
-                        <Input
-                            type='date'
-                            placeholder={'Завершение'}
-                            value={end}
-                            min={start || currentDay}
-                            onChange={e => setEnd(e.target.value)}
-                            // onFocus={e => e.target.type = 'date'}
-                            // onBlur={e => e.target.type = 'text'}
-                        />
-                    </div>
+                    <DateRange
+                        startValue={start}
+                        endValue={end}
+                        minDateValue={minDateValue}
+                        onChange={handleDateRangeChange}
+                    />
                 </div>
                 <div className='block column gap-0.5'>
                     <div className='title-bold'>Способы передвижения</div>
@@ -172,7 +161,8 @@ export default function TravelEdite() {
                 </div>
             </Container>
             <div className='footer-btn-container footer'>
-                <Button onClick={handleSave} disabled={!changedFields(travel, getNewTravelData()).length} >Сохранить</Button>
+                <Button onClick={handleSave}
+                        disabled={!changedFields(travel, getNewTravelData()).length}>Сохранить</Button>
             </div>
         </div>
     )

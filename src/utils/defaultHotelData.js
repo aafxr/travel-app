@@ -1,6 +1,8 @@
 import createId from "./createId";
 
-/** Утилита генерирует новые данные об отеле */
+/** Утилита генерирует новые данные об отеле
+ * @returns {HotelType}
+ */
 export default function defaultHotelData() {
     return {
         id: createId(),

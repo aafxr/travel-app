@@ -1,3 +1,6 @@
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+
 import ShareLinkIcon from "../../../../components/svg/ShareLinkIcon";
 import Container from "../../../../components/Container/Container";
 import WhatsappIcon from "../../../../components/svg/WhatsappIcon";
@@ -6,13 +9,53 @@ import TelegramIcon from "../../../../components/svg/TelegramIcon";
 import Button from "../../../../components/ui/Button/Button";
 import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
+import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
-import {useState} from "react";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+
+/**@type{MemberType} */
+const defaultMember = {
+    id:createId(),
+    access_rights: [],
+    movementType:[],
+    name: '',
+    age: 7,
+    email: '',
+    inviteURL: '',
+    isChild: false
+}
 
 export default function TravelInviteMember() {
-    const [isChild, setIsChild] = useState(false)
+    const navigate = useNavigate()
+    const [member, setMember] = useState(defaultMember)
 
+    /**
+     *  обработчик устанавливает флаг isChild
+     * @param {boolean} isChild
+     */
+    const handleChildCheckbox = (isChild) => setMember({
+        ...member,
+        isChild,
+        age: !member.age ? 7 : member.age
+    })
+
+    /**
+     * обработчик устанавливает возраст ребенка
+     * @param {number} age 1 - 17
+     */
+    const handleChildAgeChange = (age) => setMember({...member, age})
+
+    /**
+     * обработчик записи EMail
+     * @param e
+     */
+    const handleEMailChange = (e) => setMember({...member, email: e.target.value})
+
+    /** обработчик для отправки приглошения */
+    function handleInviteButtonClick(){
+        pushAlertMessage({type: "info", message:'Отправка приглошения в процессе разработки'})
+    }
 
     return (
         <div className='wrapper'>
@@ -21,20 +64,25 @@ export default function TravelInviteMember() {
                 <Input
                     placeholder='Имя'
                 />
-                <Checkbox checked={isChild} onChange={setIsChild}>Ребенок</Checkbox>
+                <Checkbox checked={!!member.isChild} onChange={handleChildCheckbox}>Ребенок</Checkbox>
                 {
-                    isChild && (
+                    !!member.isChild && (
                         <div className='invite-child'>
-                            <Counter min={1} max={17} initialValue={7}/>
+                            <Counter min={1} max={17} initialValue={7} onChange={handleChildAgeChange}/>
                             <span>лет</span>
                         </div>
                     )
                 }
                 <div className='flex-stretch'>
-                    <Input className='br-right-0' placeholder='E-mail'/>
-                    <button className='invite-button flex-0'>Пригласить</button>
+                    <Input
+                        className='br-right-0'
+                        value={member.email}
+                        onChange={handleEMailChange}
+                        placeholder='E-mail'
+                    />
+                    <button className='invite-button flex-0' onClick={handleInviteButtonClick}>Пригласить</button>
                 </div>
-                <Input placeholder='URL'/>
+                <Input value={member.inviteURL} onChange={() => {}} placeholder='URL'/>
                 <div>
                     <div className='invite-share-title'>Поделиться ссылкой</div>
                     <div className='flex-nowrap gap-0.25'>
@@ -44,7 +92,7 @@ export default function TravelInviteMember() {
                     </div>
                 </div>
 
-                <Button className='close-button'>Закрыть</Button>
+                <Button className='close-button' onClick={() => navigate(-1)}>Закрыть</Button>
             </Container>
         </div>
     )

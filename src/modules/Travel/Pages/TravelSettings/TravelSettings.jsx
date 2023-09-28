@@ -18,6 +18,7 @@ import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
 import ErrorReport from "../../../../controllers/ErrorReport";
+import DateRange from "../../../../components/DateRange/DateRange";
 
 
 export default function TravelSettings() {
@@ -80,31 +81,14 @@ export default function TravelSettings() {
     //==================================================================================================================
     /**
      * обработчик изменения времени
-     * @param {React.ChangeEvent<HTMLInputElement>} e
-     * @param {'date_start' | 'date_end'}key
+     * @param {string} start
+     * @param {string} end
      */
-    function handleDateChange(e, key) {
-        const selectedDate = new Date(e.target.value)
-        let start = travel.date_start
-            ? new Date(travel.date_start)
-            : undefined
-        let end = travel.date_end
-            ? new Date(travel.date_end)
-            : undefined
+    function handleDateRangeChange({start, end}) {
+        if (!travel) return
 
-        if (key === 'date_start') {
-            const delta = start
-                ? selectedDate - start
-                : undefined
-
-            if (delta && end) {
-                const newEnd = new Date(end.getTime() + delta)
-                dispatch(actions.travelActions.setTravelEndDate(newEnd.toISOString()))
-            }
-            dispatch(actions.travelActions.setTravelStartDate(new Date(e.target.value).toISOString()))
-        } else if (key === 'date_end') {
-            dispatch(actions.travelActions.setTravelEndDate(new Date(e.target.value).toISOString()))
-        }
+        start !== travel.date_start && dispatch(actions.travelActions.setTravelStartDate(start))
+        end !== travel.date_end && dispatch(actions.travelActions.setTravelStartDate(end))
     }
 
     //==================================================================================================================
@@ -141,7 +125,7 @@ export default function TravelSettings() {
             .then(() => navigate(`/travel/${travel.id}/`))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
-                pushAlertMessage({type: 'danger',message: 'Произовла ошибка во время записи путешествия в бд'})
+                pushAlertMessage({type: 'danger', message: 'Произовла ошибка во время записи путешествия в бд'})
             })
     }
 
@@ -171,24 +155,11 @@ export default function TravelSettings() {
 
                                 <section className='travel-settings-date column gap-0.5 block'>
                                     <h4 className='title-semi-bold'>Дата поездки</h4>
-                                    <div className='flex-stretch'>
-                                        <Input
-                                            className='br-right-0'
-                                            type='date'
-                                            value={travel.date_start?.split('T').shift()}
-                                            onChange={(e) => handleDateChange(e, 'date_start')}
-                                            min={new Date().toISOString()}
-                                            placeholder='Дата'
-                                        />
-                                        <Input
-                                            className='br-left-0'
-                                            type='date'
-                                            value={travel.date_end?.split('T').shift()}
-                                            onChange={(e) => handleDateChange(e, 'date_end')}
-                                            min={travel.date_start || ''}
-                                            placeholder='Дата'
-                                        />
-                                    </div>
+                                    <DateRange
+                                        startValue={travel.date_start}
+                                        endValue={travel.date_end}
+                                        onChange={handleDateRangeChange}
+                                    />
                                 </section>
 
                                 <section className='travel-settings-members column gap-0.5 block'>

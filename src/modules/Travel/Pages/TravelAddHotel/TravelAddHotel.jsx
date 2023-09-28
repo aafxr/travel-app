@@ -4,6 +4,7 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
+import DateRange from "../../../../components/DateRange/DateRange";
 import defaultHotelData from "../../../../utils/defaultHotelData";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
@@ -11,8 +12,8 @@ import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
-import useTravel from "../../hooks/useTravel";
 import {actions} from "../../../../redux/store";
+import useTravel from "../../hooks/useTravel";
 
 
 export default function TravelAddHotel() {
@@ -95,22 +96,10 @@ export default function TravelAddHotel() {
                                     onChange={(e) => handleHotelDetailsChange(e, 'location')}
                                     placeholder='Место'
                                 />
-                                <div className='flex-stretch gap-0.25'>
-                                    <Input
-                                        // className='br-right-0'
-                                        type='date'
-                                        placeholder='Дата'
-                                        value={hotel.check_in}
-                                        onChange={(e) => handleHotelDetailsChange(e, 'check_in')}
-                                    />
-                                    <Input
-                                        // className='br-left-0'
-                                        type='date'
-                                        placeholder='Дата'
-                                        value={hotel.check_out}
-                                        onChange={(e) => handleHotelDetailsChange(e, 'check_out')}
-                                    />
-                                </div>
+                                <DateRange
+                                    minDateValue={travel.date_start}
+                                    startValue={hotel}
+                                />
                             </div>
                         )
                         : (<div>загрузка иформации об отеле</div>)

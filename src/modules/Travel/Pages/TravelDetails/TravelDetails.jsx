@@ -65,6 +65,7 @@ export default function TravelDetails() {
         <Menu>
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Детали путешествия'}/>
             <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
+            <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Настройки'}/>
         </Menu>
     )
     const items = [
@@ -95,7 +96,6 @@ export default function TravelDetails() {
     }
 
     useEffect(() => {travel && (window.travel = travel)}, [travel])
-    console.log(travel)
 
     return (
         <>
