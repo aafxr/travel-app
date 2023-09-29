@@ -6,9 +6,14 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Photo from "../../../../components/Poto/Photo";
 
 import './TravelCard.css'
-import {CopyIcon} from "../../../../components/svg";
-import TrashIcon from "../../../../components/svg/TrashIcon";
 
+/**
+ * компонент отображает карточку путешествия
+ * @param {TravelType} travel
+ * @param {function} onRemove
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TravelCard({travel, onRemove}) {
 
 
@@ -34,7 +39,7 @@ export default function TravelCard({travel, onRemove}) {
                 <div className='travel-item gap-1'>
                     <Photo className={'travel-image'} id={travel.photo}/>
                     <div className='travel-content column title-bold'>
-                        {travel.title}
+                        {travel.title || travel.direction || ''}
                         <IconButton
                             className='travel-button'
                             onClick={handleClick}

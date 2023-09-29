@@ -49,6 +49,7 @@
  * @property {string} id
  * @property {string} code
  * @property {string} title
+ * @property {string} direction
  * @property {string} owner_id
  * @property {Date} created_at
  * @property {Date} updated_at
