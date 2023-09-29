@@ -7,9 +7,11 @@ import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
-import {Chip, Input, PageHeader} from "../../../../components/ui";
+import DateRange from "../../../../components/DateRange/DateRange";
+import ErrorReport from "../../../../controllers/ErrorReport";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
+import {Chip, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import dateRange from "../../../../utils/dateRange";
@@ -17,8 +19,6 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
-import ErrorReport from "../../../../controllers/ErrorReport";
-import DateRange from "../../../../components/DateRange/DateRange";
 
 
 export default function TravelSettings() {
@@ -27,22 +27,6 @@ export default function TravelSettings() {
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])
     const travel = useTravel()
-
-    // const {travels} = useSelector(store => store[constants.redux.TRAVEL])
-    // const [travel, setTravel] = useState(null)
-
-    // /** поиск путешествия соответствующего travelCode */
-    // useEffect(() => {
-    //     if (travels && travels.length) {
-    //         const idx = travels.findIndex(t => t.id === travelCode)
-    //         if (~idx) setTravel(travels[idx])
-    //         else pushAlertMessage({type: "info", message: 'Не удалось найти детали путешествия'})
-    //     }
-    // }, [travels])
-
-    // useEffect(() => {
-    //     if (travel) dispatch(actions.travelActions.selectTravel(travel.id))
-    // }, [travel])
 
     /**
      * обработка нажатия на карточку пользователя
@@ -56,20 +40,31 @@ export default function TravelSettings() {
     }
 
     // travel members change handlers ==================================================================================
+    /** обновление предпологаемого числа взрослых в путешествии
+     * @param {number} num
+     */
     function handleAdultChange(num) {
-
+        if(!travel) return
+        dispatch(actions.travelActions.setAdultCount(num))
     }
-
+    /** обновление предпологаемого числа детей в путешествии
+     * @param {number} num
+     */
     function handleTeenagerChange(num) {
-
+        if(!travel) return
+        dispatch(actions.travelActions.setChildCount(num))
     }
 
     // travel members change handlers ==================================================================================
+    /**
+     * добавление / удаление способа перемещения во время маршрута
+     * @param {MovementType} movementType
+     */
     function handleMovementSelect(movementType) {
         if (!travel) return
 
         const mt = {...movementType}
-        mt.icon = null
+        delete mt.icon
 
         if (travel.movementTypes.find(m => m.id === mt.id)) {
             dispatch(actions.travelActions.removeMovementType(mt))
@@ -86,9 +81,8 @@ export default function TravelSettings() {
      */
     function handleDateRangeChange({start, end}) {
         if (!travel) return
-
-        start !== travel.date_start && dispatch(actions.travelActions.setTravelStartDate(start))
-        end !== travel.date_end && dispatch(actions.travelActions.setTravelEndDate(end))
+        if (start !== travel.date_start) dispatch(actions.travelActions.setTravelStartDate(start))
+        if (end !== travel.date_end) dispatch(actions.travelActions.setTravelEndDate(end))
     }
 
     //==================================================================================================================
@@ -164,17 +158,25 @@ export default function TravelSettings() {
 
                                 <section className='travel-settings-members column gap-0.5 block'>
                                     <h4 className='title-semi-bold'>Участники</h4>
-                                    <TravelPeople peopleList={[travel.owner_id]} onClick={handleUserClick}/>
+                                    <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
                                     <div className='center'>
-                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить еще</AddButton>
+                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить участника</AddButton>
                                     </div>
                                     <div className='flex-between'>
                                         <span>Взрослые</span>
-                                        <Counter initialValue={2} min={2} onChange={handleAdultChange}/>
+                                        <Counter
+                                            initialValue={travel.adults_count}
+                                            min={travel.members.filter(m => !m.isChild).length}
+                                            onChange={handleAdultChange}
+                                        />
                                     </div>
                                     <div className='flex-between'>
                                         <span>Дети</span>
-                                        <Counter initialValue={0} min={0} onChange={handleTeenagerChange}/>
+                                        <Counter
+                                            initialValue={travel.childs_count}
+                                            min={travel.members.filter(m => m.isChild).length}
+                                            onChange={handleTeenagerChange}
+                                        />
                                     </div>
                                 </section>
 

@@ -23,42 +23,27 @@ import constants from "../../../../static/constants";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
 import {actions} from "../../../../redux/store";
+import useTravel from "../../hooks/useTravel";
+
 import './TravelDetails.css'
 
 
 export default function TravelDetails() {
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
     const {travelCode} = useParams()
-    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
-    const [travel, setTravel] = useState(null)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const {user} = useSelector(state => state[constants.redux.USER])
+    const travel = useTravel()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
     const [checkListOpen, setCheckListOpen] = useState(false)
-    const navigate = useNavigate()
+    const travelDurationLabel = dateRange(travel?.date_start, travel?.date_end)
 
     //переменная для задания количества табов (по дням)
     let travelDaysCount
-    if (travel) {
-        if (travel.start && travel.end) {
-            travelDaysCount = (new Date(travel.end) - new Date(travel.start)) / (1000 * 60 * 60 * 24)
-        }
+    if (travel && travel.date_start && travel.date_end) {
+        travelDaysCount = (new Date(travel.date_end).getTime() - new Date(travel.date_start).getTime()) / (1000 * 60 * 60 * 24)
     }
-
-    const travelDurationLabel = dateRange(travel?.start, travel?.end)
-
-    useEffect(() => {
-        async function tryFindTravel() {
-            let currentTravel = travels?.find(t => t.id === travelCode)
-
-            if (!currentTravel) {
-                currentTravel = await storeDB.getOne(constants.store.TRAVEL, travelCode)
-            }
-            setTravel(currentTravel || null)
-        }
-
-        tryFindTravel()
-    }, [])
 
 
     const menu = (
@@ -95,7 +80,6 @@ export default function TravelDetails() {
         }
     }
 
-    useEffect(() => {travel && (window.travel = travel)}, [travel])
 
     return (
         <>
@@ -127,7 +111,7 @@ export default function TravelDetails() {
                         }
                         <div>
 
-                        <TravelPeople peopleList={travel?.owner_id && [travel?.owner_id]} compact={compact}/>
+                            <TravelPeople peopleList={travel?.owner_id && [travel?.owner_id]} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>

@@ -20,26 +20,33 @@ export default function TravelAddHotel() {
     const navigate = useNavigate()
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
-    const {travelCode, hotelCode} = useParams()
+    const { hotelCode} = useParams()
 
-    // const dateHandlers = useChangeInputType('date')
-    // const timeHandlers = useChangeInputType('date')
-
-    const travel = useTravel(travelCode)
-    const [hotel, setHotel] = useState(null)
+    const travel = useTravel()
+    const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
 
     //==================================================================================================================
+    /** инициализация переменн hotel */
     useEffect(() => {
         if (travel && !hotel) {
+           /** если url содержит hotelCode (т.е редактируем данные об отеле) ищем в travel данные о путешествии */
             if (hotelCode) {
+                /** @type{HotelType | undefined} */
                 const h = travel?.hotels.find(h => h.id === hotelCode)
                 if (h) setHotel(h)
-                else setHotel(defaultHotelData())
+                    /** если информация об отеле в сущности travel не найдена, то создаем новый отель с id hotelCode */
+                else setHotel(defaultHotelData(hotelCode))
+                /** если нет hotelCode, значит добавляются данные о новом отеле */
             } else setHotel(defaultHotelData())
         }
-    }, [travelCode, hotelCode, travel])
+    }, [hotelCode, travel, hotel])
 
     // handler hotel details ===========================================================================================
+    /**
+     * обработчик, обновляет данные hotel по ключу key
+     * @param {InputEvent} e
+     * @param {string} key - ключ из hotel, по которому планируется обновлять данные полученные в event e
+     */
     function handleHotelDetailsChange(e, key) {
         if (key in hotel) {
             const newHotel = {...hotel}
@@ -49,30 +56,43 @@ export default function TravelAddHotel() {
     }
 
     //==================================================================================================================
-    function handleSave() {
+    /** сохранение информации об отеле и перенаправление пользователя */
+    function handleHotelSave() {
+        if(!travel || !travel.hotels) {
+            pushAlertMessage({type: "warning", message: 'Ошибка при добавление отеля'})
+            return
+        }
+
+        /** клон travel (поскольку travel immutable ) */
         const newTravel = {...travel}
-        if (!newTravel.hotels) newTravel.hotels = []
-
-        const hidx = travel?.hotels.findIndex(h => h.id === hotel.id)
-
+        /** клон массива для обновления данных данных об отеле */
         newTravel.hotels = [...newTravel.hotels]
-
+        /** если отель уж существует в travel.hotels, то перезаписываем данные значением hotel, иначе добовляем отель в список */
+        const hidx = travel?.hotels.findIndex(h => h.id === hotel.id)
         if (hotelCode && hidx !== -1)  newTravel.hotels[hidx] = hotel
         else newTravel.hotels.push(hotel)
 
-
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
-
+        /** обновляем данные сущности travel и добовляем action в бд */
         Promise.all([
             storeDB.editElement(constants.store.TRAVEL, newTravel),
             storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
         ])
             .then(() => navigate(-1))
+            /** обновление информации об отеле в глобальном хранилище */
             .then(() => dispatch(actions.travelActions.addHotel(hotel)))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
                 pushAlertMessage({type: "warning", message: "Не удалось обновитть путешествие"})
             })
+    }
+
+    /** обработчик изменения диапазона дат заселения в отель */
+    function handleHotelRangeChange({start, end}){
+        if(hotel){
+            if (hotel.check_in !== start) dispatch(actions.travelActions.addHotel({...hotel, check_in:start}))
+            if (hotel.check_out !== end) dispatch(actions.travelActions.addHotel({...hotel, check_out:end}))
+        }
     }
 
 
@@ -98,7 +118,9 @@ export default function TravelAddHotel() {
                                 />
                                 <DateRange
                                     minDateValue={travel.date_start}
-                                    startValue={hotel}
+                                    startValue={hotel.check_in}
+                                    endValue={hotel.check_out}
+                                    onChange={handleHotelRangeChange}
                                 />
                             </div>
                         )
@@ -120,7 +142,7 @@ export default function TravelAddHotel() {
             </Container>
             <div className='footer-btn-container footer'>
                 <Button
-                    onClick={handleSave}
+                    onClick={handleHotelSave}
                     disabled={!hotel || !hotel.title || !hotel.location || !hotel.check_in || !hotel.check_out}
                 >Добавить</Button>
             </div>

@@ -5,7 +5,6 @@ import {useDispatch, useSelector} from "react-redux";
 import constants from "../../../static/constants";
 import storeDB from "../../../db/storeDB/storeDB";
 import {actions} from "../../../redux/store";
-import {pushAlertMessage} from "../../../components/Alerts/Alerts";
 
 /**
  * поиск информации о путешествии по id

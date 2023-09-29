@@ -9,6 +9,13 @@
  */
 
 /**
+ * @typedef {object} PermissionType
+ * @property {string} id
+ * @property {string} title
+ */
+
+
+/**
  * @typedef {object} MemberType
  * @property {string} id
  * @property {string} name
@@ -16,8 +23,8 @@
  * @property {string} inviteURL
  * @property {string} isChild
  * @property {number} age
- * @property movementType
- * @property {Array} access_rights
+ * @property {MovementType[]} movementType
+ * @property {PermissionType[]} permissions
  */
 
 /**
@@ -25,24 +32,15 @@
  * @property {string} id
  * @property {string} title
  * @property {string} location
- * @property {Date} check_in
- * @property {Date} check_out
- */
-
-/**
- * @typedef {object} HotelType
- * @property {string} id
- * @property {string} title
- * @property {string} location
- * @property {Date} check_in
- * @property {Date} check_out
+ * @property {string} check_in
+ * @property {string} check_out
  */
 
 /**
  * @typedef {object} MovementType
  * @property {string} id
  * @property {string} title
- * @property {JSX.Element} icon
+ * @property {JSX.Element} [icon]
  */
 
 
@@ -62,6 +60,7 @@
  * @property {string} date_end
  * @property {number} adults_count
  * @property {number} childs_count
+ * @property {string} photo
  */
 
 // id
@@ -80,3 +79,4 @@
 // date_end
 // adults_count
 // childs_count
+// photo

@@ -8,6 +8,7 @@ const defaultTravel = {
     title: () => '',
     code: () => '',
     owner_id: () => '',
+    photo: () => '',
 
     date_start: () => new Date().toISOString(),
     date_end: () => new Date().toISOString(),
@@ -70,10 +71,12 @@ export const travelsSlice = createSlice({
 
             /**
              * @param {TravelState} state
-             * @param action
+             * @param {TravelType} payload
              */
-            addTravel(state, action) {
-                state.travels.push(action.payload)
+            addTravel(state, {payload}) {
+                const travelIdx = state.travels.findIndex(t => t.id === payload.id)
+                if (~travelIdx) state.travels[travelIdx] = payload
+                else state.travels.push(payload)
             },
 
             /**
@@ -134,11 +137,11 @@ export const travelsSlice = createSlice({
              * @param {TravelState} state
              * @param {string} payload
              */
-            setTravelStartDate(state, {payload}){
-                if (!state.travelID){
+            setTravelStartDate(state, {payload}) {
+                if (!state.travelID) {
                     console.warn(new Error('[Redux/setTravelStartDate] путешествие не выбранно'))
                     return
-                } else if(typeof payload !== 'string'){
+                } else if (typeof payload !== 'string') {
                     console.warn(new Error('[Redux/setTravelStartDate] экшен ожидает получить string, но получил ' + typeof payload))
                     return
                 }
@@ -150,11 +153,11 @@ export const travelsSlice = createSlice({
              * @param {TravelState} state
              * @param {string} payload
              */
-            setTravelEndDate(state, {payload}){
-                if (!state.travelID){
+            setTravelEndDate(state, {payload}) {
+                if (!state.travelID) {
                     console.warn(new Error('[Redux/setTravelStartDate] путешествие не выбранно'))
                     return
-                } else if(typeof payload !== 'string'){
+                } else if (typeof payload !== 'string') {
                     console.warn(new Error('[Redux/setTravelStartDate] экшен ожидает получить string, но получил ' + typeof payload))
                     return
                 }
@@ -162,10 +165,51 @@ export const travelsSlice = createSlice({
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) travel.date_end = payload
             },
+            // установка количества участников маршрута ================================================================
+            /**
+             * Установка числа взрослых участников путешествия
+             * @param {TravelState} state
+             * @param {number} payload
+             */
+            setAdultCount(state, {payload}){
+                if (!state.travelID) {
+                    console.warn(new Error('[Redux/setAdultCount] путешествие не выбранно'))
+                    return
+                } else if (typeof payload !== 'number') {
+                    console.warn(new Error('[Redux/setAdultCount] экшен ожидает получить number, но получил ' + typeof payload))
+                    return
+                }
+                const travel = state.travels.find(t => t.id === state.travelID)
+                if (travel) {
+                    const adultCount = travel.members.filter(m => !m.isChild)
+                    if (adultCount < payload) travel.adults_count = payload
+                }
+
+            },
+            /**
+             * Установка числа детей-участников путешествия
+             * @param {TravelState} state
+             * @param {number} payload
+             */
+            setChildCount(state, {payload}){
+                if (!state.travelID) {
+                    console.warn(new Error('[Redux/setChildCount] путешествие не выбранно'))
+                    return
+                } else if (typeof payload !== 'number') {
+                    console.warn(new Error('[Redux/setChildCount] экшен ожидает получить number, но получил ' + typeof payload))
+                    return
+                }
+                const travel = state.travels.find(t => t.id === state.travelID)
+                if (travel) {
+                    const childsCount = travel.members.filter(m => m.isChild)
+                    if (childsCount < payload) travel.childs_count = payload
+                }
+            },
+
             // redux actions редактирование заголовка ==================================================================
             /**
              * установка названия путешествия
-             * @param state
+             * @param {TravelState} state
              * @param {string} payload
              */
             setTitle(state, {payload}) {
@@ -178,31 +222,31 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.title = payload
+                if (travel) travel.title = payload
             },
             // redux actions редактирование краткого описания направления ==============================================
             /**
              * установка краткого описания направления путешествия
-             * @param state
+             * @param {TravelState} state
              * @param {string} payload
              */
             setDirection(state, {payload}) {
-                if (!state.travel) {
-                    console.warn(new Error('Обращение к travel до инициализации'))
+                if (!state.travelID) {
+                    console.warn(new Error('Обращение к travelID до инициализации'))
                     return
                 }
                 if (!payload) {
-                    console.warn('[Redux/setDirection] вызов экшена без заголовка')
+                    console.warn('[Redux/setDirection] вызов экшена без payload')
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.direction = payload
+                if (travel) travel.direction = payload
             },
             // экшены для мутации встреч ===============================================================================
             /**
              * экшен ожидает получить информацию о встрече и добавляет ее в массив встреч "appointments"
-             * @param state
-             * @param {Object} payload
+             * @param {TravelState} state
+             * @param {AppointmentType} payload
              */
             addAppointment(state, {payload}) {
                 if (!state.travelID) {
@@ -214,11 +258,15 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.appointments.push(payload)
+                if (travel) {
+                    const appointmentIdx = state.travels.findIndex(a => a.id === payload.id)
+                    if (~appointmentIdx) travel.appointments[appointmentIdx] = payload
+                    else travel.appointments.push(payload)
+                }
             },
             /**
              * экшен ожидает получить информацию о массиве встреч и перезаписывает "appointments"
-             * @param state
+             * @param {TravelState} state
              * @param {Object[]} payload
              */
             setAppointments(state, {payload}) {
@@ -231,11 +279,11 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.appointments = [...payload]
+                if (travel) travel.appointments = [...payload]
             },
             /**
              * экшен ожидает получить информацию о удаляемой встрече и обновляет массив "appointments"
-             * @param state
+             * @param {TravelState} state
              * @param {Object} payload
              */
             removeAppointments(state, {payload}) {
@@ -248,12 +296,12 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.appointments = travel.appointments.filter(a => a !== payload)
+                if (travel) travel.appointments = travel.appointments.filter(a => a !== payload)
             },
             // обработка учачтников путешествия ========================================================================
             /**
              * экшен ожидает получить информацию о участнике путешествия и добавляет ее в массив участников "members"
-             * @param state
+             * @param {TravelState} state
              * @param {MemberType} payload
              */
             addMember(state, {payload}) {
@@ -266,11 +314,16 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.members.push(payload)
+                if (travel) {
+                    const memberIdx = state.travels.findIndex(a => a.id === payload.id)
+                    if (~memberIdx) travel.members[memberIdx] = payload
+                    else travel.members.push(payload)
+                    updateMembersCount()
+                }
             },
             /**
              * экшен ожидает получить массив c информацией об  участниках и перезаписывает "members"
-             * @param state
+             * @param {TravelState} state
              * @param {MemberType[]} payload
              */
             setMembers(state, {payload}) {
@@ -283,11 +336,11 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.members = [...payload]
+                if (travel) travel.members = [...payload]
             },
             /**
              * экшен ожидает получить информацию о участнике путешествия и удаляет ее из массива участников "members"
-             * @param state
+             * @param {TravelState} state
              * @param {MemberType} payload
              */
             removeMember(state, {payload}) {
@@ -300,13 +353,13 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.members = travel.members.filter(m => m !== payload)
+                if (travel) travel.members = travel.members.filter(m => m !== payload)
             },
 
             // обработка отелей путешествия ========================================================================
             /**
              * экшен ожидает получить информацию об отеле и добавляет ее в массив "hotels"
-             * @param state
+             * @param {TravelState} state
              * @param {Object} payload
              */
             addHotel(state, {payload}) {
@@ -319,11 +372,15 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.hotels.push(payload)
+                if (travel) {
+                    const hotelIdx = state.travels.findIndex(a => a.id === payload.id)
+                    if (~hotelIdx) travel.hotels[hotelIdx] = payload
+                    else travel.hotels.push(payload)
+                }
             },
             /**
              * экшен ожидает получить массив c информацией об  отелях и перезаписывает "hotels"
-             * @param state
+             * @param {TravelState} state
              * @param {Object[]} payload
              */
             setHotels(state, {payload}) {
@@ -336,11 +393,11 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.hotels = [...payload]
+                if (travel) travel.hotels = [...payload]
             },
             /**
              * экшен ожидает получить информацию об отеле и удаляет ее из массива "hotels"
-             * @param state
+             * @param {TravelState} state
              * @param {Object} payload
              */
             removeHotel(state, {payload}) {
@@ -353,13 +410,13 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.hotels = travel.hotels.filter(h => h !== payload)
+                if (travel) travel.hotels = travel.hotels.filter(h => h !== payload)
             },
 
             // обработка мест путешествия ========================================================================
             /**
              * добавление нового места маршрута
-             * @param state
+             * @param {TravelState} state
              * @param {InputPoint} payload
              */
             addWaypoint(state, {payload}) {
@@ -371,11 +428,15 @@ export const travelsSlice = createSlice({
                 if (waypoint?.point.placemark) delete waypoint.point.placemark
 
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.waypoints.push(waypoint)
+                if (travel) {
+                    const waypointIdx = state.travels.findIndex(a => a.id === payload.id)
+                    if (~waypointIdx) travel.waypoints[waypointIdx] = payload
+                    else travel.waypoints.push(payload)
+                }
             },
             /**
              * установка массива мест маршрута
-             * @param state
+             * @param {TravelState} state
              * @param {InputPoint[]} payload
              */
             setWaypoints(state, {payload}) {
@@ -385,7 +446,7 @@ export const travelsSlice = createSlice({
                 }
                 if (Array.isArray(payload)) {
                     const travel = state.travels.find(t => t.id === state.travelID)
-                    if(travel) travel.waypoints = payload.map(p => {
+                    if (travel) travel.waypoints = payload.map(p => {
                         const waypoint = {...p}
                         if (waypoint.point.placemark) delete waypoint.point.placemark
                         return waypoint
@@ -396,7 +457,7 @@ export const travelsSlice = createSlice({
             },
             /**
              * добавление нового места маршрута
-             * @param state
+             * @param {TravelState} state
              * @param {InputPoint} payload
              */
             removeWaypoint(state, {payload}) {
@@ -410,13 +471,13 @@ export const travelsSlice = createSlice({
                 }
 
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.waypoints = travel.waypoints.filter(w => w !== payload)
+                if (travel) travel.waypoints = travel.waypoints.filter(w => w !== payload)
             },
             //экшены способов перемещения ==============================================================================
             /**
              * экшен ожидает получить объект с информацией о способах передвижения и добавляеь способ перемещения
-             * @param state
-             * @param {Array} payload
+             * @param {TravelState} state
+             * @param {Object} payload
              */
             addMovementType(state, {payload}) {
                 if (!state.travelID) {
@@ -427,11 +488,15 @@ export const travelsSlice = createSlice({
                     console.warn('[Redux/addMovementType] экшен ожидает получить объект c информацией о способах перемещения, но получил ' + typeof payload)
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.movementTypes.push(payload)
+                if (travel) {
+                    const movementTypeIdx = state.travels.findIndex(a => a.id === payload.id)
+                    if (~movementTypeIdx) travel.movementTypes[movementTypeIdx] = payload
+                    else travel.movementTypes.push(payload)
+                }
             },
             /**
              * экшен ожидает получить массив с информацией о способах передвижения
-             * @param state
+             * @param {TravelState} state
              * @param {Array} payload
              */
             setMovementTypes(state, {payload}) {
@@ -443,11 +508,11 @@ export const travelsSlice = createSlice({
                     console.warn('[Redux/setMovementTypes] экшен ожидает получить массив c информацией о способах перемещения, но получил ' + typeof payload)
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.movementTypes = [...payload]
+                if (travel) travel.movementTypes = [...payload]
             },
             /**
              * экшен ожидает получить объект с информацией о способах передвижения и удаляет способ перемещения
-             * @param state
+             * @param {TravelState} state
              * @param {MovementType} payload
              */
             removeMovementType(state, {payload}) {
@@ -459,7 +524,7 @@ export const travelsSlice = createSlice({
                     console.warn('[Redux/removeMovementType] экшен ожидает получить объект c информацией о способах перемещения, но получил ' + typeof payload)
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if(travel) travel.movementTypes = travel.movementTypes.filter(mt => mt.id !== payload.id)
+                if (travel) travel.movementTypes = travel.movementTypes.filter(mt => mt.id !== payload.id)
             },
         },
 
@@ -475,6 +540,21 @@ export const travelsSlice = createSlice({
         }
     }
 )
+
+/**
+ * обновление соответствия количества участников (не меньше чем число добавленных взрослых / детей)
+ * @param {TravelState} state
+ */
+function updateMembersCount(state){
+    if(!state.travelID) return
+
+    let adult = 0
+    let child = 0
+    const travel = state.travels.find(t => t.id === state.travelID)
+    travel.members.forEach(m => m.isChild ? child++ : adult++)
+    if(!travel.adults_count || travel.adults_count < adult) travel.adults_count = adult
+    if(!travel.childs_count || travel.childs_count < child) travel.childs_count = adult
+}
 
 export const travelActions = travelsSlice.actions
 

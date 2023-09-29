@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
@@ -9,18 +9,20 @@ import useTravel from "../../hooks/useTravel";
 
 import './TravelUserPermission.css'
 
-
+/**@type {MovementType[]} */
 const defaultMovementTypes = [
     {id: 1, title: 'На авто'},
     {id: 2, title: 'В самолете'}
 ]
+/**@type {PermissionType[]} */
 const defaultMemberAccessTypes = [
     {id: 1, title: 'Редактор'},
     {id: 2, title: 'Просмотр'}
 ]
 
 export default function TravelUserPermission() {
-    const {travelCode, userCode} = useParams()
+    const navigate = useNavigate()
+    const {userCode} = useParams()
     const travel = useTravel()
     const [member, setMember] = useState(/**@type{MemberType| null} */null)
 
@@ -31,40 +33,79 @@ export default function TravelUserPermission() {
         }
     }, [travel])
 
-    function handleMemberMovementType(items) {
-        console.log(items)
+    /**
+     * обработчик добавления / удаления способа передвижения участника путешествия
+     * @param {MovementType} item
+     */
+    function handleMemberMovementType(item) {
+        console.log(item)
     }
 
-    function handleMemberAccessRules(items) {
-        console.log(items)
+    /**
+     * обработчик добавления / удаления прав участника путешествия на редактирование путешествия
+     * @param {PermissionType} item
+     */
+    function handleMemberAccessRules(item) {
+        console.log(item)
     }
 
 
     return (
         <div className='wrapper'>
             <Container className='content pt-20 pb-20 column gap-0.5'>
-                <div className='member-title title-semi-bold'>В поездке</div>
-                <ul className='title-semi-bold'>
-                    {
-                        defaultMovementTypes.map(mt => (
-                            <li key={mt.id}>
-                                <Checkbox >{mt.title}</Checkbox>
-                            </li>
-                        ))
-                    }
-                </ul>
-                <div className='member-title title-semi-bold '>Права</div>
-                <ul className='member-access-rules'>
-                    {
-                        defaultMovementTypes.map(mt => (
-                            <li key={mt.id}>
-                                <Checkbox >{mt.title}</Checkbox>
-                            </li>
-                        ))
-                    }
-                </ul>
-                <button className='member-remove-btn' >Удалить <TrashIcon className='icon'/></button>
-                <Button className='close-button' >Закрыть</Button>
+                {
+                    !!member && !!member.movementType && (
+                        <>
+                            <div className='member-title title-semi-bold'>В поездке</div>
+                            <ul className='title-semi-bold'>
+                                {
+                                    defaultMovementTypes.map(mt => (
+                                        <li key={mt.id}>
+                                            <Checkbox
+                                                checked={member.movementType.find(m => m.id === mt.id)}
+                                                onChange={() => handleMemberMovementType(mt)}
+                                            >
+                                                {mt.title}
+                                            </Checkbox>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </>
+                    )
+                }
+                {
+                    !!member && !!member.permissions && (
+                        <>
+                            <div className='member-title title-semi-bold '>Права</div>
+                            <ul className='member-access-rules'>
+                                {
+                                    defaultMemberAccessTypes.map(mt => (
+                                        <li key={mt.id}>
+                                            <Checkbox
+                                                checked={member.permissions.find(p => p.id === mt.id)}
+                                                onChange={() => handleMemberAccessRules(mt)}
+                                            >
+                                                {mt.title}
+                                            </Checkbox>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </>
+                    )
+                }
+                {
+                    member
+                        ? <button className='member-remove-btn'>Удалить <TrashIcon className='icon'/></button>
+                        : <div>Загрузка информации о пользователе</div>
+                }
+                <Button
+                    className='close-button'
+                    onClick={() => navigate(-1)}
+                >
+                    Закрыть
+                </Button>
 
                 {/*<RadioButtonGroup*/}
                 {/*    title={'В поездке'}*/}
