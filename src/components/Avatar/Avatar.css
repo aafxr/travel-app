@@ -2,5 +2,5 @@
     width: var(--avatar-size);
     height: var(--avatar-size);
     border-radius: 50%;
-    object-fit: contain;
+    object-fit: cover;
 }

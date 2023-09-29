@@ -3,74 +3,80 @@ import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
 import defaultAppointmentData from "../../../../utils/defaultAppointmentData";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import Container from "../../../../components/Container/Container";
+import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
-import useTravel from "../../hooks/useTravel";
 import storeDB from "../../../../db/storeDB/storeDB";
-import ErrorReport from "../../../../controllers/ErrorReport";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {actions} from "../../../../redux/store";
+import useTravel from "../../hooks/useTravel";
 
 
 export default function TravelAddAppointment() {
-    const {travelCode, appointmentCode} = useParams()
+    const { appointmentCode} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
     const navigate = useNavigate()
     // const dateHandlers = useChangeInputType('date')
     // const timeHandlers = useChangeInputType('time')
 
-    const travel = useTravel(travelCode)
+    const travel = useTravel()
     const [appointment, setAppointment] = useState(null)
 
     //==================================================================================================================
-    /** поиск встречи */
+    /** поиск встречи (инициализация начального значения) */
     useEffect(() => {
         if (travel && !appointment) {
-            const apidx = travel?.appointments.findIndex(a => a.id === appointmentCode)
-            if (apidx !== -1) setAppointment(travel.appointments[apidx])
+            /** индекс встречи в массиве встреч путешествия */
+            const apIdx = travel?.appointments.findIndex(a => a.id === appointmentCode)
+            /** инициализация путешествия */
+            if (~apIdx) setAppointment(travel.appointments[apIdx])
             else setAppointment(defaultAppointmentData())
         }
-    }, [travelCode, appointmentCode, travel])
+    }, [appointmentCode, travel])
 
     //==================================================================================================================
+    /**
+     * обработчик обновляет поле встречи с ключом "key"
+     * @param {InputEvent} e
+     * @param {string} key
+     */
     function handleAppointmentChanges(e, key) {
-
-        console.log(new Date(e.target.value))
-
         if (key in appointment) {
+            /** клон встречи ( appointment immutable )  */
             const newAppointment = {...appointment}
-
             if (key === 'date') newAppointment[key] = e.target.value
             else if(key === 'time') newAppointment[key] = e.target.value
             else newAppointment[key] = e.target.value
-
+            /** обновление состояния */
             setAppointment(newAppointment)
         }
     }
 
     //==================================================================================================================
+    /** обработка сохранения данных о встрече */
     function handleSave() {
+        /** клон путешествия */
         const newTravel = {...travel}
         if (!newTravel.appointments) newTravel.appointments = []
-
-        const apidx = newTravel?.appointments.findIndex(a => a.id === appointmentCode)
-
         newTravel.appointments = [...newTravel.appointments]
-
-        if (appointmentCode && apidx !== -1)  newTravel.appointments[apidx] = appointment
+        /** обновление спсика встреч */
+        const apIdx = newTravel?.appointments.findIndex(a => a.id === appointmentCode)
+        if (appointmentCode && apIdx !== -1)  newTravel.appointments[apIdx] = appointment
         else newTravel.appointments.push(appointment)
-
+        /** создание экшена путешествия */
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
+        /** сохранение обновленного travel в бд */
         Promise.all([
             storeDB.editElement(constants.store.TRAVEL, newTravel),
             storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
         ])
             .then(() => navigate(-1))
+            /** добавление встречи в глобальное хранилище */
             .then(() => dispatch(actions.travelActions.addAppointment(appointment)))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
@@ -101,7 +107,8 @@ export default function TravelAddAppointment() {
                                             className='br-right-0'
                                             type='date'
                                             placeholder='Дата'
-                                            value={appointment.date}
+                                            value={appointment.date ? appointment.date.split('T').shift() : ''}
+                                            min={travel.date_start}
                                             onChange={(e) => handleAppointmentChanges(e, 'date')}
                                         />
                                         <Input

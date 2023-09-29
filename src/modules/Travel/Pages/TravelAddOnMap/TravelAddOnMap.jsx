@@ -4,7 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import MapControls from "../../../../components/MapControls/MapControls";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
+import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import createAction from "../../../../utils/createAction";
 import {PageHeader} from "../../../../components/ui";
@@ -13,11 +15,9 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
 import {actions} from "../../../../redux/store";
+import useTravel from "../../hooks/useTravel";
 
 import './TravelAddOnMap.css'
-import useTravel from "../../hooks/useTravel";
-import ErrorReport from "../../../../controllers/ErrorReport";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**
  * @typedef {Object} InputPoint
@@ -28,11 +28,11 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 export default function TravelAddOnMap() {
     const {travelCode} = useParams()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const travel = useTravel()
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
     const {travelID} = useSelector(state => state[constants.redux.TRAVEL])
-    const travel = useTravel(travelID)
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -80,7 +80,7 @@ export default function TravelAddOnMap() {
 
     // создаем новое путешествие =======================================================================================
     useEffect(() => {
-        if(!travelCode) dispatch(actions.travelActions.travelInit(user))
+        if (!travelCode) dispatch(actions.travelActions.travelInit(user))
     }, [])
 
     // начальное значение первой точки =================================================================================
@@ -91,12 +91,12 @@ export default function TravelAddOnMap() {
     // инициализация карты =============================================================================================
     useEffect(() => {
         if (mapRef.current && !map && travel) {
-            const waypoints = travel?.waypoints.map(p => p.point)
+            /** инициализация карты */
             YandexMap.init({
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: travel.waypoints ? travel.waypoints.map(wp => wp.point): [],
+                points: travel.waypoints ? travel.waypoints.map(wp => wp.point) : [],
                 location: userLoc,
                 // suggestElementID: points[0]?.id,
                 markerClassName: 'location-marker'
@@ -115,8 +115,8 @@ export default function TravelAddOnMap() {
             const {point: draggedPoint, index} = e.detail
             if (draggedPoint) {
                 setPoints(prev => {
-                    return prev.map((p, i) =>{
-                        if(i === index) return {...p, text: draggedPoint.textAddress, point: draggedPoint}
+                    return prev.map((p, i) => {
+                        if (i === index) return {...p, text: draggedPoint.textAddress, point: draggedPoint}
                         else return p
                     })
                 })
@@ -129,21 +129,27 @@ export default function TravelAddOnMap() {
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
+        /** попытка получить координаты пользователя */
         const coords = await map.getUserLocation().catch((err) => {
             ErrorReport.sendError(err).catch(console.error)
             pushAlertMessage({type: "warning", message: 'Не удалось определить геолокацию'})
+            return null
         })
         console.log('coords', coords)
-        map
-            .addMarker(coords)
-            .then(point => {
-                const newPoint = {id: createId(user.id), text: point.textAddress, point}
-                const newPoints = [newPoint, ...points]
-                /** перезаписываем массив мест (отфильтровываем пустые поля) */
-                dispatch(actions.travelActions.setWaypoints(newPoints.filter(p => !!p.point)))
-                setPoints(newPoints)
-                setFromUserLocation(true)
-            })
+
+        if (coords) {
+            /** добавление места с координатами пользователя */
+            map
+                .addMarker(coords)
+                .then(point => {
+                    const newPoint = {id: createId(user.id), text: point.textAddress, point}
+                    const newPoints = [newPoint, ...points]
+                    /** перезаписываем массив мест (отфильтровываем пустые поля) */
+                    dispatch(actions.travelActions.setWaypoints(newPoints.filter(p => !!p.point)))
+                    setPoints(newPoints)
+                    setFromUserLocation(true)
+                })
+        }
 
     }
 
@@ -163,8 +169,9 @@ export default function TravelAddOnMap() {
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
-        if(travel){
+        if (travel) {
             const newTravel = {...travel}
+            /** получаем краткое описание направления вида: "новосибирск - бердск" */
             const direction = newTravel.waypoints
                 .map(p => p.text)
                 .reduce((acc, address) => {
@@ -174,6 +181,7 @@ export default function TravelAddOnMap() {
                 }, '')
 
             newTravel.direction = direction
+            /** обновляем поле direction в глобальном хранилище */
             dispatch(actions.travelActions.setDirection(direction))
 
             const action = createAction(constants.store.TRAVEL, user.id, 'add', newTravel)
@@ -190,12 +198,16 @@ export default function TravelAddOnMap() {
 
     // добавление новой точки ==========================================================================================
     function handleAddNewPoint() {
+        /** запись всех заполненных полей в текущий travel в store */
         dispatch(actions.travelActions.setWaypoints(points.filter(p => !!p.point)))
+        /** перенаправление на страницу TravelAddWaypoint */
         navigate(`/travel/${travelID}/add/waypoint/`)
     }
 
-    function handlePointListChange(newPoints){
-        dispatch(actions.travelActions.setWaypoints)
+    /** обработка изменения списка точек ( добавлена / удалена / переытавленна) */
+    function handlePointListChange(newPoints) {
+        /** запись всех измененных полей в текущий travel в store */
+        dispatch(actions.travelActions.setWaypoints(newPoints))
         setPoints(newPoints)
     }
 
@@ -237,7 +249,7 @@ export default function TravelAddOnMap() {
                     className='relative'
                     onWheel={handleWheel}
                 >
-                    <MapControls className='map-controls' map={map} />
+                    <MapControls className='map-controls' map={map}/>
                 </div>
             </div>
             <div className='fixed-bottom-button'>

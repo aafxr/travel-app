@@ -15,39 +15,44 @@ export default function useTravel() {
     const {travels, travelID, travelsLoaded} = useSelector(state => state[constants.redux.TRAVEL])
     const {travelCode} = useParams()
 
-    const [travel, setTravel] = useState(null)
+    const [travel, setTravel] = useState(/**@type{TravelType | null} */ null)
 
-
+    /** первая инициализация travel */
     useEffect(() => {
         if (travelCode && travelsLoaded && !travel && !travelID) dispatch(actions.travelActions.selectTravel(travelCode))
     }, [travelCode, travelsLoaded, travel])
 
-
+    /** обновление travel если обновился списоек travels или  */
     useEffect(() => {
-        if( Array.isArray(travels)) {
-            if (travelCode) {
-                let tr = travels.find(t => t.id === travelCode)
-
-                if (tr) {
-                    tr.id !== travelID && dispatch(actions.travelActions.selectTravel(tr.id))
-                    setTravel(tr)
-                } else {
-                    storeDB.getOne(constants.store.TRAVEL, travelCode)
-                        .then(t => {
-                            if (t) {
-                                dispatch(actions.travelActions.addTravel(t))
-                                t.id !== travelID && dispatch(actions.travelActions.selectTravel(t.id))
-                                setTravel(t)
-                            }
-                        })
-                }
-            } else if (travelID) {
-                const tr = travels.find(t => t.id === travelID)
-                if (tr) setTravel(tr)
-                // else pushAlertMessage({type: 'warning', message: 'id ид путешествия установленно, но информация не найдена'})
+        /** в приоритете ищем travel по id travelCode */
+        if (travelCode) {
+            /** пробуем найти travel в списке travels глобального хранилища  */
+            let tr = travels.find(t => t.id === travelCode)
+            /** обновляем состояние хука и записываем текущий id путешествия в store */
+            if (tr) {
+                tr.id !== travelID && dispatch(actions.travelActions.selectTravel(tr.id))
+                setTravel(tr)
+            } else {
+                /**
+                 * если не удалось найти путешествие, пробуем получить информацию из локальной бд
+                 * и обновляем состояние хука и стора
+                 */
+                storeDB.getOne(constants.store.TRAVEL, travelCode)
+                    .then(t => {
+                        if (t) {
+                            dispatch(actions.travelActions.addTravel(t))
+                            t.id !== travelID && dispatch(actions.travelActions.selectTravel(t.id))
+                            setTravel(t)
+                        }
+                    })
             }
+        /** если travelCodee не задан  ищем путешествие по travelID */
+        } else if (travelID) {
+            const tr = travels.find(t => t.id === travelID)
+            if (tr) setTravel(tr)
         }
-    }, [travelCode,travelID, travels])
+    }, [travelCode, travelID, travels])
+
 
     return travel
 }
