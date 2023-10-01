@@ -2,6 +2,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit'
 import constants from "../../static/constants";
 import storeDB from "../../db/storeDB/storeDB";
 import aFetch from "../../axios";
+import checkTravelFields from "./checkTravelFields";
 
 
 /**
@@ -19,12 +20,14 @@ export const initTravelsThunk = createAsyncThunk(
             let travels
             if(response) {
                 travels = response.data.ok ? response.data.data : []
+                travels = checkTravelFields(travels)
                 await Promise.all(travels.map(t => storeDB.editElement(constants.store.TRAVEL, t)))
             }
 
             /** если не удалось загрузить список маршрутов через api используем маршруты, сохраненные в локальной базе */
             if (!travels || !travels.length) {
                 travels = await storeDB.getAll(constants.store.TRAVEL)
+                travels =  checkTravelFields(travels)
             }
             return {
                 travels

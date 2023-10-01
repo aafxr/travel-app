@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {initTravelsThunk} from "./initTravelsThunk";
 import createTravel from "../../modules/Travel/helpers/createTravel";
+import checkTravelFields from "./checkTravelFields";
 
 /**@type{TravelType} */
 const defaultTravel = {
@@ -56,9 +57,7 @@ export const travelsSlice = createSlice({
                 const idx = state.travels.findIndex(t => t.id === payload)
                 if (~idx) {
                     state.travelID = state.travels[idx].id
-                    Object.keys(defaultTravel).forEach(key => {
-                        if (!state.travels[idx][key]) state.travels[idx][key] = defaultTravel[key]()
-                    })
+                    state.travels[idx] = checkTravelFields(state.travels[idx])
                 }
             },
             /**
