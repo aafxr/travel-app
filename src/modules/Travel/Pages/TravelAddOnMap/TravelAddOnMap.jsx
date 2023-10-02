@@ -175,7 +175,6 @@ export default function TravelAddOnMap() {
     // обработка зума при прокрутки колесика мыши
     function handleWheel(e) {
         if (e.deltaY) {
-            e.preventDefault()
             const zoom = map.getZoom()
             if (e.deltaY < 0) {
                 map.setZoom(zoom + 1)
@@ -203,11 +202,7 @@ export default function TravelAddOnMap() {
             /** обновляем поле direction в глобальном хранилище */
             dispatch(actions.travelActions.setDirection(direction))
 
-            const action = createAction(constants.store.TRAVEL, user.id, 'add', newTravel)
-            Promise.all([
-                storeDB.editElement(constants.store.TRAVEL, newTravel),
-                storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
-            ])
+            storeDB.editElement(constants.store.TRAVEL, newTravel)
                 /** запись новой сущности travel в redux store */
                 .then(() => dispatch(actions.travelActions.addTravel(newTravel)))
                 .then(() => navigate(`/travel/${newTravel.id}/settings/`))
@@ -219,8 +214,10 @@ export default function TravelAddOnMap() {
     function handleAddNewPoint() {
         /** запись всех заполненных полей в текущий travel в store */
         dispatch(actions.travelActions.setWaypoints(points.filter(p => !!p.point)))
-        /** перенаправление на страницу TravelAddWaypoint */
-        navigate(`/travel/${travelID}/add/waypoint/`)
+        storeDB.editElement(constants.store.TRAVEL, travel)
+            /** перенаправление на страницу TravelAddWaypoint */
+            .then(() => navigate(`/travel/${travelID}/add/waypoint/`))
+
     }
 
     /** обработка изменения списка точек ( добавлена / удалена / переытавленна) */

@@ -14,6 +14,7 @@ import {actions} from "../../../../redux/store";
 
 import './TravelAddWaypoint.css'
 import useTravel from "../../hooks/useTravel";
+import storeDB from "../../../../db/storeDB/storeDB";
 
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
@@ -99,7 +100,8 @@ export default function TravelAddWaypoint() {
     function handleSubmit() {
         if(travel && point) {
             dispatch(actions.travelActions.addWaypoint(point))
-            navigate(`/travel/${travel.id}/add/map/`)
+            storeDB.editElement(constants.store.TRAVEL, travel)
+                .then(() => navigate(`/travel/${travel.id}/add/map/`))
         } else{
             pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
         }
