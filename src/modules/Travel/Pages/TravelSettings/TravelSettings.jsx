@@ -26,7 +26,7 @@ export default function TravelSettings() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
 
     /**
      * обработка нажатия на карточку пользователя

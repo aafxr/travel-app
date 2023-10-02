@@ -7,7 +7,7 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import constants from "../../../../static/constants";
+import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
 import YandexMap from "../../../../api/YandexMap";
 import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
@@ -20,7 +20,7 @@ export default function TravelAddWaypoint() {
     const dispatch = useDispatch()
 
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
 
     /** референс на контайнер карты */
     const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
@@ -32,9 +32,9 @@ export default function TravelAddWaypoint() {
     const [point, setPoint] = useState(/**@type{InputPoint} */ null)
 
     //==================================================================================================================
-    // useEffect(() => {
-    //     if (!travel) navigate('/travel/add/map/')
-    // }, [travel])
+    useEffect(() => {
+        if (errorMessage) navigate('/travel/add/map/')
+    }, [errorMessage])
 
 
     // начальное значение первой точки =================================================================================
@@ -50,6 +50,7 @@ export default function TravelAddWaypoint() {
                 mapContainerID: 'map',
                 location: userLoc,
                 points: [],
+                iconURL: DEFAULT_PLACEMARK_ICON,
                 markerClassName: 'location-marker'
             }).then(newMap => {
                 window.map = newMap

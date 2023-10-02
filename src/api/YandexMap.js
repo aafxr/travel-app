@@ -6,6 +6,7 @@ import {pushAlertMessage} from "../components/Alerts/Alerts";
 import locationIcon from './place_24px.svg'
 
 
+
 export default class YandexMap extends IMap {
     /**
      * обертка для работы с api yandex maps
@@ -15,6 +16,7 @@ export default class YandexMap extends IMap {
      * @param {object} map                  - инстанс карты созданный с помощью api
      * @param {HTMLScriptElement} script
      * @param {string} markerClassName      - класс для кастомного маркера на карте
+     * @param {string} iconURL              - URL для кастомного маркера на карте
      */
     constructor({
                     suggestElementID,
@@ -22,7 +24,8 @@ export default class YandexMap extends IMap {
                     placemarks,
                     map,
                     script,
-                    markerClassName
+                    markerClassName,
+                    iconURL
                 }) {
         super();
 
@@ -44,6 +47,8 @@ export default class YandexMap extends IMap {
         this.mapContainerID = mapContainerID
         /** LayoutClass для отображения кастомного маркера на карте */
         this.placemarkIcon = window.ymaps.templateLayoutFactory.createClass(`<div class="${markerClassName}"></div>`);
+        /** URL иконки маркера */
+        this.iconURL = iconURL
         /**  выпадающая панель с поисковыми подсказками, которая прикрепляется к HTML-элементу <input type="text">. */
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
@@ -120,12 +125,12 @@ export default class YandexMap extends IMap {
             hintContent: address,
             balloonContent: address,
         }, {
-            preset: 'islands#darkOrangeIcon',
+            // preset: 'islands#darkOrangeIcon',
             // iconLayout: this.placemarkIcon,
-            // iconLayout: 'default#image',
-            // iconImageHref: locationIcon,
-            // iconImageSize: [24, 24],
-            // iconOffset: [-16, -32],
+            iconLayout: 'default#image',
+            iconImageHref: this.iconURL,
+            iconImageSize: [32, 32],
+            iconImageOffset: [-16, -32],
             draggable: true,
             cursor: 'pointer',
         })
@@ -362,7 +367,7 @@ export default class YandexMap extends IMap {
 
     // метод фокусируется на точке
     focusOnPoint(coords, zoomLevel) {
-        this.map.setCenter(coords, zoomLevel || this.zoom, {duration: 300})
+        if (Array.isArray(coords)) this.map.setCenter(coords, zoomLevel || this.zoom, {duration: 300})
     }
 
     //метод пытается получить координаты средствами браузера или средствами yandex maps api
@@ -437,6 +442,7 @@ YandexMap.init = function init({
                                    mapContainerID,
                                    coordsIDElement,
                                    iconClass,
+    iconURL,
                                    points,
                                    markerClassName,
                                     location,
@@ -474,15 +480,16 @@ YandexMap.init = function init({
                                 hintContent: point.hintContent,
                                 balloonContent: point.balloonContent,
                             }, {
-                                preset: 'islands#darkOrangeIcon',
-                                // iconLayout: this.placemarkIcon,
-                                // iconLayout: this.placemarkIcon,
-                                // iconOffset: [-16, -32],
+                                // preset: 'islands#darkOrangeIcon',
+                                iconLayout: 'default#image',
+                                iconImageHref: iconURL,
+                                iconImageSize: [32, 32],
+                                iconImageOffset: [-16, -32],
                                 draggable: true,
                             })
                             map.geoObjects.add(placemark)
                             const clonePoint = JSON.parse(JSON.stringify(point))
-                            clonePoint.placemarks = placemark
+                            clonePoint.placemark = placemark
                             placemarks.push(clonePoint)
                         }
                     }
@@ -493,6 +500,7 @@ YandexMap.init = function init({
                         iconClass,
                         placemarks,
                         map,
+                        iconURL,
                         markerClassName
                     }))
                 })

@@ -23,27 +23,35 @@ export default function MapControls({map, className, onPlusClick, onMinusClick, 
     if(!map) return null
 
     // обработка контроллов карты ======================================================================================
+    /** увеличение зума на +1 */
     function handleZoomPlus() {
         const zoom = map.getZoom()
         map.setZoom(zoom + 1)
+        /** поднятие нового значения зума в компонент родитель */
         onPlusClick && onPlusClick(zoom + 1)
     }
 
+    /** уменьшение зума карты на -1 */
     function handleZoomMinus() {
         const zoom = map.getZoom()
         map.setZoom(zoom - 1)
+        /** передача нового значения зума в компонент родитель */
         onMinusClick && onMinusClick(zoom - 1)
     }
 
+    /** попытка получить геолокацию пользователя и установить центр карты на текущие координаты пользователя */
     async function handleUserLocation() {
         const userCoords = await map.getUserLocation()
         if (userCoords) {
+            /** установить центр карты на текущие координаты пользователя */
             map.focusOnPoint(userCoords)
+            /** передача геолокации пользователя в родительский компонент */
             onUserLocationClick && onUserLocationClick(userCoords)
         } else {
             pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})
         }
     }
+
     return (
         <div {...props} className={clsx('map-controls column gap-0.5', className)} >
             <button className='map-control-btn center' onClick={handleZoomPlus}><PlusIcon/></button>

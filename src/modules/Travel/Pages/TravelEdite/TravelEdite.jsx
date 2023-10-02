@@ -21,7 +21,7 @@ export default function TravelEdite() {
 
     const {travelCode} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
 
     const [title, setTitle] = useState('')
     const [start, setStart] = useState('')

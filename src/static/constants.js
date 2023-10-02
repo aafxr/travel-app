@@ -81,3 +81,5 @@ export const defaultMovementTags = [
     {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},
     {id: 3, icon: <BusIcon className='img-abs'/>, title: 'общественный транспорт'},
 ]
+
+export const DEFAULT_PLACEMARK_ICON = new URL('../../public/icons/Navigation.png', import.meta.url).toString()

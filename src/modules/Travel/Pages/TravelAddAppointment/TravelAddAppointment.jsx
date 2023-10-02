@@ -24,7 +24,7 @@ export default function TravelAddAppointment() {
     // const dateHandlers = useChangeInputType('date')
     // const timeHandlers = useChangeInputType('time')
 
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
     const [appointment, setAppointment] = useState(null)
 
     //==================================================================================================================

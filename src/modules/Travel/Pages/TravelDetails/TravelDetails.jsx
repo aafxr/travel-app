@@ -33,7 +33,7 @@ export default function TravelDetails() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
     const [checkListOpen, setCheckListOpen] = useState(false)

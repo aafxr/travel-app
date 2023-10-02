@@ -23,7 +23,7 @@ const defaultMemberAccessTypes = [
 export default function TravelUserPermission() {
     const navigate = useNavigate()
     const {userCode} = useParams()
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
     const [member, setMember] = useState(/**@type{MemberType| null} */null)
 
     useEffect(() => {

@@ -22,7 +22,7 @@ export default function TravelAddHotel() {
     const dispatch = useDispatch()
     const { hotelCode} = useParams()
 
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
     const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
 
     //==================================================================================================================

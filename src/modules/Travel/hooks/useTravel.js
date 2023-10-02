@@ -7,13 +7,20 @@ import storeDB from "../../../db/storeDB/storeDB";
 import {actions} from "../../../redux/store";
 
 /**
+ * @typedef {Object} UseTravelType
+ * @property {TravelType | null} travel
+ * @property {string | null} errorMessage
+ */
+
+/**
  * поиск информации о путешествии по id
- * @returns {TravelType | null}
+ * @returns {UseTravelType}
  */
 export default function useTravel() {
     const dispatch = useDispatch()
     const {travels, travelID, travelsLoaded} = useSelector(state => state[constants.redux.TRAVEL])
     const {travelCode} = useParams()
+    const [errorMessage, setErrorMessage] = useState(/**@type{string | null} */null)
 
     const [travel, setTravel] = useState(/**@type{TravelType | null} */ null)
 
@@ -43,8 +50,11 @@ export default function useTravel() {
                             dispatch(actions.travelActions.addTravel(t))
                             t.id !== travelID && dispatch(actions.travelActions.selectTravel(t.id))
                             setTravel(t)
+                        } else {
+                            setErrorMessage("Не удалось найти информацию о путешествии")
                         }
                     })
+                    .catch(err => setErrorMessage("Не удалось найти информацию о путешествии"))
             }
         /** если travelCodee не задан  ищем путешествие по travelID */
         } else if (travelID) {
@@ -54,5 +64,5 @@ export default function useTravel() {
     }, [travelCode, travelID, travels])
 
 
-    return travel
+    return {travel, errorMessage}
 }

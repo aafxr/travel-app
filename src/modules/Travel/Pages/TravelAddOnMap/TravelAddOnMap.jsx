@@ -10,7 +10,7 @@ import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import createAction from "../../../../utils/createAction";
 import {PageHeader} from "../../../../components/ui";
-import constants from "../../../../static/constants";
+import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 import YandexMap from "../../../../api/YandexMap";
@@ -30,7 +30,7 @@ export default function TravelAddOnMap() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const travel = useTravel()
+    const {travel, errorMessage} = useTravel()
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
     const {travelID} = useSelector(state => state[constants.redux.TRAVEL])
 
@@ -47,7 +47,7 @@ export default function TravelAddOnMap() {
 
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
-
+    /** флаг указывает на то, что точка с координатами пользователя уже добавленна */
     const [fromUserLocation, setFromUserLocation] = useState(false)
 
     // слушатель на событие выбора точки с помощью подсказки ===========================================================
@@ -55,8 +55,9 @@ export default function TravelAddOnMap() {
     useEffect(() => {
         const pointSelectHandler = async (e) => {
             if (!map) return
-
+            /** адресс, выбранный пользователем из выпадающего списка подсказок */
             const address = e.detail
+            /** обращение к api карты для получения информации о выбранном месте */
             const marker = await map.addMarkerByAddress(address)
             if (marker) {
                 /** id элемента из массива points, input которого последний раз был в фокусе */
@@ -78,6 +79,11 @@ export default function TravelAddOnMap() {
         return () => document.removeEventListener('selected-point', pointSelectHandler)
     }, [])
 
+    // если страница обновилась в момент добавления мест на карте, то пользователь перенаправляется заполнять данные заново
+    useEffect(() => {
+        if (errorMessage) navigate('/travel/add/map/')
+    }, [errorMessage])
+
     // создаем новое путешествие =======================================================================================
     useEffect(() => {
         if (!travelCode) dispatch(actions.travelActions.travelInit(user))
@@ -98,6 +104,7 @@ export default function TravelAddOnMap() {
                 iconClass: 'location-marker',
                 points: travel.waypoints ? travel.waypoints.map(wp => wp.point) : [],
                 location: userLoc,
+                iconURL: DEFAULT_PLACEMARK_ICON,
                 // suggestElementID: points[0]?.id,
                 markerClassName: 'location-marker'
             }).then(newMap => {
@@ -111,8 +118,19 @@ export default function TravelAddOnMap() {
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
+        /**
+         * обработчик события перетасивания маркера
+         * @param {CustomEvent} e
+         */
         const handleDragPoint = (e) => {
+            /**
+             * информация о точке с которой взаимодействовали и ее индекс в массиве точек возвращаемы интерфейсом IMap
+             * @typedef {Object} DragPointType
+             * @property {Point} point
+             * @property {number} index
+             */
             const {point: draggedPoint, index} = e.detail
+            /** обновление соответствующей точки в массиве точек (мест) */
             if (draggedPoint) {
                 setPoints(prev => {
                     return prev.map((p, i) => {
@@ -129,6 +147,7 @@ export default function TravelAddOnMap() {
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
+        if (!map) return
         /** попытка получить координаты пользователя */
         const coords = await map.getUserLocation().catch((err) => {
             ErrorReport.sendError(err).catch(console.error)
@@ -210,7 +229,6 @@ export default function TravelAddOnMap() {
         dispatch(actions.travelActions.setWaypoints(newPoints))
         setPoints(newPoints)
     }
-
 
     if (!travel) return null
 

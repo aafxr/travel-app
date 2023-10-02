@@ -40,7 +40,7 @@ export default function TravelContextProvider() {
     const [dbReady, setDbReady] = useState(false)
     const {worker} = useContext(WorkerContext)
 
-    const travel = useTravel(travelCode)
+    const {travel, errorMessage} = useTravel(travelCode)
 
 
     useEffect(() => {
