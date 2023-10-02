@@ -5,16 +5,17 @@ import  './Button.css'
 
 
 /**
- *
+ * Компонент кнопка
  * @param {string} className
- * @param {JSX.Element | string} children
+ * @param {boolean} active
  * @param props
+ * @param {JSX.Element | string} children
  * @returns {JSX.Element}
  * @constructor
  */
 export default function Button({className, children, active = true, ...props}){
 
-    return <button {...props} className={clsx('full-screen-btn', active && 'active', className)} >
+    return <button  className={clsx('full-screen-btn', active && 'active', className)} {...props}>
             {children || ''}
         </button>
 }

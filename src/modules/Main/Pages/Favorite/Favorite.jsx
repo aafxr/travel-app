@@ -1,13 +1,17 @@
-import React, {useContext, useEffect} from 'react'
-import {useNavigate} from "react-router-dom";
-import {PageHeader} from "../../../../components/ui";
-import Container from "../../../../components/Container/Container";
-
-import constants from "../../../../static/constants";
-import Navigation from "../../../../components/Navigation/Navigation";
-import IconButton from "../../../../components/ui/IconButton/IconButton";
+import React from 'react'
 import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+import Navigation from "../../../../components/Navigation/Navigation";
+import Container from "../../../../components/Container/Container";
+import {PageHeader} from "../../../../components/ui";
+import constants from "../../../../static/constants";
+
+
+/**
+ * компонент отображает добавленные маршруты в избранное
+ */
 export default function Favorite({
                                    primary_entity_type,
                                    primary_entity_id

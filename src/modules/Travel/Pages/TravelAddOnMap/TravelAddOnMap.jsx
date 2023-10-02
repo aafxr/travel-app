@@ -154,13 +154,13 @@ export default function TravelAddOnMap() {
             pushAlertMessage({type: "warning", message: 'Не удалось определить геолокацию'})
             return null
         })
-        console.log('coords', coords)
 
         if (coords) {
             /** добавление места с координатами пользователя */
             map
                 .addMarker(coords)
                 .then(point => {
+                    console.log(point)
                     const newPoint = {id: createId(user.id), text: point.textAddress, point}
                     const newPoints = [newPoint, ...points]
                     /** перезаписываем массив мест (отфильтровываем пустые поля) */

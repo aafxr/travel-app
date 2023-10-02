@@ -10,6 +10,12 @@ import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 
+
+/**
+ * компонент редактирования иформации пользователя
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function UserNameEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
@@ -18,9 +24,10 @@ export default function UserNameEdite() {
     const [first_name, setFirstName] = useState(user?.first_name || '')
     const [last_name, setLastName] = useState(user?.last_name || '')
     const [username, setUsername] = useState(user?.username || '')
+    /** состояние кнопки сохранения */
     const [disabled, setDisabled] = useState(true)
 
-
+    /** проверка на наличие измененых данных */
     useEffect(() => {
         if (user) {
             let dis = user.first_name === first_name && last_name === user.last_name && username === user.username
@@ -30,6 +37,7 @@ export default function UserNameEdite() {
         }
     }, [user, first_name, last_name, disabled])
 
+    /** сохранение изменений в инфо о пользователе */
     function handleSave() {
         const newUserData = {
             ...user,
@@ -38,6 +46,7 @@ export default function UserNameEdite() {
             username
         }
         dispatch(updateUser(newUserData))
+        /** измененные поля пользователя +id */
         const changedFields = Object.keys(newUserData).reduce((acc, key) => {
             if (key === 'id'){
                 acc[key] = newUserData[key]

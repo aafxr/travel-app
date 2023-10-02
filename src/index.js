@@ -4,8 +4,8 @@ import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import {CACHE_VERSION, THEME} from "./static/constants";
-import setFixedVH from "./utils/setFixedVH";
 import errorReport from "./controllers/ErrorReport";
+import setFixedVH from "./utils/setFixedVH";
 
 import App from './App';
 
@@ -44,6 +44,7 @@ serviceWorkerRegistration.register()
 if (ServiceWorker in window) {
     navigator.serviceWorker.ready.then(registration => console.log(registration))
 }
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

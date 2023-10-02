@@ -4,14 +4,20 @@ import {useEffect, useState} from "react";
 import Checkbox from "../ui/Checkbox/Checkbox";
 
 /**
+ * @typedef CheckListType
+ * @property {string} id
+ * @property {string} title
+ */
+
+/**
  * компонент для отрисовки чеклиста
- * @param {string} groupClassNames
- * @param {string} className
+ * @param {string} groupClassNames - css класс корневова блока компонента
+ * @param {string} className - css класс блока-контейнера группы Checkbox
  * @param {string} title
- * @param {Object[]} checklist
+ * @param {CheckListType[]} checklist
  * @param {function} onChange
  * @param {'right' | 'left'} position default = 'right'
- * @param {boolean} multy
+ * @param {boolean} multy - флаг, позволяющий выбирать несколько значений
  * @param {string | string[]} initValue
  * @returns {JSX.Element|null}
  * @constructor
@@ -30,35 +36,30 @@ export default function RadioButtonGroup({
     const isLeft = position === 'left'
     const [selected, setSelected] = useState(multy ? [] : '')
 
+    /** инициялизация выбранных полей */
     useEffect(() => {
-        if (initValue) {
-            if (multy && initValue && !Array.isArray(initValue)) {
-                console.warn('[RadioButtonGroup] initValue must be array')
-            } else {
-                setSelected(initValue)
-            }
-        }
-    }, [initValue, multy])
+        if (initValue) setSelected(initValue)
+    }, [initValue])
 
     if (!checklist || !checklist.length) {
         console.log('[RadioButtonGroup] list empty.')
         return null
     }
 
+    /**
+     * обработчик клика по Checkbox
+     * @param {CheckListType} item
+     */
     function handleChange(item) {
         let newSelected
         if (multy) {
-            if (selected.includes(item)) {
-                newSelected = selected.filter(s => s !== item)
-                setSelected(newSelected)
-            } else {
-                newSelected = [...selected, item]
-                setSelected(newSelected)
-            }
+            if (selected.includes(item)) newSelected = selected.filter(s => s !== item)
+            else newSelected = [...selected, item]
         } else {
             newSelected = item
-            setSelected(newSelected)
         }
+        setSelected(newSelected)
+        /** передача выбранных элементов в родительский компонент */
         onChange && onChange(newSelected)
     }
 

@@ -5,27 +5,30 @@ import {useDispatch, useSelector} from "react-redux";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import constants, {USER_AUTH} from "../../../../static/constants";
-import {updateUser} from "../../../../redux/userStore/updateUser";
+// import constants, {USER_AUTH} from "../../../../static/constants";
+// import {updateUser} from "../../../../redux/userStore/updateUser";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
+/**
+ * компонент отображает главную страницу приложения
+ */
 export default function Main({
                                  primary_entity_type,
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    // const {user} = useSelector(state => state[constants.redux.USER])
+    // const dispatch = useDispatch()
 
-    useEffect(() => {
-        if (!user) {
-            const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (us) {
-                dispatch(updateUser(us))
-            }
-        }
-    }, [user, dispatch])
+    // useEffect(() => {
+    //     if (!user) {
+    //         const us = JSON.parse(localStorage.getItem(USER_AUTH))
+    //         if (us) {
+    //             dispatch(updateUser(us))
+    //         }
+    //     }
+    // }, [user, dispatch])
 
     return (
         <div className='wrapper'>

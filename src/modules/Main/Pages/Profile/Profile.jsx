@@ -13,11 +13,17 @@ import constants from "../../../../static/constants";
 
 import './Profile.css'
 
+
+/**
+ * компонент отбражает профиль пользователя
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])
 
+    /**@function {PhotoChangeFunction} */
     function handlePhotoChange(photo){
-
         storeDB.editElement(constants.store.IMAGES, photo)
     }
 

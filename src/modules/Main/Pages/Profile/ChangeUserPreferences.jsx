@@ -23,10 +23,16 @@ const themeConvertor = {
     ['default']:'По умолчанию'
 }
 
+/**
+ * компонент для изменения настроек пользователя
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ChangeUserPreferences() {
     const {theme} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
 
+    /** обработка изменения темы приложения */
     function handleThemeChange(newTheme) {
         if (variants.includes(newTheme)) {
             dispatch(actions.userActions.changeTheme(themeConvertor[newTheme.title]))

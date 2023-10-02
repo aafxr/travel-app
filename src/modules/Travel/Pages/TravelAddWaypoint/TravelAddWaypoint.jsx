@@ -2,19 +2,19 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 
+import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
 import MapControls from "../../../../components/MapControls/MapControls";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
+import storeDB from "../../../../db/storeDB/storeDB";
 import YandexMap from "../../../../api/YandexMap";
 import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
+import useTravel from "../../hooks/useTravel";
 
 import './TravelAddWaypoint.css'
-import useTravel from "../../hooks/useTravel";
-import storeDB from "../../../../db/storeDB/storeDB";
 
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
@@ -99,7 +99,9 @@ export default function TravelAddWaypoint() {
     /** обновляем store (добавление) */
     function handleSubmit() {
         if(travel && point) {
+            /** обновление о месте в redux store */
             dispatch(actions.travelActions.addWaypoint(point))
+            /** обновление информации о путешествии в бд */
             storeDB.editElement(constants.store.TRAVEL, travel)
                 .then(() => navigate(`/travel/${travel.id}/add/map/`))
         } else{
