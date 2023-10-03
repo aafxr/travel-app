@@ -28,6 +28,7 @@ const defaultTravel = {
  * @property {TravelType[]} travels
  * @property {string | null} travelID
  * @property {boolean} travelsLoaded = false
+ * @property {boolean} isUserLocation = false
  */
 
 /**
@@ -36,7 +37,8 @@ const defaultTravel = {
 const initialState = {
     travels: [],
     travelID: null,
-    travelsLoaded: false
+    travelsLoaded: false,
+    isUserLocation: false
 }
 
 
@@ -58,6 +60,7 @@ export const travelsSlice = createSlice({
                 if (~idx) {
                     state.travelID = state.travels[idx].id
                     state.travels[idx] = checkTravelFields(state.travels[idx])
+                    state.isUserLocation = false
                 }
             },
             /**
@@ -66,8 +69,16 @@ export const travelsSlice = createSlice({
              */
             resetTravel(state) {
                 state.travelID = null
+                state.isUserLocation = false
             },
-
+            /**
+             *
+             * @param {TravelState} state
+             * @param {boolean} payload
+             */
+            setIsUserLocation(state, {payload}){
+                if (typeof payload === 'boolean') state.isUserLocation = payload
+            },
             /**
              * @param {TravelState} state
              * @param {TravelType} payload
@@ -447,7 +458,7 @@ export const travelsSlice = createSlice({
                     const travel = state.travels.find(t => t.id === state.travelID)
                     if (travel) travel.waypoints = payload.map(p => {
                         const waypoint = {...p}
-                        if (waypoint.point.placemark) delete waypoint.point.placemark
+                        if (waypoint.point?.placemark) delete waypoint.point.placemark
                         return waypoint
                     })
                 } else {

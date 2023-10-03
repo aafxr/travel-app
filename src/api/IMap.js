@@ -1,6 +1,7 @@
 /**
  * @description предпологаемое описание объекта
  * @typedef {Object} Point
+ * @property {string} id
  * @property {[number, number]} coords
  * @property {string} kind
  * @property {string} textAddress
@@ -18,9 +19,10 @@ export default class IMap {
     /**
      * дообавить точку на карт по координатам
      * @param {[number, number]} coords
+     * @param {string} id
      * @returns{Promise<Point | null>}
      */
-    addMarker(coords) {
+    addMarker(coords, id) {
         console.warn('[IMap] addMarker not override')
     }
 
@@ -149,6 +151,9 @@ export default class IMap {
 
     /** очистка карты от точек */
     clear(){}
+
+    /** метод перестраивает карту */
+    refreshMap(){}
 
 
     /** очистка ресурсов выделенных под карту */

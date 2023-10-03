@@ -3,9 +3,6 @@ import userLocation from "../utils/userLocation";
 import ErrorReport from "../controllers/ErrorReport";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 
-import locationIcon from './place_24px.svg'
-
-
 
 export default class YandexMap extends IMap {
     /**
@@ -28,6 +25,8 @@ export default class YandexMap extends IMap {
                     iconURL
                 }) {
         super();
+
+        if (this.instance) return this.instance
 
         /** текущий зум карты */
         this.zoom = map.getZoom() || 14
@@ -59,6 +58,7 @@ export default class YandexMap extends IMap {
         })
 
         this.map.events.add('dragend', console.log)
+        this.instance = this
     }
 
 
@@ -66,15 +66,20 @@ export default class YandexMap extends IMap {
      * добавление маркера на карту
      * @param {number, number} coords
      * @param {[number, number]} coords
+     * @param {string} id
      * @returns {Promise<Point>}
      */
-    async addMarker(coords) {
-        if (!coords || !Array.isArray(coords) || coords.length !== 2)
+    async addMarker(coords, id) {
+        if (!coords || !Array.isArray(coords) || coords.length !== 2) {
             throw new Error(`
             [YandexMap] не коректный формат координат
             получено: ${coords},
             ожидается массив вида: [latitude, longitude]
             `)
+        }
+
+        if(!id) console.error(new Error("id is not define"))
+        else console.log(id)
 
 
         if (this.tempPlacemark) {
@@ -86,7 +91,7 @@ export default class YandexMap extends IMap {
         const geocode = await window.ymaps.geocode(coords)
         const geoObject = geocode.geoObjects.get(0)
         /** преобразованная информация о месте */
-        const markerInfo = this._markerInfo(geoObject)
+        const markerInfo = this._markerInfo(geoObject, id)
 
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
@@ -97,10 +102,11 @@ export default class YandexMap extends IMap {
     /**
      * Метод извлекаут информацию из геообъекта полученного от api
      * @param {Object} geoObject
+     * @param {string} id
      * @returns {Point}
      * @private
      */
-    _markerInfo(geoObject) {
+    _markerInfo(geoObject, id) {
         if (!geoObject || typeof geoObject !== 'object') {
             throw new Error('[YandexMap._markerInfo] geoObject should be define and typeof "object"')
         }
@@ -116,7 +122,7 @@ export default class YandexMap extends IMap {
 
         placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
 
-        return {placemark, coords, textAddress, kind}
+        return {placemark, coords, textAddress, kind, id}
     }
 
 
@@ -154,7 +160,7 @@ export default class YandexMap extends IMap {
             /** удаление прежнего маркера с карты */
             this.map.geoObjects.remove(p)
             /** добавление точки с новыми координатами */
-            this.addMarker(coords)
+            this.addMarker(coords, point.id)
                 .then(point => document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}})))
                 .catch(this._handleError.bind(this))
         }
@@ -164,9 +170,13 @@ export default class YandexMap extends IMap {
     /**
      * Метод добавления места по переданному адресу
      * @param {string} address
+     * @param {string} id
      * @returns {Promise<Point | null>}
      */
-    async addMarkerByAddress(address) {
+    async addMarkerByAddress(address, id) {
+        if(!id) console.error(new Error("id is not define"))
+        else console.log(id)
+
         /** если место спереданным адресом уже существует, то возвращаем информацию о нем */
         const existingAddress = this.placemarks.find(p => p.textAddress === address)
         if (existingAddress) return existingAddress
@@ -182,7 +192,7 @@ export default class YandexMap extends IMap {
                 const geoObject = res.geoObjects.get(0)
                 if (geoObject) {
                     /** информация о новой метке */
-                    const newMarker = this._markerInfo(geoObject)
+                    const newMarker = this._markerInfo(geoObject, id)
                     this.placemarks.push(newMarker)
                     /** добавление маркера на карту */
                     this.map.geoObjects.add(newMarker.placemark)
@@ -260,7 +270,7 @@ export default class YandexMap extends IMap {
     /** метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости */
     autoZoom() {
         /** границы (левый верхний, правый нижний углы), в которые попадают все метки на карте */
-        const bounds = this.map.geoObjects.getBounds()
+        const bounds = this.map.geoObjects?.getBounds()
         if (bounds) {
             /** установка видимой области карты */
             this.map.setBounds(bounds)
@@ -317,6 +327,21 @@ export default class YandexMap extends IMap {
         ErrorReport.sendReport(err).catch(console.error)
         /** добавление всплывающего сообщения в очередь */
         pushAlertMessage({type: "info", message})
+    }
+
+    refreshMap() {
+        if (this.map) this.map.destroy()
+
+        this.map = new window.ymaps.Map(this.mapContainerID, {
+            center: this.location || [55.03, 82.92],
+            zoom: this.zoom
+        })
+        for (let i = 0; i < this.placemarks.length; i++) {
+            const p = this.placemarks[i]
+            const placemark = this._newPlacemark(p.coords, p.textAddress)
+            this.map.geoObjects.add(placemark)
+            this.placemarks[i].placemark = placemark
+        }
     }
 
     /** удаление блока подсказок, привязанного к HTMLInputElement */
@@ -442,10 +467,10 @@ YandexMap.init = function init({
                                    mapContainerID,
                                    coordsIDElement,
                                    iconClass,
-    iconURL,
+                                   iconURL,
                                    points,
                                    markerClassName,
-                                    location,
+                                   location,
                                }) {
     return new Promise((resolve, reject) => {
         if (!mapContainerID) reject(new Error('[YandexMap] mapContainerID is required'))
@@ -484,7 +509,7 @@ YandexMap.init = function init({
                                 iconLayout: 'default#image',
                                 iconImageHref: iconURL,
                                 iconImageSize: [32, 32],
-                                iconImageOffset: [-16, -32],
+                                iconImageOffset: [-16, -16],
                                 draggable: true,
                             })
                             map.geoObjects.add(placemark)

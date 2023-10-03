@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import React from 'react'
 
 import UserLocationIcon from "../svg/userLocationIcon";
 import {pushAlertMessage} from "../Alerts/Alerts";
@@ -19,8 +20,8 @@ import './MapControls.css'
  * @returns {JSX.Element|null}
  * @constructor
  */
-export default function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationClick,...props}) {
-    if(!map) return null
+function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationClick, ...props}) {
+    if (!map) return null
 
     // обработка контроллов карты ======================================================================================
     /** увеличение зума на +1 */
@@ -53,10 +54,12 @@ export default function MapControls({map, className, onPlusClick, onMinusClick, 
     }
 
     return (
-        <div {...props} className={clsx('map-controls column gap-0.5', className)} >
+        <div {...props} className={clsx('map-controls column gap-0.5', className)}>
             <button className='map-control-btn center' onClick={handleZoomPlus}><PlusIcon/></button>
             <button className='map-control-btn center' onClick={handleZoomMinus}><MinusIcon/></button>
             <button className='map-control-btn center' onClick={handleUserLocation}><UserLocationIcon/></button>
         </div>
     )
 }
+
+export default React.memo(MapControls)

@@ -2,14 +2,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 
-import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
+import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import MapControls from "../../../../components/MapControls/MapControls";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import storeDB from "../../../../db/storeDB/storeDB";
-import YandexMap from "../../../../api/YandexMap";
+import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
@@ -23,11 +23,8 @@ export default function TravelAddWaypoint() {
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
     const {travel, errorMessage} = useTravel()
 
-    /** референс на контайнер карты */
-    const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
-
     /** интерфейс для взаимодействия с картой */
-    const [map, setMap] = useState(/**@type{IMap} */ null)
+    const [map, setMap] = useState(/** @type {IMap | null} */)
 
     /** список точек на карте */
     const [point, setPoint] = useState(/**@type{InputPoint} */ null)
@@ -42,25 +39,6 @@ export default function TravelAddWaypoint() {
     useEffect(() => {
         if (user) setPoint({id: createId(user.id), text: '', point: undefined})
     }, [user])
-
-    // инициализация карты =============================================================================================
-    useEffect(() => {
-        if (mapRef.current && !map) {
-            YandexMap.init({
-                api_key: process.env.REACT_APP_API_KEY,
-                mapContainerID: 'map',
-                location: userLoc,
-                points: [],
-                iconURL: DEFAULT_PLACEMARK_ICON,
-                markerClassName: 'location-marker'
-            }).then(newMap => {
-                window.map = newMap
-                setMap(newMap)
-            }).catch(console.error)
-        }
-
-        return () => map && map.destroyMap()
-    }, [mapRef, map])
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -80,7 +58,7 @@ export default function TravelAddWaypoint() {
         if (e.keyCode === 13) {
             map.clear()
 
-            map.addMarkerByAddress(point.text)
+            map.addMarkerByAddress(point.text, point.id)
                 .then(markerInfo => {
                     if (markerInfo) {
                         /**type{InputPoint} */
@@ -127,13 +105,7 @@ export default function TravelAddWaypoint() {
                 </div>
             </Container>
             <div className='content'>
-                <div
-                    ref={mapRef}
-                    id='map'
-                    className='relative'
-                >
-                    <MapControls className='map-controls' map={map}/>
-                </div>
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap} />
             </div>
             <div className='fixed-bottom-button'>
                 <Button

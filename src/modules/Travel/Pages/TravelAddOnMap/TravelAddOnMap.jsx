@@ -8,16 +8,17 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
-import createAction from "../../../../utils/createAction";
-import {PageHeader} from "../../../../components/ui";
-import constants, {DEFAULT_PLACEMARK_ICON} from "../../../../static/constants";
+import {Input, PageHeader} from "../../../../components/ui";
+import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
-import YandexMap from "../../../../api/YandexMap";
 import {actions} from "../../../../redux/store";
+import useMap from "../../../../hooks/useMap";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddOnMap.css'
+import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 /**
  * @typedef {Object} InputPoint
@@ -32,13 +33,10 @@ export default function TravelAddOnMap() {
     const dispatch = useDispatch()
     const {travel, errorMessage} = useTravel()
     const {user, userLoc} = useSelector(state => state[constants.redux.USER])
-    const {travelID} = useSelector(state => state[constants.redux.TRAVEL])
-
-    /** референс на контайнер карты */
-    const mapRef = useRef(/**@type{HTMLDivElement}*/ null)
+    const {travelID, isUserLocation} = useSelector(state => state[constants.redux.TRAVEL])
 
     /** интерфейс для взаимодействия с картой */
-    const [map, setMap] = useState(/**@type{IMap} */ null)
+    const [map, setMap] = useState(/** @type {IMap | null} */ null)
 
     /** список точек на карте */
     const [points, setPoints] = useState(/**@type{InputPoint[]} */[])
@@ -47,8 +45,6 @@ export default function TravelAddOnMap() {
 
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
-    /** флаг указывает на то, что точка с координатами пользователя уже добавленна */
-    const [fromUserLocation, setFromUserLocation] = useState(false)
 
     // слушатель на событие выбора точки с помощью подсказки ===========================================================
     /** при выборе адреса из блока подсказки эмитится событие "selected-point" */
@@ -94,27 +90,6 @@ export default function TravelAddOnMap() {
         setPoints(travel?.waypoints || [{id: createId(user.id), text: '', point: undefined}])
     }, [travel])
 
-    // инициализация карты =============================================================================================
-    useEffect(() => {
-        if (mapRef.current && !map && travel) {
-            /** инициализация карты */
-            YandexMap.init({
-                api_key: process.env.REACT_APP_API_KEY,
-                mapContainerID: 'map',
-                iconClass: 'location-marker',
-                points: travel.waypoints ? travel.waypoints.map(wp => wp.point) : [],
-                location: userLoc,
-                iconURL: DEFAULT_PLACEMARK_ICON,
-                // suggestElementID: points[0]?.id,
-                markerClassName: 'location-marker'
-            }).then(newMap => {
-                window.map = newMap
-                setMap(newMap)
-            })
-        }
-
-        return () => map && map.destroyMap()
-    }, [mapRef.current, map, travel])
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -155,34 +130,27 @@ export default function TravelAddOnMap() {
             return null
         })
 
+        dispatch(actions.travelActions.setIsUserLocation(true))
         if (coords) {
+            /**@type{InputPoint} */
+            const newPoint = {id: createId(user.id)}
             /** добавление места с координатами пользователя */
             map
-                .addMarker(coords)
+                .addMarker(coords, newPoint.id)
                 .then(point => {
                     console.log(point)
-                    const newPoint = {id: createId(user.id), text: point.textAddress, point}
+                    newPoint.text = point.textAddress
+                    newPoint.point = point
                     const newPoints = [newPoint, ...points]
                     /** перезаписываем массив мест (отфильтровываем пустые поля) */
                     dispatch(actions.travelActions.setWaypoints(newPoints.filter(p => !!p.point)))
                     setPoints(newPoints)
-                    setFromUserLocation(true)
                 })
+                .catch(() => dispatch(actions.travelActions.setIsUserLocation(false)))
         }
 
     }
 
-    // обработка зума при прокрутки колесика мыши
-    function handleWheel(e) {
-        if (e.deltaY) {
-            const zoom = map.getZoom()
-            if (e.deltaY < 0) {
-                map.setZoom(zoom + 1)
-            } else {
-                map.setZoom(zoom - 1)
-            }
-        }
-    }
 
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
@@ -220,11 +188,30 @@ export default function TravelAddOnMap() {
 
     }
 
-    /** обработка изменения списка точек ( добавлена / удалена / переытавленна) */
+    /**
+     * обработка изменения списка точек ( добавлена / удалена / переытавленна)
+     * @param {InputPoint[]} newPoints
+     */
     function handlePointListChange(newPoints) {
-        /** запись всех измененных полей в текущий travel в store */
+        if (!travel) return
+        if (isUserLocation) {
+            const arr = [travel.waypoints[0], ...newPoints]
+            dispatch(actions.travelActions.setWaypoints(arr))
+            setPoints(arr)
+        } else {
+            /** запись всех измененных полей в текущий travel в store */
+            dispatch(actions.travelActions.setWaypoints(newPoints))
+            setPoints(newPoints)
+        }
+    }
+
+    function handleRemoveUserLocationPoint() {
+        const newPoints = travel.waypoints.slice(1)
+        map.removeMarker(travel.waypoints[0])
         dispatch(actions.travelActions.setWaypoints(newPoints))
+        dispatch(actions.travelActions.setIsUserLocation(false))
         setPoints(newPoints)
+
     }
 
     if (!travel) return null
@@ -235,18 +222,30 @@ export default function TravelAddOnMap() {
                 <PageHeader arrowBack title={'Направление'}/>
                 <div className='column gap-0.5'>
                     {
-                        !fromUserLocation && (
-                            <div
-                                className='link'
-                                onClick={handleUserLocationPoint}
-                            >
-                                + Текущая позиция
-                            </div>
-                        )
+                        !isUserLocation
+                            ? (
+                                <div
+                                    className='link'
+                                    onClick={handleUserLocationPoint}
+                                >
+                                    + Текущая позиция
+                                </div>
+                            )
+                            : (!!points.length && (
+                                    <Swipe
+                                        onRemove={handleRemoveUserLocationPoint}
+                                        rightButton
+                                    >
+                                        <Input value={points[0].text} onChange={() => {
+                                        }}/>
+                                    </Swipe>
+                                )
+
+                            )
                     }
                     <MapPointsInputList
                         map={map}
-                        pointsList={points}
+                        pointsList={isUserLocation ? points.slice(1) : points}
                         onListChange={handlePointListChange}
                     />
                     <div
@@ -258,14 +257,9 @@ export default function TravelAddOnMap() {
                 </div>
             </Container>
             <div className='content'>
-                <div
-                    ref={mapRef}
-                    id='map'
-                    className='relative'
-                    onWheel={handleWheel}
-                >
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}>
                     <MapControls className='map-controls' map={map}/>
-                </div>
+                </YandexMapContainer>
             </div>
             <div className='fixed-bottom-button'>
                 <Button

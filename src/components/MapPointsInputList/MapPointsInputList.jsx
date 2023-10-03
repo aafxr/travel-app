@@ -9,10 +9,15 @@ import Swipe from "../ui/Swipe/Swipe";
 import {Input} from "../ui";
 
 /**
+ * @typedef {Function} PointsListChangeFunction
+ * @param {InputPoint[]} points
+ */
+
+/**
  * Компонент отображает список HTMLInputElement-ов
  * @param {IMap} map
  * @param {InputPoint[]} pointsList
- * @param {Function} onListChange
+ * @param {PointsListChangeFunction} onListChange
  * @returns {JSX.Element}
  * @constructor
  */

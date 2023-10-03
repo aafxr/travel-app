@@ -76,6 +76,16 @@ registerRoute(
     })
 );
 
+registerRoute(
+    ({url}) => url.origin === self.location.origin && url.origin.includes('yandex'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    new StaleWhileRevalidate({
+        cacheName: 'map',
+        plugins: [
+            new CacheFirst({maxAgeSeconds: 29 * 24 * 60 * 60}),
+        ],
+    })
+)
+
 const apiCache = [
     '/main/currency/getList/',
     '/expenses/getSections/'
