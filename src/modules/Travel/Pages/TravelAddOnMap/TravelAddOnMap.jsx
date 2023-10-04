@@ -19,6 +19,7 @@ import useTravel from "../../hooks/useTravel";
 import './TravelAddOnMap.css'
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
+import useDragPoint from "../../hooks/useDragPoint";
 
 /**
  * @typedef {Object} InputPoint
@@ -45,6 +46,9 @@ export default function TravelAddOnMap() {
 
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
+
+
+    const draggedPoint = useDragPoint()
 
     // слушатель на событие выбора точки с помощью подсказки ===========================================================
     /** при выборе адреса из блока подсказки эмитится событие "selected-point" */
@@ -91,34 +95,15 @@ export default function TravelAddOnMap() {
     }, [travel])
 
 
-    //обработка события drag-point =====================================================================================
+    //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
-        /**
-         * обработчик события перетасивания маркера
-         * @param {CustomEvent} e
-         */
-        const handleDragPoint = (e) => {
-            /**
-             * информация о точке с которой взаимодействовали и ее индекс в массиве точек возвращаемы интерфейсом IMap
-             * @typedef {Object} DragPointType
-             * @property {Point} point
-             * @property {number} index
-             */
-            const {point: draggedPoint, index} = e.detail
-            /** обновление соответствующей точки в массиве точек (мест) */
-            if (draggedPoint) {
-                setPoints(prev => {
-                    return prev.map((p, i) => {
-                        if (i === index) return {...p, text: draggedPoint.textAddress, point: draggedPoint}
-                        else return p
-                    })
-                })
-            }
+        if(draggedPoint){
+            const newPoints = points.map( p => ({...p}))
+            newPoints[draggedPoint.index].text = draggedPoint.dragPoint.textAddress
+            newPoints[draggedPoint.index].point = draggedPoint.dragPoint
+            setPoints(newPoints)
         }
-
-        document.addEventListener('drag-point', handleDragPoint)
-        return () => document.removeEventListener('drag-point', handleDragPoint)
-    }, [])
+    }, [draggedPoint])
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {

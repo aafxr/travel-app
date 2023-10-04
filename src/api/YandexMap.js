@@ -40,8 +40,6 @@ export default class YandexMap extends IMap {
         this.userTracking = false
         /** сущность предстаавлябщая карту */
         this.map = map
-        /** массив с информацией о добавленных на карту точках */
-        this.placemarks = placemarks
         /** id HTMLElement-а контейнера карты */
         this.mapContainerID = mapContainerID
         /** LayoutClass для отображения кастомного маркера на карте */
@@ -51,6 +49,14 @@ export default class YandexMap extends IMap {
         /**  выпадающая панель с поисковыми подсказками, которая прикрепляется к HTML-элементу <input type="text">. */
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
+
+        /** массив с информацией о добавленных на карту точках */
+        this.placemarks = placemarks.map(pm =>{
+            pm.placemark = this._newPlacemark(pm.coords, pm.textAddress)
+            // pm.placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
+            return pm
+        })
+        this.placemarks.forEach(pm => this.map.geoObjects.add(pm.placemark))
 
         this.getUserLocation().then(userLocation => {
             if (userLocation)
@@ -87,10 +93,13 @@ export default class YandexMap extends IMap {
 
         /** получвем информацию о месте */
         const geocode = await window.ymaps.geocode(coords)
-        const geoObject = geocode.geoObjects.get(0)
+        const pmarr = []
+        geocode.geoObjects.each(obj => pmarr.push(obj))
+        window.pm  = pmarr
+        const geoObject = window.ymaps.geoQuery(pmarr).sortByDistance(coords).get(0)
+        // const geoObject = geocode.geoObjects.get(0)
         /** преобразованная информация о месте */
         const markerInfo = this._markerInfo(geoObject, id)
-
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
         this.autoZoom()
@@ -120,14 +129,14 @@ export default class YandexMap extends IMap {
 
         const placemark = this._newPlacemark(coords, textAddress)
 
-        placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
+        // placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
 
         return {placemark, coords, textAddress, kind, id, locality: locality[0]}
     }
 
 
     _newPlacemark(coords, address = '') {
-        return new window.ymaps.Placemark(coords, {
+        const placemark =  new window.ymaps.Placemark(coords, {
             hintContent: address,
             balloonContent: address,
         }, {
@@ -140,17 +149,28 @@ export default class YandexMap extends IMap {
             draggable: true,
             cursor: 'pointer',
         })
+        placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
+        placemark.events.add('click', this._handlePlacemarkClick.bind(this))
+        return placemark
+    }
+
+    _handlePlacemarkClick(e){
+        console.log(e)
+        console.log(e.originalEvent)
+        const p = e.originalEvent.target
+        const idx = this.placemarks.findIndex(plm => plm.placemark === p)
+        console.log(idx)
     }
 
     /** обработка завершения перетаскивания */
     _handlePlacemarkDragEnd(e) {
-        console.dir(e)
         /** объект описывающий точку на карте (экземпляр Placemark в yandex maps api)  */
         const p = e.originalEvent.target
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
 
         if (~idx) {
             const point = this.placemarks[idx]
+            // const info = this._markerInfo(p)
             /** удаляем точку с пржним адресом */
             this.placemarks = this.placemarks.filter(pm => pm !== point)
             /**
@@ -164,6 +184,7 @@ export default class YandexMap extends IMap {
             this.addMarker(coords, point.id)
                 .then(point => document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}})))
                 .catch(this._handleError.bind(this))
+            // document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}}))
         }
     }
 
@@ -289,7 +310,7 @@ export default class YandexMap extends IMap {
             /** итоговый зум карты */
             let zoom = this.map.getZoom()
             /** зум > 14, как мне кажется, слишком боьшой, поэтому ставим зум не больше 14 */
-            zoom > 14 && (zoom = 14)
+            zoom > 14 && zoom > this.zoom && (zoom = this.zoom)
             this.zoom = Math.floor(zoom)
             /** пересчитаный зум */
             this.map.setZoom(this.zoom)
@@ -509,33 +530,11 @@ YandexMap.init = function init({
                         zoom: 7
                     })
 
-                    //добавление точек на карту
-                    const placemarks = []
-                    if (points && Array.isArray(points)) {
-                        for (const point of points) {
-                            const placemark = new window.ymaps.Placemark(point.coords, {
-                                hintContent: point.hintContent,
-                                balloonContent: point.balloonContent,
-                            }, {
-                                // preset: 'islands#darkOrangeIcon',
-                                iconLayout: 'default#image',
-                                iconImageHref: iconURL,
-                                iconImageSize: [32, 32],
-                                iconImageOffset: [-16, -16],
-                                draggable: true,
-                            })
-                            map.geoObjects.add(placemark)
-                            const clonePoint = JSON.parse(JSON.stringify(point))
-                            clonePoint.placemark = placemark
-                            placemarks.push(clonePoint)
-                        }
-                    }
-
                     resolve(new YandexMap({
                         mapContainerID,
                         suggestElementID,
                         iconClass,
-                        placemarks,
+                        placemarks: points || [],
                         map,
                         iconURL,
                         markerClassName

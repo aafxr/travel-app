@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import MapControls from "../../../../components/MapControls/MapControls";
@@ -15,6 +15,7 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddWaypoint.css'
+import useDragPoint from "../../hooks/useDragPoint";
 
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
@@ -29,6 +30,8 @@ export default function TravelAddWaypoint() {
     /** список точек на карте */
     const [point, setPoint] = useState(/**@type{InputPoint} */ null)
 
+    const dragPoint = useDragPoint()
+
     //==================================================================================================================
     useEffect(() => {
         if (errorMessage) navigate('/travel/add/map/')
@@ -40,18 +43,11 @@ export default function TravelAddWaypoint() {
         if (user) setPoint({id: createId(user.id), text: '', point: undefined})
     }, [user])
 
-    //обработка события drag-point =====================================================================================
+    //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
-        const handleDragPoint = (e) => {
-            const {point: draggedPoint} = e.detail
-            if (draggedPoint) {
-                setPoint(prev => ({...prev, text: draggedPoint.textAddress, point: draggedPoint}) )
-            }
-        }
-
-        document.addEventListener('drag-point', handleDragPoint)
-        return () => document.removeEventListener('drag-point', handleDragPoint)
-    }, [])
+        if (dragPoint)
+            setPoint({...point, text: dragPoint.dragPoint.textAddress, point: dragPoint.dragPoint})
+    }, [dragPoint])
 
     //==================================================================================================================
     function handleKeyDown(e) {
@@ -76,13 +72,13 @@ export default function TravelAddWaypoint() {
     //==================================================================================================================
     /** обновляем store (добавление) */
     function handleSubmit() {
-        if(travel && point) {
+        if (travel && point) {
             /** обновление о месте в redux store */
             dispatch(actions.travelActions.addWaypoint(point))
             /** обновление информации о путешествии в бд */
             storeDB.editElement(constants.store.TRAVEL, travel)
                 .then(() => navigate(`/travel/${travel.id}/add/map/`))
-        } else{
+        } else {
             pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
         }
     }
@@ -105,7 +101,7 @@ export default function TravelAddWaypoint() {
                 </div>
             </Container>
             <div className='content'>
-                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap} />
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}/>
             </div>
             <div className='fixed-bottom-button'>
                 <Button
