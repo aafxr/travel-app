@@ -59,7 +59,7 @@ export default function TravelRoutes({
                 <Tab name={'Текущие'} to={'/travels/current/'}/>
                 <Tab name={'Будущие'} to={'/travels/plan/'}/>
             </div>
-            <Container className='content pt-20'>
+            <Container className='content pt-20 pb-20'>
                 {
                     user
                         ? (

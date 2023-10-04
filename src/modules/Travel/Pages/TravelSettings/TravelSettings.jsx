@@ -138,7 +138,7 @@ export default function TravelSettings() {
                                     travel.direction && (
                                         <section className='travel-settings-dirrection block'>
                                             <h4 className='title-semi-bold'>Направление</h4>
-                                            <div className='travel-settings-dirrection-title flex-between'>
+                                            <div className='travel-settings-dirrection-title row'>
                                                 <Chip color='light-orange' rounded>
                                                     {travel.direction}
                                                 </Chip>

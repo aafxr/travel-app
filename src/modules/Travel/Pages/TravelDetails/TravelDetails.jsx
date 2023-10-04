@@ -40,11 +40,11 @@ export default function TravelDetails() {
     const travelDurationLabel = dateRange(travel?.date_start, travel?.date_end)
 
     //переменная для задания количества табов (по дням)
-    let travelDaysCount
+    let travelDaysCount = 0
     if (travel && travel.date_start && travel.date_end) {
         travelDaysCount = (new Date(travel.date_end).getTime() - new Date(travel.date_start).getTime()) / (1000 * 60 * 60 * 24)
+        travelDaysCount = Math.ceil(travelDaysCount)
     }
-
 
     const menu = (
         <Menu>
@@ -124,7 +124,7 @@ export default function TravelDetails() {
                         </div>
                     </div>
                     <div className='flex-between flex-nowrap gap-0.5 footer pb-20'>
-                        <IconButton icon={<Money/>} title='Расходы'/>
+                        <IconButton icon={<Money/>} title='Расходы' onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         <IconButton
                             icon={<ChecklistIcon/>}
                             title='Чек-лист'

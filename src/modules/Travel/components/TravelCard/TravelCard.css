@@ -1,11 +1,15 @@
 .travel-item{
-    display: flex;
-    justify-content: stretch;
+    position: relative;
     padding: 4px;
     border-radius: var(--br-20);
     background-color: var(--color-background);
     box-shadow: var(--box-shadow);
-    overflow: hidden;
+    /*overflow: hidden;*/
+}
+
+.travel-item-container{
+    display: flex;
+    justify-content: stretch;
 
 }
 
@@ -19,10 +23,19 @@
 }
 
 .travel-content{
-    flex: 1;
-    justify-content: space-between;
-    align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex: 1 1;
+    flex-direction: column;
+    justify-content: stretch;
+    width: 100%;
+    /*align-items: flex-start;*/
     padding: 4px 0;
+    overflow: hidden;
+}
+
+.travel-movement{
+    margin-top: auto;
 }
 
 .travel-button{

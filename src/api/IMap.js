@@ -5,6 +5,7 @@
  * @property {[number, number]} coords
  * @property {string} kind
  * @property {string} textAddress
+ * @property {string} locality
  * @property {Object} placemark
  */
 
@@ -46,10 +47,11 @@ export default class IMap {
     /**
      * добавить точку на карту по указанному адресу
      * @param {string} address
+     * @param {string} id
      * @returns {Point | null}
      * @returns {Promise<Point | null>}
      */
-    addMarkerByAddress(address){
+    addMarkerByAddress(address, id){
         console.warn('[IMap] addMarkerByAddress not override')
     }
 

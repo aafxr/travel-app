@@ -24,7 +24,7 @@ export default function ExpensesLayout() {
     return (
         <div className='expenses-wrapper wrapper'>
             <Container>
-                <PageHeader arrowBack title={title} to='/'/>
+                <PageHeader arrowBack title={title} to={`/travel/${travelCode}/`}/>
             </Container>
             <div className='flex-stretch'>
                 <Tab name={'Расходы'} to={`/travel/${travelCode}/expenses/`}/>

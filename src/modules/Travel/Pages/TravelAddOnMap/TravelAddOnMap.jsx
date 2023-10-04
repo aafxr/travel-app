@@ -156,12 +156,14 @@ export default function TravelAddOnMap() {
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
         if (travel) {
+            /** @type{TravelType}*/
             const newTravel = {...travel}
             /** получаем краткое описание направления вида: "новосибирск - бердск" */
             const direction = newTravel.waypoints
-                .map(p => p.text)
-                .reduce((acc, address) => {
-                    let place = address.split(',').filter(pl => !pl.includes('область')).shift() || ''
+                .reduce((acc, p) => {
+                    let place = p.point.locality
+                        ? p.point.locality
+                        : p.text.split(',').filter(pl => !pl.includes('область')).shift() || ''
                     place = place.trim()
                     return acc ? acc + ' - ' + place : place
                 }, '')

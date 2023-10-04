@@ -48,7 +48,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      */
     async function handleKeyDown(e, item) {
         if (e.keyCode === 13) {
-            const marker = await map.addMarkerByAddress(item.text)
+            const marker = await map.addMarkerByAddress(item.text, item.id)
             if (marker) {
                 /** обновляем адресс в массиве points по полученным данным от api карты */
                 const newPoints = points.map(p => {

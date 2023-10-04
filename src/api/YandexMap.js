@@ -79,8 +79,6 @@ export default class YandexMap extends IMap {
         }
 
         if(!id) console.error(new Error("id is not define"))
-        else console.log(id)
-
 
         if (this.tempPlacemark) {
             this.map.geoObjects.remove(this.tempPlacemark)
@@ -117,12 +115,14 @@ export default class YandexMap extends IMap {
             kind
         } = geoObject.properties.getAll().metaDataProperty.GeocoderMetaData
 
+        let locality = []
+        if(geoObject.getLocalities) locality = geoObject.getLocalities()
 
         const placemark = this._newPlacemark(coords, textAddress)
 
         placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
 
-        return {placemark, coords, textAddress, kind, id}
+        return {placemark, coords, textAddress, kind, id, locality: locality[0]}
     }
 
 
@@ -144,6 +144,7 @@ export default class YandexMap extends IMap {
 
     /** обработка завершения перетаскивания */
     _handlePlacemarkDragEnd(e) {
+        console.dir(e)
         /** объект описывающий точку на карте (экземпляр Placemark в yandex maps api)  */
         const p = e.originalEvent.target
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
@@ -175,7 +176,6 @@ export default class YandexMap extends IMap {
      */
     async addMarkerByAddress(address, id) {
         if(!id) console.error(new Error("id is not define"))
-        else console.log(id)
 
         /** если место спереданным адресом уже существует, то возвращаем информацию о нем */
         const existingAddress = this.placemarks.find(p => p.textAddress === address)
@@ -188,6 +188,7 @@ export default class YandexMap extends IMap {
                     this.map.geoObjects.remove(this.tempPlacemark)
                     this.tempPlacemark = null
                 }
+                window.res = res
                 /** информация о найденом месте */
                 const geoObject = res.geoObjects.get(0)
                 if (geoObject) {
@@ -249,18 +250,29 @@ export default class YandexMap extends IMap {
 
     /**
      * удаление ближайшей к указанным координатам точки
-     * @param {Point} placemark
+     * @param {Object} options
      */
-    removeMarker(placemark) {
-        if (!placemark || typeof placemark !== 'object')
+    removeMarker(options) {
+        if (!options || typeof options !== 'object')
             throw new Error(`
             [YandexMap] не коректный формат данных
-            получено: ${placemark},
+            получено: ${options},
             ожидается объект (возвращаемые методом "getMarkers".
             `)
 
-        this.placemarks = this.placemarks.filter(p => p !== placemark)
-        this.map.geoObjects.remove(placemark.placemark)
+        let idx
+        if (options.placemark) {
+            console.warn(new Error('указан placemark, лучше указать id'))
+            idx = this.placemarks.findIndex(p => p === options.placemark)
+        } else if (options.id){
+            idx = this.placemarks.findIndex( p => p.id === options.id)
+        }
+
+        if(typeof idx === 'number' && ~idx) {
+            const point = this.placemarks[idx]
+            this.placemarks = this.placemarks.filter((p, i) => i !== idx)
+            this.map.geoObjects.remove(point.placemark)
+        }
     }
 
     getMarkers() {

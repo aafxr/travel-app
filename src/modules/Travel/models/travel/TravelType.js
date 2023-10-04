@@ -57,6 +57,7 @@
  * @property {MemberType[]} members
  * @property {HotelType[]} hotels
  * @property {MovementType[]} movementTypes
+ * @property {InputPoint[]} waypoints
  * @property {string} date_start
  * @property {string} date_end
  * @property {number} adults_count

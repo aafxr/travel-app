@@ -1,6 +1,8 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {v4} from 'uuid'
 
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import ShareLinkIcon from "../../../../components/svg/ShareLinkIcon";
 import Container from "../../../../components/Container/Container";
 import WhatsappIcon from "../../../../components/svg/WhatsappIcon";
@@ -12,7 +14,6 @@ import Input from "../../../../components/ui/Input/Input";
 import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**@type{MemberType} */
 const defaultMember = {
@@ -37,9 +38,10 @@ export default function TravelInviteMember() {
     const handleChildCheckbox = (isChild) => setMember({
         ...member,
         isChild,
-        age: !member.age ? 7 : member.age
+        age: !member.age ? 7 : member.age,
+        inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`
     })
-
+    console.log(member)
     /**
      * обработчик устанавливает возраст ребенка
      * @param {number} age 1 - 17
