@@ -194,7 +194,7 @@ export default function TravelAddOnMap() {
 
     function handleRemoveUserLocationPoint() {
         const newPoints = travel.waypoints.slice(1)
-        map.removeMarker(travel.waypoints[0])
+        map.removeMarker({id: travel.waypoints[0].id})
         dispatch(actions.travelActions.setWaypoints(newPoints))
         dispatch(actions.travelActions.setIsUserLocation(false))
         setPoints(newPoints)
@@ -224,7 +224,7 @@ export default function TravelAddOnMap() {
                                         rightButton
                                     >
                                         <Input value={points[0].text} onChange={() => {
-                                        }}/>
+                                        }} data-id={points[0].id}/>
                                     </Swipe>
                                 )
 

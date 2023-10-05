@@ -1,4 +1,5 @@
 .input{
+    /*position: relative;*/
     padding-top: 10px;
     padding-right: 12px;
     padding-bottom: 10px;
@@ -14,6 +15,11 @@
     border: 2px solid var(--color-grey-light);
     background-color: var(--color-background);
     outline: none;
+}
+
+.input-highlight{
+    box-shadow: 0 0 4px var(--input-highlight-color);
+    transition: box-shadow .15s;
 }
 
 .inout::placeholder{

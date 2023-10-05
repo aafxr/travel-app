@@ -186,9 +186,9 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
             /** проверка на  pointIdx !== -1 */
             if (~pointIdx) {
                 /** удаляемая точка с карты */
-                const point = points[pointIdx].point
+                const point = points[pointIdx]
                 /** point может не существовать (если не нажата кнопка Enter) */
-                point && map.removeMarker(point)
+                point && map.removeMarker({id: point.id})
                 /** обновленный массив точек */
                 const newPoints = points.filter((p, idx) => idx !== pointIdx)
                 /** обновляем зум карты */
@@ -199,6 +199,11 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 onListChange && onListChange(newPoints)
             }
         }
+    }
+
+    function handleFocus(e){
+        const elems = document.querySelectorAll('input[data-id]')
+        elems.forEach(el => el.classList.remove('input-highlight'))
     }
 
     return (
@@ -226,7 +231,8 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}
                                 autoComplete='off'
-                                // onFocus={(e) => handleFocus(e, p)}
+                                data-id={p.id}
+                                onFocus={handleFocus}
                                 // onBlur={(e) => handleBlur(e, p)}
                             />
                             <div

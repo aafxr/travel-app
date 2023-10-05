@@ -32,7 +32,8 @@
     --box-shadow: 0 0 16px rgba(205,205,205, .7);
     --border: 2px solid var(--color-grey);
 
-    --modal-bg: rgba(0,0,0,.6)
+    --modal-bg: rgba(0,0,0,.6);
+    --input-highlight-color: rgba(255, 142,	9, 0.7);
 
 
 }

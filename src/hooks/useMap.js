@@ -24,7 +24,7 @@ export default function useMap(travel, userLocation, withSelectedPoints = true) 
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: (withSelectedPoints && travel?.waypoints ) ? travel.waypoints.map(wp => ({...wp.point})) : [],
+                points: (withSelectedPoints && travel?.waypoints ) ? travel.waypoints.map(wp => ({...wp.point, id:wp.id})) : [],
                 location: userLocation,
                 iconURL: DEFAULT_PLACEMARK_ICON,
                 // suggestElementID: points[0]?.id,

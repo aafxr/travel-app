@@ -2,6 +2,7 @@ import IMap from "./IMap";
 import userLocation from "../utils/userLocation";
 import ErrorReport from "../controllers/ErrorReport";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
+import input from "../components/ui/Input/Input";
 
 
 export default class YandexMap extends IMap {
@@ -155,11 +156,17 @@ export default class YandexMap extends IMap {
     }
 
     _handlePlacemarkClick(e){
-        console.log(e)
-        console.log(e.originalEvent)
         const p = e.originalEvent.target
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
-        console.log(idx)
+        if(~idx){
+            const pm = this.placemarks[idx]
+            const inputEls = document.querySelectorAll('input[data-id]')
+            inputEls.forEach( el => {
+                if (el.dataset.id === pm.id) el.classList.add('input-highlight')
+                else el.classList.remove('input-highlight')
+                console.log({el,id:pm})
+            })
+        }
     }
 
     /** обработка завершения перетаскивания */
@@ -215,6 +222,8 @@ export default class YandexMap extends IMap {
                 if (geoObject) {
                     /** информация о новой метке */
                     const newMarker = this._markerInfo(geoObject, id)
+                    /** добавление placemark с обработчиками (dragend, click) */
+                    newMarker.placemark = this._newPlacemark(newMarker.coords, newMarker.id)
                     this.placemarks.push(newMarker)
                     /** добавление маркера на карту */
                     this.map.geoObjects.add(newMarker.placemark)
@@ -280,11 +289,10 @@ export default class YandexMap extends IMap {
             получено: ${options},
             ожидается объект (возвращаемые методом "getMarkers".
             `)
-
         let idx
         if (options.placemark) {
             console.warn(new Error('указан placemark, лучше указать id'))
-            idx = this.placemarks.findIndex(p => p === options.placemark)
+            idx = this.placemarks.findIndex(p => p.id === options.placemark)
         } else if (options.id){
             idx = this.placemarks.findIndex( p => p.id === options.id)
         }
@@ -529,7 +537,6 @@ YandexMap.init = function init({
                         center: location || [55.03, 82.92],
                         zoom: 7
                     })
-
                     resolve(new YandexMap({
                         mapContainerID,
                         suggestElementID,

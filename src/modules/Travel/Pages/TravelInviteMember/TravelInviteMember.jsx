@@ -61,6 +61,21 @@ export default function TravelInviteMember() {
         pushAlertMessage({type: "info", message:'Отправка приглошения в процессе разработки'})
     }
 
+    /**
+     * обработчик копирует
+     * @param {Event<HTMLInputElement>} e
+     */
+    function handleCopyInviteLink(e){
+        if(
+            'navigator' in window
+            && 'clipboard' in window.navigator
+        ){
+            navigator.clipboard.writeText(e.target.value)
+            e.target.classList.add('input-highlight')
+            pushAlertMessage({type:'success', message:"Ссылка скопирована"})
+        }
+    }
+
     return (
         <div className='wrapper'>
             <Container className='content pt-20 pb-20 column gap-1'>
@@ -86,7 +101,12 @@ export default function TravelInviteMember() {
                     />
                     <button className='invite-button flex-0' onClick={handleInviteButtonClick}>Пригласить</button>
                 </div>
-                <Input value={member.inviteURL} onChange={() => {}} placeholder='URL'/>
+                <Input
+                    value={member.inviteURL}
+                    onChange={() => {}}
+                    onFocus={handleCopyInviteLink}
+                    placeholder='URL'
+                />
                 <div>
                     <div className='invite-share-title'>Поделиться ссылкой</div>
                     <div className='flex-nowrap gap-0.25'>
