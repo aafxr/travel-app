@@ -11,7 +11,6 @@ import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import CheckList from "../../../../components/CheckList/CheckList";
 import {Chip, PageHeader, Tab} from "../../../../components/ui";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
@@ -36,7 +35,6 @@ export default function TravelDetails() {
     const {travel, errorMessage} = useTravel()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
-    const [checkListOpen, setCheckListOpen] = useState(false)
     const travelDurationLabel = dateRange(travel?.date_start, travel?.date_end)
 
     //переменная для задания количества табов (по дням)
@@ -128,13 +126,12 @@ export default function TravelDetails() {
                         <IconButton
                             icon={<ChecklistIcon/>}
                             title='Чек-лист'
-                            onClick={() => setCheckListOpen(true)}
+                            onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
                         />
                         <IconButton icon={<ChatIcon badge/>}/>
                     </div>
                 </div>
             </Container>
-            {checkListOpen && <CheckList isVisible={checkListOpen} close={() => setCheckListOpen(false)}/>}
 
             <Curtain
                 onChange={setCurtainOpen}

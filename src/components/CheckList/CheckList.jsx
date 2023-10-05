@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 import Container from "../Container/Container";
 import storeDB from "../../db/storeDB/storeDB";
@@ -7,24 +7,42 @@ import constants from "../../static/constants";
 import Checkbox from "../ui/Checkbox/Checkbox";
 import createId from "../../utils/createId";
 import Button from "../ui/Button/Button";
-import Modal from "../Modal/Modal";
 import {PlusIcon} from "../svg";
-import {Input} from "../ui";
+import {Input, PageHeader} from "../ui";
 
 import './CheckList.css'
 
-export default function CheckList({isVisible, close}) {
+/**
+ * @typedef {Object} ChecklistItemType
+ * @property {string} id
+ * @property {string} title
+ * @property {0 | 1} checked
+ */
+
+/**
+ * @typedef {Object} ChecklistType
+ * @property {string} id
+ * @property {string} primary_entity_id
+ * @property {ChecklistType[]} items
+ */
+
+export default function CheckList() {
+    const navigate = useNavigate()
     const {travelCode} = useParams()
+    /** значение в input */
     const [value, setValue] = useState('')
-    const [checkList, setCheckList] = useState(null)
-    const [checkListItems, setCheckListItems] = useState([])
+    /** сущность чеклист полученная из локальной бд либо сгенерированная (если в бд отсутствует) */
+    const [checkList, setCheckList] = useState(/**@type{ChecklistType[] | null} */null)
+    /** список неободимого для поездки */
+    const [checkListItems, setCheckListItems] = useState(/**@type{ChecklistItemType[]} */[])
+    /** флаг указывает на то, что чеклист изменен */
     const [changed, setChanged] = useState(false)
 
     //загрузка чеклистаиз хранилища ===================================================================================
     useEffect(() => {
         if (travelCode) {
             storeDB.getOneFromIndex(constants.store.CHECKLIST, constants.indexes.PRIMARY_ENTITY_ID, travelCode)
-                .then(list => {
+                .then( /** @param {ChecklistType} list */ list => {
                     if (list) {
                         setCheckList(list)
                         setCheckListItems(list.items || [])
@@ -42,7 +60,6 @@ export default function CheckList({isVisible, close}) {
         }
     }, [travelCode])
 
-
     // созранение измененного чеклиста ===============================================================================
     function handleSubmit() {
         if (changed) {
@@ -51,13 +68,8 @@ export default function CheckList({isVisible, close}) {
                 items: checkListItems
             }
             storeDB.editElement(constants.store.CHECKLIST, newList)
-                .then(() => close && close())
+                .then(() => navigate(-1))
         }
-    }
-
-    // обработка закрытия модального окна =============================================================================
-    function handleClose() {
-        close && close()
     }
 
     // добавление нового поля в чпичок чеклиста =======================================================================
@@ -87,62 +99,39 @@ export default function CheckList({isVisible, close}) {
         !changed && setChanged(true)
     }
 
-    // function handleEditChecklistItem(e, item){
-    //     if(e.keyCode === 13){
-    //         e.stopPropagation()
-    //         const newList = checkListItems.map(el => {
-    //             if (el === item){
-    //                 return {...el, title: e.target.innerText}
-    //             }
-    //             return el
-    //         })
-    //         setCheckListItems(newList)
-    //         !changed && setChanged(true)
-    //     }
-    // }
-
 
     return (
-        <Modal isVisible={isVisible} close={handleClose} submit={handleSubmit}>
-            <Container className='check-list wrapper pt-20 pb-20'>
-                <Input
-                    value={value}
-                    onChange={e => setValue(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    // onBlur={e => e.target.focus()}
-                    placeholder='Добавить запись'
-                />
-                <div className='content checkbox-content'>
-                    {
-                        checkListItems.map(c => (
-                            <Checkbox
-                                key={c.id}
-                                checked={c.checked}
-                                left
-                                onChange={() => handleItemCheckChange(c)}
-                            >
-                                <div className='flex-between align-center'>
-                                    <span
-                                        // contentEditable={true}
-                                        // onKeyDown={e => handleEditChecklistItem(e, c)}
-                                        // inputMode='text'
-                                    >
-                                        {c.title}
-                                    </span>
-                                    <PlusIcon
-                                        className='check-list-item-remove center flex-0'
-                                        onClick={(e) => handleRemoveCheckListItem(e, c)}
-                                    />
-                                </div>
-                            </Checkbox>
-                        ))
-                    }
-                </div>
-                <div className='footer column gap-0.25'>
+        <Container className='check-list wrapper pb-20'>
+            <PageHeader arrowBack title='Чек лист' />
+            <Input
+                value={value}
+                onChange={e => setValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder='Добавить запись'
+            />
+            <div className='content checkbox-content'>
+                {
+                    checkListItems.map(c => (
+                        <Checkbox
+                            key={c.id}
+                            checked={c.checked}
+                            left
+                            onChange={() => handleItemCheckChange(c)}
+                        >
+                            <div className='flex-between align-center'>
+                                    <span>{c.title}</span>
+                                <PlusIcon
+                                    className='check-list-item-remove center flex-0'
+                                    onClick={(e) => handleRemoveCheckListItem(e, c)}
+                                />
+                            </div>
+                        </Checkbox>
+                    ))
+                }
+            </div>
+            <div className='footer column gap-0.25'>
                 <Button onClick={handleSubmit} disabled={!changed}>Сохранить</Button>
-                <Button className='check-list-close-btn' onClick={() => close && close()}>Закрыть</Button>
-                </div>
-            </Container>
-        </Modal>
+            </div>
+        </Container>
     )
 }

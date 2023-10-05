@@ -49,6 +49,7 @@ import AuthRequired from "./hoc/AuthRequired";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
+import CheckList from "./components/CheckList/CheckList";
 
 
 function App() {
@@ -113,6 +114,7 @@ function App() {
                             <Route path={'/travel/:travelCode/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
+                            <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
