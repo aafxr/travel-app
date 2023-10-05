@@ -514,7 +514,7 @@ YandexMap.init = function init({
         if (window.ymaps) resolve(window.ymaps)
         else {
             const script = document.createElement('script')
-            script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route`
+            script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU`//&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route
 
             //добавление yandex maps api в htmlDOM
             element.appendChild(script)

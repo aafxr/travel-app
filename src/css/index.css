@@ -316,9 +316,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     object-fit: contain;
 }
 
-[class*='copyrights']{
-    visibility: hidden;
-}
+
 
 .location-marker{
     width: 32px;
@@ -375,4 +373,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .close-button{
     color: var(--color-primary) !important;
     background-color: transparent!important;
+}
+
+[class*='copyrights'],[class*='ymaps-2-1-79-controls']{
+    visibility: hidden;
 }

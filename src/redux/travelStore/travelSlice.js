@@ -269,7 +269,7 @@ export const travelsSlice = createSlice({
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
-                    const appointmentIdx = state.travels.findIndex(a => a.id === payload.id)
+                    const appointmentIdx = travel.appointments.findIndex(a => a.id === payload.id)
                     if (~appointmentIdx) travel.appointments[appointmentIdx] = payload
                     else travel.appointments.push(payload)
                 }
@@ -325,10 +325,10 @@ export const travelsSlice = createSlice({
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
-                    const memberIdx = state.travels.findIndex(a => a.id === payload.id)
+                    const memberIdx = travel.members.findIndex(m => m.id === payload.id)
                     if (~memberIdx) travel.members[memberIdx] = payload
                     else travel.members.push(payload)
-                    updateMembersCount()
+                    updateMembersCount(state)
                 }
             },
             /**
@@ -383,7 +383,7 @@ export const travelsSlice = createSlice({
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
-                    const hotelIdx = state.travels.findIndex(a => a.id === payload.id)
+                    const hotelIdx = travel.hotels.findIndex(h => h.id === payload.id)
                     if (~hotelIdx) travel.hotels[hotelIdx] = payload
                     else travel.hotels.push(payload)
                 }
@@ -408,7 +408,7 @@ export const travelsSlice = createSlice({
             /**
              * экшен ожидает получить информацию об отеле и удаляет ее из массива "hotels"
              * @param {TravelState} state
-             * @param {Object} payload
+             * @param {HotelType} payload
              */
             removeHotel(state, {payload}) {
                 if (!state.travelID) {
@@ -420,7 +420,7 @@ export const travelsSlice = createSlice({
                     return
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if (travel) travel.hotels = travel.hotels.filter(h => h !== payload)
+                if (travel) travel.hotels = travel.hotels.filter(h => h.id !== payload.id)
             },
 
             // обработка мест путешествия ========================================================================
@@ -439,7 +439,7 @@ export const travelsSlice = createSlice({
 
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
-                    const waypointIdx = state.travels.findIndex(a => a.id === payload.id)
+                    const waypointIdx = travel.waypoints.findIndex(a => a.id === payload.id)
                     if (~waypointIdx) travel.waypoints[waypointIdx] = payload
                     else travel.waypoints.push(payload)
                 }
@@ -481,7 +481,7 @@ export const travelsSlice = createSlice({
                 }
 
                 const travel = state.travels.find(t => t.id === state.travelID)
-                if (travel) travel.waypoints = travel.waypoints.filter(w => w !== payload)
+                if (travel) travel.waypoints = travel.waypoints.filter(w => w.id !== payload.id)
             },
             //экшены способов перемещения ==============================================================================
             /**
@@ -499,7 +499,7 @@ export const travelsSlice = createSlice({
                 }
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
-                    const movementTypeIdx = state.travels.findIndex(a => a.id === payload.id)
+                    const movementTypeIdx = travel.movementTypes.findIndex(mt => mt.id === payload.id)
                     if (~movementTypeIdx) travel.movementTypes[movementTypeIdx] = payload
                     else travel.movementTypes.push(payload)
                 }

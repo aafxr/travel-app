@@ -29,7 +29,10 @@ const defaultMember = {
 
 export default function TravelInviteMember() {
     const navigate = useNavigate()
-    const [member, setMember] = useState(defaultMember)
+    const [member, setMember] = useState(() => ({
+        ...defaultMember,
+            inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`
+    }))
 
     /**
      *  обработчик устанавливает флаг isChild
@@ -39,7 +42,6 @@ export default function TravelInviteMember() {
         ...member,
         isChild,
         age: !member.age ? 7 : member.age,
-        inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`
     })
     console.log(member)
     /**
