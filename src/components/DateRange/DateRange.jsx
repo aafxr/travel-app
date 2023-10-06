@@ -35,6 +35,7 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
                 || (end && end !== endValue)
             )
         ) {
+            console.log({start, end})
             /** если состояние компонента изменилось (обновились значения start / end) вызывается callback onChange */
             onChange({start, end})
         }
@@ -54,14 +55,14 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
             /** число миллисекунд диапазона до изменения */
             const diff = end_date.getTime() - start_date.getTime()
             /** instance Date новое значение выбранного диапазона */
-            const current_date = new Date(e.target.value)
+            const current_date = e.target.valueAsDate
             /** обновление состояния start */
-            setStart(e.target.value)
+            setStart(e.target.valueAsDate.toISOString())
             /** смещение конца диапазона относительно текущего выбранного значения на величину миллисекунд которая была до изменения диапазона */
             setEnd(new Date(current_date.getTime() + diff).toISOString().split("T").shift())
         } else {
             /** если значение конца диапазона не установленно, просто обновляем start */
-            setStart(e.target.value)
+            setStart(e.target.valueAsDate.toISOString())
         }
     }
 
@@ -70,11 +71,11 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
      * @param {InputEvent} e
      */
     function handleEndDateChange(e) {
-        const newEnd = new Date(e.target.value).toISOString()
-        setEnd(newEnd)
+        const newEnd = e.target.valueAsDate
+        setEnd(newEnd.toISOString())
     }
 
-
+    console.log({start, end, minDateValue})
     return (
         <div className='flex-stretch gap-0.25'>
             <Input
@@ -88,7 +89,7 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
                 type='date'
                 placeholder={'Завершение'}
                 value={end ? end.split('T').shift() : ''}
-                min={start || (typeof minDateValue === 'string' ? minDateValue.split('T').shift() : '')}
+                min={(start || typeof minDateValue === 'string') ? (start || minDateValue).split('T').shift() : ''}
                 onChange={handleEndDateChange}
             />
         </div>

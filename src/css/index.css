@@ -316,7 +316,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     object-fit: contain;
 }
 
+.overflow-x-hidden{
+    overflow-x: hidden;
+}
 
+.overflow-y-hidden{
+    overflow-y: hidden;
+}
 
 .location-marker{
     width: 32px;

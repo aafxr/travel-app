@@ -54,7 +54,6 @@ export default class YandexMap extends IMap {
         /** массив с информацией о добавленных на карту точках */
         this.placemarks = placemarks.map(pm =>{
             pm.placemark = this._newPlacemark(pm.coords, pm.textAddress)
-            // pm.placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
             return pm
         })
         this.placemarks.forEach(pm => this.map.geoObjects.add(pm.placemark))
@@ -98,9 +97,9 @@ export default class YandexMap extends IMap {
         geocode.geoObjects.each(obj => pmarr.push(obj))
         window.pm  = pmarr
         const geoObject = window.ymaps.geoQuery(pmarr).sortByDistance(coords).get(0)
-        // const geoObject = geocode.geoObjects.get(0)
         /** преобразованная информация о месте */
         const markerInfo = this._markerInfo(geoObject, id)
+        markerInfo.placemark = this._newPlacemark(markerInfo.coords, markerInfo.textAddress)
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
         this.autoZoom()
@@ -129,10 +128,8 @@ export default class YandexMap extends IMap {
         if(geoObject.getLocalities) locality = geoObject.getLocalities()
 
         const placemark = this._newPlacemark(coords, textAddress)
-
-        // placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
-
-        return {placemark, coords, textAddress, kind, id, locality: locality[0]}
+        console.log({placemark:placemark, coords, textAddress, kind, id, locality: locality[0]})
+        return {placemark:placemark, coords, textAddress, kind, id, locality: locality[0]}
     }
 
 
@@ -150,6 +147,7 @@ export default class YandexMap extends IMap {
             draggable: true,
             cursor: 'pointer',
         })
+        placemark.events.add('dragstart', this._handlePlacemarkDragStart.bind(this))
         placemark.events.add('dragend', this._handlePlacemarkDragEnd.bind(this))
         placemark.events.add('click', this._handlePlacemarkClick.bind(this))
         return placemark
@@ -164,15 +162,22 @@ export default class YandexMap extends IMap {
             inputEls.forEach( el => {
                 if (el.dataset.id === pm.id) el.classList.add('input-highlight')
                 else el.classList.remove('input-highlight')
-                console.log({el,id:pm})
             })
         }
+    }
+
+    _handlePlacemarkDragStart(e) {
+        const p = e.originalEvent.target
+        const idx = this.placemarks.findIndex(plm => plm.placemark === p)
+        // console.log(this.placemarks)
+        // console.log('drag start: ', idx)
     }
 
     /** обработка завершения перетаскивания */
     _handlePlacemarkDragEnd(e) {
         /** объект описывающий точку на карте (экземпляр Placemark в yandex maps api)  */
         const p = e.originalEvent.target
+        window.pm = p
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
 
         if (~idx) {
@@ -222,8 +227,9 @@ export default class YandexMap extends IMap {
                 if (geoObject) {
                     /** информация о новой метке */
                     const newMarker = this._markerInfo(geoObject, id)
+                    console.log(newMarker)
                     /** добавление placemark с обработчиками (dragend, click) */
-                    newMarker.placemark = this._newPlacemark(newMarker.coords, newMarker.id)
+                    // newMarker.placemark = this._newPlacemark(newMarker.coords, newMarker.textAddress)
                     this.placemarks.push(newMarker)
                     /** добавление маркера на карту */
                     this.map.geoObjects.add(newMarker.placemark)
