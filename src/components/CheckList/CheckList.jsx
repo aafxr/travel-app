@@ -7,8 +7,8 @@ import constants from "../../static/constants";
 import Checkbox from "../ui/Checkbox/Checkbox";
 import createId from "../../utils/createId";
 import Button from "../ui/Button/Button";
-import {PlusIcon} from "../svg";
 import {Input, PageHeader} from "../ui";
+import {PlusIcon} from "../svg";
 
 import './CheckList.css'
 

@@ -4,7 +4,7 @@ import createTravel from "../../modules/Travel/helpers/createTravel";
 import checkTravelFields from "./checkTravelFields";
 
 /**@type{TravelType} */
-const defaultTravel = {
+export const defaultTravel = {
     id: () => '',
     title: () => '',
     code: () => '',

@@ -44,14 +44,15 @@ export default function TravelSettings() {
      * @param {number} num
      */
     function handleAdultChange(num) {
-        if(!travel) return
+        if (!travel) return
         dispatch(actions.travelActions.setAdultCount(num))
     }
+
     /** обновление предпологаемого числа детей в путешествии
      * @param {number} num
      */
     function handleTeenagerChange(num) {
-        if(!travel) return
+        if (!travel) return
         dispatch(actions.travelActions.setChildCount(num))
     }
 
@@ -160,7 +161,8 @@ export default function TravelSettings() {
                                     <h4 className='title-semi-bold'>Участники</h4>
                                     <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
                                     <div className='center'>
-                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить участника</AddButton>
+                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить
+                                            участника</AddButton>
                                     </div>
                                     <div className='flex-between'>
                                         <span>Взрослые</span>
@@ -180,29 +182,32 @@ export default function TravelSettings() {
                                     </div>
                                 </section>
 
-                                <section className='travel-settings-hotels column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Отель</h4>
-                                    {
-                                        !!travel.hotels && Array.isArray(travel.hotels) && (
-                                            travel.hotels.map(h => (
-                                                <Link key={h.id} to={`/travel/${travelCode}/add/hotel/${h.id}/`}>
-                                                    <div className='travel-settings-hotel'>
-                                                        <div
-                                                            className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
-                                                        <div
-                                                            className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                        )
-                                    }
-                                    <div
-                                        className='link'
-                                        onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}
-                                    >
-                                        + Добавить отель
-                                    </div>
-                                </section>
+                                {
+                                    !!travel && travel.waypoints.length > 1 && (
+                                        <section className='travel-settings-hotels column gap-0.5 block'>
+                                            <h4 className='title-semi-bold'>Отель</h4>
+                                            {
+                                                !!travel.hotels && Array.isArray(travel.hotels) && (
+                                                    travel.hotels.map(h => (
+                                                        <Link key={h.id} to={`/travel/${travelCode}/add/hotel/${h.id}/`}>
+                                                            <div className='travel-settings-hotel'>
+                                                                <div
+                                                                    className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
+                                                                <div
+                                                                    className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
+                                                            </div>
+                                                        </Link>
+                                                    ))
+                                                )
+                                            }
+                                            <div
+                                                className='link'
+                                                onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}
+                                            >
+                                                + Добавить отель
+                                            </div>
+                                        </section>
+                                    )}
 
                                 <section className='travel-settings-appointments column gap-0.5 block'>
                                     <h4 className='title-semi-bold'>Встреча</h4>

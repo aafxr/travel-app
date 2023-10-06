@@ -3,6 +3,7 @@ import constants from "../../static/constants";
 import storeDB from "../../db/storeDB/storeDB";
 import aFetch from "../../axios";
 import checkTravelFields from "./checkTravelFields";
+import {defaultTravel} from "./travelSlice";
 
 
 /**
@@ -29,6 +30,7 @@ export const initTravelsThunk = createAsyncThunk(
                 travels = await storeDB.getAll(constants.store.TRAVEL)
                 travels =  checkTravelFields(travels)
             }
+            if(Array.isArray(travels)) travels.forEach(checkTravelKeys)
             return {
                 travels
             }
@@ -39,3 +41,9 @@ export const initTravelsThunk = createAsyncThunk(
 
     }
 )
+
+function checkTravelKeys(travel){
+    Object.keys(defaultTravel).forEach(key => {
+        if(!travel[key]) travel[key] = defaultTravel[key]()
+    })
+}
