@@ -1,10 +1,16 @@
-import Container from "../../../../components/Container/Container";
-import {PageHeader} from "../../../../components/ui";
-import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import {useParams} from "react-router-dom";
 
+import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
+import Container from "../../../../components/Container/Container";
+import {PageHeader} from "../../../../components/ui";
+
+
+/**
+ * Компоннт для добавления деталей путешествия
+ */
 export default function TravelParams() {
     const {travelCode} = useParams()
+
     return (
         <div className='wrapper'>
         <Container>

@@ -1,10 +1,17 @@
-import Container from "../../components/Container/Container";
-import {PageHeader} from "../../components/ui";
-import {useNavigate} from "react-router-dom";
-import Button from "../../components/ui/Button/Button";
 import {useEffect, useState} from "react";
-import {CRITICAL_ERROR} from "../../static/constants";
+import {useNavigate} from "react-router-dom";
 
+import Container from "../../components/Container/Container";
+import Button from "../../components/ui/Button/Button";
+import {CRITICAL_ERROR} from "../../static/constants";
+import {PageHeader} from "../../components/ui";
+
+/**
+ * компонент отображения ошибки
+ * @param resetError
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function ErrorPage({resetError}) {
     const navigate = useNavigate()
 

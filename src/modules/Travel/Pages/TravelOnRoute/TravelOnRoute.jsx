@@ -1,12 +1,16 @@
 import React from "react";
 import {useParams} from "react-router-dom";
 
-import Button from "../../../../components/ui/Button/Button";
-import Container from "../../../../components/Container/Container";
-import {Chip, PageHeader} from "../../../../components/ui";
 import LocationCard from "../../components/LocationCard/LocationCard";
+import Container from "../../../../components/Container/Container";
+import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import {Chip, PageHeader} from "../../../../components/ui";
 
+
+/**
+ * компонент, отображает рекомендации для посещения  
+ */
 export default function TravelOnRoute() {
     const {travelCode} = useParams()
 

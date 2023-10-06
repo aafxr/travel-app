@@ -1,7 +1,8 @@
 import createId from "../../../utils/createId";
+import {defaultTravel} from "../../../redux/travelStore/travelSlice";
 
 /**
- *
+ * метод создания нового путешествия с набором дефолтных полей
  * @param {string} title
  * @param {string} user_id
  * @param {Object} [extraFields]
@@ -16,6 +17,11 @@ export default function createTravel(title, user_id, extraFields = {}){
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
     }
+    Object.keys(defaultTravel).forEach(key => {
+        if(!newTravel[key]) {
+            newTravel[key] = defaultTravel[key]()
+        }
+    })
     Object.keys(extraFields).forEach(key => newTravel[key] = extraFields[key])
     return newTravel
 }

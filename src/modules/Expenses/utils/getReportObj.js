@@ -1,8 +1,8 @@
 /**
  * возвращает массив элементов сгруппированных по секции
- * @param {Array.<import('../models/SectionType').SectionType>} sections
- * @param {Array.<import('../models/LimitType').LimitType>} limits
- * @param {Array.<import('../models/ExpenseType').ExpenseType>} expenses
+ * @param {Array.<import('../../../types/SectionType').SectionType>} sections
+ * @param {Array.<import('../../../types/LimitType').LimitType>} limits
+ * @param {Array.<import('../../../types/ExpenseType').ExpenseType>} expenses
  * @return {*[]}
  */
 export default function getReportObj(sections, limits, expenses) {

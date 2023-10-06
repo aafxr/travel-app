@@ -75,7 +75,7 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
         setEnd(newEnd.toISOString())
     }
 
-    console.log({start, end, minDateValue})
+
     return (
         <div className='flex-stretch gap-0.25'>
             <Input

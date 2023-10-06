@@ -44,14 +44,15 @@ export default function TravelSettings() {
      * @param {number} num
      */
     function handleAdultChange(num) {
-        if(!travel) return
+        if (!travel) return
         dispatch(actions.travelActions.setAdultCount(num))
     }
+
     /** обновление предпологаемого числа детей в путешествии
      * @param {number} num
      */
     function handleTeenagerChange(num) {
-        if(!travel) return
+        if (!travel) return
         dispatch(actions.travelActions.setChildCount(num))
     }
 
@@ -160,7 +161,8 @@ export default function TravelSettings() {
                                     <h4 className='title-semi-bold'>Участники</h4>
                                     <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
                                     <div className='center'>
-                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить участника</AddButton>
+                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить
+                                            участника</AddButton>
                                     </div>
                                     <div className='flex-between'>
                                         <span>Взрослые</span>

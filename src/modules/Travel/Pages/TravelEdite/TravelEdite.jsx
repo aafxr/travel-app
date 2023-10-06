@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import constants, {defaultMovementTags} from "../../../../static/constants";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
+import DateRange from "../../../../components/DateRange/DateRange";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
@@ -11,10 +12,12 @@ import changedFields from "../../../../utils/changedFields";
 import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
-import DateRange from "../../../../components/DateRange/DateRange";
 import useTravel from "../../hooks/useTravel";
 
 
+/**
+ * Компонент редактирования параметров путешествия
+ */
 export default function TravelEdite() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -22,16 +25,22 @@ export default function TravelEdite() {
     const {travelCode} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])
     const {travel, errorMessage} = useTravel()
-
+    /** название путешествия */
     const [title, setTitle] = useState('')
+    /** дата начала путешествия */
     const [start, setStart] = useState('')
+    /** дата кончания путешествия */
     const [end, setEnd] = useState('')
+    /** ограничение диапазона дат путешествия (не раньше текущей даты) */
     const minDateValue = useMemo(() => new Date().toISOString(), [])
+    /** описание путешествия */
     const [description, setDescription] = useState('')
+    /** способы передвижения */
     const [tags, setTags] = useState([])
 
-    const currentDay = new Date().toISOString().split('T').shift()
+    // const currentDay = new Date().toISOString().split('T').shift()
 
+    /** обновление состояния компонента (заполнение уже существующих полей путешествия) */
     useEffect(() => {
         if (travel) {
             travel.title && setTitle(travel.title)
@@ -41,7 +50,6 @@ export default function TravelEdite() {
             travel.movementTypes && setTags(travel.movementTypes.map(mt => mt.id))
             //... доьавить остальные поля в будущем
         }
-
     }, [travel])
 
     function handleSave() {
@@ -87,6 +95,7 @@ export default function TravelEdite() {
         }
     }
 
+    /** обработчик нажатия на способ перемещения */
     function handleTagClick(id) {
         const newTagList = tags.includes(id)
             ? tags.filter(t => t !== id)

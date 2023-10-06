@@ -1,11 +1,16 @@
 import React from "react";
 import {useParams} from "react-router-dom";
 
-import Button from "../../../../components/ui/Button/Button";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import useChangeInputType from "../../hooks/useChangeInputType";
+import Button from "../../../../components/ui/Button/Button";
 
+/**
+ * компонент для добавления саолета
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TravelAddPlane() {
     const {travelCode} = useParams()
     const dateHandlers = useChangeInputType('date')
