@@ -21,6 +21,10 @@ export const defaultTravel = {
     members: () => [],
     appointments: () => [],
     movementTypes: () => [],
+    waypoints: () => [],
+    adults_count: () =>  0,
+    childs_count: () =>  0,
+    direction: () => '',
 }
 
 /**
