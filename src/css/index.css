@@ -365,6 +365,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--color-telegram);
 }
 
+.share-link.telegram-bg > *{
+    transform: translate(-55%, -50%);
+}
+
 .share-link-bg{
     background-color: var(--color-share-link);
 }
