@@ -20,7 +20,7 @@ export default function TravelAddHotel() {
     const navigate = useNavigate()
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()
-    const { hotelCode} = useParams()
+    const {hotelCode} = useParams()
 
     const {travel, errorMessage} = useTravel()
     const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
@@ -29,12 +29,12 @@ export default function TravelAddHotel() {
     /** инициализация переменн hotel */
     useEffect(() => {
         if (travel && !hotel) {
-           /** если url содержит hotelCode (т.е редактируем данные об отеле) ищем в travel данные о путешествии */
+            /** если url содержит hotelCode (т.е редактируем данные об отеле) ищем в travel данные о путешествии */
             if (hotelCode) {
                 /** @type{HotelType | undefined} */
                 const h = travel?.hotels.find(h => h.id === hotelCode)
                 if (h) setHotel(h)
-                    /** если информация об отеле в сущности travel не найдена, то создаем новый отель с id hotelCode */
+                /** если информация об отеле в сущности travel не найдена, то создаем новый отель с id hotelCode */
                 else setHotel(defaultHotelData(hotelCode))
                 /** если нет hotelCode, значит добавляются данные о новом отеле */
             } else setHotel(defaultHotelData())
@@ -58,7 +58,7 @@ export default function TravelAddHotel() {
     //==================================================================================================================
     /** сохранение информации об отеле и перенаправление пользователя */
     function handleHotelSave() {
-        if(!travel || !travel.hotels) {
+        if (!travel || !travel.hotels) {
             pushAlertMessage({type: "warning", message: 'Ошибка при добавление отеля'})
             return
         }
@@ -69,7 +69,7 @@ export default function TravelAddHotel() {
         newTravel.hotels = [...newTravel.hotels]
         /** если отель уж существует в travel.hotels, то перезаписываем данные значением hotel, иначе добовляем отель в список */
         const hidx = travel?.hotels.findIndex(h => h.id === hotel.id)
-        if (hotelCode && hidx !== -1)  newTravel.hotels[hidx] = hotel
+        if (hotelCode && hidx !== -1) newTravel.hotels[hidx] = hotel
         else newTravel.hotels.push(hotel)
 
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
@@ -88,10 +88,10 @@ export default function TravelAddHotel() {
     }
 
     /** обработчик изменения диапазона дат заселения в отель */
-    function handleHotelRangeChange({start, end}){
-        if(hotel){
-            if (hotel.check_in !== start) dispatch(actions.travelActions.addHotel({...hotel, check_in:start}))
-            if (hotel.check_out !== end) dispatch(actions.travelActions.addHotel({...hotel, check_out:end}))
+    function handleHotelRangeChange({start, end}) {
+        if (hotel) {
+            if (hotel.check_in !== start) dispatch(actions.travelActions.addHotel({...hotel, check_in: start}))
+            if (hotel.check_out !== end) dispatch(actions.travelActions.addHotel({...hotel, check_out: end}))
         }
     }
 
@@ -110,12 +110,16 @@ export default function TravelAddHotel() {
                                     onChange={(e) => handleHotelDetailsChange(e, 'title')}
                                     placeholder='Название'
                                 />
-                                <Input
-                                    type='text'
-                                    value={hotel.location}
-                                    onChange={(e) => handleHotelDetailsChange(e, 'location')}
-                                    placeholder='Место'
-                                />
+                                {
+                                    !!travel && travel.waypoints.length > 1 && (
+                                        <Input
+                                            type='text'
+                                            value={hotel.location}
+                                            onChange={(e) => handleHotelDetailsChange(e, 'location')}
+                                            placeholder='Место'
+                                        />
+                                    )
+                                }
                                 <DateRange
                                     minDateValue={travel.date_start}
                                     startValue={hotel.check_in}
@@ -143,7 +147,7 @@ export default function TravelAddHotel() {
             <div className='footer-btn-container footer'>
                 <Button
                     onClick={handleHotelSave}
-                    disabled={!hotel || !hotel.title || !hotel.location || !hotel.check_in || !hotel.check_out}
+                    disabled={!hotel || !hotel.title || (travel.waypoints.length > 1 ? !hotel.location : true) || !hotel.check_in || !hotel.check_out}
                 >Добавить</Button>
             </div>
         </div>

@@ -48,3 +48,11 @@
     border-radius: 1rem;
     cursor: pointer;
 }
+
+.travel-title{
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}

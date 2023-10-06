@@ -7,7 +7,7 @@ import storeDB from "../../../db/storeDB/storeDB";
  * поиск информации о расходах по id
  * @param {string} id
  * @param {'plan' | 'actual'} type
- * @returns {import('../models/ExpenseType').ExpenseType | null}
+ * @returns {import('../../../types/ExpenseType').ExpenseType | null}
  */
 export default function useExpense(id, type = 'plan') {
     const [expense, setExpense] = useState(null)

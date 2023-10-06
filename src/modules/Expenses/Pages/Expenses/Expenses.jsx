@@ -23,24 +23,29 @@ import '../../css/Expenses.css'
  * @constructor
  */
 export default function Expenses({primary_entity_type}) {
+    const dispatch = useDispatch()
     const {travelCode: primary_entity_id} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])
     const {sections, limits, expensesActual} = useSelector(state => state[constants.redux.EXPENSES])
-    const dispatch = useDispatch()
     const [noDataMessage, setNoDataMessage] = useState('')
     const [filter, setFilter] = useState(defaultFilterValue)
 
     const user_id = user.id
 
-
+    /** загрузка расходов из бд */
     useEffect(() => {
-            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
+            setTimeout(() => setNoDataMessage('Нет расходов'), 2000)
             updateExpenses( primary_entity_id, "actual")
                 .then(items => dispatch(actions.expensesActions.setExpensesActual(items)))
     }, [dispatch, primary_entity_id])
 
     const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expensesActual, limits, filter, user_id)
 
+    /**
+     *
+     * @param section
+     * @returns {T|null|{id: number, value: *}}
+     */
     const sectionLimit = function (section) {
         if (filter !== 'all') {
             return limitsList.find(l => l.section_id === section.id) || null

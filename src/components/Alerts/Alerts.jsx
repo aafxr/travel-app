@@ -28,13 +28,25 @@ export function pushAlertMessage(payload) {
     }))
 }
 
-// window.newAlert = pushAlertMessage
+// if (window)
+//     window.newAlert = pushAlertMessage
 
+
+/**
+ * компонент отображает информационные сообщения
+ * @param {number} count - количество одновременно отобрадаемых сообщений
+ * @param {number} maxAlertsCount - количество сообщений , которые хранятся в очереди на отобрадение
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function Alerts({count = 1, maxAlertsCount = 10}) {
+    /** число активных сообщений */
     const activeAlerts = useRef(0)
+    /** флаг сигнализирует о том, что очередб пуста */
     const [isEmpty, setIsEmpty] = useState(true)
-
+    /** очередь сообщений */
     const alertsQueue = useRef([])
+    /** React ref на контейнер с сообщениями */
     const ref = useRef(null)
 
     const onNewAlert = useCallback(function (e) {
@@ -88,13 +100,15 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
     }
 
     function appendAlert(type, message) {
+        const icon_url = `${process.env.PUBLIC_URL}\/icons\/${type}_icon.png`
         const div = document.createElement('div')
-        div.className = clsx('alert-item', type)
+        div.className = clsx('alert-item')
         div.innerHTML = `
-            ${message}
+            <span class="alert-icon flex-0" style="background-image: url(${icon_url})"></span>
+            <span>${message}</span>
             <span class="close-svg" ></span>
-            <span class="alert-line"></span>
         `
+        // <span class="alert-line"></span>
         ref.current.append(div)
     }
 

@@ -15,7 +15,11 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
-
+/**
+ * компонент для добавления встреч
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function TravelAddAppointment() {
     const { appointmentCode} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])

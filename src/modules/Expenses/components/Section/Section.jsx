@@ -18,9 +18,9 @@ import {actions} from "../../../../redux/store";
 
 /**
  *
- * @param {import('../../models/SectionType').SectionType} section - имя секции расходов
+ * @param {import('../../../../types/SectionType').SectionType} section - имя секции расходов
  * @param {function} sectionLimit - лимит расходов поьзователя
- * @param {Array.<import('../../models/ExpenseType').ExpenseType>} expenses
+ * @param {Array.<import('../../../../types/ExpenseType').ExpenseType>} expenses
  * @param {string} user_id
  * @param {boolean} personal
  * @param {boolean} line
@@ -117,7 +117,7 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
 
 /**
  *
- * @param {import('../../models/ExpenseType').ExpenseType} expense
+ * @param {import('../../../../types/ExpenseType').ExpenseType} expense
  * @param isPlan
  * @param user_id
  * @returns {JSX.Element}

@@ -8,4 +8,7 @@ export const local = {
 }
 
 export const EXPENSES_FILTER = 'EXPENSES_FILTER'
+/**
+ * @returns {ExpenseFilterType}
+ */
 export const defaultFilterValue = () => localStorage.getItem(EXPENSES_FILTER) || 'all'

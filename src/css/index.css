@@ -316,7 +316,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     object-fit: contain;
 }
 
+.overflow-x-hidden{
+    overflow-x: hidden;
+}
 
+.overflow-y-hidden{
+    overflow-y: hidden;
+}
 
 .location-marker{
     width: 32px;
@@ -363,6 +369,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .telegram-bg{
     background-color: var(--color-telegram);
+}
+
+.share-link.telegram-bg > *{
+    transform: translate(-55%, -50%);
 }
 
 .share-link-bg{

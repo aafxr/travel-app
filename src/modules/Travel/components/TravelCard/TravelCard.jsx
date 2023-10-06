@@ -1,12 +1,12 @@
 import React, {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
+import {defaultMovementTags} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Photo from "../../../../components/Poto/Photo";
+import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
-import {Chip} from "../../../../components/ui";
-import {defaultMovementTags} from "../../../../static/constants";
 
 /**
  * компонент отображает карточку путешествия
@@ -59,7 +59,7 @@ export default function TravelCard({travel, onRemove}) {
                     <div className='flex-between gap-0.5'>
                         <Photo className={'travel-image flex-0'} id={travel.photo}/>
                         <div className='travel-content'>
-                            <div className='w-full title-bold'>
+                            <div className='travel-title w-full title-bold'>
                                 {travel.title || travel.direction || ''}
                             </div>
                             {

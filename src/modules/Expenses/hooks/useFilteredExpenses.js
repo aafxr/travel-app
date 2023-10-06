@@ -2,7 +2,14 @@ import {useMemo} from "react";
 import distinctValues from "../../../utils/distinctValues";
 
 
-
+/**
+ * метод отфильтровывает расходы и оставляет только соответствующие фильтру
+ * @param {ExpenseType[]} expenses
+ * @param {LimitType[]} limits
+ * @param {ExpenseFilterType} filter
+ * @param {string} user_id
+ * @returns {{limitsList: LimitType[], filteredExpenses: ExpenseType[], sectionList: string[]}}
+ */
 export default function useFilteredExpenses(expenses, limits, filter, user_id){
     const filteredExpenses = useMemo(() => {
         if (!expenses || !expenses.length){

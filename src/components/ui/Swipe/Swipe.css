@@ -58,8 +58,9 @@
 
 .swipe-item{
     position: relative;
-    background-color:transparent;
     width: 100%;
+    background-color:transparent;
     transition: transform .3s;
+    /*overflow-x: hidden;*/
     z-index: 2;
 }
