@@ -111,7 +111,7 @@ export default function TravelAddHotel() {
                                     placeholder='Название'
                                 />
                                 {
-                                    !!travel && travel.waypoints.length > 1 && (
+                                    !!travel && travel.waypoints && travel.waypoints.length > 1 && (
                                         <Input
                                             type='text'
                                             value={hotel.location}
