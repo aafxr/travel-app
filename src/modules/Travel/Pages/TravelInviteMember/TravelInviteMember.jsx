@@ -14,6 +14,8 @@ import Input from "../../../../components/ui/Input/Input";
 import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
+import {useSelector} from "react-redux";
+import constants from "../../../../static/constants";
 
 /**@type{MemberType} */
 const defaultMember = {
@@ -29,10 +31,14 @@ const defaultMember = {
 
 export default function TravelInviteMember() {
     const navigate = useNavigate()
+
+    const {/**@type{UserAppType} */user} = useSelector(state => state[constants.redux.USER])
     const [member, setMember] = useState(() => ({
         ...defaultMember,
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`
     }))
+
+    const message = `${user.first_name} ${user.last_name} приглашает присоедениться к поездке`
 
     /**
      *  обработчик устанавливает флаг isChild
@@ -110,9 +116,18 @@ export default function TravelInviteMember() {
                 <div>
                     <div className='invite-share-title'>Поделиться ссылкой</div>
                     <div className='flex-nowrap gap-0.25'>
-                        <div className='share-link whatsapp-bg'><WhatsappIcon/></div>
-                        <div className='share-link telegram-bg'><TelegramIcon/></div>
-                        <div className='share-link share-link-bg'><ShareLinkIcon/></div>
+                        <a
+                            href={`whatsapp://send?text=${message} ${member.inviteURL}`}
+                            className='share-link whatsapp-bg'
+                        ><WhatsappIcon/></a>
+                        <a
+                            href={`https://telegram.me/share/url?url=${member.inviteURL}&text=${message}`}
+                            className='share-link telegram-bg'
+                        ><TelegramIcon/></a>
+                        <div
+                            className='share-link share-link-bg'
+                            onClick={handleCopyInviteLink}
+                        ><ShareLinkIcon/></div>
                     </div>
                 </div>
 

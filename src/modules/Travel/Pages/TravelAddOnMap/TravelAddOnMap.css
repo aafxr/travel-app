@@ -24,6 +24,16 @@
     background-color: white;
 }
 
+.travel-map-search{
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
 .travel-map-drag-icon{
     position: absolute;
     top: 0;

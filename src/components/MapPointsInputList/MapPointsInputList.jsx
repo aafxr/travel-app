@@ -7,6 +7,8 @@ import createId from "../../utils/createId";
 import DragIcon from "../svg/DragIcon";
 import Swipe from "../ui/Swipe/Swipe";
 import {Input} from "../ui";
+import ErrorReport from "../../controllers/ErrorReport";
+import sleep from "../../utils/sleep";
 
 /**
  * @typedef {Function} PointsListChangeFunction
@@ -33,6 +35,8 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
+    /** id активного input для добавления иконки поиска  */
+    const [focuseInputId, setFocuseInputId] = useState(/**@type{string | null} */null)
 
     useEffect(() => {
         if (pointsList && pointsList.length) setPoints(pointsList)
@@ -43,26 +47,40 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     /**
      * при нажатии Enter (keyCode = 13) добавляет точку на карту
      * @param {KeyboardEvent<HTMLInputElement>} e
-     * @param item - элемент из массива points
+     * @param {InputPoint} item - элемент из массива points
      * @returns {Promise<void>}
      */
     async function handleKeyDown(e, item) {
         if (e.keyCode === 13) {
-            const marker = await map.addMarkerByAddress(item.text, item.id)
-            if (marker) {
-                /** обновляем адресс в массиве points по полученным данным от api карты */
-                const newPoints = points.map(p => {
-                    if (p === item) {
-                        return {...item, text: marker.textAddress, point: marker}
-                    }
-                    return p
+            updatePointData(item)
+                .catch(err => {
+                    ErrorReport.sendError(err).catch(console.error)
+                    console.error(err)
                 })
-                setPoints(newPoints)
-                onListChange && onListChange(newPoints)
-            } else {
-                pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
-            }
         }
+    }
+
+    /**
+     *
+     * @param {InputPoint} item
+     * @returns {Promise<void>}
+     */
+    async function updatePointData(item) {
+        const marker = await map.addMarkerByAddress(item.text, item.id)
+        if (marker) {
+            /** обновляем адресс в массиве points по полученным данным от api карты */
+            const newPoints = points.map(p => {
+                if (p === item) {
+                    return {...item, text: marker.textAddress, point: marker}
+                }
+                return p
+            })
+            setPoints(newPoints)
+            onListChange && onListChange(newPoints)
+        } else {
+            pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
+        }
+
     }
 
     /**
@@ -201,9 +219,18 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         }
     }
 
-    function handleFocus(e){
+    function handleFocus(e) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
+        setFocuseInputId(e.target.dataset.id)
+    }
+
+    function handleSearchClick(item) {
+        updatePointData(item)
+            .catch(err => {
+                ErrorReport.sendError(err).catch(console.error)
+                console.error(err)
+            })
     }
 
     return (
@@ -233,21 +260,33 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                                 autoComplete='off'
                                 data-id={p.id}
                                 onFocus={handleFocus}
+                                onBlur={() => sleep(200).then(()=>setFocuseInputId(null))}
                                 // onBlur={(e) => handleBlur(e, p)}
                             />
-                            <div
-                                className='travel-map-drag-icon'
-                                onClick={() => {
-                                }}
-                                onTouchStart={(e) => handleTouchStart(e, p)}
-                                onTouchEnd={(e) => handleTouchEnd(e, p)}
-                                onTouchMove={handleTouchMove}
-                                onDragStart={() => handleDragStart(p)}
-                                onDragEnd={() => handleDragEnd(p)}
-                                draggable
-                            >
-                                <DragIcon/>
-                            </div>
+                            {
+                                focuseInputId
+                                    ? <img
+                                        className='travel-map-search'
+                                        onClick={() => handleSearchClick(p)}
+                                        src={process.env.PUBLIC_URL + '/icons/search.svg'}
+                                        alt="search"
+                                    />
+                                    : (
+                                        <div
+                                            className='travel-map-drag-icon'
+                                            onClick={() => {
+                                            }}
+                                            onTouchStart={(e) => handleTouchStart(e, p)}
+                                            onTouchEnd={(e) => handleTouchEnd(e, p)}
+                                            onTouchMove={handleTouchMove}
+                                            onDragStart={() => handleDragStart(p)}
+                                            onDragEnd={() => handleDragEnd(p)}
+                                            draggable
+                                        >
+                                            <DragIcon/>
+                                        </div>
+                                    )
+                            }
                         </div>
                     </Swipe>
                 ))
