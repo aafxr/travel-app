@@ -13,13 +13,15 @@ import createId from "./createId";
 
 
 /**
- *
+ * @function
+ * @name createAction
  * @param {string} storeName имя сущности (travel, expenses_actual )
  * @param {string} user_id
  * @param {'add' | 'update' | 'get' | 'remove'} action
  * @param {Object} data
  * @param {Object} [extraFields]
  * @returns {null | ActionType}
+ * @callback Utils
  */
 export default function createAction(storeName, user_id, action, data, extraFields = {}) {
     if (storeName && user_id && action && data) {

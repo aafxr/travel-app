@@ -1,6 +1,9 @@
 /**
  * возвращает промис, который резолвится с координатами пользователя
  * @returns {Promise<[number, number]>}
+ * @function
+ * @name userLocation
+ * @category Utils
  */
 export default function userLocation(){
     return new Promise((resolve, reject) => {

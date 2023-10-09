@@ -1,9 +1,12 @@
 /**
  * функция возвращает массив ключей, которые отличаются в объектах
+ * @function
+ * @name changedFields
  * @param {Object} oldValue
  * @param {Object} newValue
  * @param {string[]} extraFields
  * @returns {string[]}
+ * @category Utils
  */
 export default function changedFields(oldValue, newValue, extraFields= []){
     if(!oldValue || !newValue){

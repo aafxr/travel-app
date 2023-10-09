@@ -6,9 +6,12 @@
 
 /**
  * утилита работает как reduce, но может принимать undefined, null, один объект
+ * @function
+ * @name accumulate
  * @param data
  * @param {cb} CB
  * @returns {number}
+ * @category Utils
  */
 export default function accumulate(data, CB) {
     if (data) {

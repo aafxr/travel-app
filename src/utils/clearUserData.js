@@ -3,6 +3,9 @@ import storeDB from "../db/storeDB/storeDB";
 
 /**
  * Данный метод преднозначен для очистки данных ксли пользователь не авторизован
+ * @function
+ * @name clearUserData
+ * @category Utils
  */
 export default function clearUserData(){
     if (window) {

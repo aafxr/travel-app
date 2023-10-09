@@ -3,6 +3,9 @@
  * @param { RequestInfo | URL} resource
  * @param {RequestInit & Object.<'timeout', number>} options timeout = 8000 (default)
  * @returns {Promise<Response>}
+ * @function
+ * @name fetchWithTimeout
+ * @category Utils
  */
 export default async function fetchWithTimeout(resource, options = {}) {
     const {timeout = 8000} = options;

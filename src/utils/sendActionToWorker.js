@@ -5,6 +5,9 @@ import toArray from "./toArray";
  * @param {Worker} worker
  * @param {string} type
  * @returns {(function(*): void)|*}
+ * @function
+ * @name sendActionToWorker
+ * @category Utils
  */
 export default function sendActionToWorker(worker, type) {
     return (action) => {

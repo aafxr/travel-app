@@ -1,4 +1,5 @@
 /**
+ * @category Types
  * @typedef {object} AppointmentType
  * @property {string} id
  * @property {string} title
@@ -9,6 +10,7 @@
  */
 
 /**
+ * @category Types
  * @typedef {object} PermissionType
  * @property {string} id
  * @property {string} title
@@ -16,6 +18,7 @@
 
 
 /**
+ * @category Types
  * @typedef {object} MemberType
  * @property {string} id
  * @property {string} name
@@ -28,6 +31,7 @@
  */
 
 /**
+ * @category Types
  * @typedef {object} HotelType
  * @property {string} id
  * @property {string} title
@@ -37,6 +41,7 @@
  */
 
 /**
+ * @category Types
  * @typedef {object} MovementType
  * @property {string} id
  * @property {string} title
@@ -45,6 +50,7 @@
 
 
 /**
+ * @category Types
  * @typedef {object} TravelType
  * @property {string} id
  * @property {string} code

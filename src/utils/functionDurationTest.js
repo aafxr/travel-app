@@ -3,6 +3,9 @@
  * @param {Function} cb
  * @param {string} message default = '
  * @returns {*|Promise<unknown>}
+ * @function
+ * @name functionDurationTest
+ * @category Utils
  */
 export default function functionDurationTest(cb, message= '') {
     const start = Date.now()

@@ -5,6 +5,9 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * Функция возвращает отформатированное время
  * @param {string} dateTime
  * @param {boolean} withMonth
+ * @function
+ * @name dateToStringFormat
+ * @category Utils
  */
 export default  function dateToStringFormat(dateTime, withMonth = true){
     if(!dateTime){

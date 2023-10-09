@@ -1,0 +1,134 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> modules/Expenses/hooks/useExpensesDB.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="IMap.html">IMap</a></li><li><a href="LocalDB.html">LocalDB</a></li><li><a href="LocalDB_LocalDB.html">LocalDB</a></li><li><a href="YandexMap.html">YandexMap</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateAction">CreateAction</a></li><li><a href="global.html#TelegramAuthHandler">TelegramAuthHandler</a></li><li><a href="global.html#actionHandler">actionHandler</a></li><li><a href="global.html#actionProcess">actionProcess</a></li><li><a href="global.html#actionValidationObject">actionValidationObject</a></li><li><a href="global.html#actionsProcess">actionsProcess</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#animateTop">animateTop</a></li><li><a href="global.html#cloneNode">cloneNode</a></li><li><a href="global.html#createAction">createAction</a></li><li><a href="global.html#defaultFilterValue">defaultFilterValue</a></li><li><a href="global.html#defaultRange">defaultRange</a></li><li><a href="global.html#defaultTravel">defaultTravel</a></li><li><a href="global.html#formatter">formatter</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getFromIndex">getFromIndex</a></li><li><a href="global.html#getTravelDateStatus">getTravelDateStatus</a></li><li><a href="global.html#getstorageModel">getstorageModel</a></li><li><a href="global.html#initTravelsThunk">initTravelsThunk</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isActionValid">isActionValid</a></li><li><a href="global.html#limitValidation">limitValidation</a></li><li><a href="global.html#onSendData">onSendData</a></li><li><a href="global.html#onUpdate">onUpdate</a></li><li><a href="global.html#openDataBase">openDataBase</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#pushAlertMessage">pushAlertMessage</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#saveTokensToDB">saveTokensToDB</a></li><li><a href="global.html#schema">schema</a></li><li><a href="global.html#sectionsFromArray">sectionsFromArray</a></li><li><a href="global.html#subscribe">subscribe</a></li><li><a href="global.html#travelValidation">travelValidation</a></li><li><a href="global.html#unsubscribe">unsubscribe</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateMembersCount">updateMembersCount</a></li><li><a href="global.html#useKeyPress">useKeyPress</a></li><li><a href="global.html#validate">validate</a></li><li><a href="global.html#whileOffline">whileOffline</a></li><li><a href="global.html#write">write</a></li><li>{PhotoChangeFunction}</li></ul></div><div class="category"><h2>Types</h2><h3><a href="global.html">Global</a></h3></div><div class="category"><h2>Utils</h2><h3>Global</h3><ul><li><a href="global.html#accumulate">accumulate</a></li><li><a href="global.html#browserName">browserName</a></li><li><a href="global.html#changedFields">changedFields</a></li><li><a href="global.html#clearUserData">clearUserData</a></li><li><a href="global.html#createId">createId</a></li><li><a href="global.html#currencyToFixedFormat">currencyToFixedFormat</a></li><li><a href="global.html#dateRange">dateRange</a></li><li><a href="global.html#dateToStringFormat">dateToStringFormat</a></li><li><a href="global.html#defaultAppointmentData">defaultAppointmentData</a></li><li><a href="global.html#defaultHotelData">defaultHotelData</a></li><li><a href="global.html#defaultThemeClass">defaultThemeClass</a></li><li><a href="global.html#distinctValues">distinctValues</a></li><li><a href="global.html#errorToObject">errorToObject</a></li><li><a href="global.html#fetchWithTimeout">fetchWithTimeout</a></li><li><a href="global.html#functionDurationTest">functionDurationTest</a></li><li><a href="global.html#isError">isError</a></li><li><a href="global.html#isHexColor">isHexColor</a></li><li><a href="global.html#screenCoordsToBlockCoords">screenCoordsToBlockCoords</a></li><li><a href="global.html#sendActionToWorker">sendActionToWorker</a></li><li><a href="global.html#setFixedVH">setFixedVH</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html#toArray">toArray</a></li><li><a href="global.html#userLocation">userLocation</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>modules/Expenses/hooks/useExpensesDB.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {useEffect, useState} from "react";
+import storeDB from "../../../db/storeDB/storeDB";
+
+/**
+ * @returns {{storeDB: LocalDB, ready: boolean}}
+ */
+export default function usestoreDB(){
+    const [ready, setReady] = useState(false)
+
+    useEffect(() => {
+        storeDB.onReadySubscribe(() => setReady(true))
+    }, [])
+
+    return {
+        storeDB,
+        ready
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

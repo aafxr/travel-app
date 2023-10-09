@@ -58,7 +58,7 @@ async function openDataBase(dbname, version, stores) {
 
 
 /**
- * @description LocalDB в качестве параметров принимает схему бд (имя бд - dbname / версию / описание хранилищ),
+ * @description __LocalDB__ в качестве параметров принимает схему бд (имя бд - dbname / версию / описание хранилищ),
  *
  *
  * вторым параметром принимат объект с колбэками:
@@ -67,29 +67,32 @@ async function openDataBase(dbname, version, stores) {
  *
  * onError вызывается если при создании бд возникла ошибка
  *
- * ==================================================
  *
- * методы LocalDB:
  *
- * addElement       ринимает имя хранилища и query => возвращает id добавленного объекта
+ * #### методы LocalDB:
  *
- * ============
+ * - addElement       ринимает имя хранилища и query => возвращает id добавленного объекта
  *
- * getElement       ринимает имя хранилища и query => вернет undefined если нет объектов удовлетворяющих query
  *
- * ============
  *
- * editElement      принимает имя хранилища и query => перезаписывает объекты  удовлетворяющих query
+ * - getElement       ринимает имя хранилища и query => вернет undefined если нет объектов удовлетворяющих query
  *
- * ============
  *
- * getFromIndex     принимает имя хранилища имя индекса и query => вернет undefined если нет подходящего запросу объекта
+ *
+ * - editElement      принимает имя хранилища и query => перезаписывает объекты  удовлетворяющих query
+ *
+ *
+ *
+ * - getFromIndex     принимает имя хранилища имя индекса и query => вернет undefined если нет подходящего запросу объекта
  * или обяект / массив объектов в зависимости от query
  *
- * =================================================
+ *
  *
  * если query instanceof IDBKeyRange методы описаные выше (кроме addElement) будут работать с объектами, которые подходят
  * под условия IDBKeyRange
+ *
+ * @class
+ * @name LocalDB
  */
 export class LocalDB {
     /**
@@ -139,6 +142,7 @@ export class LocalDB {
 
     /**
      * Метод устанавливает callback, который будет вызван когда бд будет готова к работе
+     * @method LocalDB.onReadyHandler
      * @param {function} cb
      */
     set onReadyHandler(cb){
@@ -152,6 +156,7 @@ export class LocalDB {
 
     /**
      * проверяет наличие зранилищя в бд
+     * @method LocalDB.getStoreInfo
      * @param {String} storeName        имя хранилища в бд
      * @returns {StoreInfo | undefined} StoreInfo | undefined
      * @private
@@ -162,6 +167,7 @@ export class LocalDB {
 
     /**
      * проверяет существует ли index в текущем store
+     * @method LocalDB.isIndexProp
      * @param {Array.<String> }indexes массив с инфо о всех хранилищах в бд
      * @param {string} index           index из текущего store
      * @returns {boolean}
@@ -173,6 +179,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по переданным параметрам query
+     * @method LocalDB.getElement
      * @param {String} storeName                     массив с инфо о всех хранилищах в бд
      * @param {String | Number | IDBKeyRange} query  параметры поиска
      * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
@@ -195,6 +202,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по переданным параметрам query
+     * @method LocalDB.getOne
      * @param {String} storeName                     массив с инфо о всех хранилищах в бд
      * @param {String | Number | IDBKeyRange} query  параметры поиска
      * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
@@ -213,6 +221,7 @@ export class LocalDB {
 
     /**
      * поиск объектов в store по переданным параметрам query
+     * @method LocalDB.getMany
      * @param {String} storeName                            массив с инфо о всех хранилищах в бд
      * @param {String | Number | IDBKeyRange} query         параметры поиска
      * @returns { Promise<[]>}   возвращает Promise с резултатом поиска либо с ошибкой
@@ -231,6 +240,7 @@ export class LocalDB {
 
     /**
      * поиск всех объектов в store
+     * @method LocalDB.getAll
      * @param {String} storeName        массив с инфо о всех хранилищах в бд
      * @returns {Promise<[]>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
@@ -248,6 +258,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
+     * @method LocalDB.getFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
@@ -275,6 +286,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
+     * @method LocalDB.getOneFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
@@ -297,6 +309,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
+     * @method LocalDB.getManyFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @param { string | IDBKeyRange} query        параметры поиска
@@ -318,6 +331,7 @@ export class LocalDB {
 
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
+     * @method LocalDB.getAllFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
@@ -338,6 +352,7 @@ export class LocalDB {
 
     /**
      * добавляет объект в хранилище
+     * @method LocalDB.addElement
      * @param {string} storeName         имя хранилища
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>}   Promise с результатом добавления либо ошибкой
@@ -355,6 +370,7 @@ export class LocalDB {
 
     /**
      * обновляет объект в хранилище
+     * @method LocalDB.editElement
      * @param {string} storeName         имя хранилища
      * @param {object} payload           данные для записи
      * @returns {Promise<never>|Promise<number | string | Date | ArrayBufferView | ArrayBuffer | IDBValidKey[]>} Promise с результатом обовления либо ошибкой
@@ -372,6 +388,7 @@ export class LocalDB {
 
     /**
      * удаляет объект из хранилище
+     * @method LocalDB.removeElement
      * @param {string} storeName         имя хранилища
      * @param {string} key               ключ удаляемого объекта
      * @returns {Promise<void>}

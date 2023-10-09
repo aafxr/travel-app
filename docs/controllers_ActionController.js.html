@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> controllers/ActionController.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="IMap.html">IMap</a></li><li><a href="LocalDB.html">LocalDB</a></li><li><a href="LocalDB_LocalDB.html">LocalDB</a></li><li><a href="YandexMap.html">YandexMap</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateAction">CreateAction</a></li><li><a href="global.html#TelegramAuthHandler">TelegramAuthHandler</a></li><li><a href="global.html#actionHandler">actionHandler</a></li><li><a href="global.html#actionProcess">actionProcess</a></li><li><a href="global.html#actionValidationObject">actionValidationObject</a></li><li><a href="global.html#actionsProcess">actionsProcess</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#animateTop">animateTop</a></li><li><a href="global.html#cloneNode">cloneNode</a></li><li><a href="global.html#createAction">createAction</a></li><li><a href="global.html#defaultFilterValue">defaultFilterValue</a></li><li><a href="global.html#defaultRange">defaultRange</a></li><li><a href="global.html#defaultTravel">defaultTravel</a></li><li><a href="global.html#formatter">formatter</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getFromIndex">getFromIndex</a></li><li><a href="global.html#getTravelDateStatus">getTravelDateStatus</a></li><li><a href="global.html#getstorageModel">getstorageModel</a></li><li><a href="global.html#initTravelsThunk">initTravelsThunk</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isActionValid">isActionValid</a></li><li><a href="global.html#limitValidation">limitValidation</a></li><li><a href="global.html#onSendData">onSendData</a></li><li><a href="global.html#onUpdate">onUpdate</a></li><li><a href="global.html#openDataBase">openDataBase</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#pushAlertMessage">pushAlertMessage</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#saveTokensToDB">saveTokensToDB</a></li><li><a href="global.html#schema">schema</a></li><li><a href="global.html#sectionsFromArray">sectionsFromArray</a></li><li><a href="global.html#subscribe">subscribe</a></li><li><a href="global.html#travelValidation">travelValidation</a></li><li><a href="global.html#unsubscribe">unsubscribe</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateMembersCount">updateMembersCount</a></li><li><a href="global.html#useKeyPress">useKeyPress</a></li><li><a href="global.html#validate">validate</a></li><li><a href="global.html#whileOffline">whileOffline</a></li><li><a href="global.html#write">write</a></li><li>{PhotoChangeFunction}</li></ul></div><div class="category"><h2>Types</h2><h3><a href="global.html">Global</a></h3></div><div class="category"><h2>Utils</h2><h3>Global</h3><ul><li><a href="global.html#accumulate">accumulate</a></li><li><a href="global.html#browserName">browserName</a></li><li><a href="global.html#changedFields">changedFields</a></li><li><a href="global.html#clearUserData">clearUserData</a></li><li><a href="global.html#createId">createId</a></li><li><a href="global.html#currencyToFixedFormat">currencyToFixedFormat</a></li><li><a href="global.html#dateRange">dateRange</a></li><li><a href="global.html#dateToStringFormat">dateToStringFormat</a></li><li><a href="global.html#defaultAppointmentData">defaultAppointmentData</a></li><li><a href="global.html#defaultHotelData">defaultHotelData</a></li><li><a href="global.html#defaultThemeClass">defaultThemeClass</a></li><li><a href="global.html#distinctValues">distinctValues</a></li><li><a href="global.html#errorToObject">errorToObject</a></li><li><a href="global.html#fetchWithTimeout">fetchWithTimeout</a></li><li><a href="global.html#functionDurationTest">functionDurationTest</a></li><li><a href="global.html#isError">isError</a></li><li><a href="global.html#isHexColor">isHexColor</a></li><li><a href="global.html#screenCoordsToBlockCoords">screenCoordsToBlockCoords</a></li><li><a href="global.html#sendActionToWorker">sendActionToWorker</a></li><li><a href="global.html#setFixedVH">setFixedVH</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html#toArray">toArray</a></li><li><a href="global.html#userLocation">userLocation</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>controllers/ActionController.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Model from '../models/Model';
+import constants from '../static/constants';
+import actionValidationObj from '../models/action/validation';
+import {LocalDB} from '../db/LocalDB';
+import isString from '../utils/validation/isString';
+import ErrorReport from "./ErrorReport";
+import toArray from "../utils/toArray";
+import createId from "../utils/createId";
+
+/**
+ * @callback CB
+ * @param {import('../db/LocalDB').LocalDB}
+ * @returns {import('../models/Model').default}
+ */
+
+/**
+ * @typedef {Object.&lt;string, CB>} ModelOption
+ */
+
+/**
+ * @typedef {'add' | 'update' | 'get' | 'remove'} ActionVariant
+ */
+
+/**
+ * @typedef {Object.&lt;string, any>} AnyObj
+ */
+
+/**
+ * @typedef {object} ActionType
+ * @property {string} [id]
+ * @property {string} user_id
+ * @property {string} datetime
+ * @property {string} entity
+ * @property {ActionVariant} action
+ * @property {string} data
+ * @property {boolean | number} synced
+ */
+
+/**
+ * @typedef {object} Payload
+ * @property {string} storeName
+ * @property {string} [id]
+ * @property {string} [index]
+ * @property {string | number | IDBKeyRange} [query]
+ * @property {ActionVariant} [action]
+ * @property {*} data
+ */
+
+/**
+ * @typedef {object} ReadPayloadType
+ * @property {string} storeName
+ * @property {string} [id]
+ * @property {string} [index]
+ * @property {string | number | IDBKeyRange} [query]
+ */
+
+/**
+ * @typedef {object} WritePayloadType
+ * @property {string} storeName
+ * @property {ActionVariant} action
+ * @property {string} user_id
+ * @property {*} data
+ */
+
+/**
+ * @typedef {Payload &amp; AnyObj} ControllerPayloadType
+ */
+
+
+/**
+ * @description функция принимает payload должна вернуть новый action
+ * @function
+ * @name CreateAction
+ * @param {ControllerPayloadType} payload
+ * @returns {ActionType}
+ */
+
+/**
+ * @callback UpdateFunction
+ * @param {ActionController} controller
+ * @param {ActionType} [action]
+ */
+
+/**
+ * @typedef {object} OptionsType
+ * @property {ModelOption} models
+ * @property {string} storeName - имя хранилища для actions
+ * @property {UpdateFunction} [onUpdate]
+ * @property {CreateAction} newAction
+ * @property {function} onReady
+ * @property {function} onError
+ * @property {function} onSendData
+ */
+
+
+/**
+ * @typedef {object} PayloadType
+ * @property {string} storeName
+ * @property {string} user_id
+ * @property {ActionVariant} action
+ * @property {*} data
+ */
+
+
+
+
+
+const actions = ['add', 'update', 'get', 'remove'];
+/**
+ * @description ActionController
+ */
+export default class ActionController {
+    /**
+     *
+     * @param {LocalDB} db
+     * @param {OptionsType} options
+     */
+    constructor(db, options) {
+        this.readyFunctions = []
+        this.ready = false
+        this.db = db
+        db.onReadyHandler =  function(){
+            this.ready = true
+            this.readyFunctions.forEach(cd => cd())
+            this.readyFunctions = []
+        }.bind(this) //options.onReady || (() => {})
+
+        this.storeName = options.storeName;
+        this.onLine = navigator.onLine
+
+        this.actionsModel = new Model(
+            this.db,
+            this.storeName,
+            actionValidationObj
+        );
+
+        this.update = options.onUpdate || (() => {
+        })
+        this.send = options.onSendData || (() => {
+        })
+
+        this.model = {};
+        this.subscriptions = {};
+        this.modelNames = options.models ? Object.keys(options.models) : [];
+
+        this.modelNames.forEach((mn) => {
+            this.model[mn] = options.models[mn](this.db);
+            this.subscriptions[mn] = [];
+        });
+    }
+
+    set onReady(cb){
+        if(typeof cb === 'function'){
+            if (this.ready){
+                cb()
+            }else{
+                this.readyFunctions.push(cb)
+            }
+        }
+    }
+
+
+    /**
+     * подписка на событие
+     * @param {string} modelName
+     * @param {function} subscription
+     */
+    subscribe(modelName, subscription) {
+        if (this.modelNames.includes(modelName)) {
+            this.subscriptions[modelName] &amp;&amp; this.subscriptions[modelName].push(subscription)
+        } else {
+            this._errorMessage(
+                new Error(
+                    `[Controller.subscription] modelName or actionType not correct: ${modelName}`
+                )
+            );
+        }
+    }
+
+
+    /**
+     * подписка на событие
+     * @param {string} modelName
+     * @param {function} subscription
+     * @param {ActionVariant} [actionVariant]
+     */
+    unsubscribe(modelName, subscription, actionVariant) {
+        if (this.modelNames.includes(modelName)) {
+            this.subscriptions[modelName] = this.subscriptions[modelName]
+                .filter((sub) => sub !== subscription);
+        } else {
+            this._errorMessage(
+                new Error(
+                    `[Controller.subscription] modelName or actionType not correct: ${modelName}, ${actionVariant}`
+                )
+            );
+        }
+    }
+
+
+    /**
+     * set колбэк вызывается если были изменения в бд
+     * @param {function} cb
+     */
+    set onUpdate(cb) {
+        if (typeof cb === 'function') {
+            this.update = cb
+            this.update(this)
+        }
+    }
+
+
+    /**
+     * отправляет не синхронизированные actions на сервер
+     * @param cb
+     */
+    set onSendData(cb) {
+        if (cb === this.send){
+            return
+        }
+        if (typeof cb === 'function') {
+            this.send = cb
+            this.actionsModel.getFromIndex(constants.indexes.SYNCED, 0)
+                .then(actions => this.send(toArray(actions)))
+        }
+    }
+
+
+    /**
+     * выводит сообщение в консоль
+     * @param {Error} err
+     * @private
+     */
+    _errorMessage(err) {
+        console.error(err);
+        ErrorReport.sendError(new Error('[ActionController] ' + err)).catch(console.error)
+    }
+
+
+    /**
+     *
+     * @param {ActionType} action
+     */
+    isActionValid(action) {
+        let isValid = true;
+
+        if (!isString(action.user_id)) {
+            isValid = false;
+            console.warn('[Action validation] user_id ', action.user_id);
+        }
+
+        if (!actions.includes(action.action)) {
+            isValid = false;
+            console.warn('[Action validation] action ', action.action);
+        }
+
+        if (!this.modelNames.includes(action.entity)) {
+            isValid = false;
+            console.warn('[Action validation] entity ', action.entity);
+        }
+
+        if (typeof action.datetime !== 'number') {
+            isValid = false;
+            console.warn('[Action validation] entity ', action.datetime);
+        }
+
+        return isValid;
+    }
+
+    /**
+     * принимает action и обновляет данные в дб.
+     * Возвращает true, если данные были изменены
+     * @param {ActionType} action
+     * @returns {Promise&lt;boolean>}
+     */
+    async actionProcess(action) {
+        const {data, entity, action: actionVariant} = action
+        if (data &amp;&amp; this.model[entity].validate(data)) {
+            if (this.model[entity] &amp;&amp; this.model[entity][actionVariant]) {
+                if (actionVariant === 'add') {
+                    await this.model[entity][actionVariant](data)
+                } else {
+                    const isDataExist = await this.model[entity].get(data.id)
+                    if(!isDataExist){
+                        return false
+                    }
+                    await this.model[entity][actionVariant](actionVariant === 'remove' ? data.id : data)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * принимает и обрабаиывает события
+     * @param {ActionType} actions
+     */
+    async actionHandler(actions) {
+        try {
+            this.onLine = navigator.onLine
+            const actionsArr = toArray(actions)
+            const entityList = new Set(actionsArr.map(a => a.entity))
+            const actionsQueue = []
+            let isModified = false
+
+            for (const action of actionsArr) {
+                if (this.isActionValid(action)) {
+                    const {synced} = action;
+                    await this.actionProcess(action) &amp;&amp; (isModified = true)
+
+                    if (synced) {
+                        await this.actionsModel.update(action)
+                    } else {
+                        //действия если не синхронизированно
+                        await this.actionsModel.update(action)
+                        actionsQueue.push(action)
+                    }
+                }
+            }
+            if (isModified) {
+                this.update(this)
+                for (const entity of entityList.keys()) {
+                    this._subscriptionsCall(entity)
+                }
+            }
+            actionsQueue.length &amp;&amp; this.send(actionsQueue)
+            !this.onLine &amp;&amp; this.whileOffline()
+        } catch (err) {
+            this._errorMessage(err);
+        }
+    }
+
+
+    /**
+     * оповещает поддписчиков об изменении данных
+     * @param {string} entity
+     * @private
+     */
+    _subscriptionsCall(entity) {
+        if (this.model[entity]) {
+            this.subscriptions[entity].forEach((sub) => sub());
+        }
+    }
+
+
+    /**
+     *
+     * @param {WritePayloadType} payload
+     */
+    write(payload) {
+        try {
+            if (this.modelNames.includes(payload.storeName)) {
+                /**@type{ActionType}*/
+                const action = this.createAction(payload)
+                return this.actionHandler(action)
+            } else {
+                this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
+                return Promise.resolve(null)
+            }
+        } catch (err) {
+            this._errorMessage(err)
+            return Promise.resolve(null)
+        }
+    }
+
+
+    /**
+     *
+     * @param {ReadPayloadType} payload
+     */
+    read(payload) {
+        const {storeName, index, id, query} = payload
+
+        if (this.modelNames.includes(payload.storeName)) {
+            try {
+                if (index) {
+                    return this.model[storeName].getFromIndex(index, query)
+                        .catch(err => {
+                            throw err
+                        })
+                } else {
+                    return this.model[storeName]['get'](id || query)
+                        .catch(err => {
+                            throw err
+                        })
+                }
+            } catch (err) {
+                this._errorMessage(err)
+            }
+        } else {
+            this._errorMessage(new Error(`[ActionController] storeName "${payload.storeName}" not correct`))
+            return Promise.resolve(null)
+        }
+    }
+
+
+
+    /**
+     * возвращает action для новой записи в бд
+     * @param {PayloadType} payload должен содержать: storeName, user_id, action, data
+     * @returns {ActionType}
+     */
+    createAction(payload) {
+        const {storeName, user_id, action, data} = payload
+        if (storeName &amp;&amp; user_id &amp;&amp; action &amp;&amp; data) {
+            return {
+                id: createId(user_id),
+                action: action,
+                data: data,
+                entity: storeName,
+                datetime: Date.now(),
+                synced: 0,
+                user_id: user_id
+            }
+        } else {
+            return {}
+        }
+    }
+
+
+    /**
+     * возвра
+     * @param storeName
+     * @returns {*|null}
+     */
+    getstorageModel(storeName) {
+        if (this.modelNames.includes(storeName)) {
+            // return this.model[storeName]
+
+            return new Proxy(this.model[storeName], {
+                get(target, prop, receiver) {
+                    if (target[prop]) {
+                        if (typeof target[prop] === 'function') {
+                            try {
+                                return target[prop].bind(target)
+                            } catch (err) {
+                                ErrorReport.sendError(err).catch(console.error)
+                                console.error(err)
+                            }
+                        } else {
+                            return target[prop]
+                        }
+                    }
+                }
+            })
+        }
+        return null
+    }
+
+
+    /**
+     * метод ожидает востановления сети и отправляет накопившиеся actions на сервер
+     */
+    whileOffline() {
+        if (!this.offlineId) {
+            this.offlineId = setInterval(async () => {
+                if (navigator.onLine) {
+                    const actions = await this.actionsModel.getFromIndex(constants.indexes.SYNCED, 0)
+                    console.log('Not synced actions: ', actions)
+                    this.onLine = true
+                    clearInterval(this.offlineId)
+                    await this.actionHandler(actions)
+                }
+            }, 2000)
+        }
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

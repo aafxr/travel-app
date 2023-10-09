@@ -8,6 +8,7 @@ const ALERT_EVENT_NAME = 'alert-message'
 let alertId = 0
 
 /**
+ * @category Types
  * @typedef {object} AlertPayload
  * @property {'info' | 'success' | 'warning' | 'danger'} type
  * @property {string} message
@@ -38,6 +39,7 @@ export function pushAlertMessage(payload) {
  * @param {number} maxAlertsCount - количество сообщений , которые хранятся в очереди на отобрадение
  * @returns {JSX.Element}
  * @constructor
+ * @category Components
  */
 export default function Alerts({count = 1, maxAlertsCount = 10}) {
     /** число активных сообщений */

@@ -12,6 +12,9 @@
 
 /**
  * интерфейс для работы с картами. карта создается при помощи метода init
+ * @classdesc Not a real class but an interface. Etc...
+ * @name IMap
+ * @class
  */
 export default class IMap {
     async init(){}
@@ -19,6 +22,7 @@ export default class IMap {
     //управление маркерами (добавление, удаление, список)
     /**
      * дообавить точку на карт по координатам
+     * @method IMap.addMarker
      * @param {[number, number]} coords
      * @param {string} id
      * @returns{Promise<Point | null>}
@@ -29,6 +33,7 @@ export default class IMap {
 
     /**
      * добавить точку на карту по координатам блока-контейнера карты
+     * @method IMap.addMarkerByLocalCoords
      * @param {[number, number]} localCoords
      * @returns {Point | null}
      */
@@ -38,6 +43,7 @@ export default class IMap {
 
     /**
      * удалить точку на карту по координатам блока-контейнера карты
+     * @method IMap.removeMarkerByLocalCoords
      * @param {[number, number]} localCoords
      */
     removeMarkerByLocalCoords(localCoords){
@@ -46,6 +52,7 @@ export default class IMap {
 
     /**
      * добавить точку на карту по указанному адресу
+     * @method IMap.addMarkerByAddress
      * @param {string} address
      * @param {string} id
      * @returns {Point | null}
@@ -57,6 +64,7 @@ export default class IMap {
 
     /**
      * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
+     * @method IMap.removeMarker
      * @param {Object} marker
      */
     removeMarker(marker) {
@@ -65,6 +73,7 @@ export default class IMap {
 
     /**
      * возвращает массив объектов, описывающих точки на карте. Каждый объект содержит адрес, координаты
+     * @method IMap.getMarkers
      * @returns {Point[]}
      */
     getMarkers() {
@@ -73,6 +82,7 @@ export default class IMap {
 
     /**
      * установка зума карты
+     * @method IMap.setZoom
      * @param {number} value
      */
     setZoom(value){
@@ -81,6 +91,7 @@ export default class IMap {
 
     /**
      * получение текущего зума карты
+     * @method IMap.getZoom
      * @returns {number}
      */
     getZoom(){
@@ -89,6 +100,7 @@ export default class IMap {
 
     /**
      * установка зума карты так, чтобы все точки на карте попадали в область блока-контейнера карты
+     * @method IMap.autoZoom
      */
     autoZoom(){
         console.warn('[IMap] autoZoom not override')
@@ -96,6 +108,7 @@ export default class IMap {
 
     /**
      * добавление подсказок к полю ввода адреса
+     * @method IMap.setSuggestsTo
      * @param {string} elementID - id  поля ввода
      */
     setSuggestsTo(elementID){
@@ -104,6 +117,7 @@ export default class IMap {
 
     /**
      * удаление подсказок
+     * @method IMap.removeSuggest
      */
     removeSuggest(){
         console.warn('[IMap] removeSuggest not override')
@@ -111,6 +125,7 @@ export default class IMap {
 
     /**
      * установка фокуса на точке (точка утанавливается по центру экрана)
+     * @method IMap.focusOnPoint
      * @param {[number, number]} coords
      * @param {number} zoomLevel
      */
@@ -119,10 +134,16 @@ export default class IMap {
     }
 
     // построить маршрут
+    /**
+     * @method IMap.buildRoute
+     */
     buildRoute() {
         console.warn('[IMap] buildRoute not override')
     }
 
+    /**
+     * @method IMap.destroyRoute
+     */
     destroyRoute() {
         console.warn('[IMap] destroyRoute not override')
     }
@@ -133,6 +154,7 @@ export default class IMap {
     // }
 
     /**
+     * @method IMap.getUserLocation
      * @returns {Promise<[number, number]>}
      */
     async getUserLocation() {
@@ -140,25 +162,43 @@ export default class IMap {
     }
 
     //включить / отключить траккинг позиции пользователя
+    /**
+     * @method IMap.enableUserTracking
+     */
     enableUserTracking() {
         console.warn('[IMap] enableUserTracking not override')
     }
 
+    /**
+     * @method IMap.disableUserTracking
+     */
     disableUserTracking() {
         console.warn('[IMap] disableUserTracking not override')
     }
 
-    /** вызывается если размеры контейнера ищменилися */
+    /**
+     * вызывается если размеры контейнера ищменилися
+     * @method IMap.resize
+     */
     resize(){}
 
-    /** очистка карты от точек */
+    /**
+     * очистка карты от точек
+     * @method IMap.clear
+     */
     clear(){}
 
-    /** метод перестраивает карту */
+    /**
+     * метод перестраивает карту
+     * @method IMap.refreshMap
+     */
     refreshMap(){}
 
 
-    /** очистка ресурсов выделенных под карту */
+    /**
+     * очистка ресурсов выделенных под карту
+     * @method IMap.destroyMap
+     */
     destroyMap(){}
 }
 

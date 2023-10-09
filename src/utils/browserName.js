@@ -1,7 +1,10 @@
 /**
  * возвращает имя браузера
+ * @function
+ * @name browserName
  * @param {string} agent
  * @returns {string}
+ * @category Utils
  */
 export default function browserName(agent) {
     switch (true) {

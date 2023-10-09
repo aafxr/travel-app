@@ -4,7 +4,11 @@ import ErrorReport from "../controllers/ErrorReport";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import input from "../components/ui/Input/Input";
 
-
+/**
+ * @name YandexMap
+ * @extends IMap
+ * @class
+ */
 export default class YandexMap extends IMap {
     /**
      * обертка для работы с api yandex maps
@@ -15,6 +19,7 @@ export default class YandexMap extends IMap {
      * @param {HTMLScriptElement} script
      * @param {string} markerClassName      - класс для кастомного маркера на карте
      * @param {string} iconURL              - URL для кастомного маркера на карте
+     * @constructor
      */
     constructor({
                     suggestElementID,
@@ -70,6 +75,7 @@ export default class YandexMap extends IMap {
 
     /**
      * добавление маркера на карту
+     * @method YandexMap.addMarker
      * @param {number, number} coords
      * @param {[number, number]} coords
      * @param {string} id
@@ -108,6 +114,7 @@ export default class YandexMap extends IMap {
 
     /**
      * Метод извлекаут информацию из геообъекта полученного от api
+     * @method YandexMap._markerInfo
      * @param {Object} geoObject
      * @param {string} id
      * @returns {Point}
@@ -132,7 +139,14 @@ export default class YandexMap extends IMap {
         return {placemark:placemark, coords, textAddress, kind, id, locality: locality[0]}
     }
 
-
+    /**
+     * метод создает новый placemark
+     * @method YandexMap._newPlacemark
+     * @param {[number, number]} coords
+     * @param {string} address
+     * @returns {Object}
+     * @private
+     */
     _newPlacemark(coords, address = '') {
         const placemark =  new window.ymaps.Placemark(coords, {
             hintContent: address,
@@ -153,6 +167,12 @@ export default class YandexMap extends IMap {
         return placemark
     }
 
+    /**
+     * обработка клика по placemark
+     * @method YandexMap._handlePlacemarkClick
+     * @param e
+     * @private
+     */
     _handlePlacemarkClick(e){
         const p = e.originalEvent.target
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
@@ -166,6 +186,12 @@ export default class YandexMap extends IMap {
         }
     }
 
+    /**
+     * обработка начала перемещения placemark
+     * @method YandexMap._handlePlacemarkDragStart
+     * @param e
+     * @private
+     */
     _handlePlacemarkDragStart(e) {
         const p = e.originalEvent.target
         const idx = this.placemarks.findIndex(plm => plm.placemark === p)
@@ -173,7 +199,12 @@ export default class YandexMap extends IMap {
         // console.log('drag start: ', idx)
     }
 
-    /** обработка завершения перетаскивания */
+    /**
+     * обработка завершения перетаскивания
+     * @method YandexMap._handlePlacemarkDragEnd
+     * @param e
+     * @private
+     */
     _handlePlacemarkDragEnd(e) {
         /** объект описывающий точку на карте (экземпляр Placemark в yandex maps api)  */
         const p = e.originalEvent.target
@@ -203,6 +234,7 @@ export default class YandexMap extends IMap {
 
     /**
      * Метод добавления места по переданному адресу
+     * @method YandexMap.addMarkerByAddress
      * @param {string} address
      * @param {string} id
      * @returns {Promise<Point | null>}
@@ -244,6 +276,7 @@ export default class YandexMap extends IMap {
 
     /**
      * Метод добавляет место путем трансформации координат контейнера HTMLElement-а в мировые координаты
+     * @method YandexMap.addMarkerByLocalCoords
      * @param {[number, number]} coords
      */
     addMarkerByLocalCoords(coords) {
@@ -268,6 +301,7 @@ export default class YandexMap extends IMap {
 
     /**
      * Метод трансформирует координат контейнера в мировые и удаляет ближайший к переданным координатам (coords) маркер
+     * @method YandexMap.removeMarkerByLocalCoords
      * @param {[number, number]} coords
      */
     removeMarkerByLocalCoords(coords) {
@@ -286,6 +320,7 @@ export default class YandexMap extends IMap {
 
     /**
      * удаление ближайшей к указанным координатам точки
+     * @method YandexMap.removeMarker
      * @param {Object} options
      */
     removeMarker(options) {
@@ -310,11 +345,19 @@ export default class YandexMap extends IMap {
         }
     }
 
+    /**
+     * метод возвращает список текущих placemarks на карте
+     * @method YandexMap.getMarkers
+     * @returns {Point[]}
+     */
     getMarkers() {
         return [...this.placemarks]//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))
     }
 
-    /** метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости */
+    /**
+     * метод устанавливает центр карты и зум так, чтобы все точки на карте попадали в область видимости
+     * @method YandexMap.autoZoom
+     */
     autoZoom() {
         /** границы (левый верхний, правый нижний углы), в которые попадают все метки на карте */
         const bounds = this.map.geoObjects?.getBounds()
@@ -333,6 +376,7 @@ export default class YandexMap extends IMap {
 
     /**
      * текущий зум карты
+     * @method YandexMap.getZoom
      * @returns {number}
      */
     getZoom() {
@@ -341,6 +385,7 @@ export default class YandexMap extends IMap {
 
     /**
      * установка зума карты
+     * @method YandexMap.setZoom
      * @param {number} zoomLevel диапазон: 0 - 19
      */
     setZoom(zoomLevel) {
@@ -351,6 +396,7 @@ export default class YandexMap extends IMap {
 
     /**
      * Метод, добавляет к HTMLInputElement блок с подсказками
+     * @method YandexMap.setSuggestsTo
      * @param {string} elementID
      */
     setSuggestsTo(elementID) {
@@ -365,6 +411,7 @@ export default class YandexMap extends IMap {
 
     /**
      * вывод сообщения об ошибке в консоль, отправка сообщения об ошибке на сервер, отображение всплывающего сообщения
+     * @method YandexMap._handleError
      * @param {Error} err
      * @param {string} message - сообщение, отображаемое во всплывающем сообщении
      * @private
@@ -376,6 +423,10 @@ export default class YandexMap extends IMap {
         pushAlertMessage({type: "info", message})
     }
 
+    /**
+     * метод перерисовывает карту
+     * @method YandexMap.refreshMap
+     */
     refreshMap() {
         if (this.map) this.map.destroy()
 
@@ -391,7 +442,10 @@ export default class YandexMap extends IMap {
         }
     }
 
-    /** удаление блока подсказок, привязанного к HTMLInputElement */
+    /**
+     * удаление блока подсказок, привязанного к HTMLInputElement
+     * @method YandexMap.removeSuggest
+     */
     removeSuggest() {
         if (this.suggest) {
             this.suggest.destroy()
@@ -401,6 +455,7 @@ export default class YandexMap extends IMap {
 
     /**
      * обработка события выбора подсказки
+     * @method YandexMap._selectSuggest
      * @param e
      * @returns {Promise<void>}
      * @private
@@ -437,12 +492,21 @@ export default class YandexMap extends IMap {
     }
 
 
-    // метод фокусируется на точке
+    /**
+     * метод фокусируется на точке
+     * @method YandexMap.focusOnPoint
+     * @param {[number, number]} coords
+     * @param {number} zoomLevel
+     */
     focusOnPoint(coords, zoomLevel) {
         if (Array.isArray(coords)) this.map.setCenter(coords, zoomLevel || this.zoom, {duration: 300})
     }
 
-    //метод пытается получить координаты средствами браузера или средствами yandex maps api
+    /**
+     * метод пытается получить координаты средствами браузера или средствами yandex maps api
+     * @method YandexMap.getUserLocation
+     * @returns {Promise<unknown>}
+     */
     getUserLocation() {
         return new Promise(async (resolve, reject) => {
             try {
@@ -460,7 +524,9 @@ export default class YandexMap extends IMap {
         })
     }
 
-
+    /**
+     * @method YandexMap.enableUserTracking
+     */
     enableUserTracking() {
         if ('geolocation' in navigator) {
             this.locationWatchID = navigator.geolocation.watchPosition((this.locationTracking).bind(this),
@@ -469,6 +535,9 @@ export default class YandexMap extends IMap {
         }
     }
 
+    /**
+     * @method YandexMap.disableUserTracking
+     */
     disableUserTracking() {
         if (this.userTracking) {
             navigator.geolocation.clearWatch(this.locationWatchID)
@@ -477,7 +546,11 @@ export default class YandexMap extends IMap {
     }
 
 
-    //обработка позиции пользователя ...
+    /**
+     * обработка позиции пользователя ...
+     * @method YandexMap.locationTracking
+     * @param location
+     */
     locationTracking(location) {
         if (!this.userTracking)
             this.userTracking = true
@@ -487,11 +560,17 @@ export default class YandexMap extends IMap {
         }
     }
 
+    /**
+     * @method YandexMap.resize
+     */
     resize() {
         this.map.container.fitToViewport()
     }
 
-    /** очистка карты от точек */
+    /**
+     * очистка карты от точек
+     * @method YandexMap.clear
+     */
     clear() {
         this.placemarks.forEach(p => this.map.geoObjects.remove(p.placemark))
         this.placemarks = []
@@ -499,6 +578,9 @@ export default class YandexMap extends IMap {
         this.tempPlacemark = null
     }
 
+    /**
+     * @method YandexMap.destroyMap
+     */
     destroyMap() {
         this.locationWatchID && navigator.geolocation.clearWatch(this.locationWatchID)
         this.map && this.map.destroy()

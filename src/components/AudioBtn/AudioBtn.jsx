@@ -2,6 +2,12 @@ import PlayIcon from "../svg/PlayIcon";
 
 import './AudioBtn.css'
 
+/**
+ * компонент отображения кнопки аудио
+ * @returns {JSX.Element}
+ * @constructor
+ * @category Components
+ */
 export default function AudioBtn(){
 
     return (

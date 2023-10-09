@@ -4,6 +4,9 @@
  * @param transformCb callback трансформирует массив
  * @param {Array.<string>} [extraValues] трансформирует массив
  * @returns {unknown[]|*[]}
+ * @function
+ * @name distinctValues
+ * @category Utils
  */
 export default function distinctValues(arr, transformCb, extraValues) {
     if (Array.isArray(arr)) {

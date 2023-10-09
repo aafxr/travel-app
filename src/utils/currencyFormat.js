@@ -1,3 +1,7 @@
+/**
+ *
+ * @type {Intl.NumberFormat}
+ */
 export const formatter = new Intl.NumberFormat(
     navigator.language,
     {

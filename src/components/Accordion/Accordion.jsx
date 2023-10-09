@@ -13,6 +13,7 @@ import './Accordion.css'
  * @param {JSX.Element} children
  * @return {JSX.Element}
  * @constructor
+ * @category Components
  */
 function Accordion({title, className, children}) {
     const [isOpen, setIsOpen] = useState(false)

@@ -106,7 +106,9 @@ import createId from "../utils/createId";
 
 
 const actions = ['add', 'update', 'get', 'remove'];
-
+/**
+ * @description ActionController
+ */
 export default class ActionController {
     /**
      *

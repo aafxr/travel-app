@@ -3,6 +3,9 @@ import createId from "./createId";
 /**
  * Функция возвращает дефольные данные встречи
  * @returns {AppointmentType}
+ * @function
+ * @name defaultAppointmentData
+ * @category Utils
  */
 export default function defaultAppointmentData(){
     return {

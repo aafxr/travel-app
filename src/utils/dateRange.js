@@ -5,6 +5,9 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  * @param {string} start
  * @param {string} end
  * @returns {string}
+ * @function
+ * @name dateRange
+ * @category Utils
  */
 export default function dateRange(start, end) {
     if (!start && !end) return ''
