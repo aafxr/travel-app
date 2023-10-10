@@ -20,7 +20,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
  * @param {boolean} multy - флаг, позволяющий выбирать несколько значений
  * @param {string | string[]} initValue
  * @returns {JSX.Element|null}
- * @constructor
+ * @category Components
  */
 export default function RadioButtonGroup({
                                              groupClassNames,

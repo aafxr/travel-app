@@ -8,7 +8,7 @@ import './container.css'
  * @param children
  * @param {string} className
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function Container({children, className}) {
 

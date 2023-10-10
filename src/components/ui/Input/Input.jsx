@@ -5,11 +5,11 @@ import './Input.css'
 
 
 /**
- *
+ * Стилезованный компонент input
  * @param {HTMLInputElement} props
  * @param ref
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 function Input(props, ref) {
     const styles = clsx('input', props.className)

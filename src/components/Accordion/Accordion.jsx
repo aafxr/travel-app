@@ -7,12 +7,11 @@ import './Accordion.css'
 
 
 /**
- * @property {Item} Item
  * @param {string} title
  * @param {string} className
  * @param {JSX.Element} children
  * @return {JSX.Element}
- * @constructor
+
  * @category Components
  */
 function Accordion({title, className, children}) {
@@ -35,13 +34,14 @@ function Accordion({title, className, children}) {
 }
 
 /**
- *
- * @param {title} title
- * @param {title} dascription
- * @param {title} time
+ * Дочерний компонент аккордиона
+ * @param {string} title
+ * @param {string} dascription
+ * @param {string} time
  * @param {JSX.Element} icon
  * @return {JSX.Element}
- * @constructor
+
+ * @category UI-Components
  */
 function Item({title, icon, dascription, time}) {
     return (

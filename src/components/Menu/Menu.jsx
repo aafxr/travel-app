@@ -14,6 +14,13 @@ import {MenuIcon} from "../svg";
 
 import './Menu.css'
 
+/**
+ * Компонент для отображения меню
+ * @param children
+ * @param className
+ * @returns {JSX.Element}
+ * @category Components
+ */
 export default function Menu({children, className}) {
     const dispatch = useDispatch()
     const {user} = useSelector(state => state[constants.redux.USER])

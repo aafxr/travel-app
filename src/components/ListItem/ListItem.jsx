@@ -4,14 +4,14 @@ import clsx from "clsx";
 import './ListItem.css'
 
 /**
- *
+ * Компонент предназначен для отображения элемента списка (используется на странице с последними действиями)
  * @param {string} className
- * @param {string} topDescription
- * @param {string} time
- * @param {JSX.Element} children
- * @param {JSX.Element} icon
+ * @param {string} topDescription заголовок компонента
+ * @param {string} time время , отобрадается в правом верхнем углу
+ * @param {JSX.Element} children дочерние компонеты, помещаются под заголовком
+ * @param {JSX.Element} icon иконка в формате jsx
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function ListItem({className, topDescription = '', time = '', children, icon}){
     return (

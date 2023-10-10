@@ -19,7 +19,7 @@ import './PageHeader.css'
  * @param { JSX.Element} MenuEl
  * @param props
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 export default function PageHeader({
                                        arrowBack,

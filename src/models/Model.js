@@ -24,53 +24,46 @@ import ErrorReport from "../controllers/ErrorReport";
 
 
 /**
- * @description Model позволяет работать с отдельным хранилищем в бд
+ * @description __Model__ позволяет работать с отдельным хранилищем в бд
  *
  *
- * ================================================
+ * ***
  *
- * Параметры:
+ * __Параметры__:
  *
- * storeDB экзепляр бд LocalDB
+ * - storeDB экзепляр бд LocalDB
  *
- * ============
+ * ***
  *
- * storeName имя хранилища с которым буде работать данная Model (напирмер бд Expenses хранилище Limits)
+ * - storeName имя хранилища с которым буде работать данная Model (напирмер бд Expenses хранилище Limits)
  *
- * ============
+ * ***
  *
- * validation функция или обект для валидации записываемых в хранилище данных
- *
+ * - validation функция или обект для валидации записываемых в хранилище данных
  * если функция вызывается на все методы где данные записываются в бд
- *
  * если Объект валидация вызываеться для каждого метода для которого указанна
  *
- * ================================================
+ * ***
  *
- * Методы Model:
+ * __Методы Model__:
  *
- * add
- *
- * get
- *
- * getFormIndex
- *
- * update
- *
- * remove
- *
+ * - add
+ * - get
+ * - getFormIndex
+ * - update
+ * - remove
+ * ***
  * все методы возвращают промис с результатом операции. Результат операции зависит от query (id или IDBKeyRange)
+ *
+ * @class
+ * @name Model
+ * @constructor
+ * @param {import('../db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
+ * @param {string} storeName - имя хранилища
+ * @param {validateCallback | validateObj}validation
  *
  */
 export default class Model {
-
-
-    /**
-     * Model позволяет работать с отдельным хранилищем (storeName)
-     * @param {import('../db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
-     * @param {string} storeName - имя хранилища
-     * @param {validateCallback | validateObj}validation
-     */
     constructor(db, storeName, validation) {
         if (
             db instanceof LocalDB
@@ -88,6 +81,7 @@ export default class Model {
 
     /**
      * валидация данных согласно переданному в конструктор методу или объекту валидации
+     * @method Model.validate
      * @param {*} data
      * @param {'add' | 'update' | 'get' | 'getFromIndex' | 'remove'} methodType
      * @returns {boolean}
@@ -103,21 +97,31 @@ export default class Model {
 
 
     /**
-     * @param {*} data
+     * Метод выводит сообщение о не корректно принятых данных
+     * @method Model._notCorrectDataMessage
+     * @param data данные которые были переданны в один из методов Model
      * @private
      */
     _notCorrectDataMessage(data) {
         console.warn(`[Model] Received data is not correct: `, data)
     }
 
+    /**
+     * Метод реализует отправку сообщений об ошибке
+     * @method Model._sendReport
+     * @param {Error} err
+     * @private
+     */
     _sendReport(err) {
         ErrorReport.sendReport(err).catch(console.error)
     }
 
 
     /**
-     * @param err
-     * @returns {*}
+     * Метод обрабатывает ошибки, возникшие в процессе работы с бд
+     * @method Model._printErrorMessage
+     * @param {Error} err
+     * @returns {Error}
      * @private
      */
     _printErrorMessage(err) {
@@ -128,6 +132,7 @@ export default class Model {
 
     /**
      * добавляет в бд -> в хранилище storeName данные (payload)
+     * @method Model.add
      * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
@@ -147,6 +152,7 @@ export default class Model {
 
     /**
      * редактирует в бд -> в хранилище storeName данные (payload)
+     * @method Model.update
      * @param {*} payload
      * @returns {Promise<undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>}
      */
@@ -165,6 +171,7 @@ export default class Model {
 
     /**
      * поиск по параметру query в бд -> в хранилище storeName данных
+     * @method Model.get
      * @param {PayloadType} query
      * @returns {Promise<undefined|*>}
      */
@@ -204,6 +211,7 @@ export default class Model {
 
     /**
      * удаляет из бд -> из хранилища storeName данные
+     * @method Model.remove
      * @param {PayloadType} query
      * @returns {Promise<*|undefined|void>}
      */

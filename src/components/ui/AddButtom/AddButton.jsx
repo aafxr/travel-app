@@ -11,7 +11,8 @@ import './AddButton.css'
  * @param {string} [to] - url на который перенаправляется пользователь при клике
  * @param props
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
+
  */
 export default function AddButton({className, children, to, props}) {
     const navigate = useNavigate()

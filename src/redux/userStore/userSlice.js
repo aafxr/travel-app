@@ -47,7 +47,7 @@ export const userSlice = createSlice({
             /**
              * координаты пользователя
              * @param state
-             * @param {[number, number]} payload
+             * @param {Array.<number,number>} payload
              */
             setLocation(state, {payload}){
                 if (!Array.isArray(payload)){

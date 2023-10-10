@@ -4,13 +4,13 @@ import './InfoBlock.css'
 
 
 /**.
- *
- * @param {string} title
- * @param {string} description
+ * Компонент представляет собой текстовый блок с возможностью скрывать часть текста
+ * @param {string} title заголовок блока
+ * @param {string} description контент блока
  * @param {React.ReactNode} children
- * @param {number} lineNumber
+ * @param {number} lineNumber число отображаемых строк параметра "description"
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function InfoBlock({title, description, children, lineNumber = 3}) {
     const [full, setFull] = useState(false)

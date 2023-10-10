@@ -6,7 +6,17 @@ import {DayPicker} from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import './DatePicker.css'
 
-
+/**
+ *
+ * @param multy
+ * @param onSelect
+ * @param date
+ * @param from
+ * @param to
+ * @param ref
+ * @returns {JSX.Element}
+ * @category Components
+ */
 function DatePicker({multy, onSelect,date, from, to}, ref) {
     const [range, setRange] = useState(multy? {from, to} : date);
 

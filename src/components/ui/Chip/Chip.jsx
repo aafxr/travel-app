@@ -8,7 +8,7 @@ import './Chip.css'
 
 /**
  * компонент для отображения тегов / пометок
- * @param {'orange' | 'green' | 'grey' | 'light-orange' } color
+ * @param {'orange' | 'green' | 'grey' | 'light-orange' } color цвет фона компонента
  * @param {string | JSX.Element} icon - url иконки
  * @param {'left' | 'right'} iconPosition - способ расположения иконки (стиль применяется если задан icon) default = 'left'
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
@@ -17,6 +17,7 @@ import './Chip.css'
  * @param {string} className
  * @param props
  * @returns {JSX.Element}
+ * @category UI-Components
  */
 export default function Chip({
                                  color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'

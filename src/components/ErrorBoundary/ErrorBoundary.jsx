@@ -4,6 +4,10 @@ import {CRITICAL_ERROR} from "../../static/constants";
 import errorToObject from "../../utils/errorToObject";
 import ErrorPage from "../../modules/Error/ErrorPage";
 
+/**
+ * Компонет оборачивает приложение и, в случае возникновения ошибки, отображает страницу об ошибке
+ * @category Components
+ */
 export default class ErrorBoundary extends React.Component {
 
     constructor(props) {

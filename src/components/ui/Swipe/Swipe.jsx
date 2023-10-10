@@ -28,7 +28,7 @@ let defaultMargin = 40
  * @param {string} [rElemBg]
  * @param {boolean} [multy]
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 export default function Swipe({
                                   children,

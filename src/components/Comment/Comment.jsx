@@ -4,13 +4,13 @@ import './Comment.css'
 
 
 /**
- *
- * @param {string} author
- * @param {number} rating
- * @param {string} content
- * @param {Date | string | number} date
+ * Компонент отображает коментарий
+ * @param {string} author       автор коментария
+ * @param {number} rating       оставленный рейтинг ( 1 - 5)
+ * @param {string} content      текст коментария
+ * @param {Date | string | number} date дата создания коментария
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function Comment({author, rating, content, date}) {
 

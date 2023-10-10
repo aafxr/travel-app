@@ -7,12 +7,12 @@ import './Checkbox.css'
 /**
  * @param {JSX.Element | string} children
  * @param {string} className
- * @param {boolean} checked
- * @param {boolean} left - default = right сторона с которой отображается гконка
- * @param {function} [onChange]
+ * @param {boolean} checked флаг / состояние компонента чекбокс
+ * @param {boolean} left default = right сторона с которой отображается гконка
+ * @param {function} [onChange] обработчик на изменение состояния чекбокс
  * @param props
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 function Checkbox({
                       children,

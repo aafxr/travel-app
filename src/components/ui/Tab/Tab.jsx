@@ -11,7 +11,7 @@ import './Tab.css'
  * @param {string} className
  * @param props
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 export default function Tab({
                                 name,

@@ -16,7 +16,7 @@ import './UserCard.css'
  * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
  * @param {Function} onClick - проп-функция (принимает инфо о юзере), генерируется при клике по карточке пользователя
  * @return {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function UserCard({
                                      className,

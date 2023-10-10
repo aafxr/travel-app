@@ -23,7 +23,7 @@ export default class IMap {
     /**
      * дообавить точку на карт по координатам
      * @method IMap.addMarker
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      * @param {string} id
      * @returns{Promise<Point | null>}
      */
@@ -34,7 +34,7 @@ export default class IMap {
     /**
      * добавить точку на карту по координатам блока-контейнера карты
      * @method IMap.addMarkerByLocalCoords
-     * @param {[number, number]} localCoords
+     * @param {Array.<number,number>} localCoords
      * @returns {Point | null}
      */
     addMarkerByLocalCoords(localCoords){
@@ -44,7 +44,7 @@ export default class IMap {
     /**
      * удалить точку на карту по координатам блока-контейнера карты
      * @method IMap.removeMarkerByLocalCoords
-     * @param {[number, number]} localCoords
+     * @param {Array.<number,number>} localCoords
      */
     removeMarkerByLocalCoords(localCoords){
         console.warn('[IMap] removeMarkerByLocalCoords not override')
@@ -126,7 +126,7 @@ export default class IMap {
     /**
      * установка фокуса на точке (точка утанавливается по центру экрана)
      * @method IMap.focusOnPoint
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      * @param {number} zoomLevel
      */
     focusOnPoint(coords, zoomLevel){
@@ -155,7 +155,7 @@ export default class IMap {
 
     /**
      * @method IMap.getUserLocation
-     * @returns {Promise<[number, number]>}
+     * @returns {Promise<Array.<number, number>>}
      */
     async getUserLocation() {
         console.warn('[IMap] getUserLocation not override')

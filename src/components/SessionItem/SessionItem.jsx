@@ -7,11 +7,11 @@ import dateToStringFormat from "../../utils/dateToStringFormat";
 import './SessionItem.css'
 
 /**
- *
+ * Компонент отображает элемент списка на странице активных сессий (Session)
  * @param className
  * @param {SessionDataType} sessionData
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function SessionItem({className, sessionData}) {
     const browser = browserName(sessionData.created_user_agent)

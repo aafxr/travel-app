@@ -2,7 +2,15 @@ import clsx from "clsx";
 import { useLayoutEffect, useRef, useState } from 'react';
 import './TextArea.css';
 
-
+/**
+ * Стилезованный компонент textarea
+ * @param className
+ * @param {React.Ref} textAreaRef
+ * @param {boolean} autoResize
+ * @param props
+ * @returns {JSX.Element}
+ * @category UI-Components
+ */
 export function TextArea({
                              className,
                              textAreaRef,

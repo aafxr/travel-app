@@ -8,10 +8,10 @@ import './LinkComponent.css'
 /**
  * компонент, обернутый в Link(куфсе-кщгеук-вщь) для добавления переходовна страницы
  * @param {string} title
- * @param {string} to
+ * @param {string} to ссылка, куда будет переход
  * @param {boolean} arrow default = false
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 export default function LinkComponent({title, to, arrow = false}) {
     return (

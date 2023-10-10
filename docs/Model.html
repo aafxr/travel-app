@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Model</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Classes</h3><ul><li><a href="IMap.html">IMap</a></li><li><a href="LocalDB.html">LocalDB</a></li><li><a href="Model.html">Model</a></li><li><a href="YandexMap.html">YandexMap</a></li><li><a href="module.html#.exports">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateAction">CreateAction</a></li><li><a href="global.html#TelegramAuthHandler">TelegramAuthHandler</a></li><li><a href="global.html#actionHandler">actionHandler</a></li><li><a href="global.html#actionProcess">actionProcess</a></li><li><a href="global.html#actionValidationObject">actionValidationObject</a></li><li><a href="global.html#actionsProcess">actionsProcess</a></li><li><a href="global.html#animateTop">animateTop</a></li><li><a href="global.html#cloneNode">cloneNode</a></li><li><a href="global.html#createAction">createAction</a></li><li><a href="global.html#defaultFilterValue">defaultFilterValue</a></li><li><a href="global.html#defaultRange">defaultRange</a></li><li><a href="global.html#defaultTravel">defaultTravel</a></li><li><a href="global.html#formatter">formatter</a></li><li><a href="global.html#getFromIndex">getFromIndex</a></li><li><a href="global.html#getTravelDateStatus">getTravelDateStatus</a></li><li><a href="global.html#getstorageModel">getstorageModel</a></li><li><a href="global.html#initTravelsThunk">initTravelsThunk</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isActionValid">isActionValid</a></li><li><a href="global.html#limitValidation">limitValidation</a></li><li><a href="global.html#onSendData">onSendData</a></li><li><a href="global.html#onUpdate">onUpdate</a></li><li><a href="global.html#openDataBase">openDataBase</a></li><li><a href="global.html#options">options</a></li><li><a href="global.html#pushAlertMessage">pushAlertMessage</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#saveTokensToDB">saveTokensToDB</a></li><li><a href="global.html#schema">schema</a></li><li><a href="global.html#sectionsFromArray">sectionsFromArray</a></li><li><a href="global.html#subscribe">subscribe</a></li><li><a href="global.html#travelValidation">travelValidation</a></li><li><a href="global.html#unsubscribe">unsubscribe</a></li><li><a href="global.html#updateMembersCount">updateMembersCount</a></li><li><a href="global.html#useKeyPress">useKeyPress</a></li><li><a href="global.html#whileOffline">whileOffline</a></li><li><a href="global.html#write">write</a></li><li>{PhotoChangeFunction}</li></ul></div><div class="category"><h2>Components</h2><h3>Global</h3><ul><li><a href="global.html#Accordion">Accordion</a></li><li><a href="global.html#DatePicker">DatePicker</a></li><li><a href="global.html#MapControls">MapControls</a></li><li><a href="global.html#Modal">Modal</a></li></ul></div><div class="category"><h2>Types</h2><h3><a href="global.html">Global</a></h3></div><div class="category"><h2>UI-Components</h2><h3>Global</h3><ul><li><a href="global.html#Checkbox">Checkbox</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#Item">Item</a></li><li><a href="global.html#Select">Select</a></li><li><a href="global.html#TextArea">TextArea</a></li></ul></div><div class="category"><h2>Utils</h2><h3>Global</h3><ul><li><a href="global.html#accumulate">accumulate</a></li><li><a href="global.html#browserName">browserName</a></li><li><a href="global.html#changedFields">changedFields</a></li><li><a href="global.html#clearUserData">clearUserData</a></li><li><a href="global.html#createId">createId</a></li><li><a href="global.html#currencyToFixedFormat">currencyToFixedFormat</a></li><li><a href="global.html#dateRange">dateRange</a></li><li><a href="global.html#dateToStringFormat">dateToStringFormat</a></li><li><a href="global.html#defaultAppointmentData">defaultAppointmentData</a></li><li><a href="global.html#defaultHotelData">defaultHotelData</a></li><li><a href="global.html#defaultThemeClass">defaultThemeClass</a></li><li><a href="global.html#distinctValues">distinctValues</a></li><li><a href="global.html#errorToObject">errorToObject</a></li><li><a href="global.html#fetchWithTimeout">fetchWithTimeout</a></li><li><a href="global.html#functionDurationTest">functionDurationTest</a></li><li><a href="global.html#isError">isError</a></li><li><a href="global.html#isHexColor">isHexColor</a></li><li><a href="global.html#screenCoordsToBlockCoords">screenCoordsToBlockCoords</a></li><li><a href="global.html#sendActionToWorker">sendActionToWorker</a></li><li><a href="global.html#setFixedVH">setFixedVH</a></li><li><a href="global.html#sleep">sleep</a></li><li><a href="global.html#toArray">toArray</a></li><li><a href="global.html#userLocation">userLocation</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Class</p>
+                    <h1>Model</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>Model<span class="signature">(storeName, validation)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class='vertical-section'>
+                <div class="members">
+                    <div class="member">
+                        <div class=name>
+                            <span class="tag">Constructor</span>
+                        </div>
+                        
+
+
+    
+    <h4 class="name" id="Model">
+        <a class="href-link" href="#Model">#</a>
+        
+        <span class="code-name">
+            
+                new Model<span class="signature">(storeName, validation)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p><strong>Model</strong> позволяет работать с отдельным хранилищем в бд</p>
+<hr>
+<p><strong>Параметры</strong>:</p>
+<ul>
+<li>storeDB экзепляр бд LocalDB</li>
+</ul>
+<hr>
+<ul>
+<li>storeName имя хранилища с которым буде работать данная Model (напирмер бд Expenses хранилище Limits)</li>
+</ul>
+<hr>
+<ul>
+<li>validation функция или обект для валидации записываемых в хранилище данных
+если функция вызывается на все методы где данные записываются в бд
+если Объект валидация вызываеться для каждого метода для которого указанна</li>
+</ul>
+<hr>
+<p><strong>Методы Model</strong>:</p>
+<ul>
+<li>add</li>
+<li>get</li>
+<li>getFormIndex</li>
+<li>update</li>
+<li>remove</li>
+</ul>
+<hr>
+<p>все методы возвращают промис с результатом операции. Результат операции зависит от query (id или IDBKeyRange)</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code></code></td>
+  
+
+  <td class="type">
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>storeName</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">string</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"><p>имя хранилища</p></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>validation</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#validateCallback">validateCallback</a></code>
+|
+
+<code class="param-type"><a href="global.html#validateObj">validateObj</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line26">line 26</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".add">
+        <a class="href-link" href="#.add">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                add<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;(undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|Array.&lt;IDBValidKey>)>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>добавляет в бд -&gt; в хранилище storeName данные (payload)</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>payload</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">*</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line133">line 133</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">Promise.&lt;(undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|Array.&lt;IDBValidKey>)></code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".get">
+        <a class="href-link" href="#.get">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                get<span class="signature">(query)</span><span class="type-signature"> &rarr; {Promise.&lt;(undefined|*)>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>поиск по параметру query в бд -&gt; в хранилище storeName данных</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>query</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#PayloadType">PayloadType</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line172">line 172</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">Promise.&lt;(undefined|*)></code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".remove">
+        <a class="href-link" href="#.remove">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                remove<span class="signature">(query)</span><span class="type-signature"> &rarr; {Promise.&lt;(*|undefined|void)>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>удаляет из бд -&gt; из хранилища storeName данные</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>query</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="global.html#PayloadType">PayloadType</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line212">line 212</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">Promise.&lt;(*|undefined|void)></code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".update">
+        <a class="href-link" href="#.update">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                update<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;(undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|Array.&lt;IDBValidKey>)>}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>редактирует в бд -&gt; в хранилище storeName данные (payload)</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>payload</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">*</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line153">line 153</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">Promise.&lt;(undefined|*|number|string|Date|ArrayBufferView|ArrayBuffer|Array.&lt;IDBValidKey>)></code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id=".validate">
+        <a class="href-link" href="#.validate">#</a>
+        
+            
+                <span class='tag'>static</span>
+            
+        
+        <span class="code-name">
+            
+                validate<span class="signature">(data, methodType)</span><span class="type-signature"> &rarr; {boolean}</span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>валидация данных согласно переданному в конструктор методу или объекту валидации</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>data</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">*</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>methodType</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">'add'</code>
+|
+
+<code class="param-type">'update'</code>
+|
+
+<code class="param-type">'get'</code>
+|
+
+<code class="param-type">'getFromIndex'</code>
+|
+
+<code class="param-type">'remove'</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last"></td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="models_Model.js.html" class="button">View Source</a>
+            <span>
+                <a href="models_Model.js.html">models/Model.js</a>, <a href="models_Model.js.html#line82">line 82</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    
+    <div class='column is-5 has-text-left'>
+        <label>Type: </label>
+        
+<code class="param-type">boolean</code>
+
+
+    </div>
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

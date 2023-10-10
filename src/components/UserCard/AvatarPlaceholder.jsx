@@ -6,7 +6,7 @@ import './AvatarPlaceholder.css'
  * @param {string} className default = "horizontal"
  * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function AvatarPlaceHolder({className, variant = "horizontal"}) {
     const classNames = clsx(

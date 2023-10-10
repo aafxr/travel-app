@@ -38,7 +38,6 @@ export function pushAlertMessage(payload) {
  * @param {number} count - количество одновременно отобрадаемых сообщений
  * @param {number} maxAlertsCount - количество сообщений , которые хранятся в очереди на отобрадение
  * @returns {JSX.Element}
- * @constructor
  * @category Components
  */
 export default function Alerts({count = 1, maxAlertsCount = 10}) {

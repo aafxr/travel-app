@@ -8,9 +8,7 @@ import './Avatar.css'
  * @param {string} alt
  * @param {string} className
  * @returns {JSX.Element}
- * @constructor
  * @category Components
- * @component
  */
 export default function Avatar({src, alt, className}){
 

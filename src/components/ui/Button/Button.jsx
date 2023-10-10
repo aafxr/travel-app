@@ -11,7 +11,8 @@ import  './Button.css'
  * @param props
  * @param {JSX.Element | string} children
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
+
  */
 export default function Button({className, children, active = true, ...props}){
 

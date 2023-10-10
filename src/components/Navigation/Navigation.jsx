@@ -5,6 +5,12 @@ import {CompassIcon, EventsIcon, HeartIcon, HomeIcon, UserIcon} from "../svg";
 
 import './Navigation.css'
 
+/**
+ * Компонент отображает кнопки навигации снизу экрана
+ * @param className
+ * @returns {JSX.Element}
+ * @category Components
+ */
 export default function Navigation({className}) {
     const {travelsType} = useParams()
     const navLinkClassName = ({ isActive, isPending }) => isPending ? "pending" : isActive ? "active" : ""

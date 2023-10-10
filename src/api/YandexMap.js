@@ -5,22 +5,22 @@ import {pushAlertMessage} from "../components/Alerts/Alerts";
 import input from "../components/ui/Input/Input";
 
 /**
- * @name YandexMap
- * @extends IMap
+ * интерфейс для работы с api yandex maps
  * @class
+ * @extends IMap
+ * @name YandexMap
+ * @constructor
+ * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
+ * @param {string} mapContainerID       - id контецнера карты
+ * @param {Point[]} placemarks          - массив добавленных на карту точек, при вызове метода init
+ * @param {object} map                  - инстанс карты созданный с помощью api
+ * @param {HTMLScriptElement} script
+ * @param {string} markerClassName      - класс для кастомного маркера на карте
+ * @param {string} iconURL              - URL для кастомного маркера на карте
+ *
+ *
  */
 export default class YandexMap extends IMap {
-    /**
-     * обертка для работы с api yandex maps
-     * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
-     * @param {string} mapContainerID       - id контецнера карты
-     * @param {Point[]} placemarks          - массив добавленных на карту точек, при вызове метода init
-     * @param {object} map                  - инстанс карты созданный с помощью api
-     * @param {HTMLScriptElement} script
-     * @param {string} markerClassName      - класс для кастомного маркера на карте
-     * @param {string} iconURL              - URL для кастомного маркера на карте
-     * @constructor
-     */
     constructor({
                     suggestElementID,
                     mapContainerID,
@@ -76,8 +76,7 @@ export default class YandexMap extends IMap {
     /**
      * добавление маркера на карту
      * @method YandexMap.addMarker
-     * @param {number, number} coords
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      * @param {string} id
      * @returns {Promise<Point>}
      */
@@ -142,7 +141,7 @@ export default class YandexMap extends IMap {
     /**
      * метод создает новый placemark
      * @method YandexMap._newPlacemark
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      * @param {string} address
      * @returns {Object}
      * @private
@@ -277,7 +276,7 @@ export default class YandexMap extends IMap {
     /**
      * Метод добавляет место путем трансформации координат контейнера HTMLElement-а в мировые координаты
      * @method YandexMap.addMarkerByLocalCoords
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      */
     addMarkerByLocalCoords(coords) {
         if (!coords || !Array.isArray(coords) || coords.length !== 2)
@@ -302,7 +301,7 @@ export default class YandexMap extends IMap {
     /**
      * Метод трансформирует координат контейнера в мировые и удаляет ближайший к переданным координатам (coords) маркер
      * @method YandexMap.removeMarkerByLocalCoords
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      */
     removeMarkerByLocalCoords(coords) {
         if (!coords || !Array.isArray(coords) || coords.length !== 2)
@@ -495,7 +494,7 @@ export default class YandexMap extends IMap {
     /**
      * метод фокусируется на точке
      * @method YandexMap.focusOnPoint
-     * @param {[number, number]} coords
+     * @param {Array.<number,number>} coords
      * @param {number} zoomLevel
      */
     focusOnPoint(coords, zoomLevel) {

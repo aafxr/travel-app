@@ -93,17 +93,14 @@ async function openDataBase(dbname, version, stores) {
  *
  * @class
  * @name LocalDB
+ * @constructor
+ * @param {string} dbname               имя бд
+ * @param {number} version              версия бд
+ * @param {Array.<StoreInfo>} stores    массив с инфо о всех хранилищах в бд
+ * @param {function} [onReady]          вызывается если бд откылась без ошибок
+ * @param {function} [onError]          вызывается если бд откылась с ошибок
  */
 export class LocalDB {
-    /**
-     *  создает объект для работы с конкретной базой данных (например Expenses)
-     *  @constructor
-     * @param {string} dbname               имя бд
-     * @param {number} version              версия бд
-     * @param {Array.<StoreInfo>} stores    массив с инфо о всех хранилищах в бд
-     * @param {function} [onReady]          вызывается если бд откылась без ошибок
-     * @param {function} [onError]          вызывается если бд откылась с ошибок
-     */
     constructor({dbname, version, stores}, {onReady, onError}) {
         this.subscriptions = []
         this.dbname = dbname;
@@ -122,6 +119,12 @@ export class LocalDB {
             });
     }
 
+    /**
+     * метод вызовет callback когда бд будет инициализированна.<br/>
+     * Пердотвращает обращение к бд до инициализации
+     * @param {function} cb
+     * @method LocalDB.onReadySubscribe
+     */
     onReadySubscribe(cb){
         if (typeof cb === 'function'){
             if(this.ready){
@@ -134,7 +137,12 @@ export class LocalDB {
         }
     }
 
-    readyHandler(){
+    /**
+     * Метод вызывает все callbacks накомпленные за время инициализации бд
+     * @private
+     * @method LocalDB._readyHandler
+     */
+    _readyHandler(){
         this.onReady(this.ready)
         this.subscriptions.forEach(s => s())
         this.subscriptions = []
@@ -148,7 +156,7 @@ export class LocalDB {
     set onReadyHandler(cb){
         if (typeof cb === 'function'){
             this.onReady = cb
-            this.ready && this.readyHandler()
+            this.ready && this._readyHandler()
         } else {
             console.warn("[LocalDB] onReady callback must be function!")
         }

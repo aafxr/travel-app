@@ -26,6 +26,11 @@ import './CheckList.css'
  * @property {ChecklistType[]} items
  */
 
+/**
+ * Компонент отображает чеклист путешествия
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function CheckList() {
     const navigate = useNavigate()
     const {travelCode} = useParams()

@@ -11,14 +11,14 @@ import './MapControls.css'
 
 /**
  * Компонент отображает элементы управления зумом и геолокацией
- * @param {IMap} map
+ * @param {IMap} map интерфейс для взаимодействия с api карты
  * @param {string} className
- * @param {Function} onPlusClick
- * @param {Function} onMinusClick
- * @param {Function} onUserLocationClick
+ * @param {Function} onPlusClick обработчик на клик по кнопке "приблизить карту"
+ * @param {Function} onMinusClick обработчик на клик по кнопке "отдалить карту"
+ * @param {Function} onUserLocationClick обработчик на клик по кнопке "геолокация пользователя"
  * @param props
  * @returns {JSX.Element|null}
- * @constructor
+ * @category Components
  */
 function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationClick, ...props}) {
     if (!map) return null

@@ -1,6 +1,6 @@
 /**
  * возвращает промис, который резолвится с координатами пользователя
- * @returns {Promise<[number, number]>}
+ * @returns {Promise<Array.<number, number>>}
  * @function
  * @name userLocation
  * @category Utils

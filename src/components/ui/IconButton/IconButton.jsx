@@ -3,17 +3,18 @@ import clsx from "clsx";
 import './IconButton.css'
 
 /**
- * @param {JSX.Element} icon
- * @param {boolean} small
- * @param {boolean} border
- * @param {boolean} shadow
- * @param {'transparent' | 'secondary' | 'primary' | 'bg-default'} bgVariant
- * @param {string} [title]
- * @param {string} className
- * @param {string} iconClass
+ * Компонент-кнопка с иконкой
+ * @param {JSX.Element} icon иконка кнопки
+ * @param {boolean} small варриант кнопки (true - более компактная)
+ * @param {boolean} border default = true, флаг добавляет border
+ * @param {boolean} shadow default = false, флаг добавляет тень кнопке
+ * @param {'transparent' | 'secondary' | 'primary' | 'bg-default'} bgVariant вариант заднего фона
+ * @param {string} [title] надпись на кнопке
+ * @param {string} className css-класс для стилей кнопки
+ * @param {string} iconClass css-класс для стилей иконки
  * @param  props
  * @returns {JSX.Element}
- * @constructor
+ * @category UI-Components
  */
 
 export default function IconButton({

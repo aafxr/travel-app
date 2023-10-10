@@ -18,6 +18,7 @@
     "node_modules/better-docs/category",
     "node_modules/better-docs/component"
   ],
+  "title": "TravelerApp Documentation",
   "opts": {
     "template": "node_modules/better-docs"
   }

@@ -19,11 +19,11 @@ import createId from "../../utils/createId";
 /**
  * компонент отображает фото по переданному src , либо ищет в бд по id
  * @param {string} className
- * @param {string} id                       - идентификатор фото в бд
- * @param {PhotoChangeFunction} onChange
+ * @param {string} id                       идентификатор фото в бд
+ * @param {PhotoChangeFunction} onChange    обработчик на изменение фото
  * @param props
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function Photo({className, id, onChange, ...props}) {
     const [photo, setPhoto] = useState(/**@type{UserPhotoType | null} */null)

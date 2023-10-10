@@ -3,6 +3,12 @@ import StarHalfIcon from "../svg/StarHalfIcon";
 
 import './Rating.css'
 
+/**
+ * Компонент отображает рейтинг (звездочки)
+ * @param number rating значение 0 - 5
+ * @returns {JSX.Element}
+ * @category Components
+ */
 export default function Rating({rating}){
     const rest = rating % 1
     const int = Math.floor(rating)

@@ -14,7 +14,7 @@ import clsx from "clsx";
  * @param {number} max - максимум
  * @param {string} valueClassName
  * @param {Function} onChange - принимает текущее значение счетчика
- * @constructor
+ * @category Components
  */
 export default function Counter({
                                     initialValue,

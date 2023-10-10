@@ -16,12 +16,12 @@ import sleep from "../../utils/sleep";
  */
 
 /**
- * Компонент отображает список HTMLInputElement-ов
- * @param {IMap} map
- * @param {InputPoint[]} pointsList
- * @param {PointsListChangeFunction} onListChange
+ * Компонент отображает список HTMLInputElement-ов (полей ввода желаемых мест для посещения)
+ * @param {IMap} map интерфейс для взаимодействия с api карты
+ * @param {InputPoint[]} pointsList список предпологаемых мест для посещения
+ * @param {PointsListChangeFunction} onListChange обработчик на изменение порядка или введенной локации
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const {user} = useSelector(state => state[constants.redux.USER])

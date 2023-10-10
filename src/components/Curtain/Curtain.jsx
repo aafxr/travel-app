@@ -17,7 +17,7 @@ import './Curtain.css'
  * @param {number} scrollDiff default 0.1 минимальное смещение (drag events), на которое реагирует шторка
  * @param {Function} onChange callback (шторка открыта / закрыта)
  * @return {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function Curtain({
                                     children,

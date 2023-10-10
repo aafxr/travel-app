@@ -4,6 +4,17 @@ import {useKeyPress} from "../../hooks/useKeyPress";
 
 import "./Modal.css";
 
+/**
+ * компонент отображает модальное окно
+ * @param children
+ * @param {boolean} isVisible флаг видимости модального окна
+ * @param {function} close обработчик закрытия модального окна
+ * @param {function} submit обработчик на событие подтверждения
+ * @param props
+ * @param {React.Ref} ref
+ * @returns {JSX.Element|null}
+ * @category Components
+ */
 function Modal({
                    children,
                    isVisible,

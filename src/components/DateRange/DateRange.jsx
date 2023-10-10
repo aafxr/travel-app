@@ -8,7 +8,7 @@ import React, {useEffect, useState} from "react";
  * @param {string} minDateValue - значение которое используется в качестве ограничения календаяря (делает не активной даты до указанной в ытом поле)
  * @param {Function} onChange - функция принимает измененные {start, end}
  * @returns {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function DateRange({startValue, endValue, minDateValue = '', onChange}) {
     /** дата начала диапазона */

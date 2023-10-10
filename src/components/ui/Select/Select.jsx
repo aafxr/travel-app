@@ -5,7 +5,20 @@ import useOutside from "../../../hooks/useOutside";
 
 import './Select.css'
 
-
+/**
+ * Компонент-селектор
+ * @param defaultValue
+ * @param value
+ * @param options
+ * @param className
+ * @param size
+ * @param border
+ * @param onChange
+ * @param props
+ * @param ref
+ * @returns {JSX.Element}
+ * @category UI-Components
+ */
 function Select({
                     defaultValue = '',
                     value,
