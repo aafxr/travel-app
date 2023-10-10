@@ -16,8 +16,10 @@ import './Profile.css'
 
 /**
  * компонент отбражает профиль пользователя
+ * @function
+ * @name Profile
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function Profile() {
     const {user} = useSelector(state => state[constants.redux.USER])

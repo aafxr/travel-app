@@ -15,6 +15,11 @@ import {actions} from "../../../../redux/store";
 
 import '../../css/Travel.css'
 
+/**
+ * @name TravelAdd
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelAdd() {
     const navigate = useNavigate()
     const {user} = useSelector(state => state[constants.redux.USER])

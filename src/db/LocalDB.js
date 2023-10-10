@@ -111,7 +111,7 @@ export class LocalDB {
         openDataBase(dbname, version, stores)
             .then(function () {
                 this.ready = true
-                this.readyHandler()
+                this._readyHandler()
             }.bind(this))
             .catch((err) => {
                 onError && onError(err)

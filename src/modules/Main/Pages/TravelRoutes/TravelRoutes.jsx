@@ -21,11 +21,11 @@ import {actions} from "../../../../redux/store";
 
 /**
  * компонент отображает  маршруты, отсортированные по времени (прошлыые, текущие, будущие)
+ * @function
+ * @name TravelRoutes
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
-
-
 export default function TravelRoutes({
                                          primary_entity_type,
                                          primary_entity_id

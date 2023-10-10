@@ -11,6 +11,9 @@ import constants from "../../../../static/constants";
 
 /**
  * компонент отображает добавленные маршруты в избранное
+ * @function
+ * @name Favorite
+ * @category Pages
  */
 export default function Favorite({
                                    primary_entity_type,

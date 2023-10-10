@@ -20,6 +20,12 @@ const defaultMemberAccessTypes = [
     {id: 2, title: 'Просмотр'}
 ]
 
+/**
+ * @function
+ * @name TravelUserPermission
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelUserPermission() {
     const navigate = useNavigate()
     const {userCode} = useParams()

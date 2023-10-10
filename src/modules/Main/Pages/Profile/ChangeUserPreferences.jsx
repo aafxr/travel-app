@@ -25,8 +25,10 @@ const themeConvertor = {
 
 /**
  * компонент для изменения настроек пользователя
+ * @function
+ * @name ChangeUserPreferences
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function ChangeUserPreferences() {
     const {theme} = useSelector(state => state[constants.redux.USER])

@@ -43,7 +43,7 @@
     "serve": "npx serve -s build",
     "build:serve": "react-scripts build && npx serve -s build",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "doc": "jsdoc src -c conf.json -t ./node_modules/better-docs -d docs -R README.md -r"
+    "doc": "jsdoc src -c conf.json -d docs -R README.md -r"
   },
   "eslintConfig": {
     "extends": [

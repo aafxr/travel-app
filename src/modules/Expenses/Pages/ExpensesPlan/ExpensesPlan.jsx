@@ -17,8 +17,10 @@ import '../../css/Expenses.css'
 
 /**
  * страница отображает плановые расходы  пользователя
+ * @function
+ * @name ExpensesPlan
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function ExpensesPlan() {
     const {travelCode: primary_entity_id} = useParams()

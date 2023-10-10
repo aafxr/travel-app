@@ -26,7 +26,13 @@ import useTravel from "../../hooks/useTravel";
 
 import './TravelDetails.css'
 
-
+/**
+ * Страница редактирования деталей путешествия (даты, название, описание путешествия)
+ * @function
+ * @name TravelDetails
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelDetails() {
     const {travelCode} = useParams()
     const navigate = useNavigate()

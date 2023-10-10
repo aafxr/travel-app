@@ -17,7 +17,7 @@ import createAction from "../../../../utils/createAction";
 import {actions} from "../../../../redux/store";
 
 /**
- *
+ * @function
  * @param {import('../../../../types/SectionType').SectionType} section - имя секции расходов
  * @param {function} sectionLimit - лимит расходов поьзователя
  * @param {Array.<import('../../../../types/ExpenseType').ExpenseType>} expenses
@@ -25,7 +25,7 @@ import {actions} from "../../../../redux/store";
  * @param {boolean} personal
  * @param {boolean} line
  * @return {JSX.Element}
- * @constructor
+ * @category Expenses-Component
  */
 function Section({
                      section,
@@ -116,12 +116,12 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
 
 
 /**
- *
+ * @function
  * @param {import('../../../../types/ExpenseType').ExpenseType} expense
  * @param isPlan
  * @param user_id
  * @returns {JSX.Element}
- * @constructor
+ * @category Expenses-Component
  */
 function SectionItem({expense, isPlan, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense

@@ -61,7 +61,6 @@ import ErrorReport from "../controllers/ErrorReport";
  * @param {import('../db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
  * @param {string} storeName - имя хранилища
  * @param {validateCallback | validateObj}validation
- *
  */
 export default class Model {
     constructor(db, storeName, validation) {

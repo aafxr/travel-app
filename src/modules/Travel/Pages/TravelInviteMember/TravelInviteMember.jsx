@@ -29,6 +29,13 @@ const defaultMember = {
     isChild: false
 }
 
+/**
+ * Страница для отправки пользователям приглошения присоедениться к путешествию
+ * @function
+ * @name TravelInviteMember
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelInviteMember() {
     const navigate = useNavigate()
 

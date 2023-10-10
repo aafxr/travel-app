@@ -9,7 +9,10 @@ import {Chip, PageHeader} from "../../../../components/ui";
 
 
 /**
- * компонент, отображает рекомендации для посещения  
+ * компонент, отображает рекомендации для посещения
+ * @function
+ * @name TravelOnRoute
+ * @category Pages
  */
 export default function TravelOnRoute() {
     const {travelCode} = useParams()

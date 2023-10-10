@@ -13,8 +13,10 @@ import storeDB from "../../../../db/storeDB/storeDB";
 
 /**
  * компонент редактирования иформации пользователя
+ * @function
+ * @name UserNameEdite
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function UserNameEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])

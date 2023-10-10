@@ -12,6 +12,13 @@ import {Chip, PageHeader} from "../../../../components/ui";
 
 import './HotelDetails.css'
 
+/**
+ * Страница отображения информации об отеле
+ * @function
+ * @name HotelDetails
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function HotelDetails() {
     const classNames = clsx('wrapper',{'selected': true})
 

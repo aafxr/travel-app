@@ -8,8 +8,10 @@ import Button from "../../../../components/ui/Button/Button";
 
 /**
  * компонент для добавления саолета
+ * @function
+ * @name TravelAddPlane
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function TravelAddPlane() {
     const {travelCode} = useParams()

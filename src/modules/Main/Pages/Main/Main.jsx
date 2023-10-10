@@ -12,6 +12,9 @@ import Menu from "../../../../components/Menu/Menu";
 
 /**
  * компонент отображает главную страницу приложения
+ * @function
+ * @name Main
+ * @category Pages
  */
 export default function Main({
                                  primary_entity_type,

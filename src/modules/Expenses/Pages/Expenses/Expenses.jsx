@@ -18,9 +18,11 @@ import '../../css/Expenses.css'
 
 /**
  * страница отображает текущие расходы с лимитами пользователя (если указаны)
+ * @function
+ * @name Expenses
  * @param {string} primary_entity_type
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function Expenses({primary_entity_type}) {
     const dispatch = useDispatch()

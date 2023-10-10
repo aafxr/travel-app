@@ -11,8 +11,10 @@ import sleep from "../../../../utils/sleep";
 
 /**
  * компонент реализует способы авторизации пользователя
+ * @function
+ * @name Login
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function Login() {
     const navigate = useNavigate()

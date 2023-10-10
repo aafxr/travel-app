@@ -25,6 +25,7 @@ export const defaultTravel = {
     adults_count: () =>  0,
     childs_count: () =>  0,
     direction: () => '',
+    isPublic: () => true
 }
 
 /**
@@ -540,6 +541,22 @@ export const travelsSlice = createSlice({
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) travel.movementTypes = travel.movementTypes.filter(mt => mt.id !== payload.id)
             },
+            // флаг приватности путешествия ============================================================================
+            /**
+             * экшен устанавливает флаг приватности путешествия
+             * @param {TravelState} state
+             * @param {boolean} payload
+             */
+            setPublic(state, {payload}){
+                if (!state.travelID) {
+                    console.warn(new Error('Обращение к travelID до инициализации'))
+                    return
+                }
+                if(typeof payload === 'boolean'){
+                    const travel = state.travels.find(t => t.id === state.travelID)
+                    if (travel) travel.isPublic = payload
+                }
+            }
         },
 
         extraReducers: (builder) => {

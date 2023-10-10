@@ -21,6 +21,13 @@ const convertor = {
     [constants.store.TRAVEL]: 'Маршрут'
 }
 
+/**
+ * страница отображения последних действий
+ * @function
+ * @name ActionsList
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function ActionsList() {
     const [expensesList, setExpensesList] = useState([])
     const [travelsList, setTravelsList] = useState([])

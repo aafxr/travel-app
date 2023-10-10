@@ -22,7 +22,7 @@ import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
-import TravelEdite from "./modules/Travel/Pages/TravelEdite/TravelEdite";
+import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
@@ -118,7 +118,7 @@ function App() {
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/edite/'} element={<TravelEdite/>}/>
+                            <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                             <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>

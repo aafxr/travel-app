@@ -17,8 +17,10 @@ import useTravel from "../../hooks/useTravel";
 
 /**
  * компонент для добавления встреч
+ * @function
+ * @name TravelAddAppointment
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function TravelAddAppointment() {
     const { appointmentCode} = useParams()

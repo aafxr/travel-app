@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
-import constants, {defaultMovementTags} from "../../../../static/constants";
+import constants, {defaultMovementTags, MS_IN_DAY} from "../../../../static/constants";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import DateRange from "../../../../components/DateRange/DateRange";
 import Container from "../../../../components/Container/Container";
@@ -14,11 +14,17 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
+import "./TravelEdit.css"
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+
 
 /**
  * Компонент редактирования параметров путешествия
+ * @function
+ * @name TravelEdit
+ * @category Pages
  */
-export default function TravelEdite() {
+export default function TravelEdit() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -33,6 +39,8 @@ export default function TravelEdite() {
     const [end, setEnd] = useState('')
     /** ограничение диапазона дат путешествия (не раньше текущей даты) */
     const minDateValue = useMemo(() => new Date().toISOString(), [])
+    /** количество дней в поездке */
+    const [daysCount, setDaysCount] = useState(1)
     /** описание путешествия */
     const [description, setDescription] = useState('')
     /** способы передвижения */
@@ -48,6 +56,11 @@ export default function TravelEdite() {
             travel.date_end && setEnd(travel.date_end)
             travel.description && setDescription(travel.description)
             travel.movementTypes && setTags(travel.movementTypes.map(mt => mt.id))
+            if(travel.date_start && travel.date_end){
+                const ms = new Date(travel.date_end) - new Date(travel.date_start)
+                const days = Math.ceil(ms / MS_IN_DAY)
+                setDaysCount(days)
+            } else setDaysCount(1)
             //... доьавить остальные поля в будущем
         }
     }, [travel])
@@ -118,6 +131,38 @@ export default function TravelEdite() {
     function handleDateRangeChange({start: startDate, end: endDate}) {
         startDate && setStart(startDate)
         endDate && setEnd(endDate)
+        if (startDate && endDate) {
+            const ms = new Date(endDate || 0).getTime() - new Date(startDate || 0)
+            const days = Math.ceil(ms / MS_IN_DAY)
+            updateDateRange(days)
+        } else if (daysCount) updateDateRange(daysCount)
+    }
+
+    /**
+     *
+     * @param {React.ChangeEvent<HTMLInputElement>} e
+     */
+    function handleTravelDays(e) {
+        const days = +e.target.value
+        updateDateRange(days)
+        setDaysCount(days)
+    }
+
+    /**
+     *
+     * @param {number} days
+     */
+    function updateDateRange(days) {
+        if (typeof days === "number" && days > 0) {
+            setDaysCount(days)
+            if ((start && !end) || (start && end)) {
+                const tempTime = new Date(start).getTime() + MS_IN_DAY * days
+                setEnd(new Date(tempTime).toISOString())
+            } else if (!start && end) {
+                const tempTime = new Date(end).getTime() - MS_IN_DAY * days
+                setStart(new Date(tempTime).toISOString())
+            }
+        }
     }
 
 
@@ -126,49 +171,71 @@ export default function TravelEdite() {
             <Container>
                 <PageHeader arrowBack title={'Параметры'}/>
             </Container>
-            <Container className='content'>
-                <div className='block column gap-0.5'>
-                    <div className='title-bold'>Название</div>
-                    <Input
-                        type='text'
-                        placeholder={'Название поездки'}
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                    />
-                </div>
-                <div className='block column gap-0.5'>
-                    <div className='title-bold'>Дата поездки</div>
-                    <DateRange
-                        startValue={start}
-                        endValue={end}
-                        minDateValue={minDateValue}
-                        onChange={handleDateRangeChange}
-                    />
-                </div>
-                <div className='block column gap-0.5'>
-                    <div className='title-bold'>Способы передвижения</div>
-                    <div className='flex-wrap gap-1'>
-                        {
-                            defaultMovementTags.map(t => (
-                                <Chip
-                                    key={t.id}
-                                    icon={t.icon}
-                                    color={tags.includes(t.id) ? 'orange' : 'grey'}
-                                    rounded
-                                    onClick={() => handleTagClick(t.id)}
-                                >
-                                    {t.title}
-                                </Chip>
-                            ))
-                        }
-                    </div>
-                </div>
-                <div className='block column gap-0.5'>
-                    <div className='title-bold'>Описание</div>
-                    <TextArea value={description} onChange={e => setDescription(e.target.value)}
-                              placeholder='Описание'/>
-                </div>
-            </Container>
+            {
+                travel && (
+                    <Container className='content'>
+                        <div className='block column gap-0.5'>
+                            <div className='title-bold'>Название</div>
+                            <Input
+                                type='text'
+                                placeholder={'Название поездки'}
+                                value={title}
+                                onChange={e => setTitle(e.target.value)}
+                            />
+                        </div>
+                        <div className='block column gap-0.5'>
+                            <div className='title-bold'>Дата поездки</div>
+                            <div className='travel-edit-days'>
+                                <div className='title-semi-bold'>Количество дней</div>
+                                <input
+                                    className='travel-edit-days-input'
+                                    type="text"
+                                    inputMode='numeric'
+                                    value={daysCount}
+                                    onChange={handleTravelDays}
+                                    size={1}
+                                />
+                            </div>
+                            <DateRange
+                                startValue={start}
+                                endValue={end}
+                                minDateValue={minDateValue}
+                                onChange={handleDateRangeChange}
+                            />
+                        </div>
+                        <div className='block column gap-0.5'>
+                            <div className='title-bold'>Предпочтительный способ передвижения</div>
+                            <div className='flex-wrap gap-1'>
+                                {
+                                    defaultMovementTags.map(t => (
+                                        <Chip
+                                            key={t.id}
+                                            icon={t.icon}
+                                            color={tags.includes(t.id) ? 'orange' : 'grey'}
+                                            rounded
+                                            onClick={() => handleTagClick(t.id)}
+                                        >
+                                            {t.title}
+                                        </Chip>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                        <div className='block column gap-0.5'>
+                            <div className='title-bold'>Описание</div>
+                            <TextArea value={description} onChange={e => setDescription(e.target.value)}
+                                      placeholder='Описание'/>
+                        </div>
+                        <Checkbox
+                            checked={travel.isPublic}
+                            onChange={val => dispatch(actions.travelActions.setPublic(val))}
+                            left
+                        >
+                            {travel.isPublic ? 'Общий доступ' : 'Закрытый доступ'}
+                        </Checkbox>
+                    </Container>
+                )
+            }
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave}
                         disabled={!changedFields(travel, getNewTravelData()).length}>Сохранить</Button>

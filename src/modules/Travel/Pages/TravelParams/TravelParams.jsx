@@ -7,6 +7,9 @@ import {PageHeader} from "../../../../components/ui";
 
 /**
  * Компоннт для добавления деталей путешествия
+ * @function
+ * @name TravelParams
+ * @category Pages
  */
 export default function TravelParams() {
     const {travelCode} = useParams()

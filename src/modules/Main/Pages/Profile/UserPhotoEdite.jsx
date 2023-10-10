@@ -11,6 +11,12 @@ import {PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 
+/**
+ * @function
+ * @name UserPhotoEdite
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function UserPhotoEdite() {
     const {user} = useSelector(state => state[constants.redux.USER])
     const dispatch = useDispatch()

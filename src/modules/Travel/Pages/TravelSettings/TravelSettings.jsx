@@ -20,7 +20,13 @@ import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
 
-
+/**
+ * Страница формирования путешествия ( добавление даты / отели / встречи / участники)
+ * @function
+ * @name TravelSettings
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelSettings() {
     const {travelCode} = useParams()
     const navigate = useNavigate()

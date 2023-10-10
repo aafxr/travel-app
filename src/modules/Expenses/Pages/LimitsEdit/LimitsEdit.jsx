@@ -1,32 +1,34 @@
 import React, { useEffect, useMemo, useState} from 'react'
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
-import {Chip, Input, PageHeader} from "../../../../components/ui";
+import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Container from "../../../../components/Container/Container";
-import createId from "../../../../utils/createId";
+import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
+import {formatter} from "../../../../utils/currencyFormat";
+import updateExpenses from "../../helpers/updateExpenses";
+import createAction from "../../../../utils/createAction";
+import {updateLimits} from "../../helpers/updateLimits";
+import {defaultFilterValue} from "../../static/vars";
+import {useDispatch, useSelector} from "react-redux";
+import storeDB from "../../../../db/storeDB/storeDB";
+import createId from "../../../../utils/createId";
+import {actions} from "../../../../redux/store";
 
 
 import constants, {reducerConstants} from "../../../../static/constants";
 
 import '../../css/Expenses.css'
-import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
-import {defaultFilterValue} from "../../static/vars";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import updateExpenses from "../../helpers/updateExpenses";
-import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
-import {formatter} from "../../../../utils/currencyFormat";
-import {updateLimits} from "../../helpers/updateLimits";
-import {useDispatch, useSelector} from "react-redux";
-import storeDB from "../../../../db/storeDB/storeDB";
-import createAction from "../../../../utils/createAction";
-import {actions} from "../../../../redux/store";
 
 /**
  * страница редактиррования лимитов
+ * @function
+ * @name LimitsEdit
  * @param {string} primary_entity_type
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function LimitsEdit({
                                        primary_entity_type

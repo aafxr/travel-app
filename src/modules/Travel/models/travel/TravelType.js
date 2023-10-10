@@ -52,23 +52,24 @@
 /**
  * @category Types
  * @typedef {object} TravelType
- * @property {string} id
- * @property {string} code
- * @property {string} title
- * @property {string} direction
- * @property {string} owner_id
- * @property {Date} created_at
- * @property {Date} updated_at
- * @property {AppointmentType[]} appointments
- * @property {MemberType[]} members
- * @property {HotelType[]} hotels
- * @property {MovementType[]} movementTypes
- * @property {InputPoint[]} waypoints
- * @property {string} date_start
- * @property {string} date_end
- * @property {number} adults_count
- * @property {number} childs_count
- * @property {string} photo
+ * @property {string} id id путешествия
+ * @property {string} code символьный код путешествия
+ * @property {string} title название путешествия
+ * @property {string} direction описание путешествия
+ * @property {string} owner_id автор путешествия
+ * @property {Date} created_at дата создания
+ * @property {Date} updated_at дата обнавления
+ * @property {AppointmentType[]} appointments список встреч
+ * @property {MemberType[]} members список участников
+ * @property {HotelType[]} hotels список отелей
+ * @property {MovementType[]} movementTypes способ перемещения
+ * @property {InputPoint[]} waypoints список посещаемых мест
+ * @property {string} date_start начало путешествия
+ * @property {string} date_end конец путешествия
+ * @property {number} adults_count число взрослых
+ * @property {number} childs_count число детей
+ * @property {string} photo фото путешествия
+ * @property {boolean} isPublic флаг публичного путешествия
  */
 
 // id

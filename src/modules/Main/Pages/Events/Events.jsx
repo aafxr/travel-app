@@ -8,6 +8,15 @@ import Container from "../../../../components/Container/Container";
 import constants from "../../../../static/constants";
 import {PageHeader} from "../../../../components/ui";
 
+/**
+ * Страница отображения ближайших рекомендуемых событий
+ * @function
+ * @name Events
+ * @param {string} primary_entity_type
+ * @param {string} primary_entity_id
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function Events({
                                  primary_entity_type,
                                  primary_entity_id

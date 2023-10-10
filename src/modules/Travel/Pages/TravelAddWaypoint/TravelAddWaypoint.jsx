@@ -10,13 +10,19 @@ import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
+import useDragPoint from "../../hooks/useDragPoint";
 import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddWaypoint.css'
-import useDragPoint from "../../hooks/useDragPoint";
 
+/**
+ * @function
+ * @name TravelAddWaypoint
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
     const dispatch = useDispatch()

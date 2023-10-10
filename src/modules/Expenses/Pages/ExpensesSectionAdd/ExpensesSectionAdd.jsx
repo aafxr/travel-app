@@ -1,20 +1,25 @@
-import React, {useContext, useState} from 'react'
+import React, { useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 import {Input, PageHeader} from "../../../../components/ui";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import createId from "../../../../utils/createId";
-import constants from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 
-
+/**
+ * @function
+ * @name ExpensesActualAdd
+ * @param {string} user_id
+ * @param {string} primary_entity_type
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function ExpensesActualAdd({
                                               user_id,
                                               primary_entity_type
                                           }) {
     const {travelCode: primary_entity_id} = useParams()
-    const {controller} = useContext(ExpensesContext)
     const navigate = useNavigate()
 
     const [sectionName, setSectionName] = useState('')
@@ -28,18 +33,6 @@ export default function ExpensesActualAdd({
                 primary_entity_id,
                 id: createId(user_id)
             }
-
-            controller.write({
-                storeName: constants.store.SECTION,
-                action: 'add',
-                user_id,
-                data
-            })
-                .then((res) => {
-                    console.log('Ответ ', res)
-                    console.log('section created ', sectionName)
-                })
-                .catch(console.error)
 
             navigate('/')
         } else {

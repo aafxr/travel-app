@@ -27,14 +27,15 @@ import '../../css/Expenses.css'
 
 
 /**
- * страница добавления расходов
- *
+ * страница добавления расходов <br/>
  * в зависимости от expensesType добавляются либо плановые либо текущие
+ * @function
+ * @name ExpensesAdd
  * @param {string} primary_entity_type
  * @param {'actual' | 'plan'} expensesType - default =  actual
  * @param {boolean} edit - default =  false
  * @returns {JSX.Element}
- * @constructor
+ * @category Pages
  */
 export default function ExpensesAdd({
                                         primary_entity_type,

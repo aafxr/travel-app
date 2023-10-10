@@ -8,6 +8,13 @@ import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
+/**
+ * Страница отображения локации
+ * @function
+ * @name TravelAddLocation
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelAddLocation() {
     const {travelCode} = useParams()
     const dateHandlers = useChangeInputType('date')

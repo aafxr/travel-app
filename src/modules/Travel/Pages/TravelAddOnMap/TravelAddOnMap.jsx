@@ -3,23 +3,23 @@ import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
+import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import MapControls from "../../../../components/MapControls/MapControls";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
+import useDragPoint from "../../hooks/useDragPoint";
 import createId from "../../../../utils/createId";
 import {actions} from "../../../../redux/store";
 import useMap from "../../../../hooks/useMap";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddOnMap.css'
-import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
-import useDragPoint from "../../hooks/useDragPoint";
 
 /**
  * @typedef {Object} InputPoint
@@ -28,6 +28,13 @@ import useDragPoint from "../../hooks/useDragPoint";
  * @property {Point} point
  */
 
+/**
+ * Страница формирования мест маршрута с картой
+ * @function
+ * @name TravelAddOnMap
+ * @returns {JSX.Element|null}
+ * @category Pages
+ */
 export default function TravelAddOnMap() {
     const {travelCode} = useParams()
     const navigate = useNavigate()

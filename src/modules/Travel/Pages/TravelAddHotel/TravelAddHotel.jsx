@@ -15,7 +15,13 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
-
+/**
+ * Страница добавления отеля
+ * @function
+ * @name TravelAddHotel
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelAddHotel() {
     const navigate = useNavigate()
     const {user} = useSelector(state => state[constants.redux.USER])

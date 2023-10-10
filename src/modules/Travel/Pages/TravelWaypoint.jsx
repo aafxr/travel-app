@@ -7,7 +7,12 @@ import { PageHeader} from "../../../components/ui";
 
 import '../css/Travel.css'
 
-
+/**
+ * @function
+ * @name TravelWaypoint
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function TravelWaypoint() {
     // const [destination, setDestination] = useState('')
 

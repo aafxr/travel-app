@@ -1,0 +1,15 @@
+.travel-edit-days{
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: .7rem;
+}
+
+.travel-edit-days-input{
+    text-align: center;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 2px solid var(--color-grey-light);
+    outline: none;
+}

@@ -76,6 +76,8 @@ export const REFRESH_TOKEN = 'refresh_token'
 export const UNAUTHORIZED = 'unauthorized'
 export const THEME = 'THEME'
 
+export const MS_IN_DAY = 1000 * 60 * 60 * 24 //число милисекунд в в сутках
+
 export const defaultMovementTags = [
     {id: 1, icon: <WalkIcon className='img-abs' />, title: 'пешком'},
     {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},

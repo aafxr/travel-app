@@ -25,6 +25,14 @@ import constants, {REFRESH_TOKEN} from "../../../../static/constants";
  * @property {boolean} active
  */
 
+
+/**
+ * страница отображает активные сессии пользователя
+ * @function
+ * @name Sessions
+ * @returns {JSX.Element}
+ * @category Pages
+ */
 export default function Sessions() {
     const {user} = useSelector(state => state[constants.redux.USER])
 
