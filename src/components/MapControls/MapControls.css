@@ -4,13 +4,13 @@
 }
 
 .map-control-btn{
-    width: 40px;
-    height: 40px;
+    width: var(--control-size);
+    height: var(--control-size);
     border-radius: 50%;
     border: none;
     outline: none;
     background-color: var(--color-background);
-    filter: drop-shadow(0px 5px 15px rgba(0, 0, 0, 0.10));
+    filter: var(--controls-shadow);
 }
 
 .map-control-btn svg{

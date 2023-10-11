@@ -1,5 +1,6 @@
 /**
  * @category Types
+ * @name AppointmentType
  * @typedef {object} AppointmentType
  * @property {string} id
  * @property {string} title
@@ -11,6 +12,7 @@
 
 /**
  * @category Types
+ * @name PermissionType
  * @typedef {object} PermissionType
  * @property {string} id
  * @property {string} title
@@ -19,6 +21,7 @@
 
 /**
  * @category Types
+ * @name MemberType
  * @typedef {object} MemberType
  * @property {string} id
  * @property {string} name
@@ -32,6 +35,7 @@
 
 /**
  * @category Types
+ * @name HotelType
  * @typedef {object} HotelType
  * @property {string} id
  * @property {string} title
@@ -42,6 +46,7 @@
 
 /**
  * @category Types
+ * @name MovementType
  * @typedef {object} MovementType
  * @property {string} id
  * @property {string} title
@@ -51,6 +56,7 @@
 
 /**
  * @category Types
+ * @name TravelType
  * @typedef {object} TravelType
  * @property {string} id id путешествия
  * @property {string} code символьный код путешествия

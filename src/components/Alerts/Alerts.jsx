@@ -9,6 +9,7 @@ let alertId = 0
 
 /**
  * @category Types
+ * @name AlertPayload
  * @typedef {object} AlertPayload
  * @property {'info' | 'success' | 'warning' | 'danger'} type
  * @property {string} message

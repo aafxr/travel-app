@@ -10,7 +10,7 @@ import './Tab.css'
  * @function
  * @param {string} name имя таба
  * @param {string} to url, куда будет перенаправлен пользователь при клике
- * + если loaction.pathname совподает с параметром, то таб подсвеччивается
+ * и если loaction.pathname совподает с параметром, то таб подсвеччивается
  * @param {string} className css class
  * @param props
  * @returns {JSX.Element}

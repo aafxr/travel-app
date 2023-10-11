@@ -7,6 +7,7 @@ import Select from "../../components/ui/Select/Select";
 import IconButton from "../../components/ui/IconButton/IconButton";
 import {ChatIcon, ChecklistIcon, Money} from "../../components/svg";
 import AvatarPlaceHolder from "../../components/UserCard/AvatarPlaceholder";
+import PlusButton from "../../components/ui/PlusButton/PlusButton";
 
 // const tepl = {
 //     created_at: "2023-08-10T04:37:31+03:00",
@@ -52,14 +53,14 @@ export default function Dev({
                     <h2 style={{fontWeight: '900'}}>
                         <b>Опции</b>
                     </h2>
-                    <Link to={`/travel/123/expenses/`} style={{color: 'green'}}>Список расходов</Link>
-                    <Link to={`/travel/123/expenses/limit/123`} style={{color: 'green'}}>Редактировать лимит</Link>
-                    <Link to={`/travel/123/expenses/plan/`} style={{color: 'green'}}>План расходов</Link>
-                    <Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>
-                    <Link to={`/travel/123/expenses/plan/add/`} style={{color: 'green'}}>Добавить план расходов</Link>
-                    <Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>
-                    <Link to={`/travel/44/add/`}>Новый маршрут</Link>
-                    <Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>
+                    {/*<Link to={`/travel/123/expenses/`} style={{color: 'green'}}>Список расходов</Link>*/}
+                    {/*<Link to={`/travel/123/expenses/limit/123`} style={{color: 'green'}}>Редактировать лимит</Link>*/}
+                    {/*<Link to={`/travel/123/expenses/plan/`} style={{color: 'green'}}>План расходов</Link>*/}
+                    {/*<Link to={`/travel/123/expenses/add/`} style={{color: 'green'}}>Добавить расходы</Link>*/}
+                    {/*<Link to={`/travel/123/expenses/plan/add/`} style={{color: 'green'}}>Добавить план расходов</Link>*/}
+                    {/*<Link to={`/travel/123/expenses/section/add/`} style={{color: 'green'}}>Добавить секцию</Link>*/}
+                    {/*<Link to={`/travel/44/add/`}>Новый маршрут</Link>*/}
+                    {/*<Link to={`/travel/44/add/1/`} style={{textDecoration: 'line-through'}}>Направление</Link>*/}
 
                 </div>
 
@@ -77,6 +78,7 @@ export default function Dev({
                 <Input className='br-right-0' type={'date'} placeholder={'Дата'}/>
                 <Input className='br-left-0' type={'time'} placeholder={'Время'}/>
                 </div>
+                <PlusButton />
 
             </Container>
         </>
