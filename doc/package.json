@@ -13,6 +13,7 @@
   "devDependencies": {
     "better-docs": "^2.7.2",
     "jsdoc": "^4.0.2",
+    "parcel-bundler": "^1.12.5",
     "taffydb": "^2.7.3"
   }
 }

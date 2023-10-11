@@ -1,5 +1,5 @@
 {
-  "recurseDepth": 10,
+  "recurseDepth": 20,
   "source": {
     "includePattern": "\\.(jsx|js|ts|tsx)$",
     "excludePattern": "(^|\\/|\\\\)_"
@@ -18,7 +18,21 @@
     "search": true,
     "default": {
       "staticFiles": {
-        "include": []
+        "include": [
+          "./style.css"
+        ]
+      }
+    },
+    "better-docs": {
+      "title": "TravelerApp",
+      "css": "style.css",
+      "name": "Sample Documentation",
+      "component": {
+        "entry": [
+          "import 'babel-polyfill';",
+          "import 'bulma/css/bulma.css';",
+          "import './style.css';"
+        ]
       }
     }
   },
@@ -31,12 +45,5 @@
   "opts": {
     "template": "node_modules/better-docs"
   },
-
-  "categoryfile": "jsdoc_category_file.json",
-
-  "better-docs": {
-    "name": "TravelerApp",
-    "title": "TravelerApp",
-    "css": ""
-  }
+  "categoryfile": "jsdoc_category_file.json"
 }

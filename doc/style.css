@@ -1,0 +1,7 @@
+#main>.sidebar{
+    width: 300px;
+}
+
+.sidebar h3 {
+    display: none;
+}
