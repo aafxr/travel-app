@@ -43,7 +43,7 @@
     "serve": "npx serve -s build",
     "build:serve": "react-scripts build && npx serve -s build",
     "lint": "eslint --fix --ext .js,.jsx .",
-    "doc": "jsdoc src -c conf.json -d docs -R README.md -r"
+    "doc": "jsdoc src -c doc/conf.json -d docs -R README.md -r"
   },
   "eslintConfig": {
     "extends": [
@@ -66,11 +66,8 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "babel-eslint": "^10.1.0",
-    "better-docs": "^2.7.2",
     "eslint": "^8.0.0",
     "eslint-config-react-app": "^7.0.1",
-    "jsdoc": "^4.0.2",
-    "serve": "^14.2.0",
-    "taffydb": "^2.7.3"
+    "serve": "^14.2.0"
   }
 }
