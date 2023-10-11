@@ -25,19 +25,19 @@ export default function Counter({
                                 }) {
     const [value, setValue] = useState(0)
 
-    /** инициализация счетчика */
+    /*** инициализация счетчика */
     useEffect(() => {
         if (initialValue) setValue(initialValue)
     }, [initialValue])
 
     // обработчики =====================================================================================================
-    /** увелличение счетчика */
+    /*** увелличение счетчика */
     function handleIncrement() {
         setValue(value + 1)
         onChange && onChange(value + 1)
     }
 
-    /** уменьшение счетчика */
+    /*** уменьшение счетчика */
     function handleDecrement() {
         setValue(value - 1)
         if (onChange) onChange(value - 1)

@@ -4,17 +4,20 @@ import './IconButton.css'
 
 /**
  * Компонент-кнопка с иконкой
+ * @kind component
+ * @function
  * @param {JSX.Element} icon иконка кнопки
  * @param {boolean} small варриант кнопки (true - более компактная)
  * @param {boolean} border default = true, флаг добавляет border
  * @param {boolean} shadow default = false, флаг добавляет тень кнопке
  * @param {'transparent' | 'secondary' | 'primary' | 'bg-default'} bgVariant вариант заднего фона
  * @param {string} [title] надпись на кнопке
- * @param {string} className css-класс для стилей кнопки
+ * @param {string} className css class css-класс для стилей кнопки
  * @param {string} iconClass css-класс для стилей иконки
- * @param  props
+ * @param  props other props
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name IconButton
  */
 
 export default function IconButton({

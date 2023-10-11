@@ -12,7 +12,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
 /**
  * компонент для отрисовки чеклиста
  * @param {string} groupClassNames - css класс корневова блока компонента
- * @param {string} className - css класс блока-контейнера группы Checkbox
+ * @param {string} className css class - css класс блока-контейнера группы Checkbox
  * @param {string} title
  * @param {CheckListType[]} checklist
  * @param {function} onChange
@@ -36,7 +36,7 @@ export default function RadioButtonGroup({
     const isLeft = position === 'left'
     const [selected, setSelected] = useState(multy ? [] : '')
 
-    /** инициялизация выбранных полей */
+    /*** инициялизация выбранных полей */
     useEffect(() => {
         if (initValue) setSelected(initValue)
     }, [initValue])
@@ -46,7 +46,7 @@ export default function RadioButtonGroup({
         return null
     }
 
-    /**
+    /***
      * обработчик клика по Checkbox
      * @param {CheckListType} item
      */
@@ -59,7 +59,7 @@ export default function RadioButtonGroup({
             newSelected = item
         }
         setSelected(newSelected)
-        /** передача выбранных элементов в родительский компонент */
+        /*** передача выбранных элементов в родительский компонент */
         onChange && onChange(newSelected)
     }
 

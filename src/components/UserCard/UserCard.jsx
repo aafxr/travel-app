@@ -11,7 +11,7 @@ import './UserCard.css'
 
 /**
  * компонент осуществляет поиск или пытается загрузить инфо о юзере
- * @param {string} className
+ * @param {string} className css class
  * @param {string} id - идентификатор пользователя
  * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
  * @param {Function} onClick - проп-функция (принимает инфо о юзере), генерируется при клике по карточке пользователя

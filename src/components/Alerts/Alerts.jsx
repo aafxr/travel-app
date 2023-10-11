@@ -41,13 +41,13 @@ export function pushAlertMessage(payload) {
  * @category Components
  */
 export default function Alerts({count = 1, maxAlertsCount = 10}) {
-    /** число активных сообщений */
+    /*** число активных сообщений */
     const activeAlerts = useRef(0)
-    /** флаг сигнализирует о том, что очередб пуста */
+    /*** флаг сигнализирует о том, что очередб пуста */
     const [isEmpty, setIsEmpty] = useState(true)
-    /** очередь сообщений */
+    /*** очередь сообщений */
     const alertsQueue = useRef([])
-    /** React ref на контейнер с сообщениями */
+    /*** React ref на контейнер с сообщениями */
     const ref = useRef(null)
 
     const onNewAlert = useCallback(function (e) {

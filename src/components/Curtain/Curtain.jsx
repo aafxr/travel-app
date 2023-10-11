@@ -30,17 +30,17 @@ export default function Curtain({
                                     scrollDiff = 0.1,
                                     onChange
                                 }) {
-    /**
+    /***
      * react ref на основной блок-контейнер шторки
      * @type{React.MutableRefObject<HTMLDivElement>}
      */
     const cRef = useRef()
-    /**
+    /***
      * react ref на верхнюю кнопку
      * @type{React.MutableRefObject<HTMLDivElement>}
      */
     const cTopRef = useRef()
-    /**@type{React.MutableRefObject<HTMLDivElement>}*/
+    /***@type{React.MutableRefObject<HTMLDivElement>}*/
     const curtainRef = useRef()
 
     const [topOffset, setTopOffset] = useState(minOffset)

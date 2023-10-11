@@ -6,7 +6,7 @@ import './container.css'
 /**
  * компонент, задает базовые отступы по бокам
  * @param children
- * @param {string} className
+ * @param {string} className css class
  * @returns {JSX.Element}
  * @category Components
  */

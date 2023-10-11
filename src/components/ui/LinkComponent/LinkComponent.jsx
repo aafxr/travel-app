@@ -7,11 +7,14 @@ import './LinkComponent.css'
 
 /**
  * компонент, обернутый в Link(куфсе-кщгеук-вщь) для добавления переходовна страницы
- * @param {string} title
+ * @kind component
+ * @function
+ * @param {string} title текст, тспользуемый в компоненте
  * @param {string} to ссылка, куда будет переход
  * @param {boolean} arrow default = false
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name LinkComponent
  */
 export default function LinkComponent({title, to, arrow = false}) {
     return (

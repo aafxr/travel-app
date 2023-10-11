@@ -5,14 +5,18 @@ import './Checkbox.css'
 
 
 /**
+ * Компонент, аналогичный native \<input type="checkbox" /\>
+ * @kind component
+ * @function
  * @param {JSX.Element | string} children
- * @param {string} className
+ * @param {string} className css class
  * @param {boolean} checked флаг / состояние компонента чекбокс
  * @param {boolean} left default = right сторона с которой отображается гконка
  * @param {function} [onChange] обработчик на изменение состояния чекбокс
  * @param props
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Checkbox
  */
 function Checkbox({
                       children,

@@ -6,13 +6,16 @@ import './AddButton.css'
 
 
 /**
- * @param {string} className
- * @param {JSX.Element | string} children
+ * Стилезованный компонент button с иконкой "+"
+ * @kind component
+ * @function
+ * @param {string} className css class
+ * @param {JSX.Element | string} children child react elements
  * @param {string} [to] - url на который перенаправляется пользователь при клике
- * @param props
+ * @param props other props
  * @returns {JSX.Element}
  * @category UI-Components
-
+ * @name AddButton
  */
 export default function AddButton({className, children, to, props}) {
     const navigate = useNavigate()

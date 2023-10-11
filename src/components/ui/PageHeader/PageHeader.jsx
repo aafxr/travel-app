@@ -11,15 +11,19 @@ import './PageHeader.css'
 
 /**
  * компонент добавляет заголовок и стрелку "вернуться назад"
- * @param {boolean} arrowBack - true добавляет стрелочку назад <-
- * @param {string} className
- * @param {string} title - заголовок
- * @param {string} to - url на который перенаправляется пользователь при клике либо назад
- * @param {JSX.Element} children
- * @param { JSX.Element} MenuEl
- * @param props
+ * @kind component
+ * @kind component
+ * @function
+ * @param {boolean} arrowBack true добавляет стрелочку назад <=
+ * @param {string} className css class
+ * @param {string} title заголовок
+ * @param {string} to url на который перенаправляется пользователь при клике либо назад
+ * @param {JSX.Element} children child react elements child react elements
+ * @param { JSX.Element} MenuEl react element, который будет отображаться при нажатии на иконку меню компонента
+ * @param props other element props
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name PageHeader
  */
 export default function PageHeader({
                                        arrowBack,

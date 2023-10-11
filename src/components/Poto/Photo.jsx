@@ -18,7 +18,7 @@ import createId from "../../utils/createId";
 
 /**
  * компонент отображает фото по переданному src , либо ищет в бд по id
- * @param {string} className
+ * @param {string} className css class
  * @param {string} id                       идентификатор фото в бд
  * @param {PhotoChangeFunction} onChange    обработчик на изменение фото
  * @param props
@@ -30,11 +30,11 @@ export default function Photo({className, id, onChange, ...props}) {
     const [photoURL, setPhotoURL] = useState('')
     const inputRef = useRef(/**@type{HTMLInputElement}*/null)
 
-    /** загругка фото из по предоставленному ID */
+    /*** загругка фото из по предоставленному ID */
     useEffect(() => {
         if (id) {
             storeDB.getOne(constants.store.IMAGES, id)
-                .then( /** @param{UserPhotoType | undefined} p*/p => {
+                .then( /*** @param{UserPhotoType | undefined} p*/p => {
                     if (p) {
                         setPhoto(p)
                         let url
@@ -45,7 +45,7 @@ export default function Photo({className, id, onChange, ...props}) {
                         } else {
                             url = ''
                         }
-                        /** в приоритете устанавливается url из поля src, если поля нет, то ссылка сощдается на blob */
+                        /*** в приоритете устанавливается url из поля src, если поля нет, то ссылка сощдается на blob */
                         setPhotoURL(url)
                     }
                 })
@@ -63,12 +63,12 @@ export default function Photo({className, id, onChange, ...props}) {
                 blob: file,
                 src: ''
             }
-            /** освобождение ресурсов выделенных для фото */
+            /*** освобождение ресурсов выделенных для фото */
             photoURL && URL.revokeObjectURL(photoURL)
-            /** ссылка на новое изображение */
+            /*** ссылка на новое изображение */
             const newURL = URL.createObjectURL(userPhoto.blob)
             setPhotoURL(newURL)
-            /** передаем обновленные данные о фото в компонент родитель */
+            /*** передаем обновленные данные о фото в компонент родитель */
             onChange && onChange(userPhoto)
         }
     }

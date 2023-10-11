@@ -6,13 +6,15 @@ import  './Button.css'
 
 /**
  * Компонент кнопка
- * @param {string} className
- * @param {boolean} active
- * @param props
- * @param {JSX.Element | string} children
+ * @kind component
+ * @function
+ * @param {string} className css class
+ * @param {boolean} active boolean flag добавляет визулаьный вид как disabled-атрибут у native button
+ * @param props other props
+ * @param {JSX.Element | string} children child react elements
  * @returns {JSX.Element}
  * @category UI-Components
-
+ * @name Button
  */
 export default function Button({className, children, active = true, ...props}){
 

@@ -5,7 +5,6 @@ import './AudioBtn.css'
 /**
  * компонент отображения кнопки аудио
  * @returns {JSX.Element}
-
  * @category Components
  */
 export default function AudioBtn(){

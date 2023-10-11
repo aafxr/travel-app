@@ -27,15 +27,15 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     const {user} = useSelector(state => state[constants.redux.USER])
     const [points, setPoints] = useState(/**@type{InputPoint[]} */ [])
 
-    /** переменная для хранения информации о draggingPoint и dragOverPoint */
+    /*** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
 
-    /** clone - react ref  на HTMLElement, который планируем перетаскивать */
+    /*** clone - react ref  на HTMLElement, который планируем перетаскивать */
     const clone = useRef(null)
 
-    /** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
+    /*** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
-    /** id активного input для добавления иконки поиска  */
+    /*** id активного input для добавления иконки поиска  */
     const [focuseInputId, setFocuseInputId] = useState(/**@type{string | null} */null)
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
 
     // обработка ввода input ===========================================================================================
-    /**
+    /***
      * при нажатии Enter (keyCode = 13) добавляет точку на карту
      * @param {KeyboardEvent<HTMLInputElement>} e
      * @param {InputPoint} item - элемент из массива points
@@ -60,7 +60,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         }
     }
 
-    /**
+    /***
      *
      * @param {InputPoint} item
      * @returns {Promise<void>}
@@ -68,7 +68,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     async function updatePointData(item) {
         const marker = await map.addMarkerByAddress(item.text, item.id)
         if (marker) {
-            /** обновляем адресс в массиве points по полученным данным от api карты */
+            /*** обновляем адресс в массиве points по полученным данным от api карты */
             const newPoints = points.map(p => {
                 if (p === item) {
                     return {...item, text: marker.textAddress, point: marker}
@@ -116,7 +116,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
          * @type {number}
          */
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
-        /**  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
+        /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
@@ -146,21 +146,21 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         const el = e.target.closest('.travel-map-input-container')
         if (el) {
             const elRect = el.getBoundingClientRect()
-            /** создаем копию элемента */
+            /*** создаем копию элемента */
             clone.current = cloneNode(el)
             document.body.appendChild(clone.current)
 
             const {clientX, clientY} = e.changedTouches[0]
-            /** смещение относительно правого верхнего угла блока-контейнерв */
+            /*** смещение относительно правого верхнего угла блока-контейнерв */
             const top = clientY - elRect.top - elRect.height
-            /** смещение относительно правого верхнего угла блока-контейнерв */
+            /*** смещение относительно правого верхнего угла блока-контейнерв */
             const right = clientX - elRect.left - elRect.width
             offset.current = {top, right}
         }
         handleDragStart(item)
     }
 
-    /**
+    /***
      * обработчик для позиционирования клона перемещаемого объекта
      * @param {TouchEvent} e
      */
@@ -177,10 +177,10 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
         document.documentElement.classList.remove('disable-reload')
         const {clientX, clientY} = e.changedTouches[0]
-        /** поиск обертки input элемента  */
+        /*** поиск обертки input элемента  */
         const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')
         if (container) {
-            /** достаем id  из data-атрибута id */
+            /*** достаем id  из data-атрибута id */
             const pointID = container.dataset.id
             const point = points.find(p => p.id === pointID)
             if (point) {
@@ -190,28 +190,28 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         }
     }
 
-    /**
+    /***
      * удаление точки с карты
      * @param {InputPoint} item
      */
     function handleRemovePoint(item) {
         if (map) {
-            /**
+            /***
              * индекс удаляемой точки
              * @type{number}
              */
             const pointIdx = points.findIndex(p => p === item)
-            /** проверка на  pointIdx !== -1 */
+            /*** проверка на  pointIdx !== -1 */
             if (~pointIdx) {
-                /** удаляемая точка с карты */
+                /*** удаляемая точка с карты */
                 const point = points[pointIdx]
-                /** point может не существовать (если не нажата кнопка Enter) */
+                /*** point может не существовать (если не нажата кнопка Enter) */
                 point && map.removeMarker({id: point.id})
-                /** обновленный массив точек */
+                /*** обновленный массив точек */
                 const newPoints = points.filter((p, idx) => idx !== pointIdx)
-                /** обновляем зум карты */
+                /*** обновляем зум карты */
                 map.autoZoom()
-                /** если массив точек пуст добавляем пустое поле для новой точки */
+                /*** если массив точек пуст добавляем пустое поле для новой точки */
                 newPoints.length === 0 && newPoints.push({id: createId(user.id), text: '', point: undefined})
                 setPoints(newPoints)
                 onListChange && onListChange(newPoints)

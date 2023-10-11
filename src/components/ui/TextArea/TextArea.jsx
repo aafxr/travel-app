@@ -4,12 +4,15 @@ import './TextArea.css';
 
 /**
  * Стилезованный компонент textarea
- * @param className
- * @param {React.Ref} textAreaRef
- * @param {boolean} autoResize
- * @param props
+ * @function
+ * @param className css class
+ * @param {React.Ref} textAreaRef react ref на native textarea компонент
+ * @param {boolean} autoResize default = true, автоматический пересчет высоты компонента при изменении контента
+ * так, чтобы весь контент помещался в область textarea
+ * @param props other props for textarea
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name TextArea
  */
 export function TextArea({
                              className,

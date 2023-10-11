@@ -6,7 +6,7 @@ import './Avatar.css'
  * компонент отображения аватарки пользователя
  * @param {string} src
  * @param {string} alt
- * @param {string} className
+ * @param {string} className css class
  * @returns {JSX.Element}
  * @category Components
  */

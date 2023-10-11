@@ -12,23 +12,27 @@ let defaultMargin = 40
 
 
 /**
- *
- * @param children
- * @param {string} [className]
- * @param {function} [onClick]
- * @param {function} [onRemove]
- * @param {function} [onConfirm]
+ * Компонент позволяет обернуть дочерний компонент и добавляет возможность свайпать элемент
+ * @kind component
+ * @function
+ * @param {React.ReactNode} children react child element
+ * @param {string} [className] css class
+ * @param {function} [onClick] callback, вызывается при нажатии на дочерний элемент
+ * @param {function} [onRemove] callback, вызывает при клике по кнопке "удалить"
+ * @param {function} [onConfirm] callback, вызывает при клике по кнопке "Подтвердить"
  * @param {number} [marginMax] default = var(--x) * 2 || 40
- * @param {boolean} [small]
- * @param {boolean} [leftButton]
- * @param {JSX.Element} [leftElement]
- * @param {string} [lElemBg]
- * @param {boolean} [rightButton]
- * @param {JSX.Element} [rightElement]
- * @param {string} [rElemBg]
- * @param {boolean} [multy]
+ * @param {boolean} [small] флаг, добавляет css class "small" (уменьшает размер шрифта)
+ * @param {boolean} [leftButton] флаг, добавляет кнопку слева и возможность делать свайп в право
+ * @param {JSX.Element} [leftElement] компоненты, которые будут отображаться на месте иконок слева
+ * @param {string} [lElemBg] css class для задания фона для кнопки слева
+ * @param {boolean} [rightButton] флаг, добавляет кнопку спарава и возможность делать свайп в лево
+ * @param {JSX.Element} [rightElement] компоненты, которые будут отображаться на месте иконок справа
+ * @param {string} [rElemBg] css class для задания фона для кнопки справа
+ * @param {boolean} [multy] default = false, дает возможность свайпа нескольких элементов (по умолчанию,
+ * при взаимодействии с другими элементами, компонент возвращается в исходное состаяние)
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Swipe
  */
 export default function Swipe({
                                   children,

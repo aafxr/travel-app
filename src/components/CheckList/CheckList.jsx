@@ -34,20 +34,20 @@ import './CheckList.css'
 export default function CheckList() {
     const navigate = useNavigate()
     const {travelCode} = useParams()
-    /** значение в input */
+    /*** значение в input */
     const [value, setValue] = useState('')
-    /** сущность чеклист полученная из локальной бд либо сгенерированная (если в бд отсутствует) */
+    /*** сущность чеклист полученная из локальной бд либо сгенерированная (если в бд отсутствует) */
     const [checkList, setCheckList] = useState(/**@type{ChecklistType[] | null} */null)
-    /** список неободимого для поездки */
+    /*** список неободимого для поездки */
     const [checkListItems, setCheckListItems] = useState(/**@type{ChecklistItemType[]} */[])
-    /** флаг указывает на то, что чеклист изменен */
+    /*** флаг указывает на то, что чеклист изменен */
     const [changed, setChanged] = useState(false)
 
     //загрузка чеклистаиз хранилища ===================================================================================
     useEffect(() => {
         if (travelCode) {
             storeDB.getOneFromIndex(constants.store.CHECKLIST, constants.indexes.PRIMARY_ENTITY_ID, travelCode)
-                .then( /** @param {ChecklistType} list */ list => {
+                .then( /*** @param {ChecklistType} list */ list => {
                     if (list) {
                         setCheckList(list)
                         setCheckListItems(list.items || [])

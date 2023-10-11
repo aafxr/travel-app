@@ -6,10 +6,13 @@ import './Input.css'
 
 /**
  * Стилезованный компонент input
- * @param {HTMLInputElement} props
- * @param ref
+ * @kind component
+ * @function
+ * @param {React.Attributes<HTMLInputElement>} props пропс, которые допускает использовать react для компонента input
+ * @param {React.Ref<HTMLInputElement>} ref react ref на input
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Input
  */
 function Input(props, ref) {
     const styles = clsx('input', props.className)

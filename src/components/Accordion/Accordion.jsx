@@ -8,10 +8,9 @@ import './Accordion.css'
 
 /**
  * @param {string} title
- * @param {string} className
- * @param {JSX.Element} children
+ * @param {string} className css class
+ * @param {JSX.Element} children child react elements
  * @return {JSX.Element}
-
  * @category Components
  */
 function Accordion({title, className, children}) {

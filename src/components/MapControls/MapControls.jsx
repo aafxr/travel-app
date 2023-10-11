@@ -12,7 +12,7 @@ import './MapControls.css'
 /**
  * Компонент отображает элементы управления зумом и геолокацией
  * @param {IMap} map интерфейс для взаимодействия с api карты
- * @param {string} className
+ * @param {string} className css class
  * @param {Function} onPlusClick обработчик на клик по кнопке "приблизить карту"
  * @param {Function} onMinusClick обработчик на клик по кнопке "отдалить карту"
  * @param {Function} onUserLocationClick обработчик на клик по кнопке "геолокация пользователя"
@@ -24,29 +24,29 @@ function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationC
     if (!map) return null
 
     // обработка контроллов карты ======================================================================================
-    /** увеличение зума на +1 */
+    /*** увеличение зума на +1 */
     function handleZoomPlus() {
         const zoom = map.getZoom()
         map.setZoom(zoom + 1)
-        /** поднятие нового значения зума в компонент родитель */
+        /*** поднятие нового значения зума в компонент родитель */
         onPlusClick && onPlusClick(zoom + 1)
     }
 
-    /** уменьшение зума карты на -1 */
+    /*** уменьшение зума карты на -1 */
     function handleZoomMinus() {
         const zoom = map.getZoom()
         map.setZoom(zoom - 1)
-        /** передача нового значения зума в компонент родитель */
+        /*** передача нового значения зума в компонент родитель */
         onMinusClick && onMinusClick(zoom - 1)
     }
 
-    /** попытка получить геолокацию пользователя и установить центр карты на текущие координаты пользователя */
+    /*** попытка получить геолокацию пользователя и установить центр карты на текущие координаты пользователя */
     async function handleUserLocation() {
         const userCoords = await map.getUserLocation()
         if (userCoords) {
-            /** установить центр карты на текущие координаты пользователя */
+            /*** установить центр карты на текущие координаты пользователя */
             map.focusOnPoint(userCoords)
-            /** передача геолокации пользователя в родительский компонент */
+            /*** передача геолокации пользователя в родительский компонент */
             onUserLocationClick && onUserLocationClick(userCoords)
         } else {
             pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})

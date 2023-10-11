@@ -8,16 +8,18 @@ import './Chip.css'
 
 /**
  * компонент для отображения тегов / пометок
+ * @function
  * @param {'orange' | 'green' | 'grey' | 'light-orange' } color цвет фона компонента
  * @param {string | JSX.Element} icon - url иконки
  * @param {'left' | 'right'} iconPosition - способ расположения иконки (стиль применяется если задан icon) default = 'left'
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
  * @param {boolean} pointer default = false
- * @param {JSX.Element | string | number} children
- * @param {string} className
- * @param props
+ * @param {JSX.Element | string | number} children child react element
+ * @param {string} className css class
+ * @param props other props
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Chip
  */
 export default function Chip({
                                  color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'

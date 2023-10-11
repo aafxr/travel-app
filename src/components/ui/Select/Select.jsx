@@ -7,17 +7,20 @@ import './Select.css'
 
 /**
  * Компонент-селектор
- * @param defaultValue
- * @param value
- * @param options
- * @param className
- * @param size
- * @param border
- * @param onChange
- * @param props
- * @param ref
+ * @kind component
+ * @function
+ * @param {string} defaultValue значение, используемое по умолчанию
+ * @param {string} value текущее значение
+ * @param {string[]} options список опции, из которых будет осуществляться выбор
+ * @param {string} className css class
+ * @param {number} size количество отображаемых опций
+ * @param {boolean} border флаг, добавляет стиль border
+ * @param {function} onChange callback, вызывается при изменении состояния компонента
+ * @param props other props
+ * @param {React.Ref} ref react ref
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Select
  */
 function Select({
                     defaultValue = '',

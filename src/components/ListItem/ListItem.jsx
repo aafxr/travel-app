@@ -5,10 +5,10 @@ import './ListItem.css'
 
 /**
  * Компонент предназначен для отображения элемента списка (используется на странице с последними действиями)
- * @param {string} className
+ * @param {string} className css class
  * @param {string} topDescription заголовок компонента
  * @param {string} time время , отобрадается в правом верхнем углу
- * @param {JSX.Element} children дочерние компонеты, помещаются под заголовком
+ * @param {JSX.Element} children child react elements дочерние компонеты, помещаются под заголовком
  * @param {JSX.Element} icon иконка в формате jsx
  * @returns {JSX.Element}
  * @category Components

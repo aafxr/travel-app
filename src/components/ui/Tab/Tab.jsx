@@ -6,12 +6,16 @@ import './Tab.css'
 
 /**
  * компонент tab active если  to = location.pathname
- * @param {string} name
- * @param {string} to
- * @param {string} className
+ * @kind component
+ * @function
+ * @param {string} name имя таба
+ * @param {string} to url, куда будет перенаправлен пользователь при клике
+ * + если loaction.pathname совподает с параметром, то таб подсвеччивается
+ * @param {string} className css class
  * @param props
  * @returns {JSX.Element}
  * @category UI-Components
+ * @name Tab
  */
 export default function Tab({
                                 name,
