@@ -379,6 +379,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--color-share-link);
 }
 
+.rounded-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--control-button-size);
+    height: var(--control-button-size);
+
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    filter: var(--controls-shadow)
+}
+
 
 .close-button{
     color: var(--color-primary) !important;

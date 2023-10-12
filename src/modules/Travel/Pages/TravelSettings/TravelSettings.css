@@ -11,3 +11,13 @@
 .travel-settings-hotel-rent{
     color: var(--color-grey);
 }
+
+.buttons-block{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    left: 20px;
+    right: 20px;
+    bottom: 85px;
+}

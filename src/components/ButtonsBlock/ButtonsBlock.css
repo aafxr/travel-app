@@ -1,0 +1,31 @@
+.buttons-block-container{
+    background-color: transparent;
+}
+
+.buttons-block-container.active{
+    background-color: var(--color-background);
+}
+
+.buttons-block-btn{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+}
+
+/*.buttons-block-container::before{*/
+/*    content: '';*/
+/*    background-color: transparent;*/
+/*    position: fixed;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    z-index: 2000;*/
+/*    pointer-events: none;*/
+/*}*/
+
+/*.buttons-block-container.active::before{*/
+/*    background-color: rgba(0,0,0,0.7);*/
+
+/*}*/

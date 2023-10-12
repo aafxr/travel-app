@@ -1,3 +1,5 @@
+import HotelIcon from "./HotelIcon";
+
 export {default as Money} from './MoneyIcon'
 export {default as ChecklistIcon} from './ChecklistIcon'
 export {default as ChatIcon} from './ChatIcon'
@@ -12,3 +14,4 @@ export {default as HomeIcon} from './HomeIcon'
 export {default as HeartIcon} from './HeartIcon'
 export {default as EventsIcon} from './EventsIcon'
 export {default as CompassIcon} from './CompassIcon'
+export {default as HotelIcon} from './HotelIcon'

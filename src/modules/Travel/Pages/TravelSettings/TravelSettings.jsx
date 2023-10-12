@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 import constants, {defaultMovementTags} from "../../../../static/constants";
+import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
@@ -167,8 +168,8 @@ export default function TravelSettings() {
                                     <h4 className='title-semi-bold'>Участники</h4>
                                     <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
                                     <div className='center'>
-                                        <AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить
-                                            участника</AddButton>
+                                        {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
+                                        {/*    участника</AddButton>*/}
                                     </div>
                                     <div className='flex-between'>
                                         <span>Взрослые</span>
@@ -188,53 +189,59 @@ export default function TravelSettings() {
                                     </div>
                                 </section>
 
-                                <section className='travel-settings-hotels column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Отель</h4>
-                                    {
-                                        !!travel.hotels && Array.isArray(travel.hotels) && (
-                                            travel.hotels.map(h => (
-                                                <Link key={h.id} to={`/travel/${travelCode}/add/hotel/${h.id}/`}>
-                                                    <div className='travel-settings-hotel'>
-                                                        <div
-                                                            className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
-                                                        <div
-                                                            className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                        )
-                                    }
-                                    <div
-                                        className='link'
-                                        onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}
-                                    >
-                                        + Добавить отель
-                                    </div>
-                                </section>
+                                {
+                                    Array.isArray(travel.hotels) && travel.hotels.length > 0 && (
+                                        <section className='travel-settings-hotels column gap-0.5 block'>
+                                            <h4 className='title-semi-bold'>Отель</h4>
+                                            {
+                                                travel.hotels.map(h => (
+                                                    <Link key={h.id} to={`/travel/${travelCode}/add/hotel/${h.id}/`}>
+                                                        <div className='travel-settings-hotel'>
+                                                            <div
+                                                                className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
+                                                            <div
+                                                                className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
+                                                        </div>
+                                                    </Link>
+                                                ))
+                                            }
+                                            {/*<div*/}
+                                            {/*    className='link'*/}
+                                            {/*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*/}
+                                            {/*>*/}
+                                            {/*    + Добавить отель*/}
+                                            {/*</div>*/}
+                                        </section>
+                                    )
+                                }
 
-                                <section className='travel-settings-appointments column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Встреча</h4>
-                                    {
-                                        !!travel.appointments && Array.isArray(travel.appointments) && (
-                                            travel.appointments.map(a => (
-                                                <Link key={a.id} to={`/travel/${travelCode}/add/appointment/${a.id}/`}>
-                                                    <div className='travel-settings-appointment'>
-                                                        <div
-                                                            className='travel-settings-appointment-date'>{dateRange(a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
-                                                        <div
-                                                            className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                        )
-                                    }
-                                    <div
-                                        className='link'
-                                        onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}
-                                    >
-                                        + Добавить отель
-                                    </div>
-                                </section>
+                                {
+                                    Array.isArray(travel.appointments) && travel.appointments.length > 0 && (
+                                        <section className='travel-settings-appointments column gap-0.5 block'>
+                                            <h4 className='title-semi-bold'>Встреча</h4>
+                                            {
+                                                !!travel.appointments && Array.isArray(travel.appointments) && (
+                                                    travel.appointments.map(a => (
+                                                        <Link key={a.id} to={`/travel/${travelCode}/add/appointment/${a.id}/`}>
+                                                            <div className='travel-settings-appointment'>
+                                                                <div
+                                                                    className='travel-settings-appointment-date'>{dateRange(a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
+                                                                <div
+                                                                    className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
+                                                            </div>
+                                                        </Link>
+                                                    ))
+                                                )
+                                            }
+                                            {/*<div*/}
+                                            {/*    className='link'*/}
+                                            {/*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*/}
+                                            {/*>*/}
+                                            {/*    + Добавить встречу*/}
+                                            {/*</div>*/}
+                                        </section>
+                                    )
+                                }
 
                                 <section className='travel-settings-movement column gap-0.5 block'>
                                     <h4 className='title-semi-bold'>Способы передвижения</h4>
@@ -258,7 +265,12 @@ export default function TravelSettings() {
                         )
                         : (<div>загрузка информации о путешествии</div>)
                 }
-
+                <ButtonsBlock
+                    className={'buttons-block'}
+                    onInvite={() => navigate(`/travel/${travelCode}/settings/invite/`)}
+                    onHotel={() => navigate(`/travel/${travelCode}/add/hotel/`)}
+                    onAppointment={() => navigate(`/travel/${travelCode}/add/appointment/`)}
+                />
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>

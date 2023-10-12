@@ -26,10 +26,12 @@ export const initTravelsThunk = createAsyncThunk(
             }
 
             /** если не удалось загрузить список маршрутов через api используем маршруты, сохраненные в локальной базе */
-            if (!travels || !travels.length) {
-                travels = await storeDB.getAll(constants.store.TRAVEL)
-                travels =  checkTravelFields(travels)
-            }
+            // if (!travels || !travels.length) {
+            //     travels = await storeDB.getAll(constants.store.TRAVEL)
+            //     travels =  checkTravelFields(travels)
+            // }
+            travels = await storeDB.getAll(constants.store.TRAVEL)
+            travels =  checkTravelFields(travels)
             if(Array.isArray(travels)) travels.forEach(checkTravelKeys)
             return {
                 travels

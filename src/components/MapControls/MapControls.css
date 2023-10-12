@@ -4,8 +4,8 @@
 }
 
 .map-control-btn{
-    width: var(--control-size);
-    height: var(--control-size);
+    width: var(--control-button-size);
+    height: var(--control-button-size);
     border-radius: 50%;
     border: none;
     outline: none;
