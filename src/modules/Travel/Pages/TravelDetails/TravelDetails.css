@@ -22,8 +22,8 @@
 }
 
 .travel-details-backface svg{
-    color: var(--color-black)!important;
-    stroke: var(--color-black)!important;
+    color: var(--color-black);
+    stroke: var(--color-black);
 }
 
 .travel-details img{
@@ -34,6 +34,17 @@
 .travel-details-title{
     font-size: 32px;
     font-weight: 600;
+}
+
+.travel-details-icon.public svg{
+    color: var(--color-green)!important;
+    stroke: none;
+}
+
+.travel-details-icon.private svg{
+    color: var(--color-grey)!important;
+    stroke: none;
+
 }
 
 .travel-details-title h2{

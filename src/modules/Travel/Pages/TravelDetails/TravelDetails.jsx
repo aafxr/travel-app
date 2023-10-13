@@ -5,7 +5,7 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import {ChatIcon, ChecklistIcon, Money} from "../../../../components/svg";
+import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
@@ -102,7 +102,12 @@ export default function TravelDetails() {
                             <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center gap-0.25'>
-                            <h2 className='' onClick={() => navigate('')}>{travel?.title}</h2>
+                            <h2 className='center gap-0.5' onClick={() => navigate('')}>
+                                {travel?.title}
+                                <div className={`travel-details-icon icon center ${travel?.isPublic ? 'public' : 'private'}`} >
+                                    {travel?.isPublic ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                </div>
+                            </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
                         </div>
                         {
