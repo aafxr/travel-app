@@ -9,6 +9,7 @@ import {ChatIcon, ChecklistIcon, Money} from "../../components/svg";
 import AvatarPlaceHolder from "../../components/UserCard/AvatarPlaceholder";
 import PlusButton from "../../components/ui/PlusButton/PlusButton";
 import {motion} from 'framer-motion'
+import PhotoCarousel from "../../components/PhotoCarousel/PhotoCarousel";
 
 // const tepl = {
 //     created_at: "2023-08-10T04:37:31+03:00",
@@ -76,38 +77,12 @@ export default function Dev({
                     <AvatarPlaceHolder variant={'horizontal'}/>
                 </div>
                 <div className='flex-stretch'>
-                <Input className='br-right-0' type={'date'} placeholder={'Дата'}/>
-                <Input className='br-left-0' type={'time'} placeholder={'Время'}/>
+                    <Input className='br-right-0' type={'date'} placeholder={'Дата'}/>
+                    <Input className='br-left-0' type={'time'} placeholder={'Время'}/>
                 </div>
-                <PlusButton />
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1 }}
-                    staggerChildren={0.5}
-                >
-                    <motion.div
-                        initial={{ x: -100 }}
-                        animate={{ x: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        Элемент 1
-                    </motion.div>
-                    <motion.div
-                        initial={{ x: -100 }}
-                        animate={{ x: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        Элемент 2
-                    </motion.div>
-                    <motion.div
-                        initial={{ x: -100 }}
-                        animate={{ x: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        Элемент 3
-                    </motion.div>
-                </motion.div>
+                <PlusButton/>
+                <PhotoCarousel
+                />
 
             </Container>
         </>

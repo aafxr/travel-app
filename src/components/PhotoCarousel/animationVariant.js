@@ -14,16 +14,19 @@ export const animationVariant = {
         return {
             x: direction > 0 ? 1000 : -1000,
             opacity: 0,
+            transition: {type: "Inertia"}
         }
     },
     center: {
         x: 0,
         opacity: 1,
+        transition: {type: "Inertia"}
     },
     exit: (direction) => {
         return {
             x: direction < 0 ? 1000 : -1000,
             opacity: 0,
+            transition: {type: "Inertia"}
         }
     },
 }

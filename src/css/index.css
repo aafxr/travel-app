@@ -393,6 +393,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     filter: var(--controls-shadow)
 }
 
+.rounded-button:disabled{
+    background-color: var(--color-primary-light);
+}
+
 
 .close-button{
     color: var(--color-primary) !important;

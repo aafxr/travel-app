@@ -1,0 +1,43 @@
+.photo-container{
+    position: relative;
+    padding-bottom: 85%;
+    overflow: hidden;
+    /*aspect-ratio: 2.0875;*/
+}
+
+.photo-image{
+    display: block;
+}
+
+.photo-button-right,
+.photo-button-left{
+    position: absolute;
+    top: 50%;
+    opacity: 1;
+    transform: translateY(-50%);
+    transition: opacity .3s;
+    z-index: 2;
+}
+
+.photo-container:hover .photo-button-right,
+.photo-container:hover .photo-button-left,
+.photo-container:hover .photo-index{
+    opacity: 1;
+}
+
+.photo-button-right{
+    right: 10px;
+}
+
+.photo-button-left{
+    left: 10px;
+    transform: translateY(-50%) rotate(-180deg);
+}
+
+.photo-index{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: .7rem;
+    opacity: 0;
+}
