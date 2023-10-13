@@ -1,6 +1,7 @@
 import createId from "./createId";
 
 /**
+ * @name ActionType
  * @typedef {Object} ActionType
  * @property {string} id
  * @property {string} action
@@ -9,19 +10,21 @@ import createId from "./createId";
  * @property {Date} datetime
  * @property {number} synced
  * @property {string} user_id
+ * @category Types
  */
 
 
 /**
+ * Утилита создает акшен
  * @function
  * @name createAction
  * @param {string} storeName имя сущности (travel, expenses_actual )
- * @param {string} user_id
- * @param {'add' | 'update' | 'get' | 'remove'} action
- * @param {Object} data
- * @param {Object} [extraFields]
+ * @param {string} user_id id пользователя, который внес изменения
+ * @param {'add' | 'update' | 'get' | 'remove'} action тип action
+ * @param {Object} data измененные данные
+ * @param {Object} [extraFields] дополнительные поля
  * @returns {null | ActionType}
- * @callback Utils
+ * @category Utils
  */
 export default function createAction(storeName, user_id, action, data, extraFields = {}) {
     if (storeName && user_id && action && data) {

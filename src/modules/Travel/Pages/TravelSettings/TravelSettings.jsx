@@ -20,6 +20,7 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
+import saveTravel from "../../../../utils/saveTravel";
 
 /**
  * Страница формирования путешествия ( добавление даты / отели / встречи / участники)
@@ -120,10 +121,7 @@ export default function TravelSettings() {
         }
 
         const action = createAction(constants.store.TRAVEL, user.id, "add", travel)
-        Promise.all([
-            storeDB.editElement(constants.store.TRAVEL, travel),
-            storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
-        ])
+        saveTravel(travel,user.id)
             .then(() => navigate(`/travel/${travel.id}/`))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)

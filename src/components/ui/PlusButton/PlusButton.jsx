@@ -18,13 +18,14 @@ export default function PlusButton({init, onChange, ...props}){
     const variant ={
         hidden: {
             rotate: 0,
-            opacity: 0
+            opacity: 0,
+            type:'Inertia'
         },
         visible: (isRotated) => ({
             rotate: isRotated ? -45 : 0,
             opacity: 1,
             duration: 0.1,
-            // type:'Tween'
+            type:'Inertia'
         })
     }
 

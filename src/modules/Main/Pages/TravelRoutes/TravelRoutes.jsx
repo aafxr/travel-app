@@ -14,6 +14,7 @@ import {PageHeader, Tab} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
+import removeTravel from "../../../../utils/removeTravel";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -40,7 +41,7 @@ export default function TravelRoutes({
 
     /** обновление списка актуальных путешествий */
     useEffect(() => {
-        if (travels && travelsType){
+        if (travels && travelsType) {
             const filteredTravels = travels.filter(t => getTravelDateStatus(t) === travelsType)
             setActualTravels(filteredTravels)
         }
@@ -59,14 +60,9 @@ export default function TravelRoutes({
      */
     function handleRemove(travel) {
         if (user) {
-            const action = createAction(constants.store.TRAVEL, user.id, 'remove', travel)
             /** удаление путешествия из бд и добавление экшена об удалении */
-            Promise.all([
-                storeDB.removeElement(constants.store.TRAVEL, travel.id),
-                storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
-                    .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
-                    .then(() => dispatch(actions.travelActions.removeTravel(travels)))
-            ])
+            removeTravel(travel, user.id)
+                .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
                 /** обновление global store после успешного удаления */
                 .then(() => dispatch(actions.travelActions.removeTravel(travel)))
                 .catch(err => {
@@ -124,7 +120,7 @@ export default function TravelRoutes({
  * @returns {TravelDateStatus}
  */
 function getTravelDateStatus(travel) {
-    if(!travel) return "old"
+    if (!travel) return "old"
     const msInDay = 1000 * 60 * 60 * 24 // число милисекунд в сутках
     const now = Date.now()
     /** время, прошедшее с начала суток */

@@ -9,9 +9,14 @@ import './PhotoCarousel.css'
 
 /**
  * Компонент-слайдер
+ *
+ *
+ *
+ * - [x] done
+ * - [ ] in progres
  * @function
  * @name PhotoCarousel
- * @param {number} startValue default = 0, индекс изображения, которое будепервым отображаться
+ * @param {number} startValue default = 0, индекс изображения, которое будепервым отображаться первым
  * @param {string[]} urls default = [], список URL
  * @returns {JSX.Element}
  * @category Components
@@ -33,12 +38,12 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
             const list = urls.map((url, idx) => ({idx, url}))
             setUrlsList(list)
         }
-    }, [urls])
+    }, [])
 
     return (
         <div className='photo-container'>
             {
-                urlsList.filter(u => range(index - 3, index + 3).includes(u.idx)).map(u => {
+                urlsList.length > 0 && urlsList.filter(u => range(index - 3, index + 3).includes(u.idx)).map(u => {
                     const direction = u.idx - index
                     return (
                         <motion.img

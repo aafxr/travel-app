@@ -14,6 +14,7 @@ import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
+import saveTravel from "../../../../utils/saveTravel";
 
 /**
  * Страница добавления отеля
@@ -80,10 +81,7 @@ export default function TravelAddHotel() {
 
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
         /** обновляем данные сущности travel и добовляем action в бд */
-        Promise.all([
-            storeDB.editElement(constants.store.TRAVEL, newTravel),
-            storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
-        ])
+        saveTravel(newTravel, user.id)
             .then(() => navigate(-1))
             /** обновление информации об отеле в глобальном хранилище */
             .then(() => dispatch(actions.travelActions.addHotel(hotel)))

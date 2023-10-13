@@ -14,6 +14,7 @@ import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
+import saveTravel from "../../../../utils/saveTravel";
 
 /**
  * компонент для добавления встреч
@@ -77,10 +78,7 @@ export default function TravelAddAppointment() {
         /** создание экшена путешествия */
         const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
         /** сохранение обновленного travel в бд */
-        Promise.all([
-            storeDB.editElement(constants.store.TRAVEL, newTravel),
-            storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
-        ])
+        saveTravel(newTravel, user.id)
             .then(() => navigate(-1))
             /** добавление встречи в глобальное хранилище */
             .then(() => dispatch(actions.travelActions.addAppointment(appointment)))
