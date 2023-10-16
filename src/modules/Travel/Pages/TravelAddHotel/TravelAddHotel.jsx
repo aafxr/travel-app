@@ -10,11 +10,13 @@ import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
-import constants from "../../../../static/constants";
+import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 import saveTravel from "../../../../utils/saveTravel";
+import aFetch from "../../../../axios";
+import LocationCard from "../../components/LocationCard/LocationCard";
 
 /**
  * Страница добавления отеля
@@ -31,6 +33,16 @@ export default function TravelAddHotel() {
 
     const {travel, errorMessage} = useTravel()
     const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
+    const [hotels, setHotels] = useState(/**@type{HotelType | null} */null)
+
+    useEffect(() => {
+        if (travel) {
+            aFetch.get('hotels')
+                .then(res => res?.statusText === 'OK' ? res.data : [])
+                .then(h => setHotels(h))
+                .catch(console.error)
+        }
+    }, [travel])
 
     //==================================================================================================================
     /** инициализация переменн hotel */
@@ -79,7 +91,6 @@ export default function TravelAddHotel() {
         if (hotelCode && hidx !== -1) newTravel.hotels[hidx] = hotel
         else newTravel.hotels.push(hotel)
 
-        const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
         /** обновляем данные сущности travel и добовляем action в бд */
         saveTravel(newTravel, user.id)
             .then(() => navigate(-1))
@@ -143,7 +154,12 @@ export default function TravelAddHotel() {
                     {/*<Chip rounded color='grey'>Комната</Chip>*/}
                 </div>
             </Container>
-            <Container className='content column gap-1'>
+            <Container className='content column gap-1 pt-20 pb-20'>
+                {
+                    Array.isArray(hotels) && hotels.length > 0 && hotels.map( h => (
+                        <LocationCard key={h.id} title={h.label} imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
+                    ))
+                }
                 {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
                 {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
                 {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
