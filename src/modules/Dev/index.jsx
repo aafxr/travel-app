@@ -10,6 +10,7 @@ import AvatarPlaceHolder from "../../components/UserCard/AvatarPlaceholder";
 import PlusButton from "../../components/ui/PlusButton/PlusButton";
 import {motion} from 'framer-motion'
 import PhotoCarousel from "../../components/PhotoCarousel/PhotoCarousel";
+import ToggleBox from "../../components/ui/ToggleBox/ToggleBox";
 
 // const tepl = {
 //     created_at: "2023-08-10T04:37:31+03:00",
@@ -81,9 +82,8 @@ export default function Dev({
                     <Input className='br-left-0' type={'time'} placeholder={'Время'}/>
                 </div>
                 <PlusButton/>
-                <PhotoCarousel
-                />
-
+                <PhotoCarousel />
+                <ToggleBox title={'title title title title title '} right  />
             </Container>
         </>
     )

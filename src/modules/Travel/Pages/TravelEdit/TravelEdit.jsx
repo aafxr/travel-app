@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import constants, {defaultMovementTags, MS_IN_DAY} from "../../../../static/constants";
+import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import DateRange from "../../../../components/DateRange/DateRange";
 import Container from "../../../../components/Container/Container";
@@ -133,17 +134,19 @@ export default function TravelEdit() {
         endDate && setEnd(endDate)
         if (startDate && endDate) {
             const ms = new Date(endDate || 0).getTime() - new Date(startDate || 0)
-            const days = Math.ceil(ms / MS_IN_DAY)
-            updateDateRange(days)
+            const d = Math.ceil(ms / MS_IN_DAY)
+            updateDateRange(d)
         } else if (daysCount) updateDateRange(daysCount)
     }
 
+    // console.log({s: travel?.date_start, e: travel?.date_end})
     /**
      *
      * @param {React.ChangeEvent<HTMLInputElement>} e
      */
     function handleTravelDays(e) {
-        const days = +e.target.value
+        console.log(Math.ceil(+e.target.value) || 0)
+        const days = parseInt(e.target.value) || 0
         updateDateRange(days)
         setDaysCount(days)
     }
@@ -226,13 +229,12 @@ export default function TravelEdit() {
                             <TextArea value={description} onChange={e => setDescription(e.target.value)}
                                       placeholder='Описание'/>
                         </div>
-                        <Checkbox
-                            checked={travel.isPublic}
+                        <ToggleBox
+                            className='block'
+                            init={travel.isPublic}
                             onChange={val => dispatch(actions.travelActions.setPublic(val))}
-                            left
-                        >
-                            {travel.isPublic ? 'Общий доступ' : 'Закрытый доступ'}
-                        </Checkbox>
+                            title={travel.isPublic ? 'Общий доступ' : 'Закрытый доступ'}
+                        />
                     </Container>
                 )
             }

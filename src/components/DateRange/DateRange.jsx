@@ -1,5 +1,6 @@
 import {Input} from "../ui";
 import React, {useEffect, useState} from "react";
+import {MS_IN_DAY} from "../../static/constants";
 
 /**
  * компонент отрисовывает два поля для ввода диапазона дат
@@ -26,27 +27,13 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
         if (endValue) setEnd(endValue)
     }, [endValue])
 
-    /*** при изменении локального состояния (start / end) диапазон дат передается в callback onChange */
-    useEffect(() => {
-        if (
-            onChange &&
-            (
-                (start && start !== startValue)
-                || (end && end !== endValue)
-            )
-        ) {
-            console.log({start, end})
-            /*** если состояние компонента изменилось (обновились значения start / end) вызывается callback onChange */
-            onChange({start, end})
-        }
-    }, [start, end])
-
-
     /**
      * обработчик устанавливает дату начала диапазона и смещает дату конца диапазона
      * @param {InputEvent} e
      */
+    // код ниже- это обработчик <input  type="date" onchange="handleStartDateChange" />. почему в обработчике диапазон со временем уменьшается
     function handleStartDateChange(e) {
+        // debugger
         if (start && end) {
             /*** instance Date начала диапазона */
             const start_date = new Date(start)
@@ -55,14 +42,19 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
             /*** число миллисекунд диапазона до изменения */
             const diff = end_date.getTime() - start_date.getTime()
             /*** instance Date новое значение выбранного диапазона */
-            const current_date = e.target.valueAsDate
+            const current_date = new Date(e.target.valueAsDate.getTime())
+            const st = current_date.toISOString()
+            const en = new Date(current_date.getTime() + diff).toISOString()
             /*** обновление состояния start */
-            setStart(e.target.valueAsDate.toISOString())
+            setStart(st)
             /*** смещение конца диапазона относительно текущего выбранного значения на величину миллисекунд которая была до изменения диапазона */
-            setEnd(new Date(current_date.getTime() + diff).toISOString().split("T").shift())
+            setEnd(en)
+            onChange && onChange({start: st, end: en})
         } else {
+            const st = e.target.valueAsDate.toISOString()
             /*** если значение конца диапазона не установленно, просто обновляем start */
-            setStart(e.target.valueAsDate.toISOString())
+            setStart(st)
+            onChange && onChange({start: st, end})
         }
     }
 
@@ -72,7 +64,9 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
      */
     function handleEndDateChange(e) {
         const newEnd = e.target.valueAsDate
-        setEnd(newEnd.toISOString())
+        const en = newEnd.toISOString()
+        setEnd(en)
+        onChange && onChange({start, end: en})
     }
 
 

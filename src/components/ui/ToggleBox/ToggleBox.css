@@ -1,0 +1,52 @@
+.toggle-box{
+    display: flex;
+    justify-content: stretch;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toggle-box.reverse{
+    flex-direction: row-reverse;
+}
+
+.toggle-box-thumb{
+    position: relative;
+    width: calc(var(--toggle-thum-size) * 2);
+    height: var(--toggle-thum-size);
+    border-radius: var(--toggle-thum-size);
+    border: var(--border-size) solid var(--color-grey);
+    background-color: var(--color-grey-light);
+    transition: background var(--toggle-transition);
+}
+
+.toggle-box-thumb::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(var(--toggle-thum-size) - var(--border-size) * 2);
+    height: calc(var(--toggle-thum-size) - var(--border-size) * 2);
+    border-radius: 50%;
+    background-color: var(--color-background);
+    transition: left var(--toggle-transition);
+}
+
+.toggle-box.active .toggle-box-thumb{
+    background-color: var(--color-primary);
+}
+
+.toggle-box.active .toggle-box-thumb::after{
+    left: calc(100% - calc(var(--toggle-thum-size) - var(--border-size) * 2));
+}
+
+.toggle-box-content{
+    flex: 1;
+}
+
+.toggle-box-title{
+    font-size: 1rem;
+}
+
+.toggle-box-subtitle{
+    font-size: 0.7rem;
+}
