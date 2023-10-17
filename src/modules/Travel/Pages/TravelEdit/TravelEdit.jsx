@@ -233,7 +233,7 @@ export default function TravelEdit() {
                             className='block'
                             init={travel.isPublic}
                             onChange={val => dispatch(actions.travelActions.setPublic(val))}
-                            title={travel.isPublic ? 'Общий доступ' : 'Закрытый доступ'}
+                            title={"Сделать видимым для всех"}
                         />
                     </Container>
                 )

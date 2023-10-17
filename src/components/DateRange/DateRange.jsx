@@ -1,6 +1,6 @@
-import {Input} from "../ui";
 import React, {useEffect, useState} from "react";
-import {MS_IN_DAY} from "../../static/constants";
+
+import {Input} from "../ui";
 
 /**
  * компонент отрисовывает два поля для ввода диапазона дат
@@ -27,11 +27,10 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
         if (endValue) setEnd(endValue)
     }, [endValue])
 
-    /**
+    /***
      * обработчик устанавливает дату начала диапазона и смещает дату конца диапазона
      * @param {InputEvent} e
      */
-    // код ниже- это обработчик <input  type="date" onchange="handleStartDateChange" />. почему в обработчике диапазон со временем уменьшается
     function handleStartDateChange(e) {
         // debugger
         if (start && end) {

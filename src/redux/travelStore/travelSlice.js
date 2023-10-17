@@ -46,10 +46,7 @@ const initialState = {
     isUserLocation: false
 }
 
-/**
- *
- * @type {Slice<{travels: TravelType[], isUserLocation: boolean, travelID: (string|null), travelsLoaded: boolean}, {selectTravel(TravelState, {payload: string}): void, addHotel(TravelState, {payload: Object}): void, addTravel(TravelState, {payload: TravelType}): void, updateTravel(TravelState, *): void, setChildCount(TravelState, {payload: number}): void, removeTravel(TravelState, *): void, resetTravel(TravelState): void, addMovementType(TravelState, {payload: Object}): void, setTravelStartDate(TravelState, {payload: string}): void, removeWaypoint(TravelState, {payload: InputPoint}): void, setMovementTypes(TravelState, {payload: Array}): void, setHotels(TravelState, {payload: Object[]}): void, setMembers(TravelState, {payload: MemberType[]}): void, setIsUserLocation(TravelState, {payload: boolean}): void, setDirection(TravelState, {payload: string}): void, removeAppointments(TravelState, {payload: Object}): void, removeMovementType(TravelState, {payload: MovementType}): void, addMember(TravelState, {payload: MemberType}): void, setPublic(TravelState, {payload: boolean}): void, setAdultCount(TravelState, {payload: number}): void, addAppointment(TravelState, {payload: AppointmentType}): void, setAppointments(TravelState, {payload: Object[]}): void, setTitle(TravelState, {payload: string}): void, travelInit(TravelState, *): void, removeHotel(TravelState, {payload: HotelType}): void, addWaypoint(TravelState, {payload: InputPoint}): void, setTravels(TravelState, *): void, removeMember(TravelState, {payload: MemberType}): void, setWaypoints(TravelState, {payload: InputPoint[]}): void, setTravelEndDate(TravelState, {payload: string}): void}, string>}
- */
+
 export const travelsSlice = createSlice({
         name: 'travels',
         initialState,

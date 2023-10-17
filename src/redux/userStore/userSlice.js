@@ -30,10 +30,7 @@ const initialState = {
     userLoc: null
 }
 
-/**
- *
- * @type {Slice<{user: (UserAppType|null)}, {setLocation(*, {payload: Array<number, number>}): void, changeTheme(*, *): void}, string>}
- */
+
 export const userSlice = createSlice({
         name: 'travels',
         initialState,
