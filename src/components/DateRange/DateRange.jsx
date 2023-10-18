@@ -1,59 +1,74 @@
 import React, {useEffect, useState} from "react";
 
 import {Input} from "../ui";
+import {MS_IN_DAY} from "../../static/constants";
 
+
+/***
+ * @type {DateRangeType}
+ */
+const defaultValue = {
+    start: '',
+    end: ''
+}
 /**
  * компонент отрисовывает два поля для ввода диапазона дат
- * @param {string} startValue - стартовая дата в формате строки
- * @param {string} endValue - конечная дата в формате строки
+ * @name DateRange
+ * @param {DateRangeType} init - инициализация диапазона дат
+ * @param {number} daysCount - количество дней
  * @param {string} minDateValue - значение которое используется в качестве ограничения календаяря (делает не активной даты до указанной в ытом поле)
  * @param {Function} onChange - функция принимает измененные {start, end}
  * @returns {JSX.Element}
  * @category Components
  */
-export default function DateRange({startValue, endValue, minDateValue = '', onChange}) {
-    /*** дата начала диапазона */
-    const [start, setStart] = useState('')
-    /*** дата конца диапазона */
-    const [end, setEnd] = useState('')
+export default function DateRange({init, daysCount, minDateValue = '', onChange}) {
+    /*** диапазона дат */
+    const [range, setRange] = useState(/***@type{{start: string, end: string}} */defaultValue)
 
-    /*** при обновлении startValue обновляется локальное состояние start */
     useEffect(() => {
-        if (startValue) setStart(startValue)
-    }, [startValue])
+        if (init && init.start && init.end) {
+            setRange(init)
+        } else console.warn('Не коректая инициализация RangeDate')
+    }, [init])
 
-    /*** при обновлении endValue обновляется локальное состояние end */
-    useEffect(() => {
-        if (endValue) setEnd(endValue)
-    }, [endValue])
 
     /***
      * обработчик устанавливает дату начала диапазона и смещает дату конца диапазона
      * @param {InputEvent} e
      */
     function handleStartDateChange(e) {
-        // debugger
-        if (start && end) {
+        if (typeof daysCount === 'number' && daysCount > 0) {
+            const start_date = new Date(e.target.valueAsDate.getTime())
+            const end_date = new Date(start_date.getTime() + MS_IN_DAY * daysCount)
+            /***@type{DateRangeType}*/
+            const newRange = {start: start_date.toISOString(), end: end_date.toISOString()}
+            setRange(newRange)
+            onChange && onChange(newRange)
+        } else if (range.start && range.end) {
             /*** instance Date начала диапазона */
-            const start_date = new Date(start)
+            const start_date = new Date(range.start)
             /*** instance Date конца диапазона */
-            const end_date = new Date(end)
+            const end_date = new Date(range.end)
             /*** число миллисекунд диапазона до изменения */
-            const diff = end_date.getTime() - start_date.getTime()
+            const diff = end_date.getTime() - new Date(start_date).getTime()
             /*** instance Date новое значение выбранного диапазона */
             const current_date = new Date(e.target.valueAsDate.getTime())
             const st = current_date.toISOString()
             const en = new Date(current_date.getTime() + diff).toISOString()
-            /*** обновление состояния start */
-            setStart(st)
-            /*** смещение конца диапазона относительно текущего выбранного значения на величину миллисекунд которая была до изменения диапазона */
-            setEnd(en)
-            onChange && onChange({start: st, end: en})
+            /*** обновление состояния range
+             * @type {DateRangeType}
+             */
+            const newRange = {start: st, end: en}
+            setRange(newRange)
+            onChange && onChange(newRange)
         } else {
             const st = e.target.valueAsDate.toISOString()
-            /*** если значение конца диапазона не установленно, просто обновляем start */
-            setStart(st)
-            onChange && onChange({start: st, end})
+            /*** если значение конца диапазона не установленно, просто обновляем range.start
+             * @type {DateRangeType}
+             */
+            const newRange = {...range, start: st}
+            setRange(newRange)
+            onChange && onChange(newRange)
         }
     }
 
@@ -62,10 +77,21 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
      * @param {InputEvent} e
      */
     function handleEndDateChange(e) {
-        const newEnd = e.target.valueAsDate
-        const en = newEnd.toISOString()
-        setEnd(en)
-        onChange && onChange({start, end: en})
+        const end_date = new Date(e.target.valueAsDate.getTime())
+        if (typeof daysCount === 'number' && daysCount > 0) {
+            const start_date = new Date(end_date.getTime() - MS_IN_DAY * daysCount)
+            /***@type {DateRangeType}*/
+            const newRange = {start: start_date.toISOString(), end: end_date.toISOString()}
+            setRange(newRange)
+            onChange && onChange(newRange)
+        } else {
+            const en = end_date.toISOString()
+            /***@type {DateRangeType}*/
+            const newRange = {...range, end: en}
+            setRange(newRange)
+            onChange && onChange(newRange)
+        }
+
     }
 
 
@@ -74,15 +100,15 @@ export default function DateRange({startValue, endValue, minDateValue = '', onCh
             <Input
                 type='date'
                 placeholder={'Начало'}
-                value={start ? start.split('T').shift() : ''}
+                value={range.start ? range.start.split('T').shift() : ''}
                 min={typeof minDateValue === 'string' ? minDateValue.split('T').shift() : ''}
                 onChange={handleStartDateChange}
             />
             <Input
                 type='date'
                 placeholder={'Завершение'}
-                value={end ? end.split('T').shift() : ''}
-                min={(start || typeof minDateValue === 'string') ? (start || minDateValue).split('T').shift() : ''}
+                value={range.end ? range.end.split('T').shift() : ''}
+                min={(range.start || typeof minDateValue === 'string') ? (range.start || minDateValue).split('T').shift() : ''}
                 onChange={handleEndDateChange}
             />
         </div>

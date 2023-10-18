@@ -16,7 +16,6 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import "./TravelEdit.css"
-import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 
 
 /**
@@ -32,35 +31,42 @@ export default function TravelEdit() {
     const {travelCode} = useParams()
     const {user} = useSelector(state => state[constants.redux.USER])
     const {travel, errorMessage} = useTravel()
-    /** название путешествия */
+    /*** название путешествия */
     const [title, setTitle] = useState('')
-    /** дата начала путешествия */
-    const [start, setStart] = useState('')
-    /** дата кончания путешествия */
-    const [end, setEnd] = useState('')
-    /** ограничение диапазона дат путешествия (не раньше текущей даты) */
+    /*** диапазон дат путешествия */
+    const [range, setRange] = useState(/***@type{DateRangeType | null}*/null)
+    /*** дата начала путешествия */
+    // const [start, setStart] = useState('')
+    /*** дата кончания путешествия */
+    // const [end, setEnd] = useState('')
+    /*** ограничение диапазона дат путешествия (не раньше текущей даты) */
     const minDateValue = useMemo(() => new Date().toISOString(), [])
-    /** количество дней в поездке */
+    const [daysInputValue, setDaysInputValue] = useState('')
+    /*** количество дней в поездке */
     const [daysCount, setDaysCount] = useState(1)
-    /** описание путешествия */
+    /*** описание путешествия */
     const [description, setDescription] = useState('')
-    /** способы передвижения */
+    /*** способы передвижения */
     const [tags, setTags] = useState([])
 
     // const currentDay = new Date().toISOString().split('T').shift()
 
-    /** обновление состояния компонента (заполнение уже существующих полей путешествия) */
+    /*** обновление состояния компонента (заполнение уже существующих полей путешествия) */
     useEffect(() => {
         if (travel) {
             travel.title && setTitle(travel.title)
-            travel.date_start && setStart(travel.date_start)
-            travel.date_end && setEnd(travel.date_end)
+            setRange({
+                start: travel.date_start || '',
+                end: travel.date_end || travel.date_start || ''
+            })
+            // travel.date_start && setStart(travel.date_start)
+            // travel.date_end && setEnd(travel.date_end)
             travel.description && setDescription(travel.description)
             travel.movementTypes && setTags(travel.movementTypes.map(mt => mt.id))
-            if(travel.date_start && travel.date_end){
+            if (travel.date_start && travel.date_end) {
                 const ms = new Date(travel.date_end) - new Date(travel.date_start)
                 const days = Math.ceil(ms / MS_IN_DAY)
-                setDaysCount(days)
+                setDaysCount(days || 1)
             } else setDaysCount(1)
             //... доьавить остальные поля в будущем
         }
@@ -70,16 +76,16 @@ export default function TravelEdit() {
         // Здечь должна быть обработка сохранения изменений
         if (
             title !== travel.title
-            || start !== travel.start
-            || end !== travel.end
+            || range.start !== travel.start
+            || range.end !== travel.end
             || description !== travel.description
             || tags !== travel.tags
         ) {
             const newTravelData = {
                 ...travel,
                 title,
-                date_start: start,
-                date_end: end,
+                date_start: range.start,
+                date_end: range.end,
                 description,
                 movementTypes: defaultMovementTags.filter(t => tags.includes(t.id)).map(t => {
                     const _t = {...t}
@@ -109,7 +115,7 @@ export default function TravelEdit() {
         }
     }
 
-    /** обработчик нажатия на способ перемещения */
+    /*** обработчик нажатия на способ перемещения */
     function handleTagClick(id) {
         const newTagList = tags.includes(id)
             ? tags.filter(t => t !== id)
@@ -120,50 +126,57 @@ export default function TravelEdit() {
     function getNewTravelData() {
         return {
             ...travel,
-            title, start, end, description, tags
+            ...range,
+            title, description, tags
         }
     }
 
-    /**
+    /***
      * измененный диапазрн дат (начало - конец)
-     * @param {string} startDate
-     * @param {string} endDate
+     * @param {string} start
+     * @param {string} end
      */
-    function handleDateRangeChange({start: startDate, end: endDate}) {
-        startDate && setStart(startDate)
-        endDate && setEnd(endDate)
-        if (startDate && endDate) {
-            const ms = new Date(endDate || 0).getTime() - new Date(startDate || 0)
-            const d = Math.ceil(ms / MS_IN_DAY)
-            updateDateRange(d)
-        } else if (daysCount) updateDateRange(daysCount)
+    function handleDateRangeChange({start, end}) {
+        /***@type{DateRangeType}*/
+        const newRange = {...range}
+        if (start) newRange.start = start
+        if (end) newRange.end = end
+        setRange(newRange)
     }
 
-    // console.log({s: travel?.date_start, e: travel?.date_end})
-    /**
+    /***
      *
      * @param {React.ChangeEvent<HTMLInputElement>} e
      */
     function handleTravelDays(e) {
-        console.log(Math.ceil(+e.target.value) || 0)
-        const days = parseInt(e.target.value) || 0
-        updateDateRange(days)
-        setDaysCount(days)
+        const val = /[0-9]+/.exec(e.target.value)
+        if (val && val[0]) {
+            console.log(Math.ceil(+val))
+            const days = parseInt(val[0])
+            if (!Number.isNaN(days) && days > 0) {
+                updateDateRange(range, days)
+            } else {
+                updateDateRange(range, 0)
+            }
+        } else {
+            setDaysCount(0)
+        }
+        setDaysInputValue(e.target.value)
     }
 
-    /**
-     *
+    /***
+     * @param {DateRangeType} range
      * @param {number} days
      */
-    function updateDateRange(days) {
+    function updateDateRange(range, days) {
         if (typeof days === "number" && days > 0) {
             setDaysCount(days)
-            if ((start && !end) || (start && end)) {
-                const tempTime = new Date(start).getTime() + MS_IN_DAY * days
-                setEnd(new Date(tempTime).toISOString())
-            } else if (!start && end) {
-                const tempTime = new Date(end).getTime() - MS_IN_DAY * days
-                setStart(new Date(tempTime).toISOString())
+            if ((range.start && !range.end) || (range.start && range.end)) {
+                const tempTime = new Date(range.start).getTime() + MS_IN_DAY * days
+                setRange({...range, end: new Date(tempTime).toISOString()})
+            } else if (!range.start && range.end) {
+                const tempTime = new Date(range.end).getTime() - MS_IN_DAY * days
+                setRange({...range, start: new Date(tempTime).toISOString()})
             }
         }
     }
@@ -194,17 +207,21 @@ export default function TravelEdit() {
                                     className='travel-edit-days-input'
                                     type="text"
                                     inputMode='numeric'
-                                    value={daysCount}
+                                    value={daysInputValue}
                                     onChange={handleTravelDays}
                                     size={1}
                                 />
                             </div>
-                            <DateRange
-                                startValue={start}
-                                endValue={end}
-                                minDateValue={minDateValue}
-                                onChange={handleDateRangeChange}
-                            />
+                            {
+                                range && (
+                                    <DateRange
+                                        init={range}
+                                        daysCount={daysCount}
+                                        minDateValue={minDateValue}
+                                        onChange={handleDateRangeChange}
+                                    />
+                                )
+                            }
                         </div>
                         <div className='block column gap-0.5'>
                             <div className='title-bold'>Предпочтительный способ передвижения</div>

@@ -2,6 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {initTravelsThunk} from "./initTravelsThunk";
 import createTravel from "../../modules/Travel/helpers/createTravel";
 import checkTravelFields from "./checkTravelFields";
+import {MS_IN_DAY} from "../../static/constants";
 
 /**@type{TravelType} */
 export const defaultTravel = {
@@ -11,8 +12,16 @@ export const defaultTravel = {
     owner_id: () => '',
     photo: () => '',
 
-    date_start: () => new Date().toISOString(),
-    date_end: () => new Date().toISOString(),
+    date_start: () => {
+        const ms = new Date().getTime()
+        const shift = ms / MS_IN_DAY
+        return new Date(ms - shift).toISOString()
+    },
+    date_end: () => {
+        const ms = new Date().getTime()
+        const shift = ms / MS_IN_DAY
+        return new Date(ms - shift).toISOString()
+    },
 
     created_at: () => new Date().toISOString(),
     updated_at: () => new Date().toISOString(),
