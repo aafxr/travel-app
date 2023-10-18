@@ -17,11 +17,12 @@ const defaultValue = {
  * @param {DateRangeType} init - инициализация диапазона дат
  * @param {number} daysCount - количество дней
  * @param {string} minDateValue - значение которое используется в качестве ограничения календаяря (делает не активной даты до указанной в ытом поле)
+ * @param {string} maxDateValue - значение которое используется в качестве ограничения календаяря (делает не активной после даты указанной в этом поле)
  * @param {Function} onChange - функция принимает измененные {start, end}
  * @returns {JSX.Element}
  * @category Components
  */
-export default function DateRange({init, daysCount, minDateValue = '', onChange}) {
+export default function DateRange({init, daysCount, minDateValue = '', maxDateValue = '', onChange}) {
     /*** диапазона дат */
     const [range, setRange] = useState(/***@type{{start: string, end: string}} */defaultValue)
 
@@ -102,6 +103,7 @@ export default function DateRange({init, daysCount, minDateValue = '', onChange}
                 placeholder={'Начало'}
                 value={range.start ? range.start.split('T').shift() : ''}
                 min={typeof minDateValue === 'string' ? minDateValue.split('T').shift() : ''}
+                max={typeof maxDateValue === 'string' ? maxDateValue.split('T').shift() : ''}
                 onChange={handleStartDateChange}
             />
             <Input
@@ -109,6 +111,7 @@ export default function DateRange({init, daysCount, minDateValue = '', onChange}
                 placeholder={'Завершение'}
                 value={range.end ? range.end.split('T').shift() : ''}
                 min={(range.start || typeof minDateValue === 'string') ? (range.start || minDateValue).split('T').shift() : ''}
+                max={typeof maxDateValue === 'string' ? maxDateValue.split('T').shift() : ''}
                 onChange={handleEndDateChange}
             />
         </div>

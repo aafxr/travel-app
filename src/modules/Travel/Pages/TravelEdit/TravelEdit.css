@@ -11,5 +11,6 @@
     font-size: 1rem;
     border: none;
     border-bottom: 2px solid var(--color-grey-light);
+    background-color: var(--color-background);
     outline: none;
 }

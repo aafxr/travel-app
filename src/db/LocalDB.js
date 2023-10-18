@@ -1,23 +1,12 @@
 import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import sleep from "../utils/sleep";
+import {onUpgradeDB} from "./storeDB/onUpgradeDB";
 
-/**
- * @typedef {object} StoreInfo
- * @property {string} name              имя хранилища (store) в бд
- * @property {string} [key]             (optional) (primary key) ключ по которому осуществляется поиск в store
- * @property {Array.<String>} indexes   массив индексов по которым будем искать в store
- */
-
-/**
- * @typedef {object} DBSchemaType
- * @property {string} dbname
- * @property {number} version
- * @property {Array.<StoreInfo>} stores
- */
 
 /**
  * инициализация базы данных
+ * @name openDataBase
  * @param {string} dbname                                имя создаваемой базы данных
  * @param {number} version                               версия базы дынных
  * @param {Array.<StoreInfo>} stores                     массив с инфо о всех хранилищах в бд
@@ -25,21 +14,37 @@ import sleep from "../utils/sleep";
  */
 async function openDataBase(dbname, version, stores) {
     return await openDB(dbname, version, {
-        upgrade(db) {
+        upgrade(db, oldVersion, newVersion, transaction, event) {
             stores.forEach(function (storeInfo) {
 
                 if (db.objectStoreNames.contains(storeInfo.name)) {
                     db.deleteObjectStore(storeInfo.name)
                 }
+                /*** проверяем существует ли в бд таблица с именем storeInfo.name */
+                if (!db.objectStoreNames.contains(storeInfo.name)){
+                    const store = db.createObjectStore(storeInfo.name, {
+                        keyPath: storeInfo.key,
+                    });
 
-                const store = db.createObjectStore(storeInfo.name, {
-                    keyPath: storeInfo.key,
-                });
-
-                storeInfo.indexes.forEach(function (indexName) {
-                    store.createIndex(indexName, indexName, {});
-                });
+                    storeInfo.indexes.forEach(function (indexName) {
+                        store.createIndex(indexName, indexName, {});
+                    });
+                }
             });
+            // const idx = onUpgradeDB.findIndex(o => o.version > oldVersion)
+            // if(~idx) {
+            //     onUpgradeDB
+            //         .slice(idx)
+            //         .forEach( (o) => {
+            //             o.storeNames.forEach(async stn => {
+            //                 const items =  await db.getAll(stn)
+            //                 for (const item of items){
+            //                     const modified = o.transformCD(stn, item)
+            //                     await db.put(stn, modified)
+            //                 }
+            //             })
+            //         })
+            // }
         },
         blocked(currentVersion, blockedVersion, event) {
             // …

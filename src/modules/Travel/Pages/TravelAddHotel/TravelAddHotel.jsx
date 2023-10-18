@@ -127,16 +127,30 @@ export default function TravelAddHotel() {
                                 />
                                 {
                                     !!travel && !!travel.waypoints && travel.waypoints.length > 1 && (
-                                        <Input
-                                            type='text'
-                                            value={hotel.location}
-                                            onChange={(e) => handleHotelDetailsChange(e, 'location')}
-                                            placeholder='Место'
-                                        />
+                                        <>
+                                            <Input
+                                                type='text'
+                                                value={hotel.location}
+                                                onChange={(e) => handleHotelDetailsChange(e, 'location')}
+                                                placeholder='Место'
+                                            />
+                                            <div className='row gap-0.25'>
+                                                { travel.waypoints.map(w => (
+                                                    <Chip
+                                                        color={hotel.location === w.point.locality ? "orange" : "grey"}
+                                                        onClick={() => handleHotelDetailsChange({target:{value: w.point.locality}}, 'location')}
+                                                        rounded
+                                                    >
+                                                        {w.point.locality}
+                                                    </Chip>))
+                                                }
+                                            </div>
+                                        </>
                                     )
                                 }
                                 <DateRange
                                     minDateValue={travel.date_start}
+                                    maxDateValue={travel.date_end}
                                     startValue={hotel.check_in}
                                     endValue={hotel.check_out}
                                     onChange={handleHotelRangeChange}
@@ -156,7 +170,7 @@ export default function TravelAddHotel() {
             </Container>
             <Container className='content column gap-1 pt-20 pb-20'>
                 {
-                    Array.isArray(hotels) && hotels.length > 0 && hotels.map( h => (
+                    Array.isArray(hotels) && hotels.length > 0 && hotels.map(h => (
                         <LocationCard key={h.id} title={h.label} imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
                     ))
                 }

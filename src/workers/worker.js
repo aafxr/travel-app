@@ -5,7 +5,7 @@ import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 import aFetch from "../axios";
 
-console.log('====worker=====')
+// console.log('====worker=====')
 
 function fetchActions(message) {
     functionDurationTest(getActionsList.bind(null, message), '[Worker] Время обработки actions: ')

@@ -156,8 +156,8 @@ export default function TravelSettings() {
                                 <section className='travel-settings-date column gap-0.5 block'>
                                     <h4 className='title-semi-bold'>Дата поездки</h4>
                                     <DateRange
-                                        startValue={travel.date_start}
-                                        endValue={travel.date_end}
+                                        init={{start: travel.date_start, end: travel.date_end}}
+                                        minDateValue={travel.date_start || ''}
                                         onChange={handleDateRangeChange}
                                     />
                                 </section>
