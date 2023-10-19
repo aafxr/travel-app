@@ -33,6 +33,18 @@
     overflow: hidden;
 }
 
+.location-buttons{
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+
+    display: flex;
+    gap: 0.5rem;
+}
+.location-btn{
+    background-color: var(--color-background)!important;
+}
+
 .location-img img{
     object-fit: cover;
 }

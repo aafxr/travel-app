@@ -1,10 +1,11 @@
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import Photo from "../../../../components/Poto/Photo";
-import {PlusIcon} from "../../../../components/svg";
+import {PhotoIcon, PlusIcon} from "../../../../components/svg";
 import {Chip} from "../../../../components/ui";
 
 import './LocationCard.css'
+import EditePencil from "../../../../components/svg/EditePencil";
 
 export default function LocationCard({imgID, dateStart, dateEnd, title, entityType, children, onAdd}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
@@ -16,6 +17,10 @@ export default function LocationCard({imgID, dateStart, dateEnd, title, entityTy
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
                 <Photo id={imgID} className={'img-abs'}/>
+                <div className='location-buttons'>
+                    <button className='rounded-button location-btn'><PhotoIcon /></button>
+                    <button className='rounded-button location-btn'><EditePencil /></button>
+                </div>
             </div>
             <div className='location-title'>{title}</div>
             <div className='location-entity-type'>{entityType}</div>

@@ -9,16 +9,17 @@
 }
 
 .travel-details-backface{
-    color: #1E1E1E;
+    color: #1E1E1E !important;
     position: fixed;
+    top: 0;
     left: 0;
     right: 0;
-    top: 0;
     height: 100%;
-    z-index: 0;
     padding-top: 60px;
+    /*color: var(--color-text);*/
     background-color: var(--color-background-alt);
     overflow-y: auto;
+    z-index: 0;
 }
 
 .travel-details-backface svg{

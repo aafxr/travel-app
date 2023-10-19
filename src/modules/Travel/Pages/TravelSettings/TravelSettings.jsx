@@ -129,7 +129,7 @@ export default function TravelSettings() {
             })
     }
 
-
+    console.log(travel)
     return (
         <div className='travel-settings wrapper'>
             <Container>
