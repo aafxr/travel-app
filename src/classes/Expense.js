@@ -1,40 +1,60 @@
-import {isThisYear} from "date-fns";
 import createId from "../utils/createId";
+import constants from "../static/constants";
+import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
 
+/**
+ * данный класс позволяет работать с расходами
+ * @class
+ * @name Expense
+ *
+ * @param {ExpenseType} item прошлая запись о расзоде (если есть)
+ * @param {string} user_id id пользователя, создавшего запись о расходе
+ * @param {'plan' | 'actual'} type тип расходов
+ * @constructor
+ *
+ */
 export default class Expense {
+    newExpense = false
     /**
-     * @param {ExpenseType} item
-     * @param {string} user_id
+     * @param {ExpenseType} item прошлая запись о расзоде (если есть)
+     * @param {string} user_id id пользователя, создавшего запись о расходе
+     * @param {'plan' | 'actual'} type тип расходов
      * @constructor
      */
-    constructor(item, user_id) {
-        if (!item) item = {}
-
-        /***@type{ExpenseType}*/
-        this._initValue = item
-        /***@type{ExpenseType}*/
-        this._modified = {
-            id: this._initValue.id || createId(user_id || ''),
-            section_id: this._initValue.section_id || '',
-            user_id: this._initValue.user_id || user_id || '',
-            personal: this._initValue.personal || 0,
-            title: this._initValue.title || '',
-            value: this._initValue.value || 0,
-            primary_entity_id: this._initValue.primary_entity_id || '',
-            created_at: this._initValue.created_at || new Date().toISOString(),
-            datetime: this._initValue.datetime || new Date().toISOString(),
-            entity_id: this._initValue.entity_id || '',
-            entity_type: this._initValue.entity_type || '',
-            primary_entity_type: this._initValue.primary_entity_type || ''
+    constructor(item, user_id, type) {
+        if (!item) {
+            item = {}
+            this.newExpense = true
         }
 
-        this.change = false
+        // /***@type{ExpenseType}*/
+        // this._initValue = item
+        /***@type{ExpenseType}*/
+        this._modified = {
+            id:                 item.id || createId(user_id || ''),
+            section_id:         item.section_id || '',
+            user_id:            item.user_id || user_id || '',
+            personal:           item.personal || 0,
+            title:              item.title || '',
+            value:              item.value || 0,
+            primary_entity_id:  item.primary_entity_id || '',
+            created_at:         item.created_at || new Date().toISOString(),
+            datetime:           item.datetime || new Date().toISOString(),
+            entity_id:          item.entity_id || '',
+            entity_type:        item.entity_type || '',
+            primary_entity_type: item.primary_entity_type || ''
+        }
+
+        this.change = this.newExpense
+        this.type = type
+        if(type === 'actual')   this.storeName = constants.store.EXPENSES_ACTUAL
+        if(type === 'plan')     this.storeName = constants.store.EXPENSES_PLAN
+
     }
 
     /**
      * геттер возвращает id расхода
      * @get
-     * @methor
      * @name Expense.id
      * @returns {string}
      */
@@ -45,7 +65,6 @@ export default class Expense {
     /**
      * геттер возвращает section_id
      * @get
-     * @method
      * @name Expense.section_id
      * @returns {string}
      */
@@ -71,7 +90,6 @@ export default class Expense {
     /**
      * геттер возвращает user_id
      * @get
-     * @method
      * @name Expense.user_id
      * @returns {string}
      */
@@ -97,7 +115,6 @@ export default class Expense {
     /**
      * геттер возвращает personal
      * @get
-     * @method
      * @name Expense.personal
      * @returns {DBFlagType}
      */
@@ -123,7 +140,6 @@ export default class Expense {
     /**
      * геттер возвращает title
      * @get
-     * @method
      * @name Expense.title
      * @returns {string}
      */
@@ -134,13 +150,13 @@ export default class Expense {
     /**
      * метод устанавливает title
      * @method
-     * @name Expense.setUserID
+     * @name Expense.setTitle
      * @param {string} title expense title
      * @returns {Expense}
      */
     setTitle(title){
         if(typeof title === 'string' && title.length > 0) {
-            this._modified.user_id = title
+            this._modified.title = title
             this.change = true
         }
         return this
@@ -149,7 +165,6 @@ export default class Expense {
     /**
      * геттер возвращает value
      * @get
-     * @method
      * @name Expense.value
      * @returns {number}
      */
@@ -165,8 +180,8 @@ export default class Expense {
      * @returns {Expense}
      */
     setValue(value){
-        if(typeof value === 'number' && (value >= 0)) {
-            this._modified.personal = value
+        if(typeof value === 'number' && value >= 0) {
+            this._modified.value = value
             this.change = true
         }
         return this
@@ -175,7 +190,6 @@ export default class Expense {
     /**
      * геттер возвращает primary_entity_id
      * @get
-     * @method
      * @name Expense.primary_entity_id
      * @returns {string}
      */
@@ -201,7 +215,6 @@ export default class Expense {
     /**
      * геттер возвращает entity_id
      * @get
-     * @method
      * @name Expense.entity_id
      * @returns {string}
      */
@@ -227,7 +240,6 @@ export default class Expense {
     /**
      * геттер возвращает entity_type
      * @get
-     * @method
      * @name Expense.entity_type
      * @returns {string}
      */
@@ -253,7 +265,6 @@ export default class Expense {
     /**
      * геттер возвращает primary_entity_type
      * @get
-     * @method
      * @name Expense.primary_entity_type
      * @returns {string}
      */
@@ -276,11 +287,120 @@ export default class Expense {
         return this
     }
 
+    /**
+     * геттер возвращает created_at
+     * @get
+     * @name Expense.created_at
+     * @returns {string}
+     */
+    get created_at(){
+        return this._modified.created_at
+    }
 
+    /**
+     * метод устанавливает created_at
+     * @method
+     * @name Expense.setCreatedAt
+     * @param {string | Date} time время когда была созданна запись о расходе впервые
+     * @returns {Expense}
+     */
+    setCreatedAt(time){
+        if(time instanceof Date){
+            this._modified.created_at = time.toISOString()
+            this.change = true
+        } else if(typeof  time === 'string'){
+            const date = new Date(time)
+            if(!Number.isNaN(date.getTime())){
+                this._modified.created_at = date.toISOString()
+                this.change = true
+            }
+        }
+        return this
+    }
 
+    /**
+     * геттер возвращает datetime
+     * @get
+     * @name Expense.datetime
+     * @returns {string}
+     */
+    get datetime(){
+        return this._modified.datetime
+    }
 
+    /**
+     * метод устанавливает datetime
+     * @method
+     * @name Expense.setDatetime
+     * @param {string | Date} time время когда была созданна запись о расходе впервые
+     * @returns {Expense}
+     */
+    setDatetime(time){
+        if(time instanceof Date){
+            this._modified.datetime = time.toISOString()
+            this.change = true
+        } else if(typeof  time === 'string'){
+            const date = new Date(time)
+            if(!Number.isNaN(date.getTime())){
+                this._modified.datetime = date.toISOString()
+                this.change = true
+            }
+        }
+        return this
+    }
 
+    /**
+     * @get
+     * @name Expense.changed
+     * @returns {boolean}
+     */
+    get changed(){
+        return this.change
+    }
 
-    // created_at
-    // datetime
+    /**
+     * метод созраняет запись о расходан в бд
+     * @method
+     * @name Expense.save
+     * @returns {Promise<Expense>}
+     */
+    async save(){
+        if(this.change){
+            let expenseService
+            if(this.type === 'plan') {
+                expenseService = expenses_plan_service
+            } else if(this.type === 'actual'){
+                expenseService = expenses_actual_service
+            }
+            if(expenseService){
+            this.newExpense
+                ? await expenseService.create(this._modified)
+                : await expenseService.update(this._modified)
+            }
+        }
+        return this
+    }
+
+    /**
+     * метод удаляет запись о расходе из бд
+     * @method
+     * @name Expense.delete
+     * @returns {Promise<Expense>}
+     */
+    async delete(){
+        let expenseService
+        if(this.type === 'plan') {
+            expenseService = expenses_plan_service
+        } else if(this.type === 'actual'){
+            expenseService = expenses_actual_service
+        }
+        if(expenseService){
+            await expenseService.delete(this._modified)
+        }
+        return this
+    }
+
+    toString(){
+        return JSON.stringify(this._modified)
+    }
 }

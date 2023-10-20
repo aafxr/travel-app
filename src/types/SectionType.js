@@ -4,7 +4,7 @@
  * @property {string} id id секции
  * @property {string} title название секции
  * @property {string} color цвет секции
- * @property {1 | 0} hidden
+ * @property {DBFlagType} hidden
  * @category Types
  */
 
