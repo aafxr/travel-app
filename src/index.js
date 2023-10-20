@@ -10,10 +10,10 @@ import setFixedVH from "./utils/setFixedVH";
 import App from './App';
 
 import './css/index.css';
-import Appointment from "./classes/Appointment";
+import Travel from "./classes/Travel";
 
-const appointment = new Appointment({id: '15477', date: new Date().toISOString(), time: "18:00:00", title:'appoitment', description:'descr', primary_entity_id: '4'})
-console.log(appointment)
+const travel = new Travel()
+console.log(''+travel)
 
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme

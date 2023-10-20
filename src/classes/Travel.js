@@ -24,8 +24,29 @@ export default class Travel{
         }
 
 
-        this._modified = {
-        }
+        this._modified = {}
+        this
+            .setID(item.id)
+            .setCode(item.code)
+            .setTitle(item.title)
+            .setDirection(item.direction)
+            .setOwnerID(item.owner_id)
+            .setCreatedAt(item.created_at)
+            .setUpdatedAt(item.updated_at)
+            .setAppointments(item.appointments)
+            .setMembers(item.members)
+            .setHotels(item.hotels)
+            .setMovementTypes(item.movementTypes)
+            .setWaypoints(item.waypoints)
+            .setAdultsCount(item.adults_count)
+            .setChildsCount(item.childs_count)
+            .setDateStart(item.date_start)
+            .setDateEnd(item.date_end)
+            .setIsPublic(item.isPublic)
+            .setPhoto(item.photo)
+
+        //photo
+        //owner
 
         this.change = this.newTravel
     }
@@ -544,12 +565,12 @@ export default class Travel{
      * добавление встреч
      * @method
      * @name Travel.setAppointments
-     * @param {AppointmentType} items добавляемый отель
+     * @param {AppointmentType[]} items добавляемый отель
      * @returns {Travel}
      */
     setAppointments(items){
         if(Array.isArray(items)){
-            this._modified.hotels = [...items]
+            this._modified.appointments = [...items]
             this.change = true
         }
         return this
