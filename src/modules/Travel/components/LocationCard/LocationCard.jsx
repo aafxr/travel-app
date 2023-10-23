@@ -6,8 +6,9 @@ import {Chip} from "../../../../components/ui";
 
 import './LocationCard.css'
 import EditePencil from "../../../../components/svg/EditePencil";
+import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 
-export default function LocationCard({imgID, dateStart, dateEnd, title, entityType, children, onAdd}) {
+export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
@@ -16,10 +17,15 @@ export default function LocationCard({imgID, dateStart, dateEnd, title, entityTy
             {!!start && <Chip className='location-date-start'>{start}</Chip>}
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
-                <Photo id={imgID} className={'img-abs'}/>
+                {
+                    (imgURLs && imgURLs[0])
+                        ? <img className='img-abs' src={imgURLs[0]} alt="фото" />
+                        : <div className={'img-abs'}/>
+                }
+                {/*<PhotoCarousel urls={imgURLs} />*/}
                 <div className='location-buttons'>
-                    <button className='rounded-button location-btn'><PhotoIcon /></button>
-                    <button className='rounded-button location-btn'><EditePencil /></button>
+                    <button className='rounded-button location-btn'><PhotoIcon/></button>
+                    <button className='rounded-button location-btn'><EditePencil/></button>
                 </div>
             </div>
             <div className='location-title'>{title}</div>

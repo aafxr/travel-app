@@ -20,6 +20,7 @@ import useMap from "../../../../hooks/useMap";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddOnMap.css'
+import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
 
 /**
  * @typedef {Object} InputPoint

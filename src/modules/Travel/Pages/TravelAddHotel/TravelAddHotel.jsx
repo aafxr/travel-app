@@ -17,6 +17,21 @@ import useTravel from "../../hooks/useTravel";
 import saveTravel from "../../../../utils/saveTravel";
 import aFetch from "../../../../axios";
 import LocationCard from "../../components/LocationCard/LocationCard";
+import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
+
+/**
+ * @typedef {Object} LocationType
+ * @property {string} lat
+ * @property {string} lng
+ */
+
+/**
+ * @typedef {Object} PlaceType
+ * @property {string} name
+ * @property {string[]} photos
+ * @property {string} formatted_address
+ * @property {LocationType} location
+ */
 
 /**
  * Страница добавления отеля
@@ -35,14 +50,16 @@ export default function TravelAddHotel() {
     const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
     const [hotels, setHotels] = useState(/**@type{HotelType | null} */null)
 
-    useEffect(() => {
-        if (travel) {
-            aFetch.get('hotels')
-                .then(res => res?.statusText === 'OK' ? res.data : [])
-                .then(h => setHotels(h))
-                .catch(console.error)
-        }
-    }, [travel])
+    const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[]);
+
+    // useEffect(() => {
+    //     if (travel) {
+    //         aFetch.get('hotels')
+    //             .then(res => res?.statusText === 'OK' ? res.data : [])
+    //             .then(h => setHotels(h))
+    //             .catch(console.error)
+    //     }
+    // }, [travel])
 
     //==================================================================================================================
     /** инициализация переменн hotel */
@@ -110,7 +127,7 @@ export default function TravelAddHotel() {
         }
     }
 
-
+    console.log(places)
     return (
         <div className='wrapper'>
             <Container className='column gap-1 pb-20'>
@@ -119,11 +136,12 @@ export default function TravelAddHotel() {
                     hotel
                         ? (
                             <div className='column gap-0.25'>
-                                <Input
+                                <InputWithPlaces
                                     type='text'
                                     value={hotel.title}
                                     onChange={(e) => handleHotelDetailsChange(e, 'title')}
                                     placeholder='Название'
+                                    onPlaces={setPlaces}
                                 />
                                 {
                                     !!travel && !!travel.waypoints && travel.waypoints.length > 1 && (
@@ -169,9 +187,19 @@ export default function TravelAddHotel() {
                 </div>
             </Container>
             <Container className='content column gap-1 pt-20 pb-20'>
+                {/*{*/}
+                {/*    Array.isArray(hotels) && hotels.length > 0 && hotels.map(h => (*/}
+                {/*        <LocationCard key={h.id} title={h.label} imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
+                {/*    ))*/}
+                {/*}*/}
                 {
-                    Array.isArray(hotels) && hotels.length > 0 && hotels.map(h => (
-                        <LocationCard key={h.id} title={h.label} imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>
+                    Array.isArray(places) && places.map(p => (
+                        <LocationCard
+                            key={p.formatted_address}
+                            title={p.name}
+                            imgURLs={p.photos || []}
+                            entityType={p.formatted_address}
+                        />
                     ))
                 }
                 {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}

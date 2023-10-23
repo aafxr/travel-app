@@ -16,6 +16,7 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelAddWaypoint.css'
+import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
 
 /**
  * @function

@@ -1,6 +1,7 @@
 .photo-container{
     position: relative;
-    padding-bottom: 85%;
+    /*padding-bottom: 85%;*/
+    height: 100%;
     overflow: hidden;
     /*aspect-ratio: 2.0875;*/
 }

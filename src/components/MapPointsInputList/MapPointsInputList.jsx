@@ -6,9 +6,10 @@ import constants from "../../static/constants";
 import createId from "../../utils/createId";
 import DragIcon from "../svg/DragIcon";
 import Swipe from "../ui/Swipe/Swipe";
-import {Input} from "../ui";
+import {Input, InputWithSuggests} from "../ui";
 import ErrorReport from "../../controllers/ErrorReport";
 import sleep from "../../utils/sleep";
+import aFetch from "../../axios";
 
 /**
  * @typedef {Function} PointsListChangeFunction

@@ -40,6 +40,7 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
         }
     }, [])
 
+
     return (
         <div className='photo-container'>
             {
@@ -48,7 +49,7 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
                     return (
                         <motion.img
                             key={u.idx}
-                            className="photo-image img-abs"
+                            className="photo-image"
                             src={u.url}
                             alt={u.url}
                             initial="enter"
