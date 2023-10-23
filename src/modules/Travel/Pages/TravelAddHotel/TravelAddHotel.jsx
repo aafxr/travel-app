@@ -9,29 +9,13 @@ import defaultHotelData from "../../../../utils/defaultHotelData";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import createAction from "../../../../utils/createAction";
-import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
+import constants from "../../../../static/constants";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 import saveTravel from "../../../../utils/saveTravel";
-import aFetch from "../../../../axios";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
 
-/**
- * @typedef {Object} LocationType
- * @property {string} lat
- * @property {string} lng
- */
-
-/**
- * @typedef {Object} PlaceType
- * @property {string} name
- * @property {string[]} photos
- * @property {string} formatted_address
- * @property {LocationType} location
- */
 
 /**
  * Страница добавления отеля
@@ -210,7 +194,7 @@ export default function TravelAddHotel() {
             <div className='footer-btn-container footer'>
                 <Button
                     onClick={handleHotelSave}
-                    disabled={!hotel || !hotel.title || (travel.waypoints.length > 1 ? !hotel.location : true) || !hotel.check_in || !hotel.check_out}
+                    disabled={!hotel || !hotel.title || (travel.waypoints.length > 1 ? !hotel.location : false) || !hotel.check_in || !hotel.check_out}
                 >Добавить</Button>
             </div>
         </div>

@@ -41,7 +41,6 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
         }
     }, [])
 
-    console.log(rangeIndexes)
     return (
         <div className='photo-container'>
             {
@@ -56,9 +55,8 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
                                 className="photo-image img-abs"
                                 src={u.url}
                                 alt={u.url}
-                                initial="enter"
+                                initial={direction === 0 ? "center" : "enter"}
                                 animate={direction === 0 ? "center" : "exit"}
-                                exit="exit"
                                 variants={animationVariant}
                                 custom={direction}
                             />

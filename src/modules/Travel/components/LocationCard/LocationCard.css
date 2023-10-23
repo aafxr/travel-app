@@ -1,8 +1,8 @@
 .location-container{
     padding-top: 0.5rem;
     padding-right: 0.5rem;
-    padding-bottom: 1.25rem;
     padding-left: 0.5rem;
+    padding-bottom: 1.25rem;
     border-radius: var(--br-20);
     box-shadow: var(--box-shadow);
 }
@@ -28,8 +28,13 @@
 
 .location-img{
     position: relative;
+    margin-top: -0.5rem;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
     aspect-ratio: 2.0875;
     border-radius: var(--br-20);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
     overflow: hidden;
 }
 

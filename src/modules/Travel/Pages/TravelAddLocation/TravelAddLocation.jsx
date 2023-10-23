@@ -1,12 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import {useParams} from "react-router-dom";
 
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
-import {Chip, Input, PageHeader} from "../../../../components/ui";
+import {Chip, Input, InputWithSuggests, PageHeader} from "../../../../components/ui";
 import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 /**
  * Страница отображения локации
@@ -20,6 +19,8 @@ export default function TravelAddLocation() {
     const dateHandlers = useChangeInputType('date')
     const timeHandlers = useChangeInputType('time')
 
+    const [places, setPlaces] = useState(/***@type{PlaceType}*/[])
+
     function handleSave() {
 
     }
@@ -29,7 +30,11 @@ export default function TravelAddLocation() {
             <Container className='column gap-1 pb-20'>
                 <PageHeader arrowBack title='Добавить локацию'/>
                 <div className='column gap-0.25'>
-                    <Input type='text' placeholder='Выберите место'/>
+                    <InputWithSuggests
+                        type='text'
+                        placeholder='Выберите место'
+                        onPlaces={setPlaces}
+                    />
                     <div className='flex-stretch'>
                         <Input
                             className='br-right-0'
@@ -53,9 +58,16 @@ export default function TravelAddLocation() {
                 </div>
             </Container>
             <Container className='content column gap-1'>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Архитектура'} />
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Прокат'} />
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Парки'} />
+                {
+                    Array.isArray(places) && places.map(p => (
+                        <LocationCard
+                            key={p.formatted_address}
+                            title={p.name}
+                            imgURLs={p.photos || []}
+                            entityType={p.formatted_address}
+                        />
+                    ))
+                }
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave}>Добавить</Button>

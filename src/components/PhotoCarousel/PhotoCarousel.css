@@ -21,6 +21,11 @@
     z-index: 2;
 }
 
+.photo-button-right:disabled,
+.photo-button-left:disabled{
+    color: var(--color-grey) !important;
+}
+
 .photo-container:hover .photo-button-right,
 .photo-container:hover .photo-button-left,
 .photo-container:hover .photo-index{

@@ -120,7 +120,7 @@ export default function TravelDetails() {
                         }
                         <div>
 
-                            <TravelPeople peopleList={travel?.owner_id && [travel?.owner_id]} compact={compact}/>
+                            <TravelPeople peopleList={travel?.owner_id ? [travel?.owner_id]: []} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
