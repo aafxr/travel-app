@@ -1,7 +1,6 @@
 import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import sleep from "../utils/sleep";
-import {onUpgradeDB} from "./storeDB/onUpgradeDB";
 
 
 /**
@@ -15,13 +14,16 @@ import {onUpgradeDB} from "./storeDB/onUpgradeDB";
 async function openDataBase(dbname, version, stores) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
-            stores.forEach(function (storeInfo) {
+            const existedStores = Array.from(db.objectStoreNames)
+            const storeNameList = stores.map(store => store.name)
+            /*** удаление существующих store из indexeddb если их нет в списке storeInfo (т.е. нет в схеме бд) */
+            existedStores
+                .filter(store => !storeNameList.includes(store))
+                .forEach(store => db.deleteObjectStore(store))
 
-                if (db.objectStoreNames.contains(storeInfo.name)) {
-                    db.deleteObjectStore(storeInfo.name)
-                }
+            stores.forEach(function (storeInfo) {
                 /*** проверяем существует ли в бд таблица с именем storeInfo.name */
-                if (!db.objectStoreNames.contains(storeInfo.name)){
+                if (!db.objectStoreNames.contains(storeInfo.name)) {
                     const store = db.createObjectStore(storeInfo.name, {
                         keyPath: storeInfo.key,
                     });
@@ -29,36 +31,73 @@ async function openDataBase(dbname, version, stores) {
                     storeInfo.indexes.forEach(function (indexName) {
                         store.createIndex(indexName, indexName, {});
                     });
+                    /*** если store существует обновляем индексы для этого store */
+                } else {
+                    const store = transaction.objectStore(storeInfo.name)
+                    const indexs = store.indexNames
+                    storeInfo.indexes.forEach(index => {
+                        if (!indexs.contains(index)) store.createIndex(index, index, {})
+                    })
+                    Array
+                        .from(indexs)
+                        .filter(index => !storeInfo.indexes.includes(index))
+                        .forEach(index => store.deleteIndex(index))
                 }
             });
-            // const idx = onUpgradeDB.findIndex(o => o.version > oldVersion)
-            // if(~idx) {
-            //     onUpgradeDB
-            //         .slice(idx)
-            //         .forEach( (o) => {
-            //             o.storeNames.forEach(async stn => {
-            //                 const items =  await db.getAll(stn)
-            //                 for (const item of items){
-            //                     const modified = o.transformCD(stn, item)
-            //                     await db.put(stn, modified)
-            //                 }
-            //             })
-            //         })
-            // }
+
+            /*** отфильтровываем таблицы, для которых предусмотренно изменение данных */
+            stores
+                .filter(store => Array.isArray(store.upgrade))
+                .forEach(store => {
+                    const idbStore = transaction.objectStore(store.name)
+                    idbStore.openCursor()
+                        .then(cursor => transformStoreData(idbStore, cursor, store, oldVersion))
+                })
+
+
         },
         blocked(currentVersion, blockedVersion, event) {
             // …
-            pushAlertMessage({type:'danger',message: `[DB blocked] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`})
+            pushAlertMessage({
+                type: 'danger',
+                message: `[DB blocked] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`
+            })
         },
         blocking(currentVersion, blockedVersion, event) {
             // …
-            pushAlertMessage({type:'danger',message: `[DB blocking] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`})
+            pushAlertMessage({
+                type: 'danger',
+                message: `[DB blocking] currentVersion: ${currentVersion}, blockedVersion${blockedVersion}`
+            })
         },
         terminated() {
             // …
-            pushAlertMessage({type:'danger',message: `[DB terminated]`})
+            pushAlertMessage({type: 'danger', message: `[DB terminated]`})
         },
     });
+}
+
+/**
+ * функция позволяет преобразовать данные в БД
+ * @param {IDBObjectStore} store хранилише (таблица) в которой модифицируются данные при обновлении
+ * @param cursor "указатель" на запись в indexeddb
+ * @param {StoreInfo} storeInfo описание хранилища
+ * @param {number} oldVersion старая версия бд пользователя
+ */
+function transformStoreData(store, cursor, storeInfo, oldVersion) {
+    if (cursor) {
+        return new Promise(() => {
+            let value = cursor.value
+            const idx = storeInfo.upgrade.findIndex(i => i.version >= oldVersion)
+            if (~idx) {
+                for (const cb of storeInfo.upgrade.slice(idx)) {
+                    value = cb.transformCallback(value)
+                }
+                store.put(value)
+                cursor.continue().then(cur => transformStoreData(store, cur, storeInfo, oldVersion))
+            }
+        })
+    }
 }
 
 
@@ -112,7 +151,8 @@ export class LocalDB {
         this.version = version;
         this.stores = stores;
         this.ready = false
-        this.onReady = onReady || (()=>{})
+        this.onReady = onReady || (() => {
+        })
         openDataBase(dbname, version, stores)
             .then(function () {
                 this.ready = true
@@ -120,7 +160,7 @@ export class LocalDB {
             }.bind(this))
             .catch((err) => {
                 onError && onError(err)
-                pushAlertMessage({type:'danger', message: `Ошибка при инициализации БД\n${err.message}`})
+                pushAlertMessage({type: 'danger', message: `Ошибка при инициализации БД\n${err.message}`})
             });
     }
 
@@ -130,11 +170,11 @@ export class LocalDB {
      * @param {function} cb
      * @method LocalDB.onReadySubscribe
      */
-    onReadySubscribe(cb){
-        if (typeof cb === 'function'){
-            if(this.ready){
+    onReadySubscribe(cb) {
+        if (typeof cb === 'function') {
+            if (this.ready) {
                 cb()
-            }else{
+            } else {
                 this.subscriptions.push(cb)
             }
         } else {
@@ -147,7 +187,7 @@ export class LocalDB {
      * @private
      * @method LocalDB._readyHandler
      */
-    _readyHandler(){
+    _readyHandler() {
         this.onReady(this.ready)
         this.subscriptions.forEach(s => s())
         this.subscriptions = []
@@ -158,8 +198,8 @@ export class LocalDB {
      * @method LocalDB.onReadyHandler
      * @param {function} cb
      */
-    set onReadyHandler(cb){
-        if (typeof cb === 'function'){
+    set onReadyHandler(cb) {
+        if (typeof cb === 'function') {
             this.onReady = cb
             this.ready && this._readyHandler()
         } else {
@@ -285,7 +325,7 @@ export class LocalDB {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 const db = await openDataBase(this.dbname, this.version, this.stores)
 
-                if (query === 'all'){
+                if (query === 'all') {
                     const res = await db.getAllFromIndex(storeName, indexName)
                     return Array.isArray(res) ? res : [res];
                 }

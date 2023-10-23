@@ -21,7 +21,7 @@ import createId from "../../utils/createId";
  * @param {string} className css class
  * @param {string} id                       идентификатор фото в бд
  * @param {PhotoChangeFunction} onChange    обработчик на изменение фото
- * @param props
+ * @param props                             other props
  * @returns {JSX.Element}
  * @category Components
  */

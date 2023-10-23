@@ -1,8 +1,9 @@
 /**
- * Данный тип описывает структуру базы данных
+ * данный тип описывает схему бд (имя, версия, хранимые таблицы)
  * @name DBSchemaType
- * @typedef {object} DBSchemaType
- * @property {string} dbname имя хранилища в  indexedDB
- * @property {number} version версия бд
- * @property {Array.<StoreInfo>} stores список элеиентов с описанием таблиц в бд
+ * @typedef {Object} DBSchemaType
+ * @property {string} name имя ДБ
+ * @property {number} version версия БД
+ * @property {StoreInfo[]} stores описание хранимых в БД таблиц
+ * @category Types
  */

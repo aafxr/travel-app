@@ -10,10 +10,6 @@ import setFixedVH from "./utils/setFixedVH";
 import App from './App';
 
 import './css/index.css';
-import Travel from "./classes/Travel";
-
-const travel = new Travel()
-console.log(''+travel)
 
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme

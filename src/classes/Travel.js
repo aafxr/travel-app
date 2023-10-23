@@ -323,6 +323,7 @@ export default class Travel{
             this._modified.isPublic = flag
             this.change = true
         }
+        return this
     }
 
     /**

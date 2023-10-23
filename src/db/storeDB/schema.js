@@ -1,19 +1,12 @@
-import constants, {GLOBAL_DB_VERSION} from "../../static/constants";
+import constants from "../../static/constants";
 
-/**
+/***
  * @description - описание структуры бд store
- *
- *
- * dbname - имя бд
- *
- * version - версия
- *
- * stores - набор объектов описывающих storage в бд
- *
+ * @type {DBSchemaType}
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 19 + GLOBAL_DB_VERSION,
+    version: 20,
     stores: [
         {
             name: constants.store.STORE,
@@ -24,6 +17,7 @@ const schema = {
             name: constants.store.CURRENCY,
             key: 'date',
             indexes: [],
+
         },
         {
             name: constants.store.IMAGES,
@@ -45,6 +39,7 @@ const schema = {
             name: constants.store.SECTION,
             key: 'id',
             indexes: [],
+            upgrade: []
         },
         {
             name: constants.store.LIMIT,
@@ -55,6 +50,7 @@ const schema = {
             name: constants.store.EXPENSES_ACTUAL,
             key: 'id',
             indexes: ['user_id', 'primary_entity_id', 'section_id'],
+            upgrade:[]
         },
         {
             name: constants.store.EXPENSES_PLAN,
