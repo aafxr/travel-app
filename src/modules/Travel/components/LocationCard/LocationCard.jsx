@@ -18,8 +18,8 @@ export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title,
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
                 {
-                    (imgURLs && imgURLs[0])
-                        ? <img className='img-abs' src={imgURLs[0]} alt="фото" />
+                    (imgURLs )//&& imgURLs[0]
+                        ? <PhotoCarousel urls={imgURLs} className='img-abs' src={imgURLs[0]} alt="фото" />
                         : <div className={'img-abs'}/>
                 }
                 {/*<PhotoCarousel urls={imgURLs} />*/}

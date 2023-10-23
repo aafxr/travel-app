@@ -167,6 +167,7 @@ export default function TravelAddHotel() {
                                     )
                                 }
                                 <DateRange
+                                    init={{start: travel.date_start, end: travel.date_end}}
                                     minDateValue={travel.date_start}
                                     maxDateValue={travel.date_end}
                                     startValue={hotel.check_in}

@@ -12,7 +12,7 @@
 export const animationVariant = {
     enter: (direction) => {
         return {
-            x: direction > 0 ? 1000 : -1000,
+            x: direction > 0 ? '-100%' : '100%',
             opacity: 0,
             transition: {type: "Inertia"}
         }
@@ -24,7 +24,7 @@ export const animationVariant = {
     },
     exit: (direction) => {
         return {
-            x: direction < 0 ? 1000 : -1000,
+            x: direction > 0 ? '100%' : '-100%',
             opacity: 0,
             transition: {type: "Inertia"}
         }

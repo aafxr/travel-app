@@ -17,6 +17,7 @@
     opacity: 1;
     transform: translateY(-50%);
     transition: opacity .3s;
+    background-color: var(--color-background) !important;
     z-index: 2;
 }
 

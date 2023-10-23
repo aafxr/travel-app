@@ -32,7 +32,6 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
         } else console.warn('Не коректая инициализация RangeDate')
     }, [init])
 
-
     /***
      * обработчик устанавливает дату начала диапазона и смещает дату конца диапазона
      * @param {InputEvent} e

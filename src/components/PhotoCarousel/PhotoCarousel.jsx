@@ -26,6 +26,7 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
     const [index, setIndex] = useState(0)
     /*** список картинок с индексом (для вычисления направления анимации) */
     const [urlsList, setUrlsList] = useState(/***@type {{idx:number, url:string}[]} */[])
+    const rangeIndexes = range(index - 1, index + 1)
 
     /*** инициализация начальнлгл индекса отображаемого изображения */
     useEffect(() => {
@@ -40,26 +41,29 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
         }
     }, [])
 
-
+    console.log(rangeIndexes)
     return (
         <div className='photo-container'>
             {
-                urlsList.length > 0 && urlsList.filter(u => range(index - 3, index + 3).includes(u.idx)).map(u => {
-                    const direction = u.idx - index
-                    return (
-                        <motion.img
-                            key={u.idx}
-                            className="photo-image"
-                            src={u.url}
-                            alt={u.url}
-                            initial="enter"
-                            animate={direction === 0 ? "center" : "exit"}
-                            exit="exit"
-                            variants={animationVariant}
-                            custom={direction}
-                        />
-                    )
-                })
+                urlsList.length > 0 && urlsList
+                    .filter((_, idx) => rangeIndexes.includes(idx))
+                    .map(u => {
+                        const idx = urlsList.findIndex(i => u === i)
+                        const direction = idx - index
+                        return (
+                            <motion.img
+                                key={u.idx}
+                                className="photo-image img-abs"
+                                src={u.url}
+                                alt={u.url}
+                                initial="enter"
+                                animate={direction === 0 ? "center" : "exit"}
+                                exit="exit"
+                                variants={animationVariant}
+                                custom={direction}
+                            />
+                        )
+                    })
             }
             {
                 Array.isArray(urls) && urls.length > 1 && (
