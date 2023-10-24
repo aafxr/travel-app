@@ -16,7 +16,6 @@ export default class LimitError extends Error{
      * @param {Error} err ошибка, возникшая в сервисе
      */
     constructor(method, err) {
-        err.message = `[LimitError/${method}]` + err.message
-        super(err);
+        super(`[LimitError/${method}]` + err.message);
     }
 }

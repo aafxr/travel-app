@@ -200,6 +200,15 @@ export default class Limit {
         return this
     }
 
+    /**
+     * @get
+     * @name Limit.object
+     * @returns {LimitType}
+     */
+    get object(){
+        return {...this._modified}
+    }
+
     toString(){
         return JSON.stringify(this._modified)
     }
