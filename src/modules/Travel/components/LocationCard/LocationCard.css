@@ -1,3 +1,7 @@
+.location{
+    color: var(--color-text);
+}
+
 .location-container{
     padding-top: 0.5rem;
     padding-right: 0.5rem;
@@ -5,6 +9,7 @@
     padding-bottom: 1.25rem;
     border-radius: var(--br-20);
     box-shadow: var(--box-shadow);
+    background-color: var(--color-background);
 }
 
 .location-date-start,
@@ -78,4 +83,11 @@
 .location-add-button-icon{
     width: 14px!important;
     height: 14px!important;
+}
+
+.location-swipe-right{
+    background-color: var(--color-primary-light);
+}
+.location-swipe-left{
+    background-color: var(--color-primary-light);
 }

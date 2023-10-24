@@ -33,8 +33,8 @@
     align-items: center;
     width: calc(var(--x) / 2);
     height: calc(var(--x) / 2);
-    color: var(--color-secondary);
-    stroke: var(--color-secondary);
+    /*color: var(--color-secondary);*/
+    /*stroke: var(--color-secondary);*/
     background-color: transparent;
     background-position: center;
     background-repeat: no-repeat;
@@ -51,7 +51,7 @@
 
 .checkmark-svg,
 .trash-svg{
-    color: white!important;
+    /*color: white!important;*/
     width: var(--icon-size);
     height: var(--icon-size);
 }

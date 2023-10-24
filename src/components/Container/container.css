@@ -3,6 +3,7 @@
     padding-left: 20px;
     padding-right: 20px;
     pointer-events: none;
+    overflow-x: hidden;
 }
 
 .container > *{

@@ -7,6 +7,7 @@ import Container from "../../../../components/Container/Container";
 import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 /**
  * Страница отображения локации
@@ -61,6 +62,7 @@ export default function TravelAddLocation() {
             <Container className='content column gap-1'>
                 {
                     Array.isArray(places) && places.map(p => (
+
                         <LocationCard
                             key={p.formatted_address}
                             title={p.name}

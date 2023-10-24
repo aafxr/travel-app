@@ -1,3 +1,4 @@
+import './css/reset.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
@@ -8,8 +9,8 @@ import errorReport from "./controllers/ErrorReport";
 import setFixedVH from "./utils/setFixedVH";
 
 import App from './App';
-
 import './css/index.css';
+
 
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme
