@@ -7,6 +7,7 @@ import {Chip} from "../../../../components/ui";
 import './LocationCard.css'
 import EditePencil from "../../../../components/svg/EditePencil";
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
+import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
@@ -18,9 +19,9 @@ export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title,
             {!!end && <Chip className='location-date-end'>{end}</Chip>}
             <div className='location-img'>
                 {
-                    (imgURLs )//&& imgURLs[0]
-                        ? <PhotoCarousel urls={imgURLs} className='img-abs' src={imgURLs[0]} alt="фото" />
-                        : <div className={'img-abs'}/>
+                    (imgURLs )
+                        ? <PhotoCarousel urls={imgURLs} className='img-abs' />
+                        : <PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs' />
                 }
                 {/*<PhotoCarousel urls={imgURLs} />*/}
                 <div className='location-buttons'>

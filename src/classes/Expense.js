@@ -14,6 +14,21 @@ import {expenses_actual_service, expenses_plan_service} from "../services/expens
  *
  */
 export default class Expense {
+    /**@type{ExpenseType}*/
+    static initValue = {
+        id: () => '',
+        section_id: () => '',
+        user_id: () => '',
+        personal: () => 0,
+        title: () => '',
+        value: () => 0,
+        primary_entity_id: () => '',
+        created_at: () => new Date().toISOString(),
+        datetime: () => new Date().toISOString(),
+        entity_id: () => '',
+        entity_type: () => '',
+        primary_entity_type: () => '',
+    }
     newExpense = false
     /**
      * @param {ExpenseType} item прошлая запись о расзоде (если есть)
@@ -27,23 +42,23 @@ export default class Expense {
             this.newExpense = true
         }
 
-        // /***@type{ExpenseType}*/
-        // this._initValue = item
         /***@type{ExpenseType}*/
-        this._modified = {
-            id:                 item.id || createId(user_id || ''),
-            section_id:         item.section_id || '',
-            user_id:            item.user_id || user_id || '',
-            personal:           item.personal || 0,
-            title:              item.title || '',
-            value:              item.value || 0,
-            primary_entity_id:  item.primary_entity_id || '',
-            created_at:         item.created_at || new Date().toISOString(),
-            datetime:           item.datetime || new Date().toISOString(),
-            entity_id:          item.entity_id || '',
-            entity_type:        item.entity_type || '',
-            primary_entity_type: item.primary_entity_type || ''
-        }
+        this._modified = {}
+
+        Object.keys(Expense.initValue).forEach(key => this._modified[key] = Expense.initValue[key]())
+        this
+            .setID(item.id)
+            .setSectionId(item.section_id)
+            .setUserID(item.user_id)
+            .setPersonal(item.personal)
+            .setTitle(item.title)
+            .setValue(item.value)
+            .setPrimaryEntityID(item.primary_entity_type)
+            .setCreatedAt(item.created_at)
+            .setDatetime(item.datetime)
+            .setEntityID(item.entity_id)
+            .setEntityType(item.entity_type)
+            .setPrimaryEntityType(item.primary_entity_type)
 
         this.change = this.newExpense
         this.type = type
@@ -60,6 +75,21 @@ export default class Expense {
      */
     get id(){
         return this._modified.id
+    }
+
+    /**
+     * метод устанавливает id расхода
+     * @method
+     * @name Expense.setID
+     * @param {string} id id расхода
+     * @returns {Expense}
+     */
+    setID(id){
+        if(typeof id === 'string' && id.length > 0) {
+            this._modified.section_id = id
+            this.change = true
+        }
+        return this
     }
 
     /**

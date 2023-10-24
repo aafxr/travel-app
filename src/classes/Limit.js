@@ -10,6 +10,13 @@ import limit_service from "../services/limit_service";
  * @constructor
  */
 export default class Limit {
+    /**@type{LimitType} */
+    static initValue = {
+        id: () => '',
+        value: () => 0,
+        personal: () => 0,
+        section_id: () => '',
+    }
     newLimit = false
 
     /**
@@ -23,12 +30,13 @@ export default class Limit {
         }
 
         /***@type {LimitType} */
-        this._modified = {
-            id:         item.id || '',
-            value:      item.value || 0,
-            personal:   item.personal || 0,
-            section_id: item.section_id || ''
-        }
+        this._modified = {}
+        Object.keys(Limit.initValue).forEach(key => this._modified[key] = Limit.initValue[key]())
+        this
+            .setID(item.id)
+            .setValue(item.value)
+            .setPersonal(item.personal)
+            .setSectionID(item.section_id)
 
         this.change = this.newLimit
     }

@@ -1,11 +1,12 @@
 import React, {useState} from "react";
 import {useParams} from "react-router-dom";
 
+import {Chip, Input, InputWithSuggests, PageHeader} from "../../../../components/ui";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
-import {Chip, Input, InputWithSuggests, PageHeader} from "../../../../components/ui";
 import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
+import {DEFAULT_IMG_URL} from "../../../../static/constants";
 
 /**
  * Страница отображения локации
@@ -19,7 +20,7 @@ export default function TravelAddLocation() {
     const dateHandlers = useChangeInputType('date')
     const timeHandlers = useChangeInputType('time')
 
-    const [places, setPlaces] = useState(/***@type{PlaceType}*/[])
+    const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[])
 
     function handleSave() {
 
@@ -50,12 +51,12 @@ export default function TravelAddLocation() {
                         />
                     </div>
                 </div>
-                <div className='row gap-1'>
-                    <Chip rounded color='grey'>Архитектура</Chip>
-                    <Chip rounded color='grey'>Парки</Chip>
-                    <Chip rounded color='grey'>Экскурсии</Chip>
-                    <Chip rounded color='grey'>Прокат</Chip>
-                </div>
+                <ul className='row gap-1'>
+                    <li><Chip rounded color='grey'>Архитектура</Chip></li>
+                    <li><Chip rounded color='grey'>Парки</Chip></li>
+                    <li><Chip rounded color='grey'>Экскурсии</Chip></li>
+                    <li><Chip rounded color='grey'>Прокат</Chip></li>
+                </ul>
             </Container>
             <Container className='content column gap-1'>
                 {
@@ -63,7 +64,7 @@ export default function TravelAddLocation() {
                         <LocationCard
                             key={p.formatted_address}
                             title={p.name}
-                            imgURLs={p.photos || []}
+                            imgURLs={p.photos || [DEFAULT_IMG_URL]}
                             entityType={p.formatted_address}
                         />
                     ))

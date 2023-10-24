@@ -10,6 +10,27 @@ import travel_service from "../services/travel-service";
  * @constructor
  */
 export default class Travel{
+    /**@type{TravelType} */
+    static initValue = {
+        id: () => '',
+        code: () => '',
+        title: () => '',
+        direction: () => '',
+        owner_id: () => '',
+        created_at: () => new Date().toISOString(),
+        updated_at: () => new Date().toISOString(),
+        appointments: () => [],
+        members: () => [],
+        hotels: () => [],
+        movementTypes: () => [],
+        waypoints: () => [],
+        adults_count: () => 0,
+        childs_count: () => 0,
+        date_start: () => new Date().toISOString(),
+        date_end: () => new Date().toISOString(),
+        isPublic: () => 0,
+        photo: () => '',
+    }
     newTravel = false
     /***@type{TravelType} */
     _modified
@@ -23,8 +44,9 @@ export default class Travel{
             this.newTravel = true
         }
 
-
+        /***@type {LimitType} */
         this._modified = {}
+        Object.keys(Travel.initValue).forEach(key => this._modified[key] = Travel.initValue[key]())
         this
             .setID(item.id)
             .setCode(item.code)
@@ -44,9 +66,6 @@ export default class Travel{
             .setDateEnd(item.date_end)
             .setIsPublic(item.isPublic)
             .setPhoto(item.photo)
-
-        //photo
-        //owner
 
         this.change = this.newTravel
     }

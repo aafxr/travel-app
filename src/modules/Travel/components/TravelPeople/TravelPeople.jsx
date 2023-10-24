@@ -9,12 +9,14 @@ import './TravelPeople.css'
 
 /**
  * Компонент принимает массив идентификаторов пользователей и отображает информацию о пользователях
+ * @function
+ * @name TravelPeople
  * @param {string[]} peopleList массив id участников путешествия
- * @param {boolean} compact
- * @param {React.HTMLAttributes<HTMLDivElement>} props
- * @param {Function} onClick -
+ * @param {boolean} compact default = false, компактное отображение компонента
+ * @param {React.HTMLAttributes<HTMLDivElement>} props other props
+ * @param {Function} onClick обработка нажатия на каточку пользователя
  * @return {JSX.Element}
- * @constructor
+ * @category Components
  */
 export default function TravelPeople({
                                          peopleList = [],

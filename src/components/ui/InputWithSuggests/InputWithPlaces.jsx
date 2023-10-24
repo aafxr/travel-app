@@ -15,7 +15,7 @@ import {Input} from "../index";
  * @param {React.Ref} ref react ref
  * @returns {JSX.Element}
  */
-function InputWithPlaces({onPlaces, delay = 300, ...props}, ref) {
+function InputWithPlaces({onPlaces, delay = 500, ...props}, ref) {
 
 
     /***
@@ -31,7 +31,7 @@ function InputWithPlaces({onPlaces, delay = 300, ...props}, ref) {
             })
             .catch(console.error)
         props.onChange && props.onChange(e)
-    }, 500, {trailing:true})
+    }, delay, {trailing:true})
 
     return (
         <Input ref={ref} {...props} onChange={handleInputChange}/>

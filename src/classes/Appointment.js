@@ -8,6 +8,15 @@
  * @constructor
  */
 export default class Appointment{
+    /**@type{AppointmentType}*/
+    static initValue = {
+        id: () => '',
+        date: () => new Date().toISOString(),
+        time: () => new Date().toISOString().split('T').pop().match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)[0],
+        title: () => '',
+        description: () => '',
+        primary_entity_id: () => '',
+    }
     newAppointment = false
     /**
      * @param {AppointmentType} item
@@ -18,16 +27,16 @@ export default class Appointment{
             item = {}
             this.newAppointment = true
         }
-
         /***@type{AppointmentType} */
-        this._modified = {
-            id:                 item.id || '',
-            date:               item.date || '',
-            time:               item.time || '',
-            title:              item.title || '',
-            description:        item.description || '',
-            primary_entity_id:  item.primary_entity_id || ''
-        }
+        this._modified = {}
+
+        Object.keys(Appointment.initValue).forEach(key => this._modified[key] = Appointment.initValue[key]())
+        this
+            .setID(item.id)
+            .setDate(item.date)
+            .setTitle(item.title)
+            .setDescription(item.description)
+            .setPrimaryEntityID(item.primary_entity_id)
 
         this.change = this.newAppointment
     }
@@ -158,6 +167,31 @@ export default class Appointment{
     setDescription(description) {
         if (typeof description === 'string' && description.length > 0) {
             this._modified.description = description
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * метод возвращает primary_entity_id
+     * @get
+     * @name Appointment.primary_entity_id
+     * @returns {string}
+     */
+    get primary_entity_id(){
+        return this._modified.primary_entity_id
+    }
+
+    /**
+     * метод устанавливает primary_entity_id
+     * @method
+     * @name Appointment.setPrimaryEntityID
+     * @param {string} primary_entity_id
+     * @returns {Appointment}
+     */
+    setPrimaryEntityID(primary_entity_id) {
+        if (typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
+            this._modified.primary_entity_id = primary_entity_id
             this.change = true
         }
         return this

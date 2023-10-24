@@ -9,12 +9,13 @@ import defaultHotelData from "../../../../utils/defaultHotelData";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
-import constants from "../../../../static/constants";
+import constants, {DEFAULT_IMG_URL} from "../../../../static/constants";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 import saveTravel from "../../../../utils/saveTravel";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
+import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 
 
 /**
@@ -182,14 +183,11 @@ export default function TravelAddHotel() {
                         <LocationCard
                             key={p.formatted_address}
                             title={p.name}
-                            imgURLs={p.photos || []}
+                            imgURLs={p.photos || [DEFAULT_IMG_URL]}
                             entityType={p.formatted_address}
                         />
                     ))
                 }
-                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
-                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
-                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}
             </Container>
             <div className='footer-btn-container footer'>
                 <Button
