@@ -59,7 +59,7 @@ export default function TravelAddLocation() {
                     <li><Chip rounded color='grey'>Прокат</Chip></li>
                 </ul>
             </Container>
-            <Container className='content column gap-1'>
+            <Container className='content column gap-1 overflow-x-hidden'>
                 {
                     Array.isArray(places) && places.map(p => (
 

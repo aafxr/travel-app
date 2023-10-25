@@ -172,7 +172,7 @@ export default function TravelAddHotel() {
                     {/*<Chip rounded color='grey'>Комната</Chip>*/}
                 </div>
             </Container>
-            <Container className='content column gap-1 pt-20 pb-20'>
+            <Container className='content column gap-1 pt-20 pb-20 overflow-x-hidden'>
                 {/*{*/}
                 {/*    Array.isArray(hotels) && hotels.length > 0 && hotels.map(h => (*/}
                 {/*        <LocationCard key={h.id} title={h.label} imgURL={DEFAULT_IMG_URL} entityType={'отель'}/>*/}

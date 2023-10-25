@@ -16,7 +16,6 @@ export default class TravelError extends Error{
      * @param {Error} err ошибка, возникшая в сервисе
      */
     constructor(method, err) {
-        err.message = `[TravelError/${method}]` + err.message
-        super(err);
+        super(`[TravelError/${method}]` + err.message);
     }
 }

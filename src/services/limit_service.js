@@ -22,19 +22,6 @@ class LimitService{
     async create(limit, user_id){
         try {
             const action = createAction(constants.store.LIMIT, user_id, 'add', limit)
-            // const storeNames = [constants.store.LIMIT, constants.store.EXPENSES_ACTIONS]
-            // const result = await storeDB
-            //     .transaction(storeNames, "readwrite")
-            //     .setStore(constants.store.EXPENSES_ACTIONS)
-            //     .add(action)
-            //     .setStore(constants.store.LIMIT)
-            //     .add(limit)
-            //     .done()
-            //
-            // console.log("Результат транзакции: ", result)
-
-
-
 
             await storeDB.addElement(constants.store.LIMIT, limit)
             await storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)

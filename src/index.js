@@ -24,6 +24,8 @@ root.render(
     </BrowserRouter>
 );
 
+window.store = storeDB
+
 // const promises = range(0, 2000)
 //     .map(i => {
 //         const date = new Date(Date.now() - MS_IN_DAY * i)

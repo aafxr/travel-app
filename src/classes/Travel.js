@@ -1,15 +1,17 @@
 import travel_service from "../services/travel-service";
+import Entity from "./Entity";
 
 /**
  * класс для редактирования и сохранения в бд путешествия
  * @class
  * @name Travel
+ * @extends Entity
  *
  *
  * @param {TravelType} item
  * @constructor
  */
-export default class Travel{
+export default class Travel extends Entity{
     /**@type{TravelType} */
     static initValue = {
         id: () => '',
@@ -31,21 +33,19 @@ export default class Travel{
         isPublic: () => 0,
         photo: () => '',
     }
-    newTravel = false
     /***@type{TravelType} */
-    _modified
+    _modified= {}
     /**
      * @param {TravelType} item
      * @constructor
      */
     constructor(item) {
+        super()
         if(!item){
             item = {}
-            this.newTravel = true
+            this._new = true
         }
 
-        /***@type {LimitType} */
-        this._modified = {}
         Object.keys(Travel.initValue).forEach(key => this._modified[key] = Travel.initValue[key]())
         this
             .setID(item.id)
@@ -67,7 +67,7 @@ export default class Travel{
             .setIsPublic(item.isPublic)
             .setPhoto(item.photo)
 
-        this.change = this.newTravel
+        this.change = this._new
     }
 
     /**
@@ -274,7 +274,7 @@ export default class Travel{
      * геттер возврпщпет знасение поля updated_at
      * @get
      * @name Travel.updated_at
-     * @returns {Date}
+     * @returns {string}
      */
     get updated_at(){
         return this._modified.updated_at
@@ -299,7 +299,7 @@ export default class Travel{
      * геттер возврпщпет знасение поля created_at
      * @get
      * @name Travel.created_at
-     * @returns {Date}
+     * @returns {string}
      */
     get created_at(){
         return this._modified.created_at
@@ -602,7 +602,7 @@ export default class Travel{
      * @method
      * @name Travel.setUser
      * @param {string} user_id id пользователя, который редактирует путешествие
-     * @returns {Limit}
+     * @returns {Travel}
      */
     setUser(user_id) {
         if (typeof user_id === 'string' && user_id.length > 0) {
@@ -622,7 +622,7 @@ export default class Travel{
         const userOK = typeof user_id === 'string' && user_id.length > 0
 
         if(this.change){
-            this.newTravel
+            this._new
                 ? await travel_service.create(this._modified, userOK ? user_id : this.user_id)
                 : await travel_service.update(this._modified, userOK ? user_id : this.user_id)
         }
@@ -643,9 +643,5 @@ export default class Travel{
             await travel_service.delete(this._modified, userOK ? user_id : this.user_id)
         }
         return this
-    }
-
-    toString(){
-        return JSON.stringify(this._modified)
     }
 }

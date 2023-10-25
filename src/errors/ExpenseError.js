@@ -16,7 +16,6 @@ export default class ExpenseError extends Error{
      * @param {Error} err ошибка, возникшая в сервисе
      */
     constructor(method, err) {
-        err.message = `[ExpenseError/${method}]` + err.message
-        super(err);
+        super(`[ExpenseError/${method}]` + err.message);
     }
 }

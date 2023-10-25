@@ -1,0 +1,39 @@
+import ErrorReport from "../controllers/ErrorReport";
+
+/**
+ * Абстрактный класс для сущностей, содержит набор дефолтных методов
+ * @class
+ * @name Entity
+ * @abstract
+ * @category Classes
+ */
+export default class Entity{
+    _new = false
+    _change = false
+    _modified = {}
+
+    toString(){
+        try {
+            return JSON.parse(JSON.stringify(this._modified))
+        } catch (err){
+            console.error(err)
+            ErrorReport.sendError(err).catch(console.error)
+            return err.message
+        }
+    }
+
+    get object(){
+        return this._modified
+    }
+
+    /**
+     * @method
+     * @name Entity.save
+     * @abstract
+     * @throws Error
+     */
+    async save(){
+        throw new Error('Method "save" should be implemented')
+    }
+
+}

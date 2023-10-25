@@ -1,4 +1,4 @@
-import {forwardRef} from 'react'
+import {forwardRef, useCallback} from 'react'
 
 import debounce from "lodash.debounce";
 import aFetch from "../../../axios";
@@ -16,22 +16,26 @@ import {Input} from "../index";
  * @returns {JSX.Element}
  */
 function InputWithPlaces({onPlaces, delay = 500, ...props}, ref) {
-
+    const requestSuggests = useCallback(debounce((e) =>  {
+        const text = e.target.value.trim()
+        if(text.length) {
+            aFetch.post('/places/getList/', {text})
+                .then(resp => resp.data)
+                .then(resp => {
+                    if ("ok" in resp && onPlaces)
+                        onPlaces(Array.isArray(resp.data) ? resp.data : [])
+                })
+                .catch(console.error)
+        }
+    }, delay, {trailing:true}), [])
 
     /***
      * @param {InputEvent} e
      */
-    const handleInputChange = debounce((e) =>  {
-        aFetch.post('/places/getList/', {text: e.target.value})
-            .then(resp => resp.data)
-            .then(resp => {
-                console.log(resp)
-                if ("ok" in resp && onPlaces)
-                    onPlaces(Array.isArray(resp.data) ? resp.data : [])
-            })
-            .catch(console.error)
+    const handleInputChange = (e) =>  {
+        requestSuggests(e)
         props.onChange && props.onChange(e)
-    }, delay, {trailing:true})
+    }
 
     return (
         <Input ref={ref} {...props} onChange={handleInputChange}/>

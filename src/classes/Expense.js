@@ -1,11 +1,13 @@
 import createId from "../utils/createId";
 import constants from "../static/constants";
 import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
+import Entity from "./Entity";
 
 /**
  * данный класс позволяет работать с расходами
  * @class
  * @name Expense
+ * @extends Entity
  *
  * @param {ExpenseType} item прошлая запись о расзоде (если есть)
  * @param {string} user_id id пользователя, создавшего запись о расходе
@@ -13,7 +15,7 @@ import {expenses_actual_service, expenses_plan_service} from "../services/expens
  * @constructor
  *
  */
-export default class Expense {
+export default class Expense extends Entity{
     /**@type{ExpenseType}*/
     static initValue = {
         id: () => '',
@@ -29,7 +31,6 @@ export default class Expense {
         entity_type: () => '',
         primary_entity_type: () => '',
     }
-    newExpense = false
     /**
      * @param {ExpenseType} item прошлая запись о расзоде (если есть)
      * @param {string} user_id id пользователя, создавшего запись о расходе
@@ -37,9 +38,10 @@ export default class Expense {
      * @constructor
      */
     constructor(item, user_id, type) {
+        super()
         if (!item) {
             item = {}
-            this.newExpense = true
+            this._new = true
         }
 
         /***@type{ExpenseType}*/
@@ -60,7 +62,7 @@ export default class Expense {
             .setEntityType(item.entity_type)
             .setPrimaryEntityType(item.primary_entity_type)
 
-        this.change = this.newExpense
+        this.change = this._new
         this.type = type
         if(type === 'actual')   this.storeName = constants.store.EXPENSES_ACTUAL
         if(type === 'plan')     this.storeName = constants.store.EXPENSES_PLAN
@@ -403,7 +405,7 @@ export default class Expense {
                 expenseService = expenses_actual_service
             }
             if(expenseService){
-            this.newExpense
+            this._new
                 ? await expenseService.create(this._modified)
                 : await expenseService.update(this._modified)
             }
@@ -428,9 +430,5 @@ export default class Expense {
             await expenseService.delete(this._modified)
         }
         return this
-    }
-
-    toString(){
-        return JSON.stringify(this._modified)
     }
 }

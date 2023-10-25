@@ -1,13 +1,16 @@
+import Entity from "./Entity";
+
 /**
  * Класс для редактирования встреч
  * @class
  * @name Appointment
+ * @extends Entity
  *
  *
  * @param {AppointmentType} item
  * @constructor
  */
-export default class Appointment{
+export default class Appointment extends Entity{
     /**@type{AppointmentType}*/
     static initValue = {
         id: () => '',
@@ -17,15 +20,15 @@ export default class Appointment{
         description: () => '',
         primary_entity_id: () => '',
     }
-    newAppointment = false
     /**
      * @param {AppointmentType} item
      * @constructor
      */
     constructor(item) {
+        super()
         if(!item){
             item = {}
-            this.newAppointment = true
+            this._new = true
         }
         /***@type{AppointmentType} */
         this._modified = {}
@@ -38,7 +41,7 @@ export default class Appointment{
             .setDescription(item.description)
             .setPrimaryEntityID(item.primary_entity_id)
 
-        this.change = this.newAppointment
+        this._change = this._new
     }
 
     /**
@@ -61,7 +64,7 @@ export default class Appointment{
     setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
-            this.change = true
+            this._change = true
         }
         return this
     }
@@ -87,11 +90,11 @@ export default class Appointment{
         const d = new Date(date)
         if(date instanceof Date){
             this._modified.date = date.toISOString()
-            this.change = true
+            this._change = true
         }
         else if (!Number.isNaN(d.getTime())) {
             this._modified.date = d.toISOString()
-            this.change = true
+            this._change = true
         }
         return this
     }
@@ -118,7 +121,7 @@ export default class Appointment{
         const result = t.toISOString().match(/[0-9]{2}:[0-9]{2}:[0-9]{2}/)
         if(result && result[0]) {
             this._modified.date = result[0]
-            this.change = true
+            this._change = true
         }
         return this
     }
@@ -142,7 +145,7 @@ export default class Appointment{
     setTitle(title) {
         if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
-            this.change = true
+            this._change = true
         }
         return this
     }
@@ -167,7 +170,7 @@ export default class Appointment{
     setDescription(description) {
         if (typeof description === 'string' && description.length > 0) {
             this._modified.description = description
-            this.change = true
+            this._change = true
         }
         return this
     }
@@ -192,12 +195,10 @@ export default class Appointment{
     setPrimaryEntityID(primary_entity_id) {
         if (typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
             this._modified.primary_entity_id = primary_entity_id
-            this.change = true
+            this._change = true
         }
         return this
     }
 
-    toString(){
-        return JSON.stringify(this._modified)
-    }
+    async save() {}
 }

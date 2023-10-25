@@ -1,15 +1,17 @@
 import limit_service from "../services/limit_service";
+import Entity from "./Entity";
 
 /**
  * Класс для работы с лимитами
  * @class
  * @name Limit
+ * @extends Entity
  *
  *
  * @param {LimitType} item запись о существующем лимите в бд (если есть)
  * @constructor
  */
-export default class Limit {
+export default class Limit extends Entity{
     /**@type{LimitType} */
     static initValue = {
         id: () => '',
@@ -17,16 +19,16 @@ export default class Limit {
         personal: () => 0,
         section_id: () => '',
     }
-    newLimit = false
 
     /**
      * @param {LimitType} item запись о существующем лимите в бд (если есть)
      * @constructor
      */
     constructor(item) {
+        super()
         if (!item) {
             item = {}
-            this.newLimit = true
+            this._new = true
         }
 
         /***@type {LimitType} */
@@ -38,7 +40,7 @@ export default class Limit {
             .setPersonal(item.personal)
             .setSectionID(item.section_id)
 
-        this.change = this.newLimit
+        this.change = this._new
     }
 
     /**
@@ -177,7 +179,7 @@ export default class Limit {
         const userOK = typeof user_id === 'string' && user_id.length > 0
 
         if (this.change && (userOK || this.user_id)) {
-            this.newLimit
+            this._new
                 ? await limit_service.create(this._modified, userOK ? user_id : this.user_id)
                 : await limit_service.update(this._modified, userOK ? user_id : this.user_id)
         }
@@ -198,18 +200,5 @@ export default class Limit {
             await limit_service.delete(this._modified, userOK ? user_id : this.user_id)
         }
         return this
-    }
-
-    /**
-     * @get
-     * @name Limit.object
-     * @returns {LimitType}
-     */
-    get object(){
-        return {...this._modified}
-    }
-
-    toString(){
-        return JSON.stringify(this._modified)
     }
 }
