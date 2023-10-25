@@ -12,6 +12,9 @@ import App from './App';
 import './css/index.css';
 import range from "./utils/range";
 import storeDB from "./db/storeDB/storeDB";
+import Expense from "./classes/Expense";
+import createId from "./utils/createId";
+import sleep from "./utils/sleep";
 
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme
@@ -55,6 +58,36 @@ window.store = storeDB
 //     .then(() => console.log('ok'))
 //     .then(() => {
 //         storeDB.getOne(constants.store.CURRENCY, '12.12.2021').then(console.log)
+//     })
+
+// sleep(2000)
+//     .then(() => {
+//         const promises = range(1,1000)
+//             .map(i => new Expense({
+//                 id: createId((Math.random() * 20).toString()),
+//                 user_id: '12',
+//                 personal: 0,
+//                 title: 'test',
+//                 primary_entity_id: '12:1698046615651',
+//                 created_at: new Date(Date.now() - MS_IN_DAY * i).toISOString(),
+//                 datetime: new Date(Date.now() - MS_IN_DAY * i).toISOString(),
+//                 value: Math.random() * 1000,
+//                 section_id: 'misc',
+//                 currency: (i % 2 === 0)
+//                     ? '$'
+//                     : (i % 3 === 0)
+//                         ? '€'
+//                         : (i % 5 === 0)
+//                             ? '₯'
+//                             : 'د.إ',
+//             }, '12', 'actual'))
+//             .map(item => {
+//                 console.log(item)
+//                 return storeDB.editElement(constants.store.EXPENSES_ACTUAL, item.object)
+//             })
+//
+//         Promise.all(promises)
+//             .then((res) => console.log('ok',res))
 //     })
 //===================== установка фикчированного vh ================================================
 setFixedVH()

@@ -3,6 +3,7 @@ import constants from "../static/constants";
 import createAction from "../utils/createAction";
 import ErrorReport from "../controllers/ErrorReport";
 import ExpenseError from "../errors/ExpenseError";
+import {de} from "date-fns/locale";
 
 /**
  * Сервис добавляет CRUD операци для работы с бд
@@ -32,6 +33,7 @@ export class ExpenseService {
      */
     async create(expense) {
         try {
+            debugger
             const action = createAction(this.storeName, expense.user_id, "add", expense)
             await storeDB.addElement(this.storeName, expense)
             await storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)
@@ -87,6 +89,7 @@ export class ExpenseService {
      */
     async update(expense) {
         try {
+            debugger
             const action = createAction(this.storeName, expense.user_id, "update", expense)
             await storeDB.editElement(this.storeName, expense)
             await storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)

@@ -168,7 +168,7 @@ export default function TravelDetails() {
                         }
                     </div>
                 }
-                <Container className='pt-20 pb-20'>
+                <Container className='overflow-x-hidden pt-20 pb-20'>
                     <LocationCard
                         title='Новосибирск-Сочи'
                         entityType='Перелет'

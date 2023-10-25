@@ -82,6 +82,11 @@ const schema = {
             name: constants.store.TRAVEL_WAYPOINTS,
             key: 'id',
             indexes: ['primary_entity_id']
+        },
+        {
+            name: constants.store.UPDATE,
+            key: 'primary_id',
+            indexes: []
         }
     ],
 };

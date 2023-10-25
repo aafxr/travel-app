@@ -13,13 +13,16 @@ export default class Entity{
     _modified = {}
 
     toString(){
-        try {
-            return JSON.parse(JSON.stringify(this._modified))
-        } catch (err){
-            console.error(err)
-            ErrorReport.sendError(err).catch(console.error)
-            return err.message
-        }
+        const res = JSON.stringify(this._modified)
+        console.log(res)
+        return res
+        // try {
+        //     return JSON.parse(JSON.stringify(this._modified))
+        // } catch (err){
+        //     console.error(err)
+        //     ErrorReport.sendError(err).catch(console.error)
+        //     return err.message
+        // }
     }
 
     get object(){

@@ -5,23 +5,35 @@ import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 import aFetch from "../axios";
 
-// console.log('====worker=====')
+console.log('====worker=====')
 
 function fetchActions(message) {
     functionDurationTest(getActionsList.bind(null, message), '[Worker] Время обработки actions: ')
 }
 
-onmessage = function (e) {
+this.addEventListener('message', messageHandler)
+
+/**
+ * @param {MessageEvent<WorkerMessageType>} e
+ */
+function messageHandler(e) {
     const message = e.data
     const {type} = message
 
-    // console.log(message)
+    console.log(message)
 
     // if (Array.isArray(data)) {
     //     type === 'action' && actionsProcess(message)
     // }
     type === 'fetch' && fetchActions(message)
     type === 'init' && init()
+    if(type === "update-expenses-actual"){
+        const aWorker = new Worker(new URL('./worker-expenses-actual-update.js', import.meta.url))
+        aWorker.onerror = () => (err) => {
+            console.error(err)
+            //... other error handlers
+        }
+    }
 }
 
 function init(){

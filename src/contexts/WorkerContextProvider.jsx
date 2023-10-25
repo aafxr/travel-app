@@ -34,7 +34,11 @@ export default function WorkerContextProvider() {
                     /** при ошибке инициализации воркера, отправляем сообщения об ошибке */
                     ErrorReport.sendError(err).catch(console.error)
                 }
+                /**@type{WorkerMessageType} */
+                const message = {type: "update-expenses-actual"}
+                w.postMessage(message)
                 process.env.NODE_ENV === 'production' && w.postMessage({type: 'init'})
+
             }
         }
     }, [])

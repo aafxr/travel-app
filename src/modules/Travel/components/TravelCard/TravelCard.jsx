@@ -51,6 +51,7 @@ export default function TravelCard({travel, onRemove}) {
     return (
         <>
             <Swipe
+                className='travel-card-swiper'
                 onRemove={handleRemove}
                 rightButton={!tagsScrolling}
                 onClick={() => navigate(`/travel/${travel.id}/`)}
@@ -78,6 +79,7 @@ export default function TravelCard({travel, onRemove}) {
                                                     color='light-orange'
                                                     icon={defaultMovementTags.find(dm => dm.id === mt.id)?.icon}
                                                     iconPosition='left'
+                                                    rounded
                                                 >
                                                     {mt.title}
                                                 </Chip>

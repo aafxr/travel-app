@@ -1,6 +1,11 @@
+.travel-card-swiper{
+    color: var(--color-background);
+}
+
 .travel-item{
     position: relative;
     padding: 4px;
+    color: var(--color-text);
     border-radius: var(--br-20);
     background-color: var(--color-background);
     box-shadow: var(--box-shadow);
@@ -16,9 +21,9 @@
 
 .travel-image{
     position: relative;
-    margin: -4px;
-    width: 88px;
-    height: 88px;
+    /*margin: -4px;*/
+    width: 80px;
+    height: 80px;
     overflow: hidden;
     border-radius: 1rem;
 }

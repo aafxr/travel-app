@@ -87,17 +87,18 @@ export default function TravelRoutes({
                 {
                     user
                         ? (
-                            <div className='column gap-1'>
+                            <ul className='column gap-1'>
                                 {
                                     !!actualTravels.length && actualTravels.map(t => (
-                                        <TravelCard
-                                            key={t.id}
-                                            travel={t}
-                                            onRemove={() => handleRemove(t)}
-                                        />
+                                        <li key={t.id}>
+                                            <TravelCard
+                                                travel={t}
+                                                onRemove={() => handleRemove(t)}
+                                            />
+                                        </li>
                                     ))
                                 }
-                            </div>
+                            </ul>
                         ) : (
                             <IconButton
                                 border={false}

@@ -388,16 +388,17 @@ export class LocalDB {
      * @method LocalDB.getAllFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
+     * @param { string | IDBKeyRange} query        параметры поиска
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
-    async getAllFromIndex(storeName, indexName) {
+    async getAllFromIndex(storeName, indexName, query) {
         while (!this.ready) await sleep(300)
 
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 const db = await openDataBase(this.dbname, this.version, this.stores)
-                return await db.getFromIndex(storeName, indexName);
+                return await db.getAllFromIndex(storeName, indexName, query);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }

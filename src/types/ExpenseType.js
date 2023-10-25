@@ -14,5 +14,6 @@
  * @property {string} section_id  id секции, в рамках которой создан расход
  * @property {string} datetime время,когда расход был осуществлен
  * @property {string} created_at дата создания записи о расходе
+ * @property {string} currency символ валуты
  * @category Types
  */

@@ -30,6 +30,7 @@ export default class Expense extends Entity{
         entity_id: () => '',
         entity_type: () => '',
         primary_entity_type: () => '',
+        currency: () => '₽'
     }
     /**
      * @param {ExpenseType} item прошлая запись о расзоде (если есть)
@@ -50,12 +51,13 @@ export default class Expense extends Entity{
         Object.keys(Expense.initValue).forEach(key => this._modified[key] = Expense.initValue[key]())
         this
             .setID(item.id)
+            .setCurrency(item.currency)
             .setSectionId(item.section_id)
             .setUserID(item.user_id)
             .setPersonal(item.personal)
             .setTitle(item.title)
             .setValue(item.value)
-            .setPrimaryEntityID(item.primary_entity_type)
+            .setPrimaryEntityID(item.primary_entity_id)
             .setCreatedAt(item.created_at)
             .setDatetime(item.datetime)
             .setEntityID(item.entity_id)
@@ -88,7 +90,32 @@ export default class Expense extends Entity{
      */
     setID(id){
         if(typeof id === 'string' && id.length > 0) {
-            this._modified.section_id = id
+            this._modified.id = id
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * геттер возвращает currency расхода
+     * @get
+     * @name Expense.id
+     * @returns {string}
+     */
+    get currency(){
+        return this._modified.currency
+    }
+
+    /**
+     * метод устанавливает currency расхода
+     * @method
+     * @name Expense.setID
+     * @param {string} currency валюта расхода
+     * @returns {Expense}
+     */
+    setCurrency(currency){
+        if(typeof currency === 'string' && currency.length > 0) {
+            this._modified.currency = currency
             this.change = true
         }
         return this
@@ -233,12 +260,12 @@ export default class Expense extends Entity{
      * метод устанавливает primary_entity_id
      * @method
      * @name Expense.setPrimaryEntityID
-     * @param {string} id  expense primary_entity_id
+     * @param {string} primary_entity_id  expense primary_entity_id
      * @returns {Expense}
      */
-    setPrimaryEntityID(id){
-        if(typeof id === 'string' && id.length > 0) {
-            this._modified.primary_entity_id = id
+    setPrimaryEntityID(primary_entity_id){
+        if(typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
+            this._modified.primary_entity_id = primary_entity_id
             this.change = true
         }
         return this
