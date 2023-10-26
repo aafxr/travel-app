@@ -1,3 +1,5 @@
+import {defaultMovementTags} from "../../static/constants";
+
 /**@type{TravelType} */
 const defaultTravel = {
     id: () => '',
@@ -15,7 +17,13 @@ const defaultTravel = {
     hotels: () => [],
     members: () => [],
     appointments: () => [],
-    movementTypes: () => [],
+    movementTypes: () => [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}],
+
+    direction: () => '',
+    childs_count: () => 0,
+    adults_count: () => 1,
+    waypoints: () => [],
+    isPublic: () => 0,
 }
 
 /**

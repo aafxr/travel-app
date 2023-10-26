@@ -9,6 +9,7 @@ import Container from "../../../../components/Container/Container";
 // import {updateUser} from "../../../../redux/userStore/updateUser";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
+import './Main.css'
 
 /**
  * компонент отображает главную страницу приложения
@@ -37,12 +38,21 @@ export default function Main({
         <div className='wrapper'>
             <Container className='content'>
                 <PageHeader title={'Главная страница'}  MenuEl={<Menu/>} />
-                <IconButton
-                    border={false}
-                    title='+ Добавить'
-                    className='link'
-                    onClick={() => navigate('/travel/add/')}
-                />
+                <div className='banner'>
+                    <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
+                    <button
+                    className='banner-button'
+                        onClick={() => navigate('/travel/add/map/')}
+                    >
+                        Новая поездка
+                    </button>
+                </div>
+                {/*<IconButton*/}
+                {/*    border={false}*/}
+                {/*    title='+ Добавить'*/}
+                {/*    className='link'*/}
+                {/*    onClick={() => navigate('/travel/add/')}*/}
+                {/*/>*/}
             </Container>
             <Navigation className='footer'/>
         </div>

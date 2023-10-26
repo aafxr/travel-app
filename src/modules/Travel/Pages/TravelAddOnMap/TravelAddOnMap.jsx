@@ -223,7 +223,7 @@ export default function TravelAddOnMap() {
                                     className='link'
                                     onClick={handleUserLocationPoint}
                                 >
-                                    + Текущая позиция
+                                    + Указать откуда начнется поездка
                                 </div>
                             )
                             : (!!points.length && (

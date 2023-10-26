@@ -16,6 +16,7 @@ import Expense from "./classes/Expense";
 import createId from "./utils/createId";
 import sleep from "./utils/sleep";
 
+
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme
 document.body.classList.add(theme)

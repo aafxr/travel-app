@@ -242,7 +242,7 @@ export default function TravelSettings() {
                                 }
 
                                 <section className='travel-settings-movement column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Способы передвижения</h4>
+                                    <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
                                     <div className='flex-wrap gap-1'>
                                         {
                                             defaultMovementTags.map(dmt => (

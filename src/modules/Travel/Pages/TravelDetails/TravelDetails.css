@@ -33,8 +33,12 @@
 }
 
 .travel-details-title{
-    font-size: 32px;
+    font-size: 1.8rem;
+    line-height: 1.2;
     font-weight: 600;
+}
+.travel-details-title--empty{
+    font-size: 1.6rem;
 }
 
 .travel-details-icon.public svg{
@@ -59,7 +63,7 @@
 }
 
 .travel-menu{
-    color: var(--color-text-secondary)!important;
+    /*color: var(--color-text-secondary)!important;*/
 }
 .travel-menu.curtain-closed,
 .travel-menu.curtain-closed .menu-dots{
@@ -67,7 +71,7 @@
 }
 
 .travel-menu .menu-dots{
-    color: var(--color-text-secondary);
+    /*color: var(--color-text-secondary);*/
 }
 
 @media (prefers-color-scheme: dark) {

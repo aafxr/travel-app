@@ -8,6 +8,7 @@ import './Curtain.css'
 /**
  * компонент обертка, добавляет шторку
  * @param children
+ * @param {string} direction направвление поездки, если указано, то будет отображаться вместо кнопки в шапке компонента
  * @param {number} minOffset минимальное смещение в пикселях (px) от верхнего положения
  * @param {number} maxScroll максимальное значение в px на которое открывается шторка
  * @param {number} maxOpenPercent 0 - 1 , величина, на которую открывается шторка
@@ -21,6 +22,7 @@ import './Curtain.css'
  */
 export default function Curtain({
                                     children,
+    direction,
                                     minOffset = 0,
                                     maxScroll,
                                     maxOpenPercent,
@@ -192,7 +194,7 @@ export default function Curtain({
                 <div className='wrapper'>
                     <div
                         ref={cTopRef}
-                        className='curtain-header center'
+                        className='curtain-header'
                         onClick={(e) => curtainHandler(e)}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
@@ -202,7 +204,11 @@ export default function Curtain({
                         onTouchMove={handleTouchMove}
                         draggable
                     >
-                        <button className='curtain-top-btn'/>
+                        {
+                            (typeof direction === 'string' && direction.length > 0)
+                            ? <button className='curtain-top-btn--direction'>{direction}</button>
+                            : <button className='curtain-top-btn'/>
+                        }
                     </div>
                     <div className='content'>
                         {children}

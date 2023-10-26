@@ -3,8 +3,22 @@ import ErrorReport from "../controllers/ErrorReport";
 import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 
-
+/**
+ * Сервис предоставляет набор методов (CRUD операции) для работы с БД
+ * @class
+ * @name BaseService
+ *
+ *
+ * @param {string} storeName имя store (таблицы) в бд, с которой будет работать данный сервис
+ * @constructor
+ */
 export default class BaseService{
+    /**@type{string}*/
+    storeName
+    /**
+     * @param {string} storeName имя store (таблицы) в бд, с которой будет работать данный сервис
+     * @constructor
+     */
     constructor(storeName){
         if (!storeName)
             throw new Error('Property "storeName" not define')

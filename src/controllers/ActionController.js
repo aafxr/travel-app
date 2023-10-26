@@ -25,16 +25,6 @@ import createId from "../utils/createId";
  * @typedef {Object.<string, any>} AnyObj
  */
 
-/**
- * @typedef {object} ActionType
- * @property {string} [id]
- * @property {string} user_id
- * @property {string} datetime
- * @property {string} entity
- * @property {ActionVariant} action
- * @property {string} data
- * @property {boolean | number} synced
- */
 
 /**
  * @typedef {object} Payload

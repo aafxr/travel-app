@@ -1,11 +1,13 @@
 /**
- * @typedef {object} ExpensesActionType
+ * @name ActionType
+ * @typedef {Object} ActionType
  * @property {string} id
- * @property {string} uid
- * @property {string} datetime
- * @property {'limit' |'expenses_actual' |'expenses_plan'} entity
- * @property {'add' | 'update' | 'remove'} action
- * @property {string} data
- * @property {boolean | number} synced
+ * @property {string} action
+ * @property {Object} data
+ * @property {string} entity
+ * @property {Date} datetime
+ * @property {DBFlagType} synced
+ * @property {string} user_id
+ * @category Types
  */
 

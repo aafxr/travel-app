@@ -5,6 +5,10 @@
 }
 
 .curtain-header{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: grab;
 }
 
@@ -30,8 +34,23 @@
      width: 67px;
      height: 4px;
      background-color: var(--color-grey);
-     border-right: var(--br-16);
+     border-radius: var(--br-16);
      border: none;
      outline: none;
      cursor: pointer;
+}
+
+.curtain-top-btn--direction{
+    margin: 0.3rem auto ;
+    padding: 0 10px;
+    max-width: 70%;
+    font-size: .8rem;
+    font-weight: 600;
+    color: black;
+    text-overflow: ellipsis;
+    border-radius: var(--br-16);
+    background-color: var(--color-grey-light);
+    border: none;
+    outline: none;
+    cursor: pointer;
 }

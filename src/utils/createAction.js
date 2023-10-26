@@ -1,20 +1,6 @@
 import createId from "./createId";
 
 /**
- * @name ActionType
- * @typedef {Object} ActionType
- * @property {string} id
- * @property {string} action
- * @property {Object} data
- * @property {string} entity
- * @property {Date} datetime
- * @property {number} synced
- * @property {string} user_id
- * @category Types
- */
-
-
-/**
  * Утилита создает акшен
  * @function
  * @name createAction

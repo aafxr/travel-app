@@ -97,13 +97,17 @@ export default function TravelDetails() {
             </Container>
             <Container className='travel-details-backface '>
                 <div className='wrapper column gap-1 pb-20 '>
-                    <div className='content column gap-0.5'>
+                    <div className='content column gap-1'>
                         <div className='travel-details'>
                             <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
                         </div>
-                        <div className='travel-details-title column center gap-0.25'>
-                            <h2 className='center gap-0.5' onClick={() => navigate('')}>
-                                {travel?.title}
+                        <div className='travel-details-title column center'>
+                            <h2 className='center gap-0.5' onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
+                                {
+                                    travel?.title || travel?.direction || (
+                                        <span className='travel-details-title--empty' >Добавить название</span>
+                                    )
+                                }
                                 <div className={`travel-details-icon icon center ${travel?.isPublic ? 'public' : 'private'}`} >
                                     {travel?.isPublic ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                 </div>
@@ -131,8 +135,7 @@ export default function TravelDetails() {
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                    </div>
-                    <div className='flex-between flex-nowrap gap-0.5 footer pb-20'>
+                    <div className='flex-between flex-nowrap gap-0.5 pb-20'>
                         <IconButton icon={<Money/>} title='Расходы' onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         <IconButton
                             icon={<ChecklistIcon/>}
@@ -141,10 +144,12 @@ export default function TravelDetails() {
                         />
                         <IconButton icon={<ChatIcon badge/>}/>
                     </div>
+                    </div>
                 </div>
             </Container>
 
             <Curtain
+                direction={travel?.direction}
                 onChange={setCurtainOpen}
                 defaultOffsetPercents={1}
             >
