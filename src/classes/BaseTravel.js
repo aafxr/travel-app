@@ -458,7 +458,9 @@ export default class BaseTravel extends Entity{
      */
     setMovementTypes(items){
         if(Array.isArray(items)){
-            this._modified.movementTypes = [...items]
+            this._modified.movementTypes = items
+                .filter(item => !!item)
+                .filter(item => item.id && item.title)
             this.change = true
         }
         return this

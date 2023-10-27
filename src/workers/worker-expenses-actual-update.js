@@ -1,3 +1,4 @@
-console.log('123')
-
-this?.terminate()
+// console.log('worker 123')
+// console.log(self)
+// /**@type{DedicatedWorkerGlobalScope}*/
+// self.postMessage('done')

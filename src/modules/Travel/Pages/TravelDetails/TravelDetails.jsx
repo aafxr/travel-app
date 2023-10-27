@@ -25,6 +25,8 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelDetails.css'
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -36,9 +38,9 @@ import './TravelDetails.css'
 export default function TravelDetails() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const {travel, errorMessage} = useTravel()
+    // const dispatch = useDispatch()
+    const {user} = useUserSelector()
+    const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
     const travelDurationLabel = dateRange(travel?.date_start, travel?.date_end)
@@ -66,20 +68,13 @@ export default function TravelDetails() {
 
     function handleTravelPhotoChange(photo) {
         if (travel) {
-            const newTravelData = {...travel, photo: photo.id}
-            const keys = changedFields(travel, newTravelData, ['id', 'photo'])
-            const updateTravelData = keys.reduce((acc, k) => {
-                acc[k] = newTravelData[k]
-                return acc
-            }, {})
-            const action = createAction(constants.store.TRAVEL, user.id, 'update', updateTravelData)
+            travel.setPhoto(photo.id)
 
             Promise.all([
-                storeDB.editElement(constants.store.TRAVEL, newTravelData),
-                storeDB.addElement(constants.store.TRAVEL_ACTIONS, action),
+                travel.save(user.id),
                 storeDB.editElement(constants.store.IMAGES, photo)
             ])
-                .then(() => dispatch(actions.travelActions.updateTravel(newTravelData)))
+                .then(() => update())
                 .catch(console.error)
         }
     }

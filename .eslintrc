@@ -6,7 +6,8 @@
         "prefer-rest-params": "off",
         "testing-library/no-node-access": "off",
         "no-useless-computed-key": "off",
-        "react-hooks/exhaustive-deps": "off"
+        "react-hooks/exhaustive-deps": "off",
+        "no-restricted-globals": "off"
     },
     "parserOptions": {
         "ecmaVersion": 2017,

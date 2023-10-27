@@ -1,26 +1,21 @@
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
 
-import constants, {defaultMovementTags} from "../../../../static/constants";
+import {defaultMovementTags} from "../../../../static/constants";
 import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
-import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
 import {Chip, PageHeader} from "../../../../components/ui";
-import createAction from "../../../../utils/createAction";
-import storeDB from "../../../../db/storeDB/storeDB";
 import dateRange from "../../../../utils/dateRange";
-import {actions} from "../../../../redux/store";
-import useTravel from "../../hooks/useTravel";
 
 import './TravelSettings.css'
-import saveTravel from "../../../../utils/saveTravel";
 
 /**
  * Страница формирования путешествия ( добавление даты / отели / встречи / участники)
@@ -30,11 +25,27 @@ import saveTravel from "../../../../utils/saveTravel";
  * @category Pages
  */
 export default function TravelSettings() {
-    const {travelCode} = useParams()
     const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const {travel, errorMessage} = useTravel()
+    const {user} = useUserSelector()
+    const {travel, update} = useTravelContext()
+
+    const [adultCount, setAdultCount] = useState(1)
+    const [childCount, setChildCount] = useState(0)
+    const [movement, setMovement] = useState(/**@type{MovementType[]}*/[])
+    /*** диапазон дат путешествия */
+    const [range, setRange] = useState(/***@type{DateRangeType | null}*/null)
+
+    useEffect(() => {
+        setAdultCount(travel.adults_count)
+        setChildCount(travel.childs_count)
+        const tags = defaultMovementTags
+            .filter(item => !!~travel.movementTypes.findIndex(m=> m.id === item.id))
+        setMovement(tags)
+        setRange({
+            start: travel.date_start,
+            end: travel.date_end
+        })
+    }, [travel])
 
     /**
      * обработка нажатия на карточку пользователя
@@ -42,8 +53,7 @@ export default function TravelSettings() {
      */
     function handleUserClick(user) {
         if (user) {
-            console.log(user)
-            navigate(`/travel/${travelCode}/settings/${user.id}/`)
+            navigate(`/travel/${travel.id}/settings/${user.id}/`)
         }
     }
 
@@ -52,16 +62,14 @@ export default function TravelSettings() {
      * @param {number} num
      */
     function handleAdultChange(num) {
-        if (!travel) return
-        dispatch(actions.travelActions.setAdultCount(num))
+        setAdultCount(num)
     }
 
     /** обновление предпологаемого числа детей в путешествии
      * @param {number} num
      */
     function handleTeenagerChange(num) {
-        if (!travel) return
-        dispatch(actions.travelActions.setChildCount(num))
+        setChildCount(num)
     }
 
     // travel members change handlers ==================================================================================
@@ -70,16 +78,19 @@ export default function TravelSettings() {
      * @param {MovementType} movementType
      */
     function handleMovementSelect(movementType) {
-        if (!travel) return
+        const newTagList = ~movement.findIndex( mt => mt.id === movementType.id)
+            ? movement.filter(t => t.id !== movementType.id)
+            : [...movement, movementType]
+        console.log(newTagList)
+        setMovement(newTagList)
+    }
 
-        const mt = {...movementType}
-        delete mt.icon
-
-        if (travel.movementTypes.find(m => m.id === mt.id)) {
-            dispatch(actions.travelActions.removeMovementType(mt))
-        } else {
-            dispatch(actions.travelActions.addMovementType(mt))
-        }
+    function hasChanges() {
+        return (
+            range?.start !== travel.date_start
+            || range?.end !== travel.date_end
+            || movement !== travel.movementTypes
+        )
     }
 
     //==================================================================================================================
@@ -89,9 +100,7 @@ export default function TravelSettings() {
      * @param {string} end
      */
     function handleDateRangeChange({start, end}) {
-        if (!travel) return
-        if (start !== travel.date_start) dispatch(actions.travelActions.setTravelStartDate(start))
-        if (end !== travel.date_end) dispatch(actions.travelActions.setTravelEndDate(end))
+        setRange({start, end})
     }
 
     //==================================================================================================================
@@ -120,8 +129,13 @@ export default function TravelSettings() {
             return
         }
 
-        const action = createAction(constants.store.TRAVEL, user.id, "add", travel)
-        saveTravel(travel,user.id)
+        travel
+            .setAdultsCount(adultCount)
+            .setChildsCount(childCount)
+            .setDateStart(range.start)
+            .setDateEnd(range.end)
+            .save(user.id)
+            .then(() => update())
             .then(() => navigate(`/travel/${travel.id}/`))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
@@ -133,7 +147,7 @@ export default function TravelSettings() {
     return (
         <div className='travel-settings wrapper'>
             <Container>
-                <PageHeader arrowBack to={`/travel/${travelCode}/`} title={'Параметры'}/>
+                <PageHeader arrowBack to={`/travel/${travel.id}/`} title={'Параметры'}/>
             </Container>
             <Container className='content'>
                 {
@@ -173,7 +187,7 @@ export default function TravelSettings() {
                                         <span>Взрослые</span>
                                         <Counter
                                             initialValue={travel.adults_count}
-                                            min={travel.members.filter(m => !m.isChild).length}
+                                            min={travel.members.filter(m => !m.isChild).length || 1}
                                             onChange={handleAdultChange}
                                         />
                                     </div>
@@ -193,7 +207,7 @@ export default function TravelSettings() {
                                             <h4 className='title-semi-bold'>Отель</h4>
                                             {
                                                 travel.hotels.map(h => (
-                                                    <Link key={h.id} to={`/travel/${travelCode}/add/hotel/${h.id}/`}>
+                                                    <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>
                                                         <div className='travel-settings-hotel'>
                                                             <div
                                                                 className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
@@ -220,7 +234,7 @@ export default function TravelSettings() {
                                             {
                                                 !!travel.appointments && Array.isArray(travel.appointments) && (
                                                     travel.appointments.map(a => (
-                                                        <Link key={a.id} to={`/travel/${travelCode}/add/appointment/${a.id}/`}>
+                                                        <Link key={a.id} to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
                                                             <div className='travel-settings-appointment'>
                                                                 <div
                                                                     className='travel-settings-appointment-date'>{dateRange(a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
@@ -249,7 +263,7 @@ export default function TravelSettings() {
                                                 <Chip
                                                     key={dmt.id}
                                                     icon={dmt.icon}
-                                                    color={travel.movementTypes.find(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
+                                                    color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
                                                     rounded
                                                     onClick={() => handleMovementSelect(dmt)}
                                                 >
@@ -265,9 +279,9 @@ export default function TravelSettings() {
                 }
                 <ButtonsBlock
                     className={'buttons-block'}
-                    onInvite={() => navigate(`/travel/${travelCode}/settings/invite/`)}
-                    onHotel={() => navigate(`/travel/${travelCode}/add/hotel/`)}
-                    onAppointment={() => navigate(`/travel/${travelCode}/add/appointment/`)}
+                    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
+                    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
+                    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
                 />
             </Container>
             <div className='footer-btn-container footer'>

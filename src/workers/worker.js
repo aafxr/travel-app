@@ -11,7 +11,7 @@ function fetchActions(message) {
     functionDurationTest(getActionsList.bind(null, message), '[Worker] Время обработки actions: ')
 }
 
-this.addEventListener('message', messageHandler)
+onmessage = messageHandler
 
 /**
  * @param {MessageEvent<WorkerMessageType>} e

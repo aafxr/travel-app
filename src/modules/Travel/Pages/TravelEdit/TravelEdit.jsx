@@ -16,6 +16,8 @@ import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 
 import "./TravelEdit.css"
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 
 /**
@@ -26,11 +28,10 @@ import "./TravelEdit.css"
  */
 export default function TravelEdit() {
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
-    const {travelCode} = useParams()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const {travel, errorMessage} = useTravel()
+    const {user} = useUserSelector()
+    const {travel, update} = useTravelContext()
     /*** название путешествия */
     const [title, setTitle] = useState('')
     /*** диапазон дат путешествия */
@@ -47,88 +48,71 @@ export default function TravelEdit() {
     /*** описание путешествия */
     const [description, setDescription] = useState('')
     /*** способы передвижения */
-    const [tags, setTags] = useState([])
+    const [tags, setTags] = useState(/**@type{MovementType[]}*/[])
+    const [isPublic, setIsPublic] = useState(false)
 
     // const currentDay = new Date().toISOString().split('T').shift()
 
     /*** обновление состояния компонента (заполнение уже существующих полей путешествия) */
     useEffect(() => {
-        if (travel) {
-            travel.title && setTitle(travel.title)
-            setRange({
-                start: travel.date_start || '',
-                end: travel.date_end || travel.date_start || ''
-            })
-            // travel.date_start && setStart(travel.date_start)
-            // travel.date_end && setEnd(travel.date_end)
-            travel.description && setDescription(travel.description)
-            travel.movementTypes && setTags(travel.movementTypes.map(mt => mt.id))
-            if (travel.date_start && travel.date_end) {
-                const ms = new Date(travel.date_end) - new Date(travel.date_start)
-                const days = Math.ceil(ms / MS_IN_DAY)
-                setDaysCount(days || 1)
-            } else setDaysCount(1)
-            //... доьавить остальные поля в будущем
-        }
+        setTitle(travel.title)
+        setRange({
+            start: travel.date_start,
+            end: travel.date_end || travel.date_start
+        })
+        setDescription(travel.description)
+        /**@type{MovementType[]}*/
+        const t = defaultMovementTags
+            .filter(mt => !!~travel.movementTypes.findIndex(item => item.id === mt.id))
+        setTags(t)
+
+        const start = new Date(travel.date_start)
+        const end = new Date(travel.date_end)
+        if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+            const ms = end - start
+            const days = Math.ceil(ms / MS_IN_DAY)
+            setDaysCount(days || 1)
+        } else setDaysCount(1)
+        setIsPublic(travel.isPublic === 1)
+        //... доьавить остальные поля в будущем
     }, [travel])
 
     function handleSave() {
         // Здечь должна быть обработка сохранения изменений
-        if (
+        if (hasChanges()) {
+            const newTags = tags.map(({id,title}) => ({id, title}))
+            travel
+                .setTitle(title)
+                .setDateStart(range.start)
+                .setDateEnd(range.end)
+                .setDirection(description)
+                .setMovementTypes(newTags)
+                .setIsPublic(isPublic ? 1 : 0)
+                .save(user.id)
+                .then(() => navigate(`/travel/${travel.id}/`))
+        }
+    }
+
+    function hasChanges(){
+        return (
             title !== travel.title
-            || range.start !== travel.start
-            || range.end !== travel.end
-            || description !== travel.description
-            || tags !== travel.tags
-        ) {
-            const newTravelData = {
-                ...travel,
-                title,
-                date_start: range.start,
-                date_end: range.end,
-                description,
-                movementTypes: defaultMovementTags.filter(t => tags.includes(t.id)).map(t => {
-                    const _t = {...t}
-                    delete _t.icon
-                    return _t
-                })
-            }
-            //измененные поля
-            const changedFieldsList = changedFields(travel, newTravelData)
-            !changedFieldsList.includes('id') && changedFieldsList.push('id')
-            //объект с измененными данными
-            const result = changedFieldsList.reduce((acc, key) => {
-                acc[key] = newTravelData[key]
-                return acc
-            }, {})
-
-            //создаем  action и пишем в ДБ
-            const action = createAction(constants.store.TRAVEL, user.id, 'update', result)
-            Promise.all([
-                storeDB.editElement(constants.store.TRAVEL, newTravelData),
-                storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
-            ])
-                .then(() => {
-                    dispatch(actions.travelActions.updateTravel(newTravelData))
-                    navigate(`/travel/${travel.id}/`)
-                })
-        }
+            || range?.start !== travel.date_start
+            || range?.end !== travel.date_end
+            || description !== travel.direction
+            || tags !== travel.movementTypes
+            || (travel.isPublic === 1) === isPublic
+        )
     }
 
-    /*** обработчик нажатия на способ перемещения */
-    function handleTagClick(id) {
-        const newTagList = tags.includes(id)
-            ? tags.filter(t => t !== id)
-            : [...tags, id]
+    /***
+     * обработчик нажатия на способ перемещения
+     * @param {MovementType} tag
+     */
+    function handleTagClick(tag) {
+        const newTagList = tags.includes(tag)
+            ? tags.filter(t => t !== tag)
+            : [...tags, tag]
         setTags(newTagList)
-    }
-
-    function getNewTravelData() {
-        return {
-            ...travel,
-            ...range,
-            title, description, tags
-        }
     }
 
     /***
@@ -231,9 +215,9 @@ export default function TravelEdit() {
                                         <Chip
                                             key={t.id}
                                             icon={t.icon}
-                                            color={tags.includes(t.id) ? 'orange' : 'grey'}
+                                            color={~tags.findIndex(tag => tag.id === t.id) ? 'orange' : 'grey'}
                                             rounded
-                                            onClick={() => handleTagClick(t.id)}
+                                            onClick={() => handleTagClick(t)}
                                         >
                                             {t.title}
                                         </Chip>
@@ -248,16 +232,20 @@ export default function TravelEdit() {
                         </div>
                         <ToggleBox
                             className='block'
-                            init={travel.isPublic}
-                            onChange={val => dispatch(actions.travelActions.setPublic(val))}
+                            init={travel.isPublic === 1}
+                            onChange={setIsPublic}
                             title={"Сделать видимым для всех"}
                         />
                     </Container>
                 )
             }
             <div className='footer-btn-container footer'>
-                <Button onClick={handleSave}
-                        disabled={!changedFields(travel, getNewTravelData()).length}>Сохранить</Button>
+                <Button
+                    onClick={handleSave}
+                    disabled={!hasChanges()}
+                >
+                    Сохранить
+                </Button>
             </div>
         </div>
     )

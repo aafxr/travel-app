@@ -5,7 +5,6 @@ import {Routes, Route, Navigate} from "react-router-dom";
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
 import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
-import TravelContextProvider from "./modules/Travel/contextProviders/TravelContextProvider";
 import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
 import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
@@ -50,6 +49,9 @@ import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
 import CheckList from "./components/CheckList/CheckList";
+import Loading from "./components/Loading/PageContainer";
+import PageContainer from "./components/Loading/PageContainer";
+import TravelContextProvider from "./contexts/TravelContextProvider";
 
 
 function App() {
@@ -76,15 +78,11 @@ function App() {
     }, [ready])
 
 
-    if (!ready || state && !state.travel.travelsLoaded) {
+    if (!ready || (state && !state.travel.travelsLoaded)) {
         return (
-            <div className='wrapper'>
-                <div className='content center'>
-                    <div className='loader'>
-                        <Loader/>
-                    </div>
-                </div>
-            </div>
+            <PageContainer center>
+                <Loader className='loader'/>
+            </PageContainer>
         )
     }
 
@@ -102,15 +100,15 @@ function App() {
             <>
                 <Routes>
                     <Route element={<WorkerContextProvider/>}>
+                        <Route path={'/'} element={<Main/>}/>
+                        <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                        <Route path={'/events/'} element={<Events/>}/>
+                        <Route path={'/favorite/'} element={<Favorite/>}/>
+                        <Route path={'/auth/'} element={<TelegramAuth/>}/>
+                        <Route path={'/dev/'} element={<Dev/>}/>
+                        <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
+                        <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                         <Route element={<TravelContextProvider/>}>
-                            <Route path={'/'} element={<Main/>}/>
-                            <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                            <Route path={'/events/'} element={<Events/>}/>
-                            <Route path={'/favorite/'} element={<Favorite/>}/>
-                            <Route path={'/auth/'} element={<TelegramAuth/>}/>
-                            <Route path={'/dev/'} element={<Dev/>}/>
-                            <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
-                            <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
@@ -140,14 +138,14 @@ function App() {
                                 <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'plan'}/>}/>
                                 <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                             </Route>
-                            <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
-                            <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
-                            <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
-                            <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
-                            <Route path={'/login/'} element={<Login/>}/>
                         </Route>
+                        <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
+                        <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
+                        <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                        <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
+                        <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
+                        <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
+                        <Route path={'/login/'} element={<Login/>}/>
                     </Route>
                     <Route path={'/error/'} element={<ErrorPage/>}/>
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>

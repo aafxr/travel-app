@@ -6,7 +6,7 @@ import constants from "../../static/constants";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 20,
+    version: 22,
     stores: [
         {
             name: constants.store.STORE,
@@ -44,18 +44,18 @@ const schema = {
         {
             name: constants.store.LIMIT,
             key: 'id',
-            indexes: ['section_id', 'personal','primary_entity_id', "user_id"],
+            indexes: ['section_id', 'personal', constants.indexes.PRIMARY_ENTITY_ID, "user_id"],
         },
         {
             name: constants.store.EXPENSES_ACTUAL,
             key: 'id',
-            indexes: ['user_id', 'primary_entity_id', 'section_id'],
-            upgrade:[]
+            indexes: ['user_id', constants.indexes.PRIMARY_ENTITY_ID, 'section_id'],
+            upgrade: []
         },
         {
             name: constants.store.EXPENSES_PLAN,
             key: 'id',
-            indexes: ['user_id', 'primary_entity_id', 'section_id'],
+            indexes: ['user_id', constants.indexes.PRIMARY_ENTITY_ID, 'section_id'],
         },
         {
             name: constants.store.EXPENSES_ACTIONS,
@@ -76,18 +76,43 @@ const schema = {
         {
             name: constants.store.CHECKLIST,
             key: 'id',
-            indexes: ['primary_entity_id'],
+            indexes: [constants.indexes.PRIMARY_ENTITY_ID],
         },
         {
             name: constants.store.TRAVEL_WAYPOINTS,
             key: 'id',
-            indexes: ['primary_entity_id']
+            indexes: [constants.indexes.PRIMARY_ENTITY_ID]
         },
         {
             name: constants.store.UPDATE,
             key: 'primary_id',
             indexes: []
+        },
+        //================ errors ===================================================================================
+        {
+            name: constants.store.ERRORS,
+            key: 'time',
+            indexes: []
+        },
+        //================ hotels ===================================================================================
+        {
+            name: constants.store.HOTELS,
+            key: 'id',
+            indexes: [constants.indexes.PRIMARY_ENTITY_ID]
+        },
+        //================ appointments =============================================================================
+        {
+            name: constants.store.APPOINTMENTS,
+            key: 'id',
+            indexes: [constants.indexes.PRIMARY_ENTITY_ID]
+        },
+        //================ updated Travel Info =======================================================================
+        {
+            name: constants.store.UPDATED_TRAVEL_INFO,
+            key: constants.indexes.PRIMARY_ENTITY_ID,
+            indexes: [constants.indexes.UPDATED_AT]
         }
+
     ],
 };
 

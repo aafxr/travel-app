@@ -76,7 +76,7 @@ export class TravelService {
     async update(travel, user_id){
         try {
             const action = createAction(constants.store.TRAVEL, user_id , "update", travel)
-            await storeDB.addElement(constants.store.TRAVEL, travel)
+            await storeDB.editElement(constants.store.TRAVEL, travel)
             await storeDB.addElement(constants.store.TRAVEL_ACTIONS, action)
             return travel
         }catch (err){

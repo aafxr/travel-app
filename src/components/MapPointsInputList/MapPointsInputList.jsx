@@ -10,6 +10,7 @@ import {Input, InputWithSuggests} from "../ui";
 import ErrorReport from "../../controllers/ErrorReport";
 import sleep from "../../utils/sleep";
 import aFetch from "../../axios";
+import useTravelStateSelector from "../../hooks/useTravelStateSelector";
 
 /**
  * @typedef {Function} PointsListChangeFunction
@@ -26,6 +27,7 @@ import aFetch from "../../axios";
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const {user} = useSelector(state => state[constants.redux.USER])
+    const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{InputPoint[]} */ [])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
@@ -237,7 +239,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     return (
         <>
             {
-                points.map(p => (
+                points.map((p, idx) => (
                     <Swipe
                         key={p.id}
                         onRemove={() => handleRemovePoint(p)}
@@ -254,7 +256,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                             <Input
                                 id={p.id}
                                 className='travel-map-input'
-                                placeholder='Куда едем?'
+                                placeholder={"Найдите регион или город"}
                                 value={p.text}
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}

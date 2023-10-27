@@ -105,8 +105,8 @@ export default function TravelAddOnMap() {
 
     //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
-        if(draggedPoint){
-            const newPoints = points.map( p => ({...p}))
+        if (draggedPoint) {
+            const newPoints = points.map(p => ({...p}))
             newPoints[draggedPoint.index].text = draggedPoint.dragPoint.textAddress
             newPoints[draggedPoint.index].point = draggedPoint.dragPoint
             setPoints(newPoints)
@@ -214,7 +214,7 @@ export default function TravelAddOnMap() {
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
-                <PageHeader arrowBack title={'Направление'}/>
+                <PageHeader arrowBack title={'Куда вы хотите поехать?'}/>
                 <div className='column gap-0.5'>
                     {
                         !isUserLocation
@@ -243,12 +243,16 @@ export default function TravelAddOnMap() {
                         pointsList={isUserLocation ? points.slice(1) : points}
                         onListChange={handlePointListChange}
                     />
-                    <div
-                        className='link'
-                        onClick={handleAddNewPoint}
-                    >
-                        + Добавить точку маршрута
-                    </div>
+                    {
+                        !!travel && travel.waypoints.length > 0 && (
+                            <div
+                                className='link'
+                                onClick={handleAddNewPoint}
+                            >
+                                + Добавить точку маршрута
+                            </div>
+                        )
+                    }
                 </div>
             </Container>
             <div className='content'>

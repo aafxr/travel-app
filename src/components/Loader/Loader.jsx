@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import './Loader.css'
 
 /**
@@ -5,9 +6,9 @@ import './Loader.css'
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Loader(){
+export default function Loader({className}){
     return (
-        <div className="lds-facebook">
+        <div className={clsx("lds-facebook", className)}>
             <div></div>
             <div></div>
             <div></div>

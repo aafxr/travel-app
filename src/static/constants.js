@@ -21,14 +21,19 @@ const constants = {
         CHECKLIST: 'checklist',
         TRAVEL_WAYPOINTS: 'travel_waypoints',
 
-
         STORE: 'store',
         CURRENCY: 'currency',
         IMAGES: 'images',
         STORE_ACTIONS: 'storeActions',
 
         USERS: 'users',
-        UPDATE: 'update'
+        UPDATE: 'update',
+
+        HOTELS: 'hotels',
+        APPOINTMENTS: 'appointment',
+        ERRORS: 'errors',
+
+        UPDATED_TRAVEL_INFO: 'updatedTravelInfo'
     },
     indexes: {
         SECTION_ID: 'section_id',
@@ -39,6 +44,16 @@ const constants = {
         SYNCED: 'synced',
         ENTITY: 'entity',
         ACTION: 'action',
+        UPDATED_AT: 'updated_at'
+    },
+    events: {
+        DONE: 'done',
+        FAIL: 'fail',
+        INIT: 'init',
+        FETCH: 'fetch',
+        UPDATE: 'update',
+        UPDATE_EXP_ACTUAL:'update-expenses-actual',
+        UPDATE_EXP_PLANNED:'update-expenses-planned'
     },
     TOTAL_EXPENSES: 'totalExpenses',
 

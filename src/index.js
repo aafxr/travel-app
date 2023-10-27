@@ -15,6 +15,7 @@ import storeDB from "./db/storeDB/storeDB";
 import Expense from "./classes/Expense";
 import createId from "./utils/createId";
 import sleep from "./utils/sleep";
+import Travel from "./classes/Travel";
 
 
 let theme = localStorage.getItem(THEME)
@@ -89,6 +90,23 @@ window.store = storeDB
 //
 //         Promise.all(promises)
 //             .then((res) => console.log('ok',res))
+//     })
+
+// sleep(2000)
+//     .then(() => {
+//         const travel =  Travel.newTravel('12')
+//         if(travel) {
+//             console.log(travel)
+//             /**@type{SectionType}*/
+//             const section = {
+//                 id: '151',
+//                 color: '#aaaccf',
+//                 title: 'create',
+//                 hidden: 0
+//
+//             }
+//             travel.section.update(section,travel.user_id).catch(console.error)
+//         }
 //     })
 //===================== установка фикчированного vh ================================================
 setFixedVH()

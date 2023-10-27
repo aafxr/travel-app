@@ -52,7 +52,9 @@ class ErrorReport {
         }
     }
 
-
+    /**
+     * @returns {{userAgent: string}}
+     */
     getExtraInfo(){
         const userAgent = navigator.userAgent
 
