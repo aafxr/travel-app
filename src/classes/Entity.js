@@ -25,6 +25,10 @@ export default class Entity{
         // }
     }
 
+    /**
+     * return plain travel object
+     * @returns {TravelType}
+     */
     get object(){
         return this._modified
     }

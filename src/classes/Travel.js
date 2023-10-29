@@ -117,7 +117,8 @@ export default class Travel extends BaseTravel {
             .then(() => {
                 ErrorReport
                     .sendError(err)
-                    .catch(() => {})
+                    .catch(() => {
+                    })
             })
             .catch(() => pushAlertMessage({type: "danger", message: 'Произошла неизвестная ошибка'}))
 
@@ -132,6 +133,26 @@ export default class Travel extends BaseTravel {
             worker.terminate()
         }
 
+    }
+
+    /**
+     * Статический метод для получения списка путешествий
+     * @static
+     * @name Travel.travelList
+     * @returns {Promise<TravelType[]>}
+     */
+    static async travelList() {
+        try {
+            let list = await storeDB.getAll(constants.store.TRAVEL)
+            console.log('before',list)
+            list = list.map (l => new BaseTravel(l).object)
+            console.log('after',list)
+            return list
+        } catch (err) {
+            console.error(err)
+            ErrorReport.sendError(err).catch(console.error)
+            return []
+        }
     }
 
 }

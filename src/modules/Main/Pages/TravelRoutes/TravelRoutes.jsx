@@ -15,6 +15,7 @@ import createAction from "../../../../utils/createAction";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import removeTravel from "../../../../utils/removeTravel";
+import Travel from "../../../../classes/Travel";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -34,10 +35,16 @@ export default function TravelRoutes({
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {travelsType} = useParams()
-    const {travels} = useSelector(state => state[constants.redux.TRAVEL])
+    const [travels, setTravels] = useState(/**@type{TravelType[]} */[])
     const {user} = useSelector(state => state[constants.redux.USER])
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
     const [actualTravels, setActualTravels] = useState(/**@type{TravelType[]} */[])
+
+    useEffect(() => {
+        Travel
+            .travelList()
+            .then(setTravels)
+    }, [])
 
     /** обновление списка актуальных путешествий */
     useEffect(() => {

@@ -13,11 +13,12 @@
  * @property {MemberType[]} members список участников
  * @property {HotelType[]} hotels список отелей
  * @property {MovementType[]} movementTypes способ перемещения
- * @property {InputPoint[]} waypoints список посещаемых мест
+ * @property {PointType[]} waypoints список посещаемых мест
  * @property {string} date_start начало путешествия
  * @property {string} date_end конец путешествия
  * @property {number} adults_count число взрослых
  * @property {number} childs_count число детей
  * @property {string} photo фото путешествия
  * @property {DBFlagType} isPublic флаг публичного путешествия
+ * @property {DBFlagType} isFromPoint флаг начала путешествия
  */

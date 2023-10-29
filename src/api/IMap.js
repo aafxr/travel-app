@@ -1,16 +1,4 @@
 /**
- * @description предпологаемое описание объекта
- * @typedef {Object} Point
- * @property {string} id
- * @property {[number, number]} coords
- * @property {string} kind
- * @property {string} textAddress
- * @property {string} locality
- * @property {Object} placemark
- */
-
-
-/**
  * интерфейс для работы с картами. карта создается при помощи метода init
  * @classdesc Not a real class but an interface. Etc...
  * @name IMap
@@ -19,15 +7,25 @@
 export default class IMap {
     async init(){}
 
+    /**
+     * @abstract
+     * @name IMap.newPoint
+     * @param {string} primary_entity_id
+     * @returns{PointType}
+     */
+    newPoint(primary_entity_id){
+        throw new Error('Method "newPoint" should be override')
+    }
+
     //управление маркерами (добавление, удаление, список)
     /**
      * дообавить точку на карт по координатам
      * @method IMap.addMarker
      * @param {Array.<number,number>} coords
-     * @param {string} id
-     * @returns{Promise<Point | null>}
+     * @param {string} primary_travel_id
+     * @returns{Promise<PointType | null>}
      */
-    addMarker(coords, id) {
+    addMarker(coords, primary_travel_id) {
         console.warn('[IMap] addMarker not override')
     }
 
@@ -35,7 +33,7 @@ export default class IMap {
      * добавить точку на карту по координатам блока-контейнера карты
      * @method IMap.addMarkerByLocalCoords
      * @param {Array.<number,number>} localCoords
-     * @returns {Point | null}
+     * @returns {PointType | null}
      */
     addMarkerByLocalCoords(localCoords){
         console.warn('[IMap] addMarkerByLocalCoords not override')
@@ -55,8 +53,8 @@ export default class IMap {
      * @method IMap.addMarkerByAddress
      * @param {string} address
      * @param {string} id
-     * @returns {Point | null}
-     * @returns {Promise<Point | null>}
+     * @returns {PointType | null}
+     * @returns {Promise<PointType | null>}
      */
     addMarkerByAddress(address, id){
         console.warn('[IMap] addMarkerByAddress not override')
@@ -74,7 +72,7 @@ export default class IMap {
     /**
      * возвращает массив объектов, описывающих точки на карте. Каждый объект содержит адрес, координаты
      * @method IMap.getMarkers
-     * @returns {Point[]}
+     * @returns {PointType[]}
      */
     getMarkers() {
         console.warn('[IMap] getMarkers not override')
@@ -125,12 +123,12 @@ export default class IMap {
 
     /**
      * установка фокуса на точке (точка утанавливается по центру экрана)
-     * @method IMap.focusOnPoint
+     * @method IMap.focusOnPointType
      * @param {Array.<number,number>} coords
      * @param {number} zoomLevel
      */
-    focusOnPoint(coords, zoomLevel){
-        console.warn('[IMap] focusOnPoint not override')
+    focusOnPointType(coords, zoomLevel){
+        console.warn('[IMap] focusOnPointType not override')
     }
 
     // построить маршрут
@@ -233,7 +231,7 @@ export default class IMap {
 //     categoriesText: "IT-компания, интернет-маркетинг, информационный интернет-сайт",
 //     rating: {ratings: 17174, "reviews": 4056, "score": 5},
 //     uri: "ymapsbm1://org?oid=1124715036",
-//     point: [37.588144, 55.733842],
+//     PointType: [37.588144, 55.733842],
 // }
 
 
@@ -346,7 +344,7 @@ export default class IMap {
 //     }, {name: "Фрунзенская", distance: "1,11 км", color: "#f23d30", coordinates: [37.580583447, 55.727395255]}],
 //     rating: {ratings: 17174, "reviews": 4056, "score": 5},
 //     uri: "ymapsbm1://org?oid=1124715036",
-//     point: [37.588144, 55.733842],
+//     PointType: [37.588144, 55.733842],
 //     loc: {
 //         timeClosedUntil: "Закрыто до 10:00",
 //         timeOpenUntil: "Открыто до 10:00",

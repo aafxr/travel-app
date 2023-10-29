@@ -100,17 +100,17 @@ function App() {
             <>
                 <Routes>
                     <Route element={<WorkerContextProvider/>}>
-                        <Route path={'/'} element={<Main/>}/>
+                        <Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>
                         <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
                         <Route path={'/events/'} element={<Events/>}/>
                         <Route path={'/favorite/'} element={<Favorite/>}/>
                         <Route path={'/auth/'} element={<TelegramAuth/>}/>
                         <Route path={'/dev/'} element={<Dev/>}/>
                         <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
-                        <Route path={'/travel/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                         <Route element={<TravelContextProvider/>}>
+                            <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/add/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/add/waypoint/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
+                            <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>

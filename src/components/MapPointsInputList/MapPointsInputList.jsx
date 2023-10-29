@@ -13,14 +13,17 @@ import aFetch from "../../axios";
 import useTravelStateSelector from "../../hooks/useTravelStateSelector";
 
 /**
+ * @typedef {{address: string, id: string}} PointsListChangeType
+ */
+/**
  * @typedef {Function} PointsListChangeFunction
- * @param {InputPoint[]} points
+ * @param {PointType[]} points
  */
 
 /**
  * Компонент отображает список HTMLInputElement-ов (полей ввода желаемых мест для посещения)
  * @param {IMap} map интерфейс для взаимодействия с api карты
- * @param {InputPoint[]} pointsList список предпологаемых мест для посещения
+ * @param {PointType[]} pointsList список предпологаемых мест для посещения
  * @param {PointsListChangeFunction} onListChange обработчик на изменение порядка или введенной локации
  * @returns {JSX.Element}
  * @category Components
@@ -28,7 +31,7 @@ import useTravelStateSelector from "../../hooks/useTravelStateSelector";
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const {user} = useSelector(state => state[constants.redux.USER])
     const travelState = useTravelStateSelector()
-    const [points, setPoints] = useState(/**@type{InputPoint[]} */ [])
+    const [points, setPoints] = useState(/**@type{PointsListChangeType[]} */ [])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
@@ -42,7 +45,10 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     const [focuseInputId, setFocuseInputId] = useState(/**@type{string | null} */null)
 
     useEffect(() => {
-        if (pointsList && pointsList.length) setPoints(pointsList)
+        if (pointsList && pointsList.length) {
+            const list = pointsList.map(({address, id}) => ({address, id}))
+            setPoints(list)
+        }
     }, [pointsList])
 
 
@@ -50,7 +56,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     /***
      * при нажатии Enter (keyCode = 13) добавляет точку на карту
      * @param {KeyboardEvent<HTMLInputElement>} e
-     * @param {InputPoint} item - элемент из массива points
+     * @param {PointsListChangeType} item - элемент из массива points
      * @returns {Promise<void>}
      */
     async function handleKeyDown(e, item) {
@@ -65,25 +71,28 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      *
-     * @param {InputPoint} item
+     * @param {PointsListChangeType} item
      * @returns {Promise<void>}
      */
     async function updatePointData(item) {
-        const marker = await map.addMarkerByAddress(item.text, item.id)
-        if (marker) {
-            /*** обновляем адресс в массиве points по полученным данным от api карты */
-            const newPoints = points.map(p => {
-                if (p === item) {
-                    return {...item, text: marker.textAddress, point: marker}
-                }
-                return p
-            })
-            setPoints(newPoints)
-            onListChange && onListChange(newPoints)
-        } else {
-            pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
+        const idx = pointsList.findIndex(p => p.id === item.id)
+        if (~idx) {
+            const {address, id} = pointsList[idx]
+            const marker = await map.addMarkerByAddress(address, id)
+            if (marker) {
+                /*** обновляем адресс в массиве points по полученным данным от api карты */
+                const newPoints = pointsList.map(p => {
+                    return p.id === item.id
+                        ? {...marker, id: p.id}
+                        : p
+                })
+                const list = newPoints.map(({id, address}) => ({id, address}))
+                setPoints(list)
+                onListChange && onListChange(newPoints)
+            } else {
+                pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
+            }
         }
-
     }
 
     /**
@@ -93,8 +102,9 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      */
     function handleInputChange(e, item) {
         const newPoints = points.map(p => {
-            if (p === item) return {...item, text: e.target.value}
-            return p
+            return p === item
+                ? {id: item.id, address: e.target.value}
+                : p
         })
         setPoints(newPoints)
     }
@@ -121,7 +131,8 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
-            const newPoints = points.map((p, i, arr) => {
+            /**@type{PointsListChangeType[]}*/
+            const list = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
                 if (i === overIDX) return arr[draggingIDX]
                 return p
@@ -130,7 +141,9 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
              * логика по устаноке нового порядка точек на карте ...
              */
             drag.current = {}
-            setPoints(newPoints)
+            /**@type{PointType[]}*/
+            const newPoints = list.map( l => pointsList.find(i => i.id === l.id))
+            setPoints(list)
             onListChange && onListChange(newPoints)
         }
     }
@@ -195,7 +208,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      * удаление точки с карты
-     * @param {InputPoint} item
+     * @param {PointsListChangeType} item
      */
     function handleRemovePoint(item) {
         if (map) {
@@ -203,20 +216,21 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
              * индекс удаляемой точки
              * @type{number}
              */
-            const pointIdx = points.findIndex(p => p === item)
+            const pointIdx = pointsList.findIndex(p => p.id === item.id)
             /*** проверка на  pointIdx !== -1 */
             if (~pointIdx) {
                 /*** удаляемая точка с карты */
-                const point = points[pointIdx]
+                const point = pointsList[pointIdx]
                 /*** point может не существовать (если не нажата кнопка Enter) */
                 point && map.removeMarker({id: point.id})
                 /*** обновленный массив точек */
-                const newPoints = points.filter((p, idx) => idx !== pointIdx)
+                const list = points.filter((p) => p.id !== point.id)
                 /*** обновляем зум карты */
                 map.autoZoom()
                 /*** если массив точек пуст добавляем пустое поле для новой точки */
-                newPoints.length === 0 && newPoints.push({id: createId(user.id), text: '', point: undefined})
-                setPoints(newPoints)
+                // list.length === 0 && list.push({id: createId(user.id), text: '', point: undefined})
+                const newPoints = pointsList.filter((p) => p.id !== point.id)
+                setPoints(list)
                 onListChange && onListChange(newPoints)
             }
         }
@@ -257,13 +271,13 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                                 id={p.id}
                                 className='travel-map-input'
                                 placeholder={"Найдите регион или город"}
-                                value={p.text}
+                                value={p.address}
                                 onKeyDown={(e) => handleKeyDown(e, p)}
                                 onChange={(e) => handleInputChange(e, p)}
                                 autoComplete='off'
                                 data-id={p.id}
                                 onFocus={handleFocus}
-                                onBlur={() => sleep(200).then(()=>setFocuseInputId(null))}
+                                onBlur={() => sleep(200).then(() => setFocuseInputId(null))}
                                 // onBlur={(e) => handleBlur(e, p)}
                             />
                             {

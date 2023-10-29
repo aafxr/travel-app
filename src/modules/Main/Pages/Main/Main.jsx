@@ -1,14 +1,13 @@
 import React, {useEffect} from 'react'
 import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
 
-import IconButton from "../../../../components/ui/IconButton/IconButton";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-// import constants, {USER_AUTH} from "../../../../static/constants";
-// import {updateUser} from "../../../../redux/userStore/updateUser";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
+import Travel from "../../../../classes/Travel";
+
 import './Main.css'
 
 /**
@@ -22,27 +21,25 @@ export default function Main({
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
-    // const {user} = useSelector(state => state[constants.redux.USER])
-    // const dispatch = useDispatch()
+    const {user} = useUserSelector()
 
-    // useEffect(() => {
-    //     if (!user) {
-    //         const us = JSON.parse(localStorage.getItem(USER_AUTH))
-    //         if (us) {
-    //             dispatch(updateUser(us))
-    //         }
-    //     }
-    // }, [user, dispatch])
+    function handleNewTravel() {
+        Travel
+            .newTravel(user.id)
+            .save(user.id)
+            .then((t) => navigate(`/travel/${t.id}/map/`))
+            .catch(console.error)
+    }
 
     return (
         <div className='wrapper'>
             <Container className='content'>
-                <PageHeader title={'Главная страница'}  MenuEl={<Menu/>} />
+                <PageHeader title={'Главная страница'} MenuEl={<Menu/>}/>
                 <div className='banner'>
                     <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
                     <button
-                    className='banner-button'
-                        onClick={() => navigate('/travel/add/map/')}
+                        className='banner-button'
+                        onClick={handleNewTravel}
                     >
                         Новая поездка
                     </button>

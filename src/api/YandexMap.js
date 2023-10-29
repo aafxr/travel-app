@@ -3,6 +3,7 @@ import userLocation from "../utils/userLocation";
 import ErrorReport from "../controllers/ErrorReport";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import input from "../components/ui/Input/Input";
+import createId from "../utils/createId";
 
 /**
  * интерфейс для работы с api yandex maps
@@ -12,7 +13,7 @@ import input from "../components/ui/Input/Input";
  * @constructor
  * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
  * @param {string} mapContainerID       - id контецнера карты
- * @param {Point[]} placemarks          - массив добавленных на карту точек, при вызове метода init
+ * @param {PointType[]} placemarks          - массив добавленных на карту точек, при вызове метода init
  * @param {object} map                  - инстанс карты созданный с помощью api
  * @param {HTMLScriptElement} script
  * @param {string} markerClassName      - класс для кастомного маркера на карте
@@ -72,15 +73,30 @@ export default class YandexMap extends IMap {
         this.instance = this
     }
 
+    /**
+     *
+     * @param primary_entity_id
+     * @returns {PointType}
+     */
+    newPoint(primary_entity_id) {
+        return {
+            id: createId(primary_entity_id),
+            kind: '',
+            address: '',
+            placemark: null,
+            coords: [],
+            locality: ''
+        }
+    }
 
     /**
      * добавление маркера на карту
      * @method YandexMap.addMarker
      * @param {Array.<number,number>} coords
-     * @param {string} id
-     * @returns {Promise<Point>}
+     * @param {string} primary_travel_id
+     * @returns {Promise<PointType>}
      */
-    async addMarker(coords, id) {
+    async addMarker(coords, primary_travel_id) {
         if (!coords || !Array.isArray(coords) || coords.length !== 2) {
             throw new Error(`
             [YandexMap] не коректный формат координат
@@ -89,8 +105,9 @@ export default class YandexMap extends IMap {
             `)
         }
 
-        if(!id) console.error(new Error("id is not define"))
+        if(!primary_travel_id) console.error(new Error("primary_travel_id is not define"))
 
+        const point = this.newPoint(primary_travel_id)
         if (this.tempPlacemark) {
             this.map.geoObjects.remove(this.tempPlacemark)
             this.tempPlacemark = null
@@ -103,8 +120,8 @@ export default class YandexMap extends IMap {
         window.pm  = pmarr
         const geoObject = window.ymaps.geoQuery(pmarr).sortByDistance(coords).get(0)
         /** преобразованная информация о месте */
-        const markerInfo = this._markerInfo(geoObject, id)
-        markerInfo.placemark = this._newPlacemark(markerInfo.coords, markerInfo.textAddress)
+        const markerInfo = this._markerInfo(geoObject, point.id)
+        markerInfo.placemark = this._newPlacemark(markerInfo.coords, markerInfo.address)
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
         this.autoZoom()
@@ -116,7 +133,7 @@ export default class YandexMap extends IMap {
      * @method YandexMap._markerInfo
      * @param {Object} geoObject
      * @param {string} id
-     * @returns {Point}
+     * @returns {PointType}
      * @private
      */
     _markerInfo(geoObject, id) {
@@ -126,16 +143,16 @@ export default class YandexMap extends IMap {
 
         const coords = geoObject.geometry.getCoordinates()
         const {
-            text: textAddress,
+            text: address,
             kind
         } = geoObject.properties.getAll().metaDataProperty.GeocoderMetaData
 
         let locality = []
         if(geoObject.getLocalities) locality = geoObject.getLocalities()
 
-        const placemark = this._newPlacemark(coords, textAddress)
-        console.log({placemark:placemark, coords, textAddress, kind, id, locality: locality[0]})
-        return {placemark:placemark, coords, textAddress, kind, id, locality: locality[0]}
+        const placemark = this._newPlacemark(coords, address)
+        console.log({placemark:placemark, coords, address, kind, id, locality: locality[0]})
+        return {placemark, coords, address, kind, id, locality: locality[0]}
     }
 
     /**
@@ -236,7 +253,7 @@ export default class YandexMap extends IMap {
      * @method YandexMap.addMarkerByAddress
      * @param {string} address
      * @param {string} id
-     * @returns {Promise<Point | null>}
+     * @returns {Promise<PointType | null>}
      */
     async addMarkerByAddress(address, id) {
         if(!id) console.error(new Error("id is not define"))
@@ -347,7 +364,7 @@ export default class YandexMap extends IMap {
     /**
      * метод возвращает список текущих placemarks на карте
      * @method YandexMap.getMarkers
-     * @returns {Point[]}
+     * @returns {PointType[]}
      */
     getMarkers() {
         return [...this.placemarks]//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))

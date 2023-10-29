@@ -32,6 +32,7 @@ export default class BaseTravel extends Entity{
         date_end: () => new Date().toISOString(),
         isPublic: () => 0,
         photo: () => '',
+        isFromPoint: () => 0,
     }
     /***@type{TravelType} */
     _modified= {}
@@ -266,7 +267,7 @@ export default class BaseTravel extends Entity{
      * @returns {BaseTravel}
      */
     setDateStart(date){
-        const d = new Date(date)
+        const d = date instanceof Date ? date : new Date(date || '')
         if(!Number.isNaN(d.getTime())){
             this._modified.date_start = d.toISOString()
         }
@@ -291,7 +292,7 @@ export default class BaseTravel extends Entity{
      * @returns {BaseTravel}
      */
     setDateEnd(date){
-        const d = new Date(date)
+        const d = date instanceof Date ? date : new Date(date || '')
         if(!Number.isNaN(d.getTime())){
             this._modified.date_end = d.toISOString()
         }
@@ -368,6 +369,50 @@ export default class BaseTravel extends Entity{
     setIsPublic(flag){
         if(typeof flag === 'number' && (flag === 1 || flag === 0)){
             this._modified.isPublic = flag
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * Метод возвращает точку начала маршрута (если она установленна)
+     * @get
+     * @name BaseTravel.fromPoint
+     * @returns {PointType | null}
+     */
+    get fromPoint(){
+        if (this.isFromPoint){
+            return this._modified.waypoints[0]
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * геттер возврпщпет знасение поля isFromPoint
+     * @get
+     * @name BaseTravel.isFromPoint
+     * @returns {boolean}
+     */
+    get isFromPoint(){
+        return this._modified.isFromPoint === 1
+    }
+
+    /**
+     * установка устнновка точки начала маршрута, __если передать null тока удаляется__
+     * @method
+     * @name BaseTravel.setFromPoint
+     * @param {PointType | null} point флаг видимости путешествия
+     * @returns {BaseTravel}
+     */
+    setFromPoint(point){
+        if(typeof point === 'object' && point !== null){
+            this._modified.isFromPoint = 1
+            this._modified.waypoints.unshift(point)
+            this.change = true
+        } else if(point === null){
+            this._modified.isFromPoint = 0
+            this.waypoints.shift()
             this.change = true
         }
         return this
@@ -470,7 +515,7 @@ export default class BaseTravel extends Entity{
      * геттер возвращает список waypoints
      * @get
      * @name BaseTravel.waypoints
-     * @returns {InputPoint[]}
+     * @returns {PointType[]}
      */
     get waypoints() {
         return [...this._modified.waypoints]
@@ -480,7 +525,7 @@ export default class BaseTravel extends Entity{
      * добавление способа перемещения
      * @method
      * @name BaseTravel.addWaypoint
-     * @param {InputPoint} item посещаемое место
+     * @param {PointType} item посещаемое место
      * @returns {BaseTravel}
      */
     addWaypoint(item){

@@ -18,6 +18,9 @@ import defaultThemeClass from "../../utils/defaultThemeClass";
 /**
  * @typedef {Object} UserState
  * @property {UserAppType | null} user
+ * @property {boolean} loading
+ * @property {ThemeType} theme
+ * @property {[number, number] | null} userLoc
  */
 
 /**

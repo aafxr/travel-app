@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 
 /**
  * @typedef {Object} DragPointType
- * @property {Point} dragPoint
+ * @property {PointType} dragPoint
  * @property {number} index - индекс, по которому dragPoint находится в IMap карте
  */
 
@@ -23,7 +23,7 @@ export default function useDragPoint(){
             /**
              * информация о точке с которой взаимодействовали и ее индекс в массиве точек возвращаемы интерфейсом IMap
              * @typedef {Object} DragPointType
-             * @property {Point} point
+             * @property {PointType} point
              * @property {number} index
              */
             const {point: draggedPoint, index} = e.detail
