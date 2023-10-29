@@ -53,7 +53,7 @@ export default function TravelAddOnMap() {
     // const [userCoords, setUserCoords ] = useState([])
 
 
-    const [points, setPoints] = usePoints(map)
+    const {points, setPoints} = usePoints(map)
 
 
     const draggedPoint = useDragPoint()
@@ -137,19 +137,20 @@ export default function TravelAddOnMap() {
      * @param {PointType[]} newPoints
      */
     function handlePointListChange(newPoints) {
-        if (travel.isFromPoint) {
-            const arr = [travel.waypoints[0], ...newPoints]
-            setPoints(arr)
-        } else {
-            setPoints(newPoints)
-        }
+        debugger
+        travel.isFromPoint
+            ? travel.setWaypoints([travel.fromPoint, ...newPoints])
+            : travel.setWaypoints(newPoints)
     }
 
     function handleRemoveUserLocationPoint() {
-        travel.setFromPoint(null)
-        const newPoints = travel.waypoints.slice(1)
-        map.removeMarker({id: travel.waypoints[0].id})
-        setPoints(newPoints)
+        if (travel.isFromPoint) {
+            const point = travel.fromPoint
+            travel.setFromPoint(null)
+            const newPoints = travel.waypoints
+            map.removeMarker(point)
+            setPoints(newPoints)
+        }
     }
 
     if (!travel) return null

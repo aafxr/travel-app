@@ -30,7 +30,7 @@ import useTravelStateSelector from "../../hooks/useTravelStateSelector";
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const {user} = useSelector(state => state[constants.redux.USER])
-    const travelState = useTravelStateSelector()
+    // const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{PointsListChangeType[]} */ [])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
@@ -42,7 +42,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     /*** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
     /*** id активного input для добавления иконки поиска  */
-    const [focuseInputId, setFocuseInputId] = useState(/**@type{string | null} */null)
+    const [focusInputId, setFocusInputId] = useState(/**@type{string | null} */null)
 
     useEffect(() => {
         if (pointsList && pointsList.length) {
@@ -76,6 +76,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      */
     async function updatePointData(item) {
         const idx = pointsList.findIndex(p => p.id === item.id)
+            debugger
         if (~idx) {
             const {address, id} = pointsList[idx]
             const marker = await map.addMarkerByAddress(address, id)
@@ -239,7 +240,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     function handleFocus(e) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
-        setFocuseInputId(e.target.dataset.id)
+        setFocusInputId(e.target.dataset.id)
     }
 
     function handleSearchClick(item) {
@@ -277,11 +278,11 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                                 autoComplete='off'
                                 data-id={p.id}
                                 onFocus={handleFocus}
-                                onBlur={() => sleep(200).then(() => setFocuseInputId(null))}
+                                onBlur={() => sleep(200).then(() => setFocusInputId(null))}
                                 // onBlur={(e) => handleBlur(e, p)}
                             />
                             {
-                                focuseInputId
+                                focusInputId
                                     ? <img
                                         className='travel-map-search'
                                         onClick={() => handleSearchClick(p)}

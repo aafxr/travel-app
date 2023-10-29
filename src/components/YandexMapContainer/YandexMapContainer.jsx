@@ -10,8 +10,8 @@ import MapControls from "../MapControls/MapControls";
 /**
  * компонент обновляет карту если блок был заново монтирован в дом
  * @function
- * @param {TravelType} travel
- * @param {Array.<number,number>} userLocation
+ * @param {Travel} travel
+ * @param {[number,number]} userLocation
  * @param children
  * @param {HandleMapSelected} onMapReady
  * @returns {JSX.Element}

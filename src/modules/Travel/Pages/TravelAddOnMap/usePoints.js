@@ -6,7 +6,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
  * @function
  * @name usePoints
  * @param {IMap} map
- * @returns {[PointType[],((value: (((prevState: PointType[]) => PointType[]) | PointType[])) => void)]}
+ * @returns {{points: PointType[],setPosts: ((value: (((prevState: PointType[]) => PointType[]) | PointType[])) => void)}}
  * @category Hooks
  */
 export default function usePoints(map) {

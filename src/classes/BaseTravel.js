@@ -1,5 +1,8 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
+import {defaultMovementTags} from "../static/constants";
+
+const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
 /**
  * Базовый класс для редактирования и сохранения в бд сущности Travel
@@ -24,7 +27,7 @@ export default class BaseTravel extends Entity{
         appointments: () => [],
         members: () => [],
         hotels: () => [],
-        movementTypes: () => [],
+        movementTypes: () => defaultMovementTypes,
         waypoints: () => [],
         adults_count: () => 1,
         childs_count: () => 0,
@@ -59,7 +62,7 @@ export default class BaseTravel extends Entity{
             .setAppointments(item.appointments)
             .setMembers(item.members)
             .setHotels(item.hotels)
-            .setMovementTypes(item.movementTypes)
+            .setMovementTypes(item?.movementTypes.length > 0 && item.movementTypes)
             .setWaypoints(item.waypoints)
             .setAdultsCount(item.adults_count)
             .setChildsCount(item.childs_count)
@@ -540,12 +543,12 @@ export default class BaseTravel extends Entity{
      * устонавливает посещаемые места
      * @method
      * @name BaseTravel.setWaypoints
-     * @param {InputPoint[]} items посещаемые места
+     * @param {PointType[]} items посещаемые места
      * @returns {BaseTravel}
      */
     setWaypoints(items){
         if(Array.isArray(items)){
-            this._modified.waypoints = [...items]
+            this._modified.waypoints = items
             this.change = true
         }
         return this

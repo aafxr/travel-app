@@ -6,7 +6,7 @@ import YandexMap from "../api/YandexMap";
 
 /**
  * хук загружает api карты и инициализирует карту
- * @param {TravelType | null} travel
+ * @param {Travel | null} travel
  * @param {[number, number] | null} userLocation
  * @param {boolean} withSelectedPoints default = true
  * @returns {IMap}
@@ -24,7 +24,7 @@ export default function useMap(travel, userLocation, withSelectedPoints = true) 
                 api_key: process.env.REACT_APP_API_KEY,
                 mapContainerID: 'map',
                 iconClass: 'location-marker',
-                points: (withSelectedPoints && travel?.waypoints ) ? travel.waypoints.map(wp => ({...wp.point, id:wp.id})) : [],
+                points: (withSelectedPoints && travel?.waypoints ) ? travel.waypoints : [],
                 location: userLocation,
                 iconURL: DEFAULT_PLACEMARK_ICON,
                 // suggestElementID: points[0]?.id,

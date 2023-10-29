@@ -52,7 +52,6 @@ export default class Travel extends BaseTravel {
         }
 
         this.limit = new BaseService(constants.store.LIMIT, {})
-        this.limit.create({})
         this.section = new BaseService(constants.store.SECTION, {
             onCreate: this._onCreateExpense.bind(this, 'section'),
             onUpdate: this._onCreateExpense.bind(this, 'section')

@@ -43,7 +43,7 @@ export default function TravelDetails() {
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
-    const travelDurationLabel = dateRange(travel?.date_start, travel?.date_end)
+    const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
 
     //переменная для задания количества табов (по дням)
     let travelDaysCount = 0
@@ -94,7 +94,7 @@ export default function TravelDetails() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <Photo className='img-abs' id={travel?.photo} onChange={handleTravelPhotoChange}/>
+                            <Photo className='img-abs' id={travel.photo} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5' onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
@@ -103,7 +103,7 @@ export default function TravelDetails() {
                                         <span className='travel-details-title--empty' >Добавить название</span>
                                     )
                                 }
-                                <div className={`travel-details-icon icon center ${travel?.isPublic ? 'public' : 'private'}`} >
+                                <div className={`travel-details-icon icon center ${travel.isPublic ? 'public' : 'private'}`} >
                                     {travel?.isPublic ? <VisibilityIcon /> : <VisibilityOffIcon />}
                                 </div>
                             </h2>

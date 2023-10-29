@@ -31,7 +31,7 @@ export default function TravelCard({travel, onRemove}) {
             }
         }
         return null
-    })
+    }, [travel.date_start, travel.date_end])
 
     function handleRemove() {
         onRemove && onRemove()
