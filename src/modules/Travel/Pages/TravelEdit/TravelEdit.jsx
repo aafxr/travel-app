@@ -66,9 +66,11 @@ export default function TravelEdit() {
         const end = new Date(travel.date_end)
         if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
             const ms = end - start
-            const days = Math.ceil(ms / MS_IN_DAY)
-            setDaysCount(days || 1)
-        } else setDaysCount(1)
+            if (ms > MS_IN_DAY) {
+                const days = Math.ceil(ms / MS_IN_DAY)
+                setDaysCount(days || 1)
+            }
+        } else setDaysCount(undefined)
         setIsPublic(travel.isPublic === 1)
         //... доьавить остальные поля в будущем
     }, [])
@@ -139,7 +141,7 @@ export default function TravelEdit() {
                 updateDateRange(range, 0)
             }
         } else {
-            setDaysCount(0)
+            setDaysCount(undefined)
         }
         setDaysInputValue(e.target.value)
     }
@@ -187,7 +189,7 @@ export default function TravelEdit() {
                                     className='travel-edit-days-input'
                                     type="text"
                                     inputMode='numeric'
-                                    value={daysInputValue}
+                                    value={daysInputValue || daysCount?.toString()}
                                     onChange={handleTravelDays}
                                     size={1}
                                 />

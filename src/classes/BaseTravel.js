@@ -552,14 +552,17 @@ export default class BaseTravel extends Entity {
      */
     addMovementType(item) {
         if (item) {
-            this._modified.movementTypes.push(item)
+            const idx = this.movementTypes.findIndex(mt => mt.id === item.id)
+            ~idx
+                ? this._modified.movementTypes[idx] = item
+                : this._modified.movementTypes.push(item)
             this.change = true
         }
         return this
     }
 
     /**
-     * устонавливаетспособы перемещения
+     * устонавливает способы перемещения
      * @method
      * @name BaseTravel.addMovementType
      * @param {MovementType[]} items способ перемещения
@@ -573,6 +576,19 @@ export default class BaseTravel extends Entity {
             this.change = true
         }
         return this
+    }
+
+    /**
+     * удаляет способы перемещения
+     * @method
+     * @name BaseTravel.removeMovementType
+     * @param {MovementType} item способ перемещения
+     * @returns {BaseTravel}
+     */
+    removeMovementType(item) {
+        if (item) {
+            this._modified.movementTypes = this._modified.movementTypes.filter(mt => mt.id !== item.id)
+        }
     }
 
     /**
@@ -668,7 +684,10 @@ export default class BaseTravel extends Entity {
      */
     addMember(item) {
         if (item) {
-            this._modified.members.push(item)
+            const idx = this.members.findIndex(m => m.id === item.id)
+            ~idx
+                ? this._modified.members[idx] = item
+                : this._modified.members.push(item)
             this.change = true
         }
         return this
@@ -684,6 +703,21 @@ export default class BaseTravel extends Entity {
     setMembers(items) {
         if (Array.isArray(items)) {
             this._modified.members = [...items]
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * удаляет участников путешествия
+     * @method
+     * @name BaseTravel.removeMember
+     * @param {MemberType} item посещаемое место
+     * @returns {BaseTravel}
+     */
+    removeMember(item) {
+        if (item) {
+            this._modified.members = this._modified.members.filter(m => m.id !==item.id)
             this.change = true
         }
         return this
@@ -708,7 +742,10 @@ export default class BaseTravel extends Entity {
      */
     addHotel(item) {
         if (item) {
-            this._modified.hotels.push(item)
+            const idx = this.hotels.findIndex(h => h.id === item.id)
+            idx
+                ? this._modified.hotels[idx] = item
+                : this._modified.hotels.push(item)
             this.change = true
         }
         return this
@@ -724,6 +761,21 @@ export default class BaseTravel extends Entity {
     setHotels(items) {
         if (Array.isArray(items)) {
             this._modified.hotels = [...items]
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * удаление отелей
+     * @method
+     * @name BaseTravel.removeHotel
+     * @param {HotelType} item удалемый отель
+     * @returns {BaseTravel}
+     */
+    removeHotel(item) {
+        if (item) {
+            this._modified.hotels = this._modified.hotels.filter(h => h.id !== item.id)
             this.change = true
         }
         return this
@@ -748,7 +800,10 @@ export default class BaseTravel extends Entity {
      */
     addAppointment(item) {
         if (item) {
-            this._modified.appointments.push(item)
+            const idx = this.appointments.findIndex(a => a.id === item.id)
+            ~idx
+                ? this._modified.appointments[idx] = item
+                : this._modified.appointments.push(item)
             this.change = true
         }
         return this
@@ -764,6 +819,21 @@ export default class BaseTravel extends Entity {
     setAppointments(items) {
         if (Array.isArray(items)) {
             this._modified.appointments = [...items]
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * добавление встреч
+     * @method
+     * @name BaseTravel.removeAppointment
+     * @param {AppointmentType} item добавляемый отель
+     * @returns {BaseTravel}
+     */
+    removeAppointment(item) {
+        if (item) {
+            this._modified.appointments = this._modified.appointments.filter(a => a.id !== item.id)
             this.change = true
         }
         return this

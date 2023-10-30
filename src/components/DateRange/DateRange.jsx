@@ -34,7 +34,7 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
 
     /***
      * обработчик устанавливает дату начала диапазона и смещает дату конца диапазона
-     * @param {InputEvent} e
+     * @param {ChangeEvent<HTMLInputElement>} e
      */
     function handleStartDateChange(e) {
         if (typeof daysCount === 'number' && daysCount > 0) {
@@ -91,10 +91,10 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
             setRange(newRange)
             onChange && onChange(newRange)
         }
-
     }
 
 
+    console.log(range, daysCount)
     return (
         <div className='flex-stretch gap-0.25'>
             <Input

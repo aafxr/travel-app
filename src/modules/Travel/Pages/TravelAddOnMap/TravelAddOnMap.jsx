@@ -1,22 +1,19 @@
-import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import MapControls from "../../../../components/MapControls/MapControls";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
-import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
-import {Input, PageHeader} from "../../../../components/ui";
+import {PageHeader} from "../../../../components/ui";
 import useDragPoint from "../../hooks/useDragPoint";
+import StartPointInput from "./StartPointInput";
 import usePoints from "./usePoints";
 
 import './TravelAddOnMap.css'
-import StartPointInput from "./StartPointInput";
 
 
 /**
@@ -84,7 +81,6 @@ export default function TravelAddOnMap() {
                         pointsList={travel.isFromPoint ? points.slice(1) : points}
                         onListChange={handlePointListChange}
                     />
-
                 </div>
             </Container>
             <div className='content'>

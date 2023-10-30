@@ -1,18 +1,14 @@
-import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
 
+import useTravelContext from "../../hooks/useTravelContext";
+import useUserSelector from "../../hooks/useUserSelector";
+import ErrorReport from "../../controllers/ErrorReport";
 import {pushAlertMessage} from "../Alerts/Alerts";
-import constants from "../../static/constants";
-import createId from "../../utils/createId";
 import DragIcon from "../svg/DragIcon";
 import Swipe from "../ui/Swipe/Swipe";
-import {Input, InputWithSuggests} from "../ui";
-import ErrorReport from "../../controllers/ErrorReport";
 import sleep from "../../utils/sleep";
-import aFetch from "../../axios";
-import useTravelStateSelector from "../../hooks/useTravelStateSelector";
-import useTravelContext from "../../hooks/useTravelContext";
-import {useNavigate} from "react-router-dom";
+import {Input} from "../ui";
 
 /**
  * @typedef {{address: string, id: string}} PointsListChangeType
@@ -32,7 +28,7 @@ import {useNavigate} from "react-router-dom";
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const navigate = useNavigate()
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const {user} = useUserSelector()
     const {travel} = useTravelContext()
     // const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{PointsListChangeType[]} */ [])

@@ -83,13 +83,14 @@ export default function TravelAddHotel() {
 
     /** обработчик изменения диапазона дат заселения в отель */
     function handleHotelRangeChange({start, end}) {
+        debugger
         if (hotel) {
             if (hotel.check_in !== start) setHotel({...hotel, check_in: start})
-            if (hotel.check_out !== end)  setHotel({...hotel, check_out: start})
+            if (hotel.check_out !== end) setHotel({...hotel, check_out: start})
         }
     }
 
-    console.log(places)
+    console.log(hotel)
     return (
         <div className='wrapper'>
             <Container className='column gap-1 pb-20'>
@@ -115,14 +116,17 @@ export default function TravelAddHotel() {
                                                 placeholder='Место'
                                             />
                                             <div className='row gap-0.25'>
-                                                { travel.waypoints.map(w => (
-                                                    <Chip
-                                                        color={hotel.location === w.point.locality ? "orange" : "grey"}
-                                                        onClick={() => handleHotelDetailsChange({target:{value: w.point.locality}}, 'location')}
-                                                        rounded
-                                                    >
-                                                        {w.point.locality}
-                                                    </Chip>))
+                                                {travel.waypoints.map(w => (
+                                                    !!w.locality && (
+                                                        <Chip
+                                                            color={hotel.location === w.locality ? "orange" : "grey"}
+                                                            onClick={() => handleHotelDetailsChange({target: {value: w.locality || ''}}, 'location')}
+                                                            rounded
+                                                        >
+                                                            {w.locality}
+                                                        </Chip>
+                                                    )
+                                                ))
                                                 }
                                             </div>
                                         </>
@@ -131,7 +135,7 @@ export default function TravelAddHotel() {
                                 <DateRange
                                     init={{start: travel.date_start, end: travel.date_end}}
                                     minDateValue={travel.date_start}
-                                    maxDateValue={travel.date_end}
+                                    // maxDateValue={travel.date_end}
                                     startValue={hotel.check_in}
                                     endValue={hotel.check_out}
                                     onChange={handleHotelRangeChange}

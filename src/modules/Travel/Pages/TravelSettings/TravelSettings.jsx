@@ -237,7 +237,7 @@ export default function TravelSettings() {
                                                         <Link key={a.id} to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
                                                             <div className='travel-settings-appointment'>
                                                                 <div
-                                                                    className='travel-settings-appointment-date'>{dateRange(a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
+                                                                    className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
                                                                 <div
                                                                     className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
                                                             </div>

@@ -1,4 +1,4 @@
-import {Provider, useSelector} from 'react-redux'
+import {Provider} from 'react-redux'
 import React, {useEffect, useState} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 
@@ -29,14 +29,16 @@ import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
+import TravelContextProvider from "./contexts/TravelContextProvider";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
+import PageContainer from "./components/Loading/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import Profile from "./modules/Main/Pages/Profile/Profile";
+import CheckList from "./components/CheckList/CheckList";
 import Events from "./modules/Main/Pages/Events/Events";
-import constants, {USER_AUTH} from "./static/constants";
 import TelegramAuth from "./modules/Main/TelegramAuth";
 import Login from "./modules/Main/Pages/Login/Login";
 import {initUser} from "./redux/userStore/initUser";
@@ -45,13 +47,10 @@ import ErrorPage from "./modules/Error/ErrorPage";
 import Loader from "./components/Loader/Loader";
 import Alerts from "./components/Alerts/Alerts";
 import AuthRequired from "./hoc/AuthRequired";
+import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import CheckList from "./components/CheckList/CheckList";
-import Loading from "./components/Loading/PageContainer";
-import PageContainer from "./components/Loading/PageContainer";
-import TravelContextProvider from "./contexts/TravelContextProvider";
 
 
 function App() {
