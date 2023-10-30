@@ -14,13 +14,14 @@ const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMove
  * @param {TravelType} item
  * @constructor
  */
-export default class BaseTravel extends Entity{
+export default class BaseTravel extends Entity {
     /**@type{TravelType} */
     static initValue = {
         id: () => '',
         code: () => '',
         title: () => '',
         direction: () => '',
+        description: () => '',
         owner_id: () => '',
         created_at: () => new Date().toISOString(),
         updated_at: () => new Date().toISOString(),
@@ -38,37 +39,43 @@ export default class BaseTravel extends Entity{
         isFromPoint: () => 0,
     }
     /***@type{TravelType} */
-    _modified= {}
+    _modified = {}
+
     /**
      * @param {TravelType} item
      * @constructor
      */
     constructor(item) {
         super()
-        if(!item){
+        if (!item) {
             item = {}
             this._new = true
         }
 
-        Object.keys(BaseTravel.initValue).forEach(key => this._modified[key] = BaseTravel.initValue[key]())
+        Object
+            .keys(BaseTravel.initValue)
+            .forEach(key => this._modified[key] = BaseTravel.initValue[key]())
+
         this
             .setID(item.id)
             .setCode(item.code)
             .setTitle(item.title)
             .setDirection(item.direction)
+            .setDescription(item.description)
             .setOwnerID(item.owner_id)
             .setCreatedAt(item.created_at)
             .setUpdatedAt(item.updated_at)
             .setAppointments(item.appointments)
             .setMembers(item.members)
             .setHotels(item.hotels)
-            .setMovementTypes(item?.movementTypes.length > 0 && item.movementTypes)
+            .setMovementTypes(item.movementTypes?.length > 0 && item.movementTypes)
             .setWaypoints(item.waypoints)
             .setAdultsCount(item.adults_count)
             .setChildsCount(item.childs_count)
             .setDateStart(item.date_start)
             .setDateEnd(item.date_end)
             .setIsPublic(item.isPublic)
+            ._setIsFromPoint(item.isFromPoint)
             .setPhoto(item.photo)
 
         this.change = this._new
@@ -81,8 +88,8 @@ export default class BaseTravel extends Entity{
      * @param {boolean} change
      * @returns {BaseTravel}
      */
-    setChange(change){
-        if(typeof change === 'boolean'){
+    setChange(change) {
+        if (typeof change === 'boolean') {
             this.change = change
         }
         return this
@@ -95,8 +102,8 @@ export default class BaseTravel extends Entity{
      * @param {boolean} isNew
      * @returns {BaseTravel}
      */
-    setNew(isNew){
-        if(typeof isNew === 'boolean'){
+    setNew(isNew) {
+        if (typeof isNew === 'boolean') {
             this._new = isNew
         }
         return this
@@ -108,7 +115,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.id
      * @returns {string}
      */
-    get id(){
+    get id() {
         return this._modified.id
     }
 
@@ -119,7 +126,7 @@ export default class BaseTravel extends Entity{
      * @param {string} id id путешествия
      * @returns {BaseTravel}
      */
-    setID(id){
+    setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
             this.change = true
@@ -133,7 +140,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.title
      * @returns {string}
      */
-    get title(){
+    get title() {
         return this._modified.title
     }
 
@@ -144,7 +151,7 @@ export default class BaseTravel extends Entity{
      * @param {string} title title путешествия
      * @returns {BaseTravel}
      */
-    setTitle(title){
+    setTitle(title) {
         if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
             this.change = true
@@ -158,7 +165,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.direction
      * @returns {string}
      */
-    get direction(){
+    get direction() {
         return this._modified.direction
     }
 
@@ -169,9 +176,34 @@ export default class BaseTravel extends Entity{
      * @param {string} direction direction путешествия
      * @returns {BaseTravel}
      */
-    setDirection(direction){
+    setDirection(direction) {
         if (typeof direction === 'string' && direction.length > 0) {
             this._modified.direction = direction
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * геттер возвращает значение description
+     * @get
+     * @name BaseTravel.description
+     * @returns {string}
+     */
+    get description() {
+        return this._modified.description
+    }
+
+    /**
+     * метод устанавливает description путешествия
+     * @method
+     * @name BaseTravel.setDescription
+     * @param {string} description description путешествия
+     * @returns {BaseTravel}
+     */
+    setDescription(description) {
+        if (typeof description === 'string' && description.length > 0) {
+            this._modified.description = description
             this.change = true
         }
         return this
@@ -183,7 +215,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.owner_id
      * @returns {string}
      */
-    get owner_id(){
+    get owner_id() {
         return this._modified.owner_id
     }
 
@@ -194,7 +226,7 @@ export default class BaseTravel extends Entity{
      * @param {string} owner_id owner_id путешествия
      * @returns {BaseTravel}
      */
-    setOwnerID(owner_id){
+    setOwnerID(owner_id) {
         if (typeof owner_id === 'string' && owner_id.length > 0) {
             this._modified.owner_id = owner_id
             this.change = true
@@ -208,7 +240,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.code
      * @returns {string}
      */
-    get code(){
+    get code() {
         return this._modified.code
     }
 
@@ -219,7 +251,7 @@ export default class BaseTravel extends Entity{
      * @param {string} code code путешествия
      * @returns {BaseTravel}
      */
-    setCode(code){
+    setCode(code) {
         if (typeof code === 'string' && code.length > 0) {
             this._modified.code = code
             this.change = true
@@ -233,7 +265,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.photo
      * @returns {string}
      */
-    get photo(){
+    get photo() {
         return this._modified.photo
     }
 
@@ -244,7 +276,7 @@ export default class BaseTravel extends Entity{
      * @param {string} photo photo путешествия
      * @returns {BaseTravel}
      */
-    setPhoto(photo){
+    setPhoto(photo) {
         if (typeof photo === 'string' && photo.length > 0) {
             this._modified.photo = photo
             this.change = true
@@ -258,7 +290,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.date_start
      * @returns {string}
      */
-    get date_start(){
+    get date_start() {
         return this._modified.date_start
     }
 
@@ -269,9 +301,9 @@ export default class BaseTravel extends Entity{
      * @param {Date | string} date дата начала путешествия
      * @returns {BaseTravel}
      */
-    setDateStart(date){
+    setDateStart(date) {
         const d = date instanceof Date ? date : new Date(date || '')
-        if(!Number.isNaN(d.getTime())){
+        if (!Number.isNaN(d.getTime())) {
             this._modified.date_start = d.toISOString()
         }
         return this
@@ -283,7 +315,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.date_end
      * @returns {string}
      */
-    get date_end(){
+    get date_end() {
         return this._modified.date_end
     }
 
@@ -294,9 +326,9 @@ export default class BaseTravel extends Entity{
      * @param {Date | string} date дата конца путешествия
      * @returns {BaseTravel}
      */
-    setDateEnd(date){
+    setDateEnd(date) {
         const d = date instanceof Date ? date : new Date(date || '')
-        if(!Number.isNaN(d.getTime())){
+        if (!Number.isNaN(d.getTime())) {
             this._modified.date_end = d.toISOString()
         }
         return this
@@ -308,7 +340,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.updated_at
      * @returns {string}
      */
-    get updated_at(){
+    get updated_at() {
         return this._modified.updated_at
     }
 
@@ -319,9 +351,9 @@ export default class BaseTravel extends Entity{
      * @param {Date | string} date дата обновления путешествия
      * @returns {BaseTravel}
      */
-    setUpdatedAt(date){
+    setUpdatedAt(date) {
         const d = new Date(date)
-        if(!Number.isNaN(d.getTime())){
+        if (!Number.isNaN(d.getTime())) {
             this._modified.updated_at = d.toISOString()
         }
         return this
@@ -333,7 +365,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.created_at
      * @returns {string}
      */
-    get created_at(){
+    get created_at() {
         return this._modified.created_at
     }
 
@@ -344,9 +376,9 @@ export default class BaseTravel extends Entity{
      * @param {Date | string} date дата обновления путешествия
      * @returns {BaseTravel}
      */
-    setCreatedAt(date){
+    setCreatedAt(date) {
         const d = new Date(date)
-        if(!Number.isNaN(d.getTime())){
+        if (!Number.isNaN(d.getTime())) {
             this._modified.created_at = d.toISOString()
         }
         return this
@@ -358,7 +390,7 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.isPublic
      * @returns {DBFlagType}
      */
-    get isPublic(){
+    get isPublic() {
         return this._modified.isPublic
     }
 
@@ -369,8 +401,8 @@ export default class BaseTravel extends Entity{
      * @param {DBFlagType} flag флаг видимости путешествия
      * @returns {BaseTravel}
      */
-    setIsPublic(flag){
-        if(typeof flag === 'number' && (flag === 1 || flag === 0)){
+    setIsPublic(flag) {
+        if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.isPublic = flag
             this.change = true
         }
@@ -383,8 +415,8 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.fromPoint
      * @returns {PointType | null}
      */
-    get fromPoint(){
-        if (this.isFromPoint){
+    get fromPoint() {
+        if (this.isFromPoint) {
             return this._modified.waypoints[0]
         } else {
             return null
@@ -397,25 +429,54 @@ export default class BaseTravel extends Entity{
      * @name BaseTravel.isFromPoint
      * @returns {boolean}
      */
-    get isFromPoint(){
+    get isFromPoint() {
         return this._modified.isFromPoint === 1
     }
 
     /**
-     * установка устнновка точки начала маршрута, __если передать null тока удаляется__
+     * установка поля isFromPoint
+     * @method
+     * @name BaseTravel._setIsFromPoint
+     * @param {DBFlagType} flag флаг начала маршрута путешествия
+     * @returns {BaseTravel}
+     * @private
+     */
+    _setIsFromPoint(flag) {
+        if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
+            this._modified.isFromPoint = flag
+            this.change = true
+        }
+        return this
+    }
+
+    /**
+     * устнновка точки начала маршрута
      * @method
      * @name BaseTravel.setFromPoint
-     * @param {PointType | null} point флаг видимости путешествия
+     * @param {PointType} point флаг видимости путешествия
      * @returns {BaseTravel}
      */
-    setFromPoint(point){
-        if(typeof point === 'object' && point !== null){
+    setFromPoint(point) {
+        if (typeof point === 'object' && point !== null) {
+            this.isFromPoint
+                ? this._modified.waypoints[0] = point
+                : this._modified.waypoints.unshift(point)
             this._modified.isFromPoint = 1
-            this._modified.waypoints.unshift(point)
             this.change = true
-        } else if(point === null){
+        }
+        return this
+    }
+
+    /**
+     * удаление точки начала маршрута
+     * @method
+     * @name BaseTravel.removeFromPoint
+     * @returns {BaseTravel}
+     */
+    removeFromPoint() {
+        if (this.isFromPoint) {
             this._modified.isFromPoint = 0
-            this.waypoints.shift()
+            this._modified.waypoints.shift()
             this.change = true
         }
         return this
@@ -438,8 +499,8 @@ export default class BaseTravel extends Entity{
      * @param {number} value число детей в путешествии
      * @returns {BaseTravel}
      */
-    setChildsCount(value){
-        if(typeof value === 'number' && value >= 0){
+    setChildsCount(value) {
+        if (typeof value === 'number' && value >= 0) {
             this._modified.childs_count = value
             this.change = true
         }
@@ -463,8 +524,8 @@ export default class BaseTravel extends Entity{
      * @param {number} value число взрослых в путешествии
      * @returns {BaseTravel}
      */
-    setAdultsCount(value){
-        if(typeof value === 'number' && value >= 0){
+    setAdultsCount(value) {
+        if (typeof value === 'number' && value >= 0) {
             this._modified.adults_count = value
             this.change = true
         }
@@ -489,8 +550,8 @@ export default class BaseTravel extends Entity{
      * @param {MovementType} item способ перемещения
      * @returns {BaseTravel}
      */
-    addMovementType(item){
-        if(item){
+    addMovementType(item) {
+        if (item) {
             this._modified.movementTypes.push(item)
             this.change = true
         }
@@ -504,8 +565,8 @@ export default class BaseTravel extends Entity{
      * @param {MovementType[]} items способ перемещения
      * @returns {BaseTravel}
      */
-    setMovementTypes(items){
-        if(Array.isArray(items)){
+    setMovementTypes(items) {
+        if (Array.isArray(items)) {
             this._modified.movementTypes = items
                 .filter(item => !!item)
                 .filter(item => item.id && item.title)
@@ -521,20 +582,42 @@ export default class BaseTravel extends Entity{
      * @returns {PointType[]}
      */
     get waypoints() {
-        return [...this._modified.waypoints]
+        return this._modified.waypoints
     }
 
     /**
-     * добавление способа перемещения
+     * добавление (или обновление существующей) точки маршрута
      * @method
      * @name BaseTravel.addWaypoint
      * @param {PointType} item посещаемое место
      * @returns {BaseTravel}
      */
-    addWaypoint(item){
-        if(item){
-            this._modified.waypoints.push(item)
+    addWaypoint(item) {
+        if (item) {
+            const idx = this.waypoints.findIndex(p => p.id === item.id)
+            if (~idx) {
+                this.waypoints.splice(idx, 1, item)
+            } else {
+                this._modified.waypoints.push(item)
+            }
             this.change = true
+            this._updateDirection()
+        }
+        return this
+    }
+
+    /**
+     * удаление точки маршрута
+     * @method
+     * @name BaseTravel.removeWaypoint
+     * @param {PointType} item посещаемое место
+     * @returns {BaseTravel}
+     */
+    removeWaypoint(item) {
+        if (item) {
+            this._modified.waypoints = this._modified.waypoints.filter(i => item.id !== i.id)
+            this.change = true
+            this._updateDirection()
         }
         return this
     }
@@ -546,12 +629,24 @@ export default class BaseTravel extends Entity{
      * @param {PointType[]} items посещаемые места
      * @returns {BaseTravel}
      */
-    setWaypoints(items){
-        if(Array.isArray(items)){
+    setWaypoints(items) {
+        if (Array.isArray(items)) {
             this._modified.waypoints = items
             this.change = true
+            this._updateDirection()
         }
         return this
+    }
+
+    _updateDirection() {
+        this._modified.direction = this.waypoints
+            .reduce((acc, p) => {
+                let place = p.locality?.length > 0
+                    ? p.locality
+                    : p.address?.split(',').filter(pl => !pl.includes('область')).shift() || ''
+                place = place.trim()
+                return acc ? acc + ' - ' + place : place
+            }, '')
     }
 
     /**
@@ -571,8 +666,8 @@ export default class BaseTravel extends Entity{
      * @param {MemberType} item посещаемое место
      * @returns {BaseTravel}
      */
-    addMember(item){
-        if(item){
+    addMember(item) {
+        if (item) {
             this._modified.members.push(item)
             this.change = true
         }
@@ -586,8 +681,8 @@ export default class BaseTravel extends Entity{
      * @param {MemberType[]} items посещаемое место
      * @returns {BaseTravel}
      */
-    setMembers(items){
-        if(Array.isArray(items)){
+    setMembers(items) {
+        if (Array.isArray(items)) {
             this._modified.members = [...items]
             this.change = true
         }
@@ -611,8 +706,8 @@ export default class BaseTravel extends Entity{
      * @param {HotelType} item добавляемый отель
      * @returns {BaseTravel}
      */
-    addHotel(item){
-        if(item){
+    addHotel(item) {
+        if (item) {
             this._modified.hotels.push(item)
             this.change = true
         }
@@ -626,8 +721,8 @@ export default class BaseTravel extends Entity{
      * @param {HotelType[]} items добавляемый отель
      * @returns {BaseTravel}
      */
-    setHotels(items){
-        if(Array.isArray(items)){
+    setHotels(items) {
+        if (Array.isArray(items)) {
             this._modified.hotels = [...items]
             this.change = true
         }
@@ -651,8 +746,8 @@ export default class BaseTravel extends Entity{
      * @param {AppointmentType} item добавляемый отель
      * @returns {BaseTravel}
      */
-    addAppointment(item){
-        if(item){
+    addAppointment(item) {
+        if (item) {
             this._modified.appointments.push(item)
             this.change = true
         }
@@ -666,8 +761,8 @@ export default class BaseTravel extends Entity{
      * @param {AppointmentType[]} items добавляемый отель
      * @returns {BaseTravel}
      */
-    setAppointments(items){
-        if(Array.isArray(items)){
+    setAppointments(items) {
+        if (Array.isArray(items)) {
             this._modified.appointments = [...items]
             this.change = true
         }
@@ -696,14 +791,20 @@ export default class BaseTravel extends Entity{
      * @param {string} user_id id пользователя, который редактирует запись о путешествие
      * @returns {Promise<BaseTravel>}
      */
-    async save(user_id){
+    async save(user_id) {
         const userOK = typeof user_id === 'string' && user_id.length > 0
-
-        if(this.change){
+        /**@type{TravelType}*/
+        const travelDTO = {...this._modified}
+        travelDTO.waypoints = travelDTO.waypoints.map(({address, id, locality, coords, kind}) => ({
+            address, id, locality, coords, kind, placemark: null
+        }))
+        console.log('travelDTO ', travelDTO)
+        if (this.change) {
             this._new
-                ? await travel_service.create(this._modified, userOK ? user_id : this.user_id)
-                : await travel_service.update(this._modified, userOK ? user_id : this.user_id)
+                ? await travel_service.create(travelDTO, userOK ? user_id : this.user_id)
+                : await travel_service.update(travelDTO, userOK ? user_id : this.user_id)
         }
+        this.change = false
         return this
     }
 

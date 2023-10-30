@@ -1,22 +1,16 @@
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
-import MapControls from "../../../../components/MapControls/MapControls";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import storeDB from "../../../../db/storeDB/storeDB";
-import constants from "../../../../static/constants";
 import useDragPoint from "../../hooks/useDragPoint";
-import createId from "../../../../utils/createId";
-import {actions} from "../../../../redux/store";
-import useTravel from "../../hooks/useTravel";
 
 import './TravelAddWaypoint.css'
-import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * @function
@@ -25,17 +19,18 @@ import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWi
  * @category Pages
  */
 export default function TravelAddWaypoint() {
+    const {pointCode} = useParams()
     const navigate = useNavigate()
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
 
-    const {user, userLoc} = useSelector(state => state[constants.redux.USER])
-    const {travel, errorMessage} = useTravel()
+    const {user, userLoc} = useUserSelector()
+    const {travel, errorMessage} = useTravelContext()
 
     /** интерфейс для взаимодействия с картой */
-    const [map, setMap] = useState(/** @type {IMap | null} */)
+    const [map, setMap] = useState(/** @type {IMap | null} */null)
 
     /** список точек на карте */
-    const [point, setPoint] = useState(/**@type{InputPoint} */ null)
+    const [point, setPoint] = useState(/**@type{PointType} */ null)
 
     const dragPoint = useDragPoint()
 
@@ -47,13 +42,16 @@ export default function TravelAddWaypoint() {
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
-        if (user) setPoint({id: createId(user.id), text: '', point: undefined})
-    }, [user])
+        if (pointCode && travel && map) {
+            const p = travel.waypoints.find(p => p.id === pointCode)
+            setPoint(p ? p : map.newPoint(travel.id))
+        }
+    }, [pointCode, travel, map])
 
     //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
         if (dragPoint)
-            setPoint({...point, text: dragPoint.dragPoint.textAddress, point: dragPoint.dragPoint})
+            setPoint({...point, address: dragPoint.dragPoint.address})
     }, [dragPoint])
 
     //==================================================================================================================
@@ -61,31 +59,31 @@ export default function TravelAddWaypoint() {
         if (e.keyCode === 13) {
             map.clear()
 
-            map.addMarkerByAddress(point.text, point.id)
+            map.addMarkerByAddress(point.address, point.id)
                 .then(markerInfo => {
                     if (markerInfo) {
-                        /**type{InputPoint} */
-                        const newPoint = {...point, text: markerInfo.textAddress, point: markerInfo}
-                        setPoint(newPoint)
+                        setPoint({...markerInfo})
                     }
                 })
         }
     }
 
     function handleChange(e) {
-        setPoint({...point, text: e.target.value})
+        setPoint({...point, address: e.target.value})
     }
 
     //==================================================================================================================
     /** обновляем store (добавление) */
     function handleSubmit() {
-        if (travel && point) {
-            /** обновление о месте в redux store */
-            dispatch(actions.travelActions.addWaypoint(point))
+        if (point.address.length) {
+            console.log('point', point)
             /** обновление информации о путешествии в бд */
-            storeDB.editElement(constants.store.TRAVEL, travel)
-                .then(() => navigate(`/travel/${travel.id}/add/map/`))
+            travel
+                .addWaypoint(point)
+                .save(user.id)
+                .then(() => navigate(`/travel/${travel.id}/map/`))
         } else {
+            travel.removeWaypoint(point)
             pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
         }
     }
@@ -100,7 +98,7 @@ export default function TravelAddWaypoint() {
                     <Input
                         id='diraction'
                         placeholder={'Куда едем?'}
-                        value={point?.text || ''}
+                        value={point?.address || ''}
                         onKeyDown={handleKeyDown}
                         onChange={handleChange}
                         autoComplete='off'

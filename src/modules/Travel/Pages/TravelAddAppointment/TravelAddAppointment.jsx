@@ -11,10 +11,11 @@ import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import useTravel from "../../hooks/useTravel";
 import saveTravel from "../../../../utils/saveTravel";
+import useUserSelector from "../../../../hooks/useUserSelector";
+import useTravelContext from "../../../../hooks/useTravelContext";
 
 /**
  * компонент для добавления встреч
@@ -25,23 +26,23 @@ import saveTravel from "../../../../utils/saveTravel";
  */
 export default function TravelAddAppointment() {
     const { appointmentCode} = useParams()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    const {user} = useUserSelector()
+    // const dispatch = useDispatch()
     const navigate = useNavigate()
     // const dateHandlers = useChangeInputType('date')
     // const timeHandlers = useChangeInputType('time')
 
-    const {travel, errorMessage} = useTravel()
-    const [appointment, setAppointment] = useState(null)
+    const {travel, update} = useTravelContext()
+    const [appointment, setAppointment] = useState(/** @type{AppointmentType}*/null)
 
     //==================================================================================================================
     /** поиск встречи (инициализация начального значения) */
     useEffect(() => {
         if (travel && !appointment) {
             /** индекс встречи в массиве встреч путешествия */
-            const apIdx = travel?.appointments.findIndex(a => a.id === appointmentCode)
+            const ap = travel.appointments.find(a => a.id === appointmentCode)
             /** инициализация путешествия */
-            if (~apIdx) setAppointment(travel.appointments[apIdx])
+            if (ap) setAppointment(ap)
             else setAppointment(defaultAppointmentData())
         }
     }, [appointmentCode, travel])
@@ -50,7 +51,7 @@ export default function TravelAddAppointment() {
     /**
      * обработчик обновляет поле встречи с ключом "key"
      * @param {InputEvent} e
-     * @param {string} key
+     * @param {keyof AppointmentType} key
      */
     function handleAppointmentChanges(e, key) {
         if (key in appointment) {
@@ -67,21 +68,10 @@ export default function TravelAddAppointment() {
     //==================================================================================================================
     /** обработка сохранения данных о встрече */
     function handleSave() {
-        /** клон путешествия */
-        const newTravel = {...travel}
-        if (!newTravel.appointments) newTravel.appointments = []
-        newTravel.appointments = [...newTravel.appointments]
-        /** обновление спсика встреч */
-        const apIdx = newTravel?.appointments.findIndex(a => a.id === appointmentCode)
-        if (appointmentCode && apIdx !== -1)  newTravel.appointments[apIdx] = appointment
-        else newTravel.appointments.push(appointment)
-        /** создание экшена путешествия */
-        const action = createAction(constants.store.TRAVEL, user.id, 'update', newTravel)
-        /** сохранение обновленного travel в бд */
-        saveTravel(newTravel, user.id)
+        travel
+            .addAppointment(appointment)
+            .save(user.id)
             .then(() => navigate(-1))
-            /** добавление встречи в глобальное хранилище */
-            .then(() => dispatch(actions.travelActions.addAppointment(appointment)))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
                 pushAlertMessage({type: "warning", message: "Не удалось добавить встречу"})

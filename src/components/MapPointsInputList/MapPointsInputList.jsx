@@ -11,6 +11,8 @@ import ErrorReport from "../../controllers/ErrorReport";
 import sleep from "../../utils/sleep";
 import aFetch from "../../axios";
 import useTravelStateSelector from "../../hooks/useTravelStateSelector";
+import useTravelContext from "../../hooks/useTravelContext";
+import {useNavigate} from "react-router-dom";
 
 /**
  * @typedef {{address: string, id: string}} PointsListChangeType
@@ -29,7 +31,9 @@ import useTravelStateSelector from "../../hooks/useTravelStateSelector";
  * @category Components
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
+    const navigate = useNavigate()
     const {user} = useSelector(state => state[constants.redux.USER])
+    const {travel} = useTravelContext()
     // const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{PointsListChangeType[]} */ [])
 
@@ -75,10 +79,9 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      * @returns {Promise<void>}
      */
     async function updatePointData(item) {
-        const idx = pointsList.findIndex(p => p.id === item.id)
-            debugger
+        const idx = points.findIndex(p => p.id === item.id)
         if (~idx) {
-            const {address, id} = pointsList[idx]
+            const {address, id} = points[idx]
             const marker = await map.addMarkerByAddress(address, id)
             if (marker) {
                 /*** обновляем адресс в массиве points по полученным данным от api карты */
@@ -143,7 +146,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
              */
             drag.current = {}
             /**@type{PointType[]}*/
-            const newPoints = list.map( l => pointsList.find(i => i.id === l.id))
+            const newPoints = list.map(l => pointsList.find(i => i.id === l.id))
             setPoints(list)
             onListChange && onListChange(newPoints)
         }
@@ -229,7 +232,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 /*** обновляем зум карты */
                 map.autoZoom()
                 /*** если массив точек пуст добавляем пустое поле для новой точки */
-                // list.length === 0 && list.push({id: createId(user.id), text: '', point: undefined})
+                    // list.length === 0 && list.push({id: createId(user.id), text: '', point: undefined})
                 const newPoints = pointsList.filter((p) => p.id !== point.id)
                 setPoints(list)
                 onListChange && onListChange(newPoints)
@@ -251,10 +254,18 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
             })
     }
 
+    // добавление новой точки ==========================================================================================
+    function handleSubmitNewPoint() {
+        const newPoint = map.newPoint(travel.id)
+        travel.addWaypoint(newPoint)
+        console.log(travel.waypoints)
+        navigate(`/travel/${travel.id}/add/waypoint/${newPoint.id}/`)
+    }
+
     return (
         <>
             {
-                points.map((p, idx) => (
+                points.map((p) => (
                     <Swipe
                         key={p.id}
                         onRemove={() => handleRemovePoint(p)}
@@ -308,6 +319,16 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                         </div>
                     </Swipe>
                 ))
+            }
+            {
+                points.length > 0 && (
+                    <div
+                        className='link'
+                        onClick={handleSubmitNewPoint}
+                    >
+                        + Добавить точку маршрута
+                    </div>
+                )
             }
         </>
     )

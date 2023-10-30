@@ -54,9 +54,10 @@ export default function TravelContextProvider() {
         }
     }, [travelCode])
 
-
-    console.log('state', state)
-
+    if (state.travel) {
+        console.log('state', state.travel)
+        window.travel = state.travel
+    }
     if (loading) {
         return (
             <PageContainer center>
@@ -67,7 +68,7 @@ export default function TravelContextProvider() {
         return (
             <PageContainer center>
                 <div className='column center gap-1'>
-                    <h2 >Во время загрузки данных о путешествии произошла ошибка</h2>
+                    <h2>Во время загрузки данных о путешествии произошла ошибка</h2>
                     <div className={'link'} onClick={() => navigate('/')}>На главную страницу</div>
                 </div>
             </PageContainer>

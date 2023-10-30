@@ -5,7 +5,8 @@
  * @property {string} id id путешествия
  * @property {string} code символьный код путешествия
  * @property {string} title название путешествия
- * @property {string} direction описание путешествия
+ * @property {string} direction краткое описание направления путешествия
+ * @property {string} description описание путешествия
  * @property {string} owner_id автор путешествия
  * @property {string} created_at дата создания
  * @property {string} updated_at дата обнавления

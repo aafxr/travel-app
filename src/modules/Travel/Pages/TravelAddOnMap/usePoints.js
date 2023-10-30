@@ -6,7 +6,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
  * @function
  * @name usePoints
  * @param {IMap} map
- * @returns {{points: PointType[],setPosts: ((value: (((prevState: PointType[]) => PointType[]) | PointType[])) => void)}}
+ * @returns {{setPoints: (value: (((prevState: PointType[]) => PointType[]) | PointType[])) => void, points: PointType[]}}
  * @category Hooks
  */
 export default function usePoints(map) {
@@ -56,5 +56,6 @@ export default function usePoints(map) {
         return () => document.removeEventListener('selected-point', pointSelectHandler)
     }, [])
 
-    return [points, setPoints]
+
+    return {points, setPoints}
 }

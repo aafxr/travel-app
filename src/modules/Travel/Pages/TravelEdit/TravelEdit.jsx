@@ -36,10 +36,6 @@ export default function TravelEdit() {
     const [title, setTitle] = useState('')
     /*** диапазон дат путешествия */
     const [range, setRange] = useState(/***@type{DateRangeType | null}*/null)
-    /*** дата начала путешествия */
-    // const [start, setStart] = useState('')
-    /*** дата кончания путешествия */
-    // const [end, setEnd] = useState('')
     /*** ограничение диапазона дат путешествия (не раньше текущей даты) */
     const minDateValue = useMemo(() => new Date().toISOString(), [])
     const [daysInputValue, setDaysInputValue] = useState('')
@@ -75,7 +71,7 @@ export default function TravelEdit() {
         } else setDaysCount(1)
         setIsPublic(travel.isPublic === 1)
         //... доьавить остальные поля в будущем
-    }, [travel])
+    }, [])
 
     function handleSave() {
         // Здечь должна быть обработка сохранения изменений
@@ -85,7 +81,7 @@ export default function TravelEdit() {
                 .setTitle(title)
                 .setDateStart(range.start)
                 .setDateEnd(range.end)
-                .setDirection(description)
+                .setDescription(description)
                 .setMovementTypes(newTags)
                 .setIsPublic(isPublic ? 1 : 0)
                 .save(user.id)

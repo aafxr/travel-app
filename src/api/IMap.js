@@ -63,7 +63,7 @@ export default class IMap {
     /**
      * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
      * @method IMap.removeMarker
-     * @param {Object} marker
+     * @param {{[id]: string, [placemark]: Object }} marker
      */
     removeMarker(marker) {
         console.warn('[IMap] removeMarker not override')

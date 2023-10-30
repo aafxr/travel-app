@@ -5,11 +5,12 @@ import createId from "./createId";
  * @returns {AppointmentType}
  * @function
  * @name defaultAppointmentData
+ * @param {string} primary_entity_id
  * @category Utils
  */
-export default function defaultAppointmentData(){
+export default function defaultAppointmentData(primary_entity_id){
     return {
-        id: createId(),
+        id: createId(primary_entity_id),
         title: '',
         date: new Date().toISOString(),
         time: new Date().toLocaleTimeString(),
