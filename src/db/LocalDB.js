@@ -2,7 +2,6 @@ import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import sleep from "../utils/sleep";
 import ErrorReport from "../controllers/ErrorReport";
-import {store} from "../redux/store";
 
 
 /**
@@ -463,6 +462,25 @@ export class LocalDB {
     }
 
     /**
+     * метод возвращает курсор для обхода данных в БД
+     * @method
+     * @name LocalDB.cursor
+     * @param {string} storeName имя хранилища
+     * @returns {Promise<IDBPCursorWithValue<DBTypes, [*], [*][0], unknown, "readonly">>}
+     */
+    async cursor(storeName) {
+        while (!this.ready) await sleep(300)
+
+        const storeInfo = this.getStoreInfo(storeName);
+        if (storeInfo) {
+            const db = await openDataBase(this.dbname, this.version, this.stores)
+            return await db.transaction(storeName).store.openCursor();
+        }
+        throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
+    }
+
+
+    /**
      * метод для создания транзакции
      * @param {string[]} stores
      * @param {IDBTransactionMode} mode
@@ -546,19 +564,19 @@ export class LocalDB {
 
                         const storeNames = []
                         console.log(stores)
-                        for (let i = 0; i < db.objectStoreNames.length; i++){
+                        for (let i = 0; i < db.objectStoreNames.length; i++) {
                             const sni = db.objectStoreNames.item(i)
                             // console.log(`${stores[0]} === ${sni}`, stores[0] === sni)
                             // console.log(sni, ~stores.findIndex(s=> s === sni.name), sni.length)
 
-                            if(stores.includes(sni)){
+                            if (stores.includes(sni)) {
                                 storeNames.push(sni)
                             }
                         }
                         console.log('--------------------')
                         console.log(storeNames)
                         console.log(stores)
-                        if(storeNames.length !== stores.length){
+                        if (storeNames.length !== stores.length) {
                             console.error(new Error('Один из элементов списка stores содержит не корректное имя таблицы'))
                             resolve(false)
                         }
@@ -572,7 +590,7 @@ export class LocalDB {
                         )
 
                         resolve(true)
-                    } catch (err){
+                    } catch (err) {
                         ErrorReport.sendError(err).catch(console.error)
                         resolve(false)
                     }

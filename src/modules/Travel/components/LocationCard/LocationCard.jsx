@@ -28,6 +28,7 @@ import './LocationCard.css'
 export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd, onEdite, onDelete}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
+
     const rightElement = (
         <div className='column gap-0.5'>
             <PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd()}/>

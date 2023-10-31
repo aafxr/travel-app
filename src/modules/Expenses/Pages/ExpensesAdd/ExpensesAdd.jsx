@@ -12,7 +12,6 @@ import Select from "../../../../components/ui/Select/Select";
 import {defaultFilterValue} from "../../static/vars";
 
 import useExpense from "../../hooks/useExpense";
-import handleEditExpense from "./handleEditExpense";
 import handleAddExpense from "./handleAddExpense";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
@@ -23,6 +22,8 @@ import {actions} from "../../../../redux/store";
 import storeDB from "../../../../db/storeDB/storeDB";
 
 import {updateLimits} from "../../helpers/updateLimits";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import '../../css/Expenses.css'
 
 
@@ -43,8 +44,9 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {travelCode: primary_entity_id, expenseCode} = useParams()
+    const {travel} = useTravelContext()
     const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const {user} = useUserSelector()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -138,27 +140,39 @@ export default function ExpensesAdd({
             return
         }
 
-        if (edit) {
-            await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
-                .then(item => {
-                    if (item){
-                        const action = isPlan
-                            ? actions.expensesActions.updateExpensePlan
-                            : actions.expensesActions.updateExpenseActual
-                        dispatch(action(item))
-                    }
-                })
-        } else {
-            await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
-                .then(item => {
-                    if (item){
-                        const action = isPlan
-                            ? actions.expensesActions.addExpensePlan
-                            : actions.expensesActions.addExpenseActual
-                        dispatch(action(item))
-                    }
-                })
+        // if (edit) {
+        //     await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
+        //         .then(item => {
+        //             if (item){
+        //                 const action = isPlan
+        //                     ? actions.expensesActions.updateExpensePlan
+        //                     : actions.expensesActions.updateExpenseActual
+        //                 dispatch(action(item))
+        //             }
+        //         })
+        // } else {
+        //     await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
+        //         .then(item => {
+        //             if (item){
+        //                 const action = isPlan
+        //                     ? actions.expensesActions.addExpensePlan
+        //                     : actions.expensesActions.addExpenseActual
+        //                 dispatch(action(item))
+        //             }
+        //         })
+        // }
+
+        const expense = handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
+        if(expensesType === 'actual'){
+            edit
+                ? travel.expenses.actual.create(expense, user.id)
+                : travel.expenses.actual.update(expense, user.id)
+        } else if (expensesType === 'plan'){
+            edit
+                ? travel.expenses.planned.create(expense, user.id)
+                : travel.expenses.planned.update(expense, user.id)
         }
+
 
         if(isPlan){
             await updateLimits(primary_entity_id,user_id)()

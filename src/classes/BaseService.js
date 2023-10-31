@@ -141,4 +141,15 @@ export default class BaseService{
             return null
         }
     }
+
+    /**
+     * @method
+     * @name BaseService.getCursor
+     * @returns {Promise<IDBPCursorWithValue<DBTypes, *[], *[][0], *, "readonly">>}
+     */
+    async getCursor(){
+        return storeDB.cursor(this.storeName)
+    }
+
 }
+

@@ -47,8 +47,14 @@ export default class Travel extends BaseTravel {
         this._errorHandle = this._errorHandle.bind(this)
 
         this.expenses = {
-            actual: new BaseService(constants.store.EXPENSES_ACTUAL, {}),
-            planned: new BaseService(constants.store.EXPENSES_PLAN, {})
+            actual: new BaseService(constants.store.EXPENSES_ACTUAL, {
+                onCreate: this._onCreateExpense.bind(this, 'actual'),
+                onUpdate: this._onCreateExpense.bind(this, 'actual')
+            }),
+            planned: new BaseService(constants.store.EXPENSES_PLAN, {
+                onCreate: this._onCreateExpense.bind(this, 'planned'),
+                onUpdate: this._onCreateExpense.bind(this, 'planned')
+            })
         }
 
         this.limit = new BaseService(constants.store.LIMIT, {})
@@ -123,8 +129,28 @@ export default class Travel extends BaseTravel {
 
     }
 
+    /**
+     * @method
+     * @name Travel._onCreateExpense
+     * @param {'actual' | 'planned'} type
+     * @param {ExpenseType} item
+     * @private
+     */
     _onCreateExpense(type, item) {
-
+        if (type === 'actual' && item && item.primary_entity_id) {
+            const worker = new Worker(new URL('../workers/worker-expenses-actual-update.js', import.meta.url))
+            worker.onerror = this._errorHandle
+            /**@param{MessageEvent<WorkerMessageType>} e */
+            worker.onmessage = (e) => {
+                if(e.data.type === 'done') {
+                    console.log(e.data)
+                }
+                worker.terminate()
+            }
+            /**@type{WorkerMessageType}*/
+            const message = {type: "update-expenses-actual", payload: item}
+            worker.postMessage(message)
+        }
         const worker = new Worker(new URL('../workers/worker-expenses-actual-update.js', import.meta.url))
         worker.onerror = this._errorHandle
         worker.onmessage = (e) => {
@@ -143,9 +169,7 @@ export default class Travel extends BaseTravel {
     static async travelList() {
         try {
             let list = await storeDB.getAll(constants.store.TRAVEL)
-            console.log('before',list)
-            list = list.map (l => new BaseTravel(l).object)
-            console.log('after',list)
+            list = list.map(l => new BaseTravel(l).object)
             return list
         } catch (err) {
             console.error(err)
