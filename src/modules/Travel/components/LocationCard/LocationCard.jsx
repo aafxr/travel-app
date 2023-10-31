@@ -2,24 +2,48 @@ import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import EditePencil from "../../../../components/svg/EditePencil";
-import {PhotoIcon, PlusIcon} from "../../../../components/svg";
+import {PhotoIcon, PlusIcon, TrashIcon} from "../../../../components/svg";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Chip} from "../../../../components/ui";
 
 import './LocationCard.css'
 
-export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd}) {
+/**
+ * Компонент - карточка с описанием места
+ * @function
+ * @name LocationCard
+ * @param {string} imgID
+ * @param {string[]} imgURLs
+ * @param {string} dateStart
+ * @param {string} dateEnd
+ * @param {string} title
+ * @param {string} entityType
+ * @param children
+ * @param {() => void} onAdd
+ * @param {() => void} onEdite
+ * @param {() => void} onDelete
+ * @returns {JSX.Element}
+ */
+export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd, onEdite, onDelete}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
+    const rightElement = (
+        <div className='column gap-0.5'>
+            <PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd()}/>
+            <EditePencil className='control-button flex-0' onClick={() => onEdite && onEdite()}/>
+            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete()}/>
+        </div>
+    )
 
     return (
         <Swipe
             className={'location'}
             rightButton
-            leftButton
             rElemBg='location-swipe-right'
             lElemBg='location-swipe-left'
+            rightElement={rightElement}
+
         >
             <div className='location-container relative'>
                 {!!start && <Chip className='location-date-start'>{start}</Chip>}

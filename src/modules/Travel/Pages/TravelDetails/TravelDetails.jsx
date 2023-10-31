@@ -74,7 +74,7 @@ export default function TravelDetails() {
         }
     }
 
-    console.log(curtainOpen)
+
     return (
         <>
             <Container className='travel-details-header'>

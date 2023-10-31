@@ -390,3 +390,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 [class*='copyrights'],[class*='ymaps-2-1-79-controls']{
     visibility: hidden;
 }
+
+.control-button{
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
