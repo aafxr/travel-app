@@ -7,6 +7,8 @@ import './Curtain.css'
 
 /**
  * компонент обертка, добавляет шторку
+ * @function
+ * @name Curtain
  * @param children
  * @param {string} direction направвление поездки, если указано, то будет отображаться вместо кнопки в шапке компонента
  * @param {number} minOffset минимальное смещение в пикселях (px) от верхнего положения
@@ -16,13 +18,13 @@ import './Curtain.css'
  * @param {number} defaultOffsetPercents 0 - 1 , начальное состояние шторки (на сколько она открыта)
  * @param {number} duration default 300ms
  * @param {number} scrollDiff default 0.1 минимальное смещение (drag events), на которое реагирует шторка
- * @param {Function} onChange callback (шторка открыта / закрыта)
+ * @param {function} onChange callback (шторка открыта / закрыта)
  * @return {JSX.Element}
  * @category Components
  */
 export default function Curtain({
                                     children,
-    direction,
+                                    direction,
                                     minOffset = 0,
                                     maxScroll,
                                     maxOpenPercent,
@@ -92,7 +94,7 @@ export default function Curtain({
 
     function curtainHandler(e) {
         e.stopPropagation()
-        if (topOffset > minOffset) {
+        if (topOffset > minOffset * (1 + scrollDiff)) {
             setTopOffset(minOffset)
             onChange && onChange(false)
             animateTop(curtainRef.current, minOffset, duration)()

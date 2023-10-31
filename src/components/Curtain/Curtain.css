@@ -47,10 +47,11 @@
     font-size: .8rem;
     font-weight: 600;
     color: black;
-    text-overflow: ellipsis;
     border-radius: var(--br-16);
     background-color: var(--color-grey-light);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
     border: none;
     outline: none;
-    cursor: pointer;
 }

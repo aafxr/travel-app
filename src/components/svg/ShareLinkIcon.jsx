@@ -1,9 +1,9 @@
 export default function ShareLinkIcon(props){
     return (
         <svg {...props} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.17188 14.8287L14.8287 9.17188" stroke="#1E1E1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M7.05014 11.293L5.63593 12.7072C4.07383 14.2693 4.07383 16.8019 5.63593 18.364C7.19803 19.9261 9.73069 19.9261 11.2928 18.364L12.707 16.9498" stroke="#1E1E1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M11.293 7.05014L12.7072 5.63593C14.2693 4.07383 16.8019 4.07383 18.364 5.63593C19.9261 7.19803 19.9261 9.73069 18.364 11.2928L16.9498 12.707" stroke="#1E1E1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9.17188 14.8287L14.8287 9.17188" stroke="CurrentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M7.05014 11.293L5.63593 12.7072C4.07383 14.2693 4.07383 16.8019 5.63593 18.364C7.19803 19.9261 9.73069 19.9261 11.2928 18.364L12.707 16.9498" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M11.293 7.05014L12.7072 5.63593C14.2693 4.07383 16.8019 4.07383 18.364 5.63593C19.9261 7.19803 19.9261 9.73069 18.364 11.2928L16.9498 12.707" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
     )
 }

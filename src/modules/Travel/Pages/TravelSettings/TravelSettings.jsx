@@ -39,7 +39,7 @@ export default function TravelSettings() {
         setAdultCount(travel.adults_count)
         setChildCount(travel.childs_count)
         const tags = defaultMovementTags
-            .filter(item => !!~travel.movementTypes.findIndex(m=> m.id === item.id))
+            .filter(item => !!~travel.movementTypes.findIndex(m => m.id === item.id))
         setMovement(tags)
         setRange({
             start: travel.date_start,
@@ -78,7 +78,7 @@ export default function TravelSettings() {
      * @param {MovementType} movementType
      */
     function handleMovementSelect(movementType) {
-        const newTagList = ~movement.findIndex( mt => mt.id === movementType.id)
+        const newTagList = ~movement.findIndex(mt => mt.id === movementType.id)
             ? movement.filter(t => t.id !== movementType.id)
             : [...movement, movementType]
         console.log(newTagList)
@@ -145,148 +145,150 @@ export default function TravelSettings() {
 
     console.log(travel)
     return (
-        <div className='travel-settings wrapper'>
-            <Container>
-                <PageHeader arrowBack to={`/travel/${travel.id}/`} title={'Параметры'}/>
-            </Container>
-            <Container className='content'>
-                {
-                    travel
-                        ? (
-                            <div className='content column'>
-                                {
-                                    travel.direction && (
-                                        <section className='travel-settings-dirrection block'>
-                                            <h4 className='title-semi-bold'>Направление</h4>
-                                            <div className='travel-settings-dirrection-title row'>
-                                                <Chip color='light-orange' rounded>
-                                                    {travel.direction}
-                                                </Chip>
-                                            </div>
-                                        </section>
-                                    )
-                                }
+        <>
+            <div className='travel-settings wrapper'>
+                <Container>
+                    <PageHeader arrowBack to={`/travel/${travel.id}/`} title={'Параметры'}/>
+                </Container>
+                <Container className='content overflow-x-hidden'>
+                    {
+                        travel
+                            ? (
+                                <div className='content column'>
+                                    {
+                                        travel.direction && (
+                                            <section className='travel-settings-dirrection block'>
+                                                <h4 className='title-semi-bold'>Направление</h4>
+                                                <div className='travel-settings-dirrection-title row'>
+                                                    <Chip color='light-orange' rounded>
+                                                        {travel.direction}
+                                                    </Chip>
+                                                </div>
+                                            </section>
+                                        )
+                                    }
 
-                                <section className='travel-settings-date column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Дата поездки</h4>
-                                    <DateRange
-                                        init={{start: travel.date_start, end: travel.date_end}}
-                                        minDateValue={travel.date_start || ''}
-                                        onChange={handleDateRangeChange}
-                                    />
-                                </section>
-
-                                <section className='travel-settings-members column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Участники</h4>
-                                    <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
-                                    <div className='center'>
-                                        {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
-                                        {/*    участника</AddButton>*/}
-                                    </div>
-                                    <div className='flex-between'>
-                                        <span>Взрослые</span>
-                                        <Counter
-                                            initialValue={travel.adults_count}
-                                            min={travel.members.filter(m => !m.isChild).length || 1}
-                                            onChange={handleAdultChange}
+                                    <section className='travel-settings-date column gap-0.5 block'>
+                                        <h4 className='title-semi-bold'>Дата поездки</h4>
+                                        <DateRange
+                                            init={{start: travel.date_start, end: travel.date_end}}
+                                            minDateValue={travel.date_start || ''}
+                                            onChange={handleDateRangeChange}
                                         />
-                                    </div>
-                                    <div className='flex-between'>
-                                        <span>Дети</span>
-                                        <Counter
-                                            initialValue={travel.childs_count}
-                                            min={travel.members.filter(m => m.isChild).length}
-                                            onChange={handleTeenagerChange}
-                                        />
-                                    </div>
-                                </section>
+                                    </section>
 
-                                {
-                                    Array.isArray(travel.hotels) && travel.hotels.length > 0 && (
-                                        <section className='travel-settings-hotels column gap-0.5 block'>
-                                            <h4 className='title-semi-bold'>Отель</h4>
-                                            {
-                                                travel.hotels.map(h => (
-                                                    <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>
-                                                        <div className='travel-settings-hotel'>
-                                                            <div
-                                                                className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
-                                                            <div
-                                                                className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
-                                                        </div>
-                                                    </Link>
-                                                ))
-                                            }
-                                            {/*<div*/}
-                                            {/*    className='link'*/}
-                                            {/*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*/}
-                                            {/*>*/}
-                                            {/*    + Добавить отель*/}
-                                            {/*</div>*/}
-                                        </section>
-                                    )
-                                }
+                                    <section className='travel-settings-members column gap-0.5 block'>
+                                        <h4 className='title-semi-bold'>Участники</h4>
+                                        <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
+                                        <div className='center'>
+                                            {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
+                                            {/*    участника</AddButton>*/}
+                                        </div>
+                                        <div className='flex-between'>
+                                            <span>Взрослые</span>
+                                            <Counter
+                                                initialValue={travel.adults_count}
+                                                min={travel.members.filter(m => !m.isChild).length || 1}
+                                                onChange={handleAdultChange}
+                                            />
+                                        </div>
+                                        <div className='flex-between'>
+                                            <span>Дети</span>
+                                            <Counter
+                                                initialValue={travel.childs_count}
+                                                min={travel.members.filter(m => m.isChild).length}
+                                                onChange={handleTeenagerChange}
+                                            />
+                                        </div>
+                                    </section>
 
-                                {
-                                    Array.isArray(travel.appointments) && travel.appointments.length > 0 && (
-                                        <section className='travel-settings-appointments column gap-0.5 block'>
-                                            <h4 className='title-semi-bold'>Встреча</h4>
-                                            {
-                                                !!travel.appointments && Array.isArray(travel.appointments) && (
-                                                    travel.appointments.map(a => (
-                                                        <Link key={a.id} to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
-                                                            <div className='travel-settings-appointment'>
+                                    {
+                                        Array.isArray(travel.hotels) && travel.hotels.length > 0 && (
+                                            <section className='travel-settings-hotels column gap-0.5 block'>
+                                                <h4 className='title-semi-bold'>Отель</h4>
+                                                {
+                                                    travel.hotels.map(h => (
+                                                        <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>
+                                                            <div className='travel-settings-hotel'>
                                                                 <div
-                                                                    className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
+                                                                    className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
                                                                 <div
-                                                                    className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
+                                                                    className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
                                                             </div>
                                                         </Link>
                                                     ))
-                                                )
-                                            }
-                                            {/*<div*/}
-                                            {/*    className='link'*/}
-                                            {/*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*/}
-                                            {/*>*/}
-                                            {/*    + Добавить встречу*/}
-                                            {/*</div>*/}
-                                        </section>
-                                    )
-                                }
+                                                }
+                                                {/*<div*/}
+                                                {/*    className='link'*/}
+                                                {/*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*/}
+                                                {/*>*/}
+                                                {/*    + Добавить отель*/}
+                                                {/*</div>*/}
+                                            </section>
+                                        )
+                                    }
 
-                                <section className='travel-settings-movement column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
-                                    <div className='flex-wrap gap-1'>
-                                        {
-                                            defaultMovementTags.map(dmt => (
-                                                <Chip
-                                                    key={dmt.id}
-                                                    icon={dmt.icon}
-                                                    color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
-                                                    rounded
-                                                    onClick={() => handleMovementSelect(dmt)}
-                                                >
-                                                    {dmt.title}
-                                                </Chip>
-                                            ))
-                                        }
-                                    </div>
-                                </section>
-                            </div>
-                        )
-                        : (<div>загрузка информации о путешествии</div>)
-                }
-                <ButtonsBlock
-                    className={'buttons-block'}
-                    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
-                    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
-                    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
-                />
-            </Container>
-            <div className='footer-btn-container footer'>
-                <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>
+                                    {
+                                        Array.isArray(travel.appointments) && travel.appointments.length > 0 && (
+                                            <section className='travel-settings-appointments column gap-0.5 block'>
+                                                <h4 className='title-semi-bold'>Встреча</h4>
+                                                {
+                                                    !!travel.appointments && Array.isArray(travel.appointments) && (
+                                                        travel.appointments.map(a => (
+                                                            <Link key={a.id} to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
+                                                                <div className='travel-settings-appointment'>
+                                                                    <div
+                                                                        className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
+                                                                    <div
+                                                                        className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
+                                                                </div>
+                                                            </Link>
+                                                        ))
+                                                    )
+                                                }
+                                                {/*<div*/}
+                                                {/*    className='link'*/}
+                                                {/*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*/}
+                                                {/*>*/}
+                                                {/*    + Добавить встречу*/}
+                                                {/*</div>*/}
+                                            </section>
+                                        )
+                                    }
+
+                                    <section className='travel-settings-movement column gap-0.5 block'>
+                                        <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
+                                        <div className='flex-wrap gap-1'>
+                                            {
+                                                defaultMovementTags.map(dmt => (
+                                                    <Chip
+                                                        key={dmt.id}
+                                                        icon={dmt.icon}
+                                                        color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
+                                                        rounded
+                                                        onClick={() => handleMovementSelect(dmt)}
+                                                    >
+                                                        {dmt.title}
+                                                    </Chip>
+                                                ))
+                                            }
+                                        </div>
+                                    </section>
+                                </div>
+                            )
+                            : (<div>загрузка информации о путешествии</div>)
+                    }
+                </Container>
+                <div className='footer-btn-container footer'>
+                    <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>
+                </div>
             </div>
-        </div>
+            <ButtonsBlock
+                className={'buttons-block'}
+                onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
+                onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
+                onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
+            />
+        </>
     )
 }

@@ -1,7 +1,8 @@
 import clsx from "clsx";
-import { useState} from "react";
+import {useEffect, useState} from "react";
 import {motion} from "framer-motion";
 
+import BlurBackplate from "../BlurBackplate/BlurBackplate";
 import PlusButton from "../ui/PlusButton/PlusButton";
 import ShareLinkIcon from "../svg/ShareLinkIcon";
 import {HotelIcon} from "../svg";
@@ -22,30 +23,53 @@ const buttons = [
  * @function
  * @name ButtonsBlock
  * @param className css class
+ * @param {boolean} open default = false, состояние кнопкм
+ * @param {(val: boolean) => void} onChange callback, вызывается на изменение состояния
  * @param onInvite callback, вызывается при нажатии на кнопку invite
  * @param onHotel callback, вызывается при нажатии на кнопку hotel
  * @param onAppointment callback, вызывается при нажатии на кнопку appointment
- * @param props other props (addd to main block of component)
+ * @param props other props (add to main block of component)
  * @returns {JSX.Element}
  * @category Components
  */
-export default function ButtonsBlock({className, onInvite, onHotel,onAppointment, ...props}) {
+export default function ButtonsBlock({
+                                         className,
+                                         open = false,
+                                         onInvite,
+                                         onHotel,
+                                         onAppointment,
+                                         onChange,
+                                         ...props}) {
     const [isOpen, setIsOpen] = useState(false)
+
+    useEffect(() => {
+        setIsOpen(open)
+    }, [open])
 
     const btnAnimationVariant = {
         visible: (n) => ({
-                y: -icon_size * (n + 1.2) - icon_size * 0.2 * n,
-                opacity: 1,
-
+            y: -icon_size * (n + 1.2) - icon_size * 0.2 * n,
+            opacity: 1,
+            pointerEvents: 'all',
+            transition: {
+                delay: 0.1 * n,
+                type: "Inertia"
+            }
+        }),
+        hidden: (n) => ({
+            y: 0,
+            opacity: 0,
+            pointerEvents:'none',
+            transition: {
+                delay: 0.1 * (buttons.length - n),
+                type: "Inertia"
+            }
         })
     }
 
-    // useEffect(() => {
-    //     isOpen && animate(".buttons-block-btn", { y }, { delay: stagger(0.5) })
-    // }, [isOpen])
 
-    function handleButtonClick(btn){
-        switch (btn.id){
+    function handleButtonClick(btn) {
+        switch (btn.id) {
             case 'invite' :
                 onInvite && onInvite()
                 break
@@ -55,44 +79,48 @@ export default function ButtonsBlock({className, onInvite, onHotel,onAppointment
             case 'appointment':
                 onAppointment && onAppointment()
                 break
+            default:
+                break
         }
     }
 
-    return (
-        <motion.div
-            {...props}
-            className={clsx('buttons-block-container gap-0.25', isOpen && 'active', className)}
-            animate={'visible'}
-            variants={{
-                visible: {
-                    padding: -10,
-                    height: isOpen ?  icon_size * (buttons.length + 1.2) + icon_size * 0.2 * buttons.length : icon_size * 1.2,
-                    transition: {
-                        duration: 0.3,
-                        staggerChildren: 1
-                    }
-                }
-            }}
-        >
-            {
-                isOpen && buttons.map((b, idx) => (
-                    <motion.div
-                        key={b.id}
-                        className='buttons-block-btn flex-stretch gap-1 center'
-                        initial={'hidden'}
-                        animate={'visible'}
-                        variants={btnAnimationVariant}
-                        transition={{duration: 0.3}}
-                        custom={idx}
-                        onClick={() => handleButtonClick(b)}
-                    >
-                        <div className='title-semi-bold flex-1'>{b.description}</div>
-                        <button className='rounded-button'>{b.icon}</button>
-                    </motion.div>
-                ))
-            }
+    function handlePlucButtonClick(val){
+        setIsOpen(val)
+        onChange && onChange(val)
 
-            <PlusButton className={'buttons-block-btn'} init={false} onChange={setIsOpen}/>
-        </motion.div>
+    }
+
+    return (
+        <>
+            {isOpen &&
+                <BlurBackplate
+                onClick={() => setIsOpen(false)}
+                style={{zIndex: 1000}}
+            />}
+            <motion.div
+                {...props}
+                className={clsx('buttons-block-container gap-0.25', isOpen && 'active', className)}
+            >
+                {
+                    buttons.map((b, idx) => (
+                        <motion.div
+                            key={b.id}
+                            className='buttons-block-btn flex-stretch gap-1 center'
+                            initial={'hidden'}
+                            animate={isOpen ? 'visible' : 'hidden'}
+                            variants={btnAnimationVariant}
+                            transition={{duration: 0.3}}
+                            custom={idx}
+                            onClick={() => handleButtonClick(b)}
+                        >
+                            <div className='title-semi-bold flex-1'>{b.description}</div>
+                            <button className='rounded-button'>{b.icon}</button>
+                        </motion.div>
+                    ))
+                }
+
+                <PlusButton className={'buttons-block-btn'} init={isOpen} onChange={handlePlucButtonClick}/>
+            </motion.div>
+        </>
     )
 }

@@ -8,6 +8,7 @@ import {PlusIcon} from "../../../../components/svg";
 import './RecommendLocation.css'
 import ChevronRightIcon from "../../../../components/svg/ChevronRightIcon";
 import MapIcon from "../../../../components/svg/MapIcon";
+import useTravelContext from "../../../../hooks/useTravelContext";
 
 
 /**
@@ -18,6 +19,7 @@ import MapIcon from "../../../../components/svg/MapIcon";
  * @constructor
  */
 export default function RecommendLocation({to, items }) {
+    const {travel} = useTravelContext()
 
     return (
         <div className='recommend-location'>
@@ -29,7 +31,7 @@ export default function RecommendLocation({to, items }) {
                 shadow
             />
             <div className='column gap-0.5'>
-                <Link className='travel-link' to={''}>
+                <Link className='travel-link' to={`/travel/${travel.id}/map/`}>
                     <div className='icon'>
                         <MapIcon />
                     </div>

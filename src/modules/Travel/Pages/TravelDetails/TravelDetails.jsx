@@ -1,32 +1,28 @@
 import clsx from "clsx";
-import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
+import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
+import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import {Chip, PageHeader, Tab} from "../../../../components/ui";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
-import changedFields from "../../../../utils/changedFields";
-import createAction from "../../../../utils/createAction";
 import Photo from "../../../../components/Poto/Photo";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
-import {actions} from "../../../../redux/store";
-import useTravel from "../../hooks/useTravel";
 
 import './TravelDetails.css'
-import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -38,11 +34,10 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 export default function TravelDetails() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
-    // const dispatch = useDispatch()
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
-    const [curtainOpen, setCurtainOpen] = useState(true)
+    const [curtainOpen, setCurtainOpen] = useState(false)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
 
     //переменная для задания количества табов (по дням)
@@ -79,7 +74,7 @@ export default function TravelDetails() {
         }
     }
 
-
+    console.log(curtainOpen)
     return (
         <>
             <Container className='travel-details-header'>
@@ -97,14 +92,16 @@ export default function TravelDetails() {
                             <Photo className='img-abs' id={travel.photo} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
-                            <h2 className='center gap-0.5' onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
+                            <h2 className='center gap-0.5'
+                                onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
                                 {
                                     travel?.title || travel?.direction || (
-                                        <span className='travel-details-title--empty' >Добавить название</span>
+                                        <span className='travel-details-title--empty'>Добавить название</span>
                                     )
                                 }
-                                <div className={`travel-details-icon icon center ${travel.isPublic ? 'public' : 'private'}`} >
-                                    {travel?.isPublic ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                <div
+                                    className={`travel-details-icon icon center ${travel.isPublic ? 'public' : 'private'}`}>
+                                    {travel?.isPublic ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                                 </div>
                             </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
@@ -119,7 +116,7 @@ export default function TravelDetails() {
                         }
                         <div>
 
-                            <TravelPeople peopleList={travel?.owner_id ? [travel?.owner_id]: []} compact={compact}/>
+                            <TravelPeople peopleList={travel?.owner_id ? [travel?.owner_id] : []} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
@@ -130,15 +127,16 @@ export default function TravelDetails() {
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                    <div className='flex-between flex-nowrap gap-0.5 pb-20'>
-                        <IconButton icon={<Money/>} title='Расходы' onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
-                        <IconButton
-                            icon={<ChecklistIcon/>}
-                            title='Чек-лист'
-                            onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
-                        />
-                        <IconButton icon={<ChatIcon badge/>}/>
-                    </div>
+                        <div className='flex-between flex-nowrap gap-0.5 pb-20'>
+                            <IconButton icon={<Money/>} title='Расходы'
+                                        onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
+                            <IconButton
+                                icon={<ChecklistIcon/>}
+                                title='Чек-лист'
+                                onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
+                            />
+                            <IconButton icon={<ChatIcon badge/>}/>
+                        </div>
                     </div>
                 </div>
             </Container>
@@ -147,6 +145,7 @@ export default function TravelDetails() {
                 direction={travel?.direction}
                 onChange={setCurtainOpen}
                 defaultOffsetPercents={1}
+
             >
                 <Container>
                     <div className='flex-between gap-1 pt-20'>
@@ -191,6 +190,13 @@ export default function TravelDetails() {
                     <AddButton>Добавить локацию</AddButton>
                 </Container>
             </Curtain>
+            {curtainOpen &&
+                <ButtonsBlock
+                    className={'travel-details-buttons'}
+                    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
+                    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
+                    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
+                />}
         </>
     )
 }

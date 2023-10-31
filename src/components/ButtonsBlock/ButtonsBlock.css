@@ -1,9 +1,13 @@
 .buttons-block-container{
+    width: 100%;
+    position: relative;
     background-color: transparent;
+    pointer-events: none;
+    z-index: 1100;
 }
 
-.buttons-block-container.active{
-    background-color: var(--color-background);
+.buttons-block-container svg {
+    color: var(--color-primary-text);
 }
 
 .buttons-block-btn{
@@ -11,21 +15,5 @@
     right: 0;
     bottom: 0;
     cursor: pointer;
+    pointer-events: all;
 }
-
-/*.buttons-block-container::before{*/
-/*    content: '';*/
-/*    background-color: transparent;*/
-/*    position: fixed;*/
-/*    left: 0;*/
-/*    top: 0;*/
-/*    right: 0;*/
-/*    bottom: 0;*/
-/*    z-index: 2000;*/
-/*    pointer-events: none;*/
-/*}*/
-
-/*.buttons-block-container.active::before{*/
-/*    background-color: rgba(0,0,0,0.7);*/
-
-/*}*/

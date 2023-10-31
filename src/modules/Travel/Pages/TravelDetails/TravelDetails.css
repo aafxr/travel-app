@@ -79,3 +79,9 @@
         color: var(--color-text-secondary)
     }
 }
+
+.travel-details-buttons{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
