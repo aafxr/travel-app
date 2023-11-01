@@ -17,8 +17,13 @@ export default function ExpensesFilterVariant({value , onChange, className}){
         <Container className={clsx('footer-btn-container flex-between gap-1', className)}>
         {
             filterType.map(f => (
-                <Button key={f} className='center' active={f === value}
-                        onClick={() => setExpensesFilter(f)}>{local[f]}</Button>
+                <Button
+                    key={f} className='center'
+                    active={f === value}
+                    onClick={() => setExpensesFilter(f)}
+                >
+                    {local[f]}
+                </Button>
             ))
         }
     </Container>

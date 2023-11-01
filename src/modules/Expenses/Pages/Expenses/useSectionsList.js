@@ -12,6 +12,11 @@ import {useMemo} from "react";
  */
 export default function useSectionsList(expenses, updateTravelInfo, filter) {
     return useMemo(() => {
+        /**@type {Map<string, ExpenseType[]>}*/
+        const map = new Map()
+
+        if (!updateTravelInfo) return map
+
         let sectionList
         if (filter === "All") {
             sectionList = updateTravelInfo.actual_list
@@ -29,8 +34,7 @@ export default function useSectionsList(expenses, updateTravelInfo, filter) {
             sectionList = []
         }
 
-        /**@type {Map<string, ExpenseType[]>}*/
-        const map = new Map()
+
 
         sectionList.forEach(s => map.set(s, []))
         if (filter === "All") {
@@ -42,5 +46,5 @@ export default function useSectionsList(expenses, updateTravelInfo, filter) {
         }
 
         return map
-    }, [filter])
+    }, [updateTravelInfo, filter])
 }

@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import React, {useContext} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import React from "react";
+import {useDispatch} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
 
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -14,53 +14,48 @@ import {actions} from "../../../../redux/store";
 import Line from "../Line/Line";
 
 import './Section.css'
+import useTravelContext from "../../../../hooks/useTravelContext";
 
 /**
  * @function
- * @param {string[]} section - имя секции расходов
- * @param {function} sectionLimit - лимит расходов поьзователя
- * @param {Array.<import('../../../../types/ExpenseType').ExpenseType>} expenses
+ * @name Section
+ * @param {string} title - имя секции расходов
+ * @param {ExpenseType[]} expenses
+ * @param {number} limit
+ * @param {number} total
+ * @param {string} section_id
  * @param {string} user_id
- * @param {boolean} personal
- * @param {boolean} line
+ * @param {boolean} line default = false
+ * @param {{common: TotalBySectionType, personal: TotalBySectionType}} totalBySection
+ * @param {boolean} planed флаг указывает, что секция относится к планам расходов
  * @return {JSX.Element}
  * @category Expenses-Component
  */
 function Section({
-                     section,
-                     sectionLimit,
+                     title,
+                     limit,
+                     total,
+                     section_id,
                      expenses = [],
                      user_id,
-                     personal = false,
                      line = false,
+                     planed
                  }) {
-    const {currency} = useSelector(state => state[constants.redux.EXPENSES])
-    const {travelCode: primary_entity_id} = useParams()
+    const {travel} = useTravelContext()
 
-    const title = section ? section.title : ''
-    let limit = sectionLimit(section)
-    limit = limit ? limit.value : 0
-
-
-    const totalExpenses = expenses
-        .reduce((acc, item) => {
-            const cur = currency[new Date().toLocaleDateString()]?.find(c => c.symbol === item.currency)?.value || 1
-            return acc + item.value * cur
-        }, 0)
-
-    const percent = (totalExpenses / limit) || 0
+    const percent = (total / limit) || 0
     const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
 
-    let balance = limit - totalExpenses
+    let balance = limit - total
 
 
     return (
         <div className='expenses-list'>
             <div>
-                <Link to={`/travel/${primary_entity_id}/expenses/limit/${section.id}/`}>
+                <Link to={`/travel/${travel.id}/expenses/limit/${section_id}/`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
-                        <div className='section-title'>{formatter.format(totalExpenses)} ₽</div>
+                        <div className='section-title'>{formatter.format(total)} ₽</div>
                     </div>
                 </Link>
                 {
@@ -95,7 +90,7 @@ function Section({
                                             <SectionItem
                                                 key={item.id}
                                                 expense={item}
-                                                isPlan={!line}
+                                                isPlan={planed}
                                                 user_id={user_id}
                                             />
                                         )
@@ -143,7 +138,7 @@ function SectionItem({expense, isPlan, user_id}) {
                 constants.store.EXPENSES_ACTIONS,
                 createAction(storeName, user_id, 'remove', expense)
             )
-            
+
             const action = isPlan
                 ? actions.expensesActions.removeExpensePlan
                 : actions.expensesActions.removeExpenseActual
