@@ -6,6 +6,7 @@ import Loader from "../components/Loader/Loader";
 import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 import Travel from "../classes/Travel";
+import useUpdate from "../hooks/useUpdate";
 
 /**
  * @name TravelContextType
@@ -35,6 +36,7 @@ export const TravelContext = createContext(defaultTravel)
 export default function TravelContextProvider() {
     const [loading, setLoading] = useState(true)
     const [state, setState] = useState(defaultTravel)
+    const update = useUpdate()
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
@@ -46,9 +48,11 @@ export default function TravelContextProvider() {
                     .getOne(constants.store.TRAVEL, travelCode)
                     .then(item => {
                         setLoading(false)
-                        item
-                            ? setState({travel: new Travel(item)})
-                            : setState({travel: null})
+                        const t = item
+                            ?  new Travel(item)
+                            :  null
+                        if (t) t.setOnUpdateCallback(update)
+                        setState({travel: t})
                     })
             })
         }

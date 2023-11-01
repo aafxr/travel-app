@@ -38,6 +38,9 @@ export default class Travel extends BaseTravel {
     /**@type{BaseService}*/
     appointment
 
+    /**@type{() => void}*/
+    _updateCB = () => {}
+
     /**
      * @param {TravelType} item
      * @constructor
@@ -137,27 +140,23 @@ export default class Travel extends BaseTravel {
      * @private
      */
     _onCreateExpense(type, item) {
-        if (type === 'actual' && item && item.primary_entity_id) {
-            const worker = new Worker(new URL('../workers/worker-expenses-actual-update.js', import.meta.url))
+        if ((type === 'actual' || type === 'planned') && item && item.primary_entity_id) {
+            const worker = new Worker(new URL('../workers/worker-expenses-total-update.js', import.meta.url))
             worker.onerror = this._errorHandle
             /**@param{MessageEvent<WorkerMessageType>} e */
             worker.onmessage = (e) => {
-                if(e.data.type === 'done') {
+                if (e.data.type === 'done') {
                     console.log(e.data)
+                    worker.terminate()
+                    this._update()
                 }
-                worker.terminate()
             }
             /**@type{WorkerMessageType}*/
-            const message = {type: "update-expenses-actual", payload: item}
+            const message = type === "actual"
+                ? {type: "update-expenses-actual", payload: item}
+                : {type: "update-expenses-planned", payload: item}
             worker.postMessage(message)
         }
-        const worker = new Worker(new URL('../workers/worker-expenses-actual-update.js', import.meta.url))
-        worker.onerror = this._errorHandle
-        worker.onmessage = (e) => {
-            console.log(e.data)
-            worker.terminate()
-        }
-
     }
 
     /**
@@ -176,6 +175,28 @@ export default class Travel extends BaseTravel {
             ErrorReport.sendError(err).catch(console.error)
             return []
         }
+    }
+
+    /**
+     * метод устанавливает callback, который будет вызываться в случае необходимости перерисовать контент
+     * @method
+     * @name Travel.setOnUpdateCallback
+     * @param {() => void} cb callback, вызывается в сллучае необходимости перерисовать контент
+     */
+    setOnUpdateCallback(cb){
+        if (typeof cb === 'function') {
+            this._updateCB = cb
+        }
+        return this
+    }
+
+    /**
+     * метод вызывает callback, переданый через метод setOnUpdateCallback
+     * @method@name Travel._update
+     * @private
+     */
+    _update(){
+        this._updateCB()
     }
 
 }

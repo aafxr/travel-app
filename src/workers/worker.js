@@ -28,7 +28,7 @@ function messageHandler(e) {
     type === 'fetch' && fetchActions(message)
     type === 'init' && init()
     if(type === "update-expenses-actual"){
-        const aWorker = new Worker(new URL('./worker-expenses-actual-update.js', import.meta.url))
+        const aWorker = new Worker(new URL('./worker-expenses-total-update.js', import.meta.url))
         aWorker.onerror = () => (err) => {
             console.error(err)
             //... other error handlers

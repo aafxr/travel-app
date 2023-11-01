@@ -10,7 +10,7 @@ import constants from "../static/constants";
  *
  *
  * @param {string} storeName имя store (таблицы) в бд, с которой будет работать данный сервис
- * @param {BaseServiceOptionsType} options
+ * @param {BaseServiceOptionsType} [options]
  * @constructor
  * @template T
  */
@@ -27,7 +27,7 @@ export default class BaseService{
 
     /**
      * @param {string} storeName имя store (таблицы) в бд, с которой будет работать данный сервис
-     * @param {BaseServiceOptionsType} options
+     * @param {BaseServiceOptionsType} [options]
      * @constructor
      */
     constructor(storeName, options){
@@ -35,7 +35,7 @@ export default class BaseService{
 
         this._storeName = storeName
         this.options = options || {}
-        if(typeof options === 'object'){
+        if(options && typeof options === 'object'){
             Object
                 .keys(options)
                 .filter(key => key.startsWith('on') && ('_' + key) in this)

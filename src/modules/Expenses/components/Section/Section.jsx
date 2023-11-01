@@ -1,24 +1,23 @@
-import React, {useContext} from "react";
 import clsx from "clsx";
+import React, {useContext} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {Link, useNavigate, useParams} from "react-router-dom";
+
+import dateToStringFormat from "../../../../utils/dateToStringFormat";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import {formatter} from "../../../../utils/currencyFormat";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
+import createAction from "../../../../utils/createAction";
+import storeDB from "../../../../db/storeDB/storeDB";
+import constants from "../../../../static/constants";
+import {actions} from "../../../../redux/store";
 import Line from "../Line/Line";
 
-import {Link, useNavigate, useParams} from "react-router-dom";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
-
-import {formatter} from "../../../../utils/currencyFormat";
-import constants from "../../../../static/constants";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import {useDispatch, useSelector} from "react-redux";
-
 import './Section.css'
-import storeDB from "../../../../db/storeDB/storeDB";
-import createAction from "../../../../utils/createAction";
-import {actions} from "../../../../redux/store";
 
 /**
  * @function
- * @param {import('../../../../types/SectionType').SectionType} section - имя секции расходов
+ * @param {string[]} section - имя секции расходов
  * @param {function} sectionLimit - лимит расходов поьзователя
  * @param {Array.<import('../../../../types/ExpenseType').ExpenseType>} expenses
  * @param {string} user_id
