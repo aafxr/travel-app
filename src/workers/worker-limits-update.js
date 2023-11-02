@@ -11,8 +11,9 @@ self.onmessage = async (e) => {
 
         const {data} = e
         const {type, payload} = data
-        /**@type{string} */
-        const primary_entity_id = payload
+        /**@type{{primary_entity_id: string, user_id: string}} */
+        const t = payload
+        const {primary_entity_id, user_id} = t
 
         if (type === 'update-limit' && payload) {
             const limitService = new BaseService(constants.store.LIMIT)

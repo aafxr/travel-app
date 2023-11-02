@@ -156,8 +156,8 @@ export default class Travel extends BaseTravel {
 
             /**@type{WorkerMessageType}*/
             const message = type === "actual"
-                ? {type: "update-expenses-actual", payload: item}
-                : {type: "update-expenses-planned", payload: item}
+                ? {type: "update-expenses-actual", payload: {item, user_id: this.user_id}}
+                : {type: "update-expenses-planned", payload: {item, user_id: this.user_id}}
             worker.postMessage(message)
         }
     }
@@ -181,7 +181,7 @@ export default class Travel extends BaseTravel {
         }
 
         /**@type{WorkerMessageType}*/
-        const message = {type: "update-limit", payload: this.id}
+        const message = {type: "update-limit", payload: {primary_entity_id: this.id, user_id: this.user_id}}
         worker.postMessage(message)
     }
 
