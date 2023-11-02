@@ -94,7 +94,6 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
     }
 
 
-    console.log(range, daysCount)
     return (
         <div className='flex-stretch gap-0.25'>
             <Input

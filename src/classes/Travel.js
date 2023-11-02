@@ -5,6 +5,7 @@ import BaseService from "./BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
+import Subscription from "./Subscription";
 
 // Продумать структуру менеджера для работы с сущностями отели, встречи, расходы и тд
 // реалирзовать абстракцию менеджера
@@ -38,8 +39,8 @@ export default class Travel extends BaseTravel {
     /**@type{BaseService}*/
     appointment
 
-    /**@type{() => void}*/
-    _updateCB = () => {}
+    /**@type{Subscription<Travel>}*/
+    _updateManager
 
     /**
      * @param {TravelType} item
@@ -49,22 +50,23 @@ export default class Travel extends BaseTravel {
         super(item);
         this._errorHandle = this._errorHandle.bind(this)
 
+        this._updateManager = new Subscription()
+
         this.expenses = {
             actual: new BaseService(constants.store.EXPENSES_ACTUAL, {
-                onCreate: this._onCreateExpense.bind(this, 'actual'),
-                onUpdate: this._onCreateExpense.bind(this, 'actual')
+                onCreate: this._onChangeExpense.bind(this, 'actual'),
+                onUpdate: this._onChangeExpense.bind(this, 'actual'),
+                onDelete: this._onChangeExpense.bind(this, 'actual'),
             }),
             planned: new BaseService(constants.store.EXPENSES_PLAN, {
-                onCreate: this._onCreateExpense.bind(this, 'planned'),
-                onUpdate: this._onCreateExpense.bind(this, 'planned')
+                onCreate: this._onChangeExpense.bind(this, 'planned'),
+                onUpdate: this._onChangeExpense.bind(this, 'planned'),
+                onDelete: this._onChangeExpense.bind(this, 'planned')
             })
         }
 
         this.limit = new BaseService(constants.store.LIMIT, {})
-        this.section = new BaseService(constants.store.SECTION, {
-            onCreate: this._onCreateExpense.bind(this, 'section'),
-            onUpdate: this._onCreateExpense.bind(this, 'section')
-        })
+        this.section = new BaseService(constants.store.SECTION, {})
         this.hotel = new BaseService(constants.store.HOTELS, {})
         this.appointment = new BaseService(constants.store.APPOINTMENTS, {})
     }
@@ -134,12 +136,12 @@ export default class Travel extends BaseTravel {
 
     /**
      * @method
-     * @name Travel._onCreateExpense
+     * @name Travel._onChangeExpense
      * @param {'actual' | 'planned'} type
      * @param {ExpenseType} item
      * @private
      */
-    _onCreateExpense(type, item) {
+    _onChangeExpense(type, item) {
         if ((type === 'actual' || type === 'planned') && item && item.primary_entity_id) {
             const worker = new Worker(new URL('../workers/worker-expenses-total-update.js', import.meta.url))
             worker.onerror = this._errorHandle
@@ -158,6 +160,29 @@ export default class Travel extends BaseTravel {
                 : {type: "update-expenses-planned", payload: item}
             worker.postMessage(message)
         }
+    }
+
+    /**
+     * метод пересчета лимитов
+     * @method
+     * @name Travel._onChangeExpense
+     * @private
+     */
+    _onChangeLimmit() {
+        const worker = new Worker(new URL('../workers/worker-limit-update.js', import.meta.url))
+        worker.onerror = this._errorHandle
+        /**@param{MessageEvent<WorkerMessageType>} e */
+        worker.onmessage = (e) => {
+            if (e.data.type === 'done') {
+                console.log(e.data)
+                worker.terminate()
+                this._update()
+            }
+        }
+
+        /**@type{WorkerMessageType}*/
+        const message = {type: "update-limit", payload: this.id}
+        worker.postMessage(message)
     }
 
     /**
@@ -181,13 +206,22 @@ export default class Travel extends BaseTravel {
     /**
      * метод устанавливает callback, который будет вызываться в случае необходимости перерисовать контент
      * @method
-     * @name Travel.setOnUpdateCallback
-     * @param {() => void} cb callback, вызывается в сллучае необходимости перерисовать контент
+     * @name Travel.onUpdate
+     * @param {(value: Travel) => unknown} cb callback, вызывается в сллучае необходимости перерисовать контент
      */
-    setOnUpdateCallback(cb){
-        if (typeof cb === 'function') {
-            this._updateCB = cb
-        }
+    onUpdate(cb) {
+        this._updateManager.on(cb)
+        return this
+    }
+
+    /**
+     * метод удаляет callback, который будет вызываться в случае необходимости перерисовать контент
+     * @method
+     * @name Travel.offUpdate
+     * @param {(value: Travel) => unknown} cb callback, вызывается в сллучае необходимости перерисовать контент
+     */
+    offUpdate(cb) {
+        this._updateManager.off(cb)
         return this
     }
 
@@ -196,8 +230,8 @@ export default class Travel extends BaseTravel {
      * @method@name Travel._update
      * @private
      */
-    _update(){
-        this._updateCB()
+    _update() {
+        this._updateManager.dispatch(this)
     }
 
 }

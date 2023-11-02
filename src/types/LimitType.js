@@ -3,6 +3,7 @@
  * @typedef {object} LimitType
  * @property {string} id id лимита
  * @property {string} section_id id секции, для которой учтановлен лимит
+ * @property {string} primary_entity_id id путешествия, для которой учтановлен лимит
  * @property {DBFlagType} personal флаг личный / общий лимит
  * @property {number} value \>= 0, значение установленного лимита
  * @category Types

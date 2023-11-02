@@ -4,6 +4,7 @@
  * | 'done'
  * | 'update-expenses-actual'
  * | 'update-expenses-planned'
+ * | 'update-limit'
  * | 'error'
  * } WMessageType
  */

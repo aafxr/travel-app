@@ -51,15 +51,17 @@ export default function TravelContextProvider() {
                         const t = item
                             ?  new Travel(item)
                             :  null
-                        if (t) t.setOnUpdateCallback(update)
+                        if (t) t.onUpdate(update)
                         setState({travel: t})
                     })
             })
         }
+        return () => {
+            if (state.travel) state.travel.offUpdate(update)
+        }
     }, [travelCode])
 
     if (state.travel) {
-        console.log('state', state.travel)
         window.travel = state.travel
     }
     if (loading) {

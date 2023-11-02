@@ -39,7 +39,17 @@ export default function ExpensesPlan() {
             .then(setSectionComponentData)
     }, [travel, filter])
 
-    console.log(sectionComponentData)
+    useEffect(() => {
+        function sub(){
+            combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id)
+                .then(setSectionComponentData)
+        }
+        travel.onUpdate(sub)
+
+        return () => {
+            travel.offUpdate(sub)
+        }
+    }, [])
 
 
     return (
