@@ -63,7 +63,7 @@ function Section({
                         <>
                             <Line value={limit ? percent : 0} color={color}/>
                             {
-                                !!limit && (
+                                !!limit && limit > 0 && (
                                     <div className={'flex-between'}>
                                         <div className='section-subtitle'>Лимит {formatter.format(limit)} ₽</div>
                                         {

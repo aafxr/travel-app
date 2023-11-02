@@ -61,12 +61,12 @@ window.store = storeDB
 //     .then(() => {
 //         storeDB.getOne(constants.store.CURRENCY, '12.12.2021').then(console.log)
 //     })
-
+//
 // sleep(2000)
 //     .then(() => {
-//         const promises = range(1,1000)
+//         const promises = range(1,500)
 //             .map(i => new Expense({
-//                 id: createId((Math.random() * 20).toString()),
+//                 id: '12:'+i,
 //                 user_id: '12',
 //                 personal: 0,
 //                 title: 'test',

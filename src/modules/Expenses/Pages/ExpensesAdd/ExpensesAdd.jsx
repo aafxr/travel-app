@@ -1,30 +1,28 @@
-import React, { useEffect, useRef, useState} from 'react'
-import {useNavigate, useParams} from "react-router-dom";
 import clsx from "clsx";
+import { useSelector} from "react-redux";
+import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from 'react'
 
 
-import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
-import {Input, PageHeader, Chip} from "../../../../components/ui";
-import Container from "../../../../components/Container/Container";
-import Button from "../../../../components/ui/Button/Button";
-import Select from "../../../../components/ui/Select/Select";
-
-import {defaultFilterValue} from "../../static/vars";
-
-import useExpense from "../../hooks/useExpense";
-import handleAddExpense from "./handleAddExpense";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
-
-import constants from "../../../../static/constants";
-import {useDispatch, useSelector} from "react-redux";
-import {actions} from "../../../../redux/store";
-import storeDB from "../../../../db/storeDB/storeDB";
-
-import {updateLimits} from "../../helpers/updateLimits";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import dateToCurrencyKey from "../../../../utils/dateToCurrencyKey";
+import Container from "../../../../components/Container/Container";
+import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import useTravelContext from "../../../../hooks/useTravelContext";
+import {Input, PageHeader, Chip} from "../../../../components/ui";
 import useUserSelector from "../../../../hooks/useUserSelector";
+import Select from "../../../../components/ui/Select/Select";
+import Button from "../../../../components/ui/Button/Button";
+import {updateLimits} from "../../helpers/updateLimits";
+import constants from "../../../../static/constants";
+import storeDB from "../../../../db/storeDB/storeDB";
+import {defaultFilterValue} from "../../static/vars";
+import handleAddExpense from "./handleAddExpense";
+import useExpense from "../../hooks/useExpense";
+
 import '../../css/Expenses.css'
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 
 /**
@@ -47,13 +45,12 @@ export default function ExpensesAdd({
     const {travel} = useTravelContext()
     const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
     const {user} = useUserSelector()
-    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')
     const [expSum, setExpSum] = useState('')
     const [expCurr, setExpCurr] = useState('')
-    const [currency, setCurrency] = useState([])
+    const [currency, setCurrency] = useState(/**@type{CurrencyType[]}*/[])
 
     const [section_id, setSectionId] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -81,24 +78,21 @@ export default function ExpensesAdd({
     useEffect(() => {
         (async function () {
             if (expense) {
-                const key = new Date(expense.datetime).toLocaleDateString()
+                const key = dateToCurrencyKey(expense.datetime)
+                /**@type{ExchangeType}*/
                 let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
                 let cr = res && res.value
-
-                // здес должен быть запрос на добавление курса валют
-                // if(!res) {
-                //     res = await aFetch.get('/main/currency/getList/')
-                // }
 
                 const cur = cr.find(c => c.symbol === expense.currency) || cr[0]
                 setExpName(expense.title)
                 setExpSum(expense.value.toString())
                 setSectionId(expense.section_id)
                 setPersonal(expense.personal === 1)
-                expense.currency && setExpCurr(cur)
+                expense.currency && setExpCurr(cur.symbol)
                 setCurrency(cr)
-            } else{
-                const key = new Date().toLocaleDateString()
+            } else {
+                const key = dateToCurrencyKey(Date.now())
+                /**@type{ExchangeType}*/
                 let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
                 setCurrency(res && res.value)
             }
@@ -106,13 +100,14 @@ export default function ExpensesAdd({
     }, [expense])
 
 
+    /**@param {string} section*/
     function onChipSelect(section) {
         setSectionId(section)
     }
 
     function handleCurrencyChange(c) {
         const value = currency.find(cr => cr.symbol === c)
-        value && setExpCurr(value)
+        value && setExpCurr(value.symbol)
     }
 
     async function handleExpense() {
@@ -140,46 +135,30 @@ export default function ExpensesAdd({
             return
         }
 
-        // if (edit) {
-        //     await handleEditExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id, expense)
-        //         .then(item => {
-        //             if (item){
-        //                 const action = isPlan
-        //                     ? actions.expensesActions.updateExpensePlan
-        //                     : actions.expensesActions.updateExpenseActual
-        //                 dispatch(action(item))
-        //             }
-        //         })
-        // } else {
-        //     await handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
-        //         .then(item => {
-        //             if (item){
-        //                 const action = isPlan
-        //                     ? actions.expensesActions.addExpensePlan
-        //                     : actions.expensesActions.addExpenseActual
-        //                 dispatch(action(item))
-        //             }
-        //         })
-        // }
+        /**@type{ExpenseType}*/
+        const newExpense = {
+            ...expense,
+            title: expName,
+            value: value,
+            personal: personal ? 1 : 0,
+            currency: expCurr,
+            created_at: new Date().toISOString()
+        }
 
-        const expense = handleAddExpense(isPlan, user_id, primary_entity_type, primary_entity_id, expName, value, expCurr, personal, section_id)
-        if(expensesType === 'actual'){
+        if (expensesType === 'actual') {
             edit
-                ? travel.expenses.actual.create(expense, user.id)
-                : travel.expenses.actual.update(expense, user.id)
-        } else if (expensesType === 'plan'){
+                ? travel.expenses.actual.update(newExpense, user.id).catch(defaultHandleError)
+                : travel.expenses.actual.create(newExpense, user.id).catch(defaultHandleError)
+        } else if (expensesType === 'plan') {
             edit
-                ? travel.expenses.planned.create(expense, user.id)
-                : travel.expenses.planned.update(expense, user.id)
+                ? travel.expenses.planned.update(newExpense, user.id).catch(defaultHandleError)
+                : travel.expenses.planned.create(newExpense, user.id).catch(defaultHandleError)
         }
 
 
-        if(isPlan){
-            await updateLimits(primary_entity_id,user_id)()
-                .then(items => {
-                    console.log(items)
-                    dispatch(actions.expensesActions.setExpensesLimit(items))
-                })
+        if (isPlan) {
+            await updateLimits(primary_entity_id, user_id)()
+                .catch(defaultHandleError)
         }
         navigate(-1)
     }
@@ -237,7 +216,7 @@ export default function ExpensesAdd({
                                         />
                                         <Select
                                             className='expenses-currency flex-0'
-                                            value={expCurr ? expCurr.symbol : '₽'}
+                                            value={expCurr ? expCurr : '₽'}
                                             defaultValue=''
                                             options={currency.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}

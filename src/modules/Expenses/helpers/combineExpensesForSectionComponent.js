@@ -7,9 +7,9 @@
  * @property {string} section_id
  */
 
-import storeDB from "../../../../db/storeDB/storeDB";
-import constants from "../../../../static/constants";
-import defaultUpdateTravelInfo from "../../../../utils/defaultUpdateTravelInfo";
+import storeDB from "../../../db/storeDB/storeDB";
+import constants from "../../../static/constants";
+import defaultUpdateTravelInfo from "../../../utils/defaultUpdateTravelInfo";
 
 /**
  *
@@ -25,7 +25,7 @@ export default async function combineExpensesForSectionComponent(storeName, filt
 
     /**@type{UpdateTravelInfoType}*/
     const updatedTravelInfo = await storeDB
-        .getOne(constants.store.UPDATED_TRAVEL_INFO, primary_entity_id)
+            .getOne(constants.store.UPDATED_TRAVEL_INFO, primary_entity_id)
         || defaultUpdateTravelInfo(primary_entity_id)
 
     /**@type{Map<string,number>}*/
@@ -48,24 +48,27 @@ export default async function combineExpensesForSectionComponent(storeName, filt
             : a.common
     ).forEach(a => totalSectionMap.set(a.section_id, a.total))
 
-    /**@type{Map<string, SectionType>}*/
+    /**@type{Map<string, string>}*/
     const sectionMap = new Map();
-    (await storeDB.getAll(constants.store.SECTION))
-        .map(s => sectionMap.set(s.title, s))
+
+    /**@type{SectionType[]}*/
+    const sections = await storeDB.getAll(constants.store.SECTION)
+        sections.map(s => sectionMap.set(s.id, s.title))
 
     /**@type{LimitType[]}*/
     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
+
     /**@type{Map<string, LimitType>}*/
     const limitsMap = new Map()
+
     limits
         .filter(l => l.personal === isPersonal)
         .forEach(l => limitsMap.set(l.section_id, l))
 
-    // const sections = await
 
     const expenses = await storeDB.getAllFromIndex(storeName, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
-    const expenseMap = getSectionsList(expenses, updatedTravelInfo, filter)
-    console.log({expenses, updatedTravelInfo, filter})
+    const expenseMap = getSectionsList(expenses, filter)
+
     /**@type{SectionComponentDataType[]}*/
     const result = []
 
@@ -79,12 +82,6 @@ export default async function combineExpensesForSectionComponent(storeName, filt
         })
     }
 
-
-    console.log({
-        limitsMap,
-        sectionMap,
-        totalSectionMap,
-    })
     return result
 }
 
@@ -94,41 +91,33 @@ export default async function combineExpensesForSectionComponent(storeName, filt
  * @function
  * @name getSectionsList
  * @param {ExpenseType[]} expenses
- * @param {UpdateTravelInfoType} updateTravelInfo
  * @param {ExpenseFilterType} filter
  * @returns {Map<string, ExpenseType[]>}
  * @category Hooks
  */
-function getSectionsList(expenses, updateTravelInfo, filter) {
+function getSectionsList(expenses, filter) {
     /**@type {Map<string, ExpenseType[]>}*/
     const map = new Map()
 
-    if (!updateTravelInfo) return map
-    let sectionList
-    if (filter === "All") {
-        sectionList = updateTravelInfo.actual_list
-            .map(e => e.common.section_id)
-    } else if (filter === "Common") {
-        sectionList = updateTravelInfo.actual_list
-            .filter(e => e.common.total > 0)
-            .map(e => e.common.section_id)
-    } else if (filter === "personal") {
-        sectionList = updateTravelInfo.actual_list
-            .filter(e => e.personal.total > 0)
-            .map(e => e.personal.section_id)
-    } else {
-        console.warn(`unknown filter type: "${filter}"`)
-        sectionList = []
+    /**
+     * @param {Map<string, ExpenseType[]>} map
+     * @param {ExpenseType} expense
+     */
+    function addExpenseToMap(map, expense) {
+        if (map.has(expense.section_id)) {
+            map.get(expense.section_id).push(expense)
+        }
+        else {
+            map.set(expense.section_id, [expense])
+        }
     }
 
-
-    sectionList.forEach(s => map.set(s, []))
     if (filter === "All") {
-        expenses.forEach(e => map.has(e.section_id) && map.get(e.section_id).push(e))
+        expenses.forEach(e => addExpenseToMap(map, e))
     } else if (filter === "Common") {
-        expenses.forEach(e => map.has(e.section_id) && e.personal === 0 && map.get(e.section_id).push(e))
+        expenses.forEach(e => e.personal === 0 && addExpenseToMap(map, e))
     } else if (filter === "personal") {
-        expenses.forEach(e => map.has(e.section_id) && e.personal === 1 && map.get(e.section_id).push(e))
+        expenses.forEach(e => e.personal === 1 && addExpenseToMap(map, e))
     }
 
     return map

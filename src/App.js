@@ -72,12 +72,12 @@ function App() {
                 : JSON.parse(localStorage.getItem(USER_AUTH))
 
             store.dispatch(initUser(user))
-            store.dispatch(initTravelsThunk())
+            // store.dispatch(initTravelsThunk())
         }
     }, [ready])
 
 
-    if (!ready || (state && !state.travel.travelsLoaded)) {
+    if (!ready ) {
         return (
             <PageContainer center>
                 <Loader className='loader'/>

@@ -5,6 +5,7 @@ import BaseService from "../classes/BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
+import dateToCurrencyKey from "../utils/dateToCurrencyKey";
 
 
 /**
@@ -17,6 +18,7 @@ self.onmessage = async (e) => {
         const {type, payload} = data
         /**@type{ExpenseType} */
         const item = payload
+
         /**@type{UpdateTravelInfoType}*/
         let updateTravelInfo = await storeDB.getOne(constants.store.UPDATED_TRAVEL_INFO, item.primary_entity_id)
         if (!updateTravelInfo) updateTravelInfo = defaultUpdateTravelInfo(item.primary_entity_id)
@@ -35,20 +37,19 @@ self.onmessage = async (e) => {
             let cursor = await service.getCursor()
             /**@type{Pick<ExpenseType, 'section_id'|'personal'|'created_at'|'currency'|'value'>[]}*/
             const expensesList = []
+
             while (cursor) {
                 /**@type{ExpenseType}*/
                 const expense = cursor.value
                 if (expense.primary_entity_id === item.primary_entity_id) {
                     const {currency, created_at, personal, section_id, value} = expense
-                    const exchangeKey = new Date(created_at).toISOString().split('T').shift().split('-').reverse().join('.')
+                    const exchangeKey = dateToCurrencyKey(created_at)
                     expensesList.push({currency, created_at: exchangeKey, personal, section_id, value})
                 }
-
                 cursor = await cursor.continue();
             }
 
-            console.log(expensesList)
-            expensesList.map(async (expense) => {
+            const promises = expensesList.map(async (expense) => {
                 /**@type{ExchangeType}*/
                 const exchange = await storeDB.getOne(constants.store.CURRENCY, expense.created_at)
                 const exchangeForDate = exchange.value.find(ex => ex.symbol === expense.currency)
@@ -70,12 +71,14 @@ self.onmessage = async (e) => {
                 }
             })
 
+            await Promise.all(promises)
+
             isPlan
                 ? updateTravelInfo.planned_list = Array.from(map.values())
                 : updateTravelInfo.actual_list = Array.from(map.values())
             updateTravelInfo.updated_at = Date.now()
-            console.log(updateTravelInfo)
-            storeDB.editElement(constants.store.UPDATED_TRAVEL_INFO, updateTravelInfo)
+
+            await storeDB.editElement(constants.store.UPDATED_TRAVEL_INFO, updateTravelInfo)
                 .catch(console.error)
         }
 

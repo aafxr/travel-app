@@ -15,7 +15,7 @@ import './Select.css'
  * @param {string} className css class
  * @param {number} size количество отображаемых опций
  * @param {boolean} border флаг, добавляет стиль border
- * @param {function} onChange callback, вызывается при изменении состояния компонента
+ * @param {(value: string) => void} onChange callback, вызывается при изменении состояния компонента
  * @param props other props
  * @param {React.Ref} ref react ref
  * @returns {JSX.Element}

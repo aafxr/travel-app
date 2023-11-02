@@ -1,17 +1,15 @@
 import React, { useEffect, useState} from 'react'
-import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
 
-import AddButton from "../../../../components/ui/AddButtom/AddButton";
+import combineExpensesForSectionComponent from "../../helpers/combineExpensesForSectionComponent";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
+import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import Section from "../../components/Section/Section";
-
-import constants from "../../../../static/constants";
-import useFilteredExpenses from "../../hooks/useFilteredExpenses";
 import {defaultFilterValue} from "../../static/vars";
-import updateExpenses from "../../helpers/updateExpenses";
-import {actions} from "../../../../redux/store";
+import constants from "../../../../static/constants";
+
 import '../../css/Expenses.css'
 
 
@@ -23,62 +21,41 @@ import '../../css/Expenses.css'
  * @category Pages
  */
 export default function ExpensesPlan() {
-    const {travelCode: primary_entity_id} = useParams()
-    const {sections, limits, expensesPlan} = useSelector(state => state[constants.redux.EXPENSES])
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    const {user} = useUserSelector()
+    const {travel} = useTravelContext()
+    const [filter, setFilter] = useState(/**@type{ExpenseFilterType} */defaultFilterValue)
+    const [sectionComponentData, setSectionComponentData] = useState(/**@type{SectionComponentDataType[]} */[])
 
     const [noDataMessage, setNoDataMessage] = useState('')
 
-    const [filter, setFilter] = useState(defaultFilterValue)
 
-    const user_id = user.id
+    /** загрузка расходов из бд */
+    useEffect(() => {
+        setTimeout(() => setNoDataMessage('Нет расходов'), 2000)
+    }, [travel])
 
     useEffect(() => {
-            setTimeout(() => setNoDataMessage('Нет расходов'), 1000)
-            updateExpenses( primary_entity_id, "plan")
-                .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
-    }, [dispatch, primary_entity_id])
+        combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id)
+            .then(setSectionComponentData)
+    }, [travel, filter])
 
-    const {filteredExpenses, limitsList, sectionList} = useFilteredExpenses(expensesPlan, limits, filter, user_id)
-
-    const sectionLimit = function (section) {
-        if (filter !== 'all') {
-            return limitsList.find(l => l.section_id === section.id) || null
-        } else {
-            const value = limitsList
-                .filter(l => (
-                    l.section_id === section.id
-                    && (l.personal === 0 || l.user_id === user_id)
-                ))
-                .map(l => l.value)
-                .reduce((acc, l) => acc + l, 0)
-
-            return {
-                id: Date.now(),
-                value
-            }
-        }
-    }
+    console.log(sectionComponentData)
 
 
     return (
         <>
             <Container className='pt-20 content column gap-1'>
-                <AddButton to={`/travel/${primary_entity_id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
+                <AddButton to={`/travel/${travel.id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
                 {
-                    sectionList && !!sectionList.length
-                        ? sections
-                            .filter(s => sectionList.includes(s.id))
-                            .map(section => (
-                                <Section
-                                    key={section.id}
-                                    section={section}
-                                    expenses={filteredExpenses.filter(e => e.section_id === section.id)}
-                                    sectionLimit={sectionLimit}
-                                    user_id={user_id}
-                                />
-                            ))
+                    sectionComponentData.length > 0
+                        ? sectionComponentData.map(sk => (
+                            <Section
+                                key={sk}
+                                {...sk}
+                                user_id={user.id}
+                                line
+                            />
+                        ))
                         : <div>{noDataMessage}</div>
                 }
             </Container>

@@ -151,6 +151,7 @@ export default class Travel extends BaseTravel {
                     this._update()
                 }
             }
+
             /**@type{WorkerMessageType}*/
             const message = type === "actual"
                 ? {type: "update-expenses-actual", payload: item}
