@@ -68,7 +68,7 @@ export default async function combineExpensesForSectionComponent(storeName, filt
 
 
     const expenses = await storeDB.getAllFromIndex(storeName, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
-    const expenseMap = getSectionsList(expenses, filter)
+    const expenseMap = getSectionsList(expenses, filter, user_id)
 
     /**@type{SectionComponentDataType[]}*/
     const result = []
@@ -93,10 +93,11 @@ export default async function combineExpensesForSectionComponent(storeName, filt
  * @name getSectionsList
  * @param {ExpenseType[]} expenses
  * @param {ExpenseFilterType} filter
+ * @param {string} user_id
  * @returns {Map<string, ExpenseType[]>}
  * @category Hooks
  */
-function getSectionsList(expenses, filter) {
+function getSectionsList(expenses, filter, user_id) {
     /**@type {Map<string, ExpenseType[]>}*/
     const map = new Map()
 
@@ -117,8 +118,8 @@ function getSectionsList(expenses, filter) {
         expenses.forEach(e => addExpenseToMap(map, e))
     } else if (filter === "Common") {
         expenses.forEach(e => e.personal === 0 && addExpenseToMap(map, e))
-    } else if (filter === "personal") {
-        expenses.forEach(e => e.personal === 1 && addExpenseToMap(map, e))
+    } else if (filter === "Personal") {
+        expenses.forEach(e => e.personal === 1 && e.user_id === user_id && addExpenseToMap(map, e))
     }
 
     return map

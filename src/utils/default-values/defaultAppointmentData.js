@@ -1,4 +1,4 @@
-import createId from "./createId";
+import createId from "../createId";
 
 /**
  * Функция возвращает дефольные данные встречи

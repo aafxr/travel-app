@@ -131,43 +131,6 @@ if (ServiceWorker in window) {
     navigator.serviceWorker.ready.then(registration => console.log(registration))
 }
 
-// function inside(point, vs) {
-//     // ray-casting algorithm based on
-//     // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
-//
-//     const x = point[0], y = point[1];
-//
-//     let inside = false;
-//     for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-//         const xi = vs[i][0], yi = vs[i][1];
-//         const xj = vs[j][0], yj = vs[j][1];
-//
-//         const intersect = ((yi > y) !== (yj > y))
-//             && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-//         if (intersect) inside = !inside;
-//     }
-//
-//     return inside;
-// }
-//
-// const polygon = [
-//     [1, 1], [1, 2], [2, 2], [2, 1]
-// ]
-//
-// const points = [
-//     [1.5, 1.5],
-//     [0.5, 1.5],
-//     [1.5, 2.5],
-//     [0.5, 0.5],
-//     [1.0, 1.99]
-// ]
-//
-// points.forEach(p => {
-//     inside(p, polygon)
-//         ? console.log(`Point ${p} is inside polygon`)
-//         : console.log(`Point ${p} is outside polygon`)
-// })
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

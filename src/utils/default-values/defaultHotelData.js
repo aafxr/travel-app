@@ -1,4 +1,4 @@
-import createId from "./createId";
+import createId from "../createId";
 
 /** Утилита генерирует новые данные об отеле
  * @param {string} [hotel_id]

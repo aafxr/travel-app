@@ -6,7 +6,7 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
-import defaultHotelData from "../../../../utils/defaultHotelData";
+import defaultHotelData from "../../../../utils/default-values/defaultHotelData";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";

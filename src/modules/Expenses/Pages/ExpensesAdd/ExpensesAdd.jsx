@@ -156,10 +156,10 @@ export default function ExpensesAdd({
         }
 
 
-        if (isPlan) {
-            await updateLimits(primary_entity_id, user_id)()
-                .catch(defaultHandleError)
-        }
+        // if (isPlan) {
+        //     await updateLimits(primary_entity_id, user_id)()
+        //         .catch(defaultHandleError)
+        // }
         navigate(-1)
     }
 

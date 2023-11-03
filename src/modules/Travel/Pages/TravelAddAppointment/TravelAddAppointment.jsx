@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
-import defaultAppointmentData from "../../../../utils/defaultAppointmentData";
+import defaultAppointmentData from "../../../../utils/default-values/defaultAppointmentData";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import Container from "../../../../components/Container/Container";
