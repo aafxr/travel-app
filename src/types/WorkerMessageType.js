@@ -12,6 +12,7 @@
 /**
  *
  * @typedef WorkerMessageType
+ * @template T
  * @property {WMessageType} type
- * @property payload
+ * @property {T} payload
  */

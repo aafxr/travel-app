@@ -20,6 +20,7 @@ export default function useExpense(id, type = 'plan') {
     useEffect(() => {
         const isPlan = type === 'plan'
         const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
+
         storeDB.getOne(storeName, id)
             .then(e => e && setExpense(e))
             .catch(() => setExpense(defaultExpense(travel.id, user.id)))

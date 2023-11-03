@@ -147,12 +147,12 @@ export default function ExpensesAdd({
 
         if (expensesType === 'actual') {
             edit
-                ? travel.expenses.actual.update(newExpense, user.id).catch(defaultHandleError)
-                : travel.expenses.actual.create(newExpense, user.id).catch(defaultHandleError)
+                ? await travel.expenses.actual.update(newExpense, user.id).catch(defaultHandleError)
+                : await travel.expenses.actual.create(newExpense, user.id).catch(defaultHandleError)
         } else if (expensesType === 'plan') {
             edit
-                ? travel.expenses.planned.update(newExpense, user.id).catch(defaultHandleError)
-                : travel.expenses.planned.create(newExpense, user.id).catch(defaultHandleError)
+                ? await travel.expenses.planned.update(newExpense, user.id).catch(defaultHandleError)
+                : await travel.expenses.planned.create(newExpense, user.id).catch(defaultHandleError)
         }
 
 

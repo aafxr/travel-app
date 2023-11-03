@@ -9,15 +9,25 @@ import dateToCurrencyKey from "../utils/dateToCurrencyKey";
 
 
 /**
- * @param {MessageEvent<WorkerMessageType>} e
+ * @param {MessageEvent<WorkerMessageType<{item: ExpenseType, user_id: string}>>} e
  */
 self.onmessage = async (e) => {
+    console.log('worker-expenses-total-update.js')
     try {
-
         const {data} = e
         const {type, payload} = data
-        /**@type{ExpenseType} */
-        const item = payload
+        const {item, user_id} = payload
+
+        if (!user_id) {
+            const error = new Error('Payload should contain field "user_id"')
+            self.postMessage({type: 'error', payload: error})
+            return
+        }
+        if (!item) {
+            const error = new Error('Payload should contain field "item"')
+            self.postMessage({type: 'error', payload: error})
+            return
+        }
 
         /**@type{UpdateTravelInfoType}*/
         let updateTravelInfo = await storeDB.getOne(constants.store.UPDATED_TRAVEL_INFO, item.primary_entity_id)
@@ -35,16 +45,16 @@ self.onmessage = async (e) => {
             const map = new Map()
 
             let cursor = await service.getCursor()
-            /**@type{Pick<ExpenseType, 'section_id'|'personal'|'created_at'|'currency'|'value'>[]}*/
+            /**@type{Pick<ExpenseType, 'section_id'|'personal'|'created_at'|'currency'|'value'|'user_id'>[]}*/
             const expensesList = []
 
             while (cursor) {
                 /**@type{ExpenseType}*/
                 const expense = cursor.value
                 if (expense.primary_entity_id === item.primary_entity_id) {
-                    const {currency, created_at, personal, section_id, value} = expense
+                    const {currency, created_at, personal, section_id, value, user_id} = expense
                     const exchangeKey = dateToCurrencyKey(created_at)
-                    expensesList.push({currency, created_at: exchangeKey, personal, section_id, value})
+                    expensesList.push({currency, created_at: exchangeKey, personal, section_id, value, user_id})
                 }
                 cursor = await cursor.continue();
             }
@@ -56,18 +66,22 @@ self.onmessage = async (e) => {
                 const exchangeVal = exchangeForDate ? exchangeForDate.value : 1
 
                 if (map.has(expense.section_id)) {
-                    expense.personal === 1
-                        ? map.get(expense.section_id).personal.total += (expense.value || 0)
-                        : map.get(expense.section_id).common.total += (expense.value || 0)
+                    if (expense.personal === 1 && expense.user_id === user_id){
+                        map.get(expense.section_id).personal.total += (expense.value || 0)
+                    } else if(expense.personal === 0){
+                        map.get(expense.section_id).common.total += (expense.value || 0)
+                    }
                 } else {
                     /**@type{{common: TotalBySectionType, personal: TotalBySectionType}}*/
                     const newVal = defaultTotalBySectionValue(expense.section_id)
 
-                    expense.personal === 1
-                        ? newVal.personal.total += (expense.value || 0) * exchangeVal
-                        : newVal.common.total += (expense.value || 0) * exchangeVal
-
-                    map.set(expense.section_id, newVal)
+                    if (expense.personal === 1 && expense.user_id === user_id){
+                        newVal.personal.total += (expense.value || 0) * exchangeVal
+                        map.set(expense.section_id, newVal)
+                    } else if(expense.personal === 0){
+                        newVal.common.total += (expense.value || 0) * exchangeVal
+                        map.set(expense.section_id, newVal)
+                    }
                 }
             })
 

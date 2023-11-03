@@ -122,15 +122,15 @@ export default class Travel extends BaseTravel {
         const extra = ErrorReport.getExtraInfo()
         const error = {time, message, stack, ...extra}
 
+        console.error(err)
         storeDB
             .addElement(constants.store.ERRORS, error)
             .then(() => {
                 ErrorReport
                     .sendError(err)
-                    .catch(() => {
-                    })
+                    .catch(console.error)
             })
-            .catch(() => pushAlertMessage({type: "danger", message: 'Произошла неизвестная ошибка'}))
+            .finally(() => pushAlertMessage({type: "danger", message: 'Произошла неизвестная ошибка'}))
 
     }
 
@@ -144,13 +144,21 @@ export default class Travel extends BaseTravel {
     _onChangeExpense(type, item) {
         if ((type === 'actual' || type === 'planned') && item && item.primary_entity_id) {
             const worker = new Worker(new URL('../workers/worker-expenses-total-update.js', import.meta.url))
+
             worker.onerror = this._errorHandle
+
             /**@param{MessageEvent<WorkerMessageType>} e */
             worker.onmessage = (e) => {
+                // debugger
                 if (e.data.type === 'done') {
                     console.log(e.data)
+                    if (type === 'planned'){
+                        this._onChangeLimit()
+                    }
                     worker.terminate()
                     this._update()
+                } else if (e.data.type === 'error'){
+                    this._errorHandle(e.data.payload)
                 }
             }
 
@@ -165,18 +173,21 @@ export default class Travel extends BaseTravel {
     /**
      * метод пересчета лимитов
      * @method
-     * @name Travel._onChangeExpense
+     * @name Travel._onChangeLimit
      * @private
      */
-    _onChangeLimmit() {
-        const worker = new Worker(new URL('../workers/worker-limit-update.js', import.meta.url))
+    _onChangeLimit() {
+        const worker = new Worker(new URL('../workers/worker-limits-update.js', import.meta.url))
         worker.onerror = this._errorHandle
         /**@param{MessageEvent<WorkerMessageType>} e */
         worker.onmessage = (e) => {
+
             if (e.data.type === 'done') {
                 console.log(e.data)
                 worker.terminate()
                 this._update()
+            } else if (e.data.type === 'error'){
+                this._errorHandle(e.data.payload)
             }
         }
 

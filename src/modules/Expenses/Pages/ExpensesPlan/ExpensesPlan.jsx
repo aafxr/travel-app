@@ -35,13 +35,13 @@ export default function ExpensesPlan() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id)
+        combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id, user.id)
             .then(setSectionComponentData)
     }, [travel, filter])
 
     useEffect(() => {
         function sub(){
-            combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id)
+            combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id, user.id)
                 .then(setSectionComponentData)
         }
         travel.onUpdate(sub)
@@ -64,6 +64,7 @@ export default function ExpensesPlan() {
                                 {...sk}
                                 user_id={user.id}
                                 line
+                                planed
                             />
                         ))
                         : <div>{noDataMessage}</div>

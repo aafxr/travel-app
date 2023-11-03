@@ -5,15 +5,27 @@ import BaseService from "../classes/BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 
-
+/**
+ * @param {MessageEvent<WorkerMessageType<{primary_entity_id: string, user_id: string}>>} e
+ */
 self.onmessage = async (e) => {
+    console.log('worker-limits-update.js')
     try {
 
         const {data} = e
         const {type, payload} = data
-        /**@type{{primary_entity_id: string, user_id: string}} */
-        const t = payload
-        const {primary_entity_id, user_id} = t
+        const {primary_entity_id, user_id} = payload
+
+        if (!user_id) {
+            const error = new Error('Payload should contain field "user_id"')
+            self.postMessage({type: 'error', payload: error})
+            return
+        }
+        if (!primary_entity_id) {
+            const error = new Error('Payload should contain field "primary_entity_id"')
+            self.postMessage({type: 'error', payload: error})
+            return
+        }
 
         if (type === 'update-limit' && payload) {
             const limitService = new BaseService(constants.store.LIMIT)
@@ -56,9 +68,6 @@ self.onmessage = async (e) => {
                         cursor = await cursor.continue()
                     }
                 }
-
-
-
             }
         }
 

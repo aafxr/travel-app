@@ -16,9 +16,10 @@ import defaultUpdateTravelInfo from "../../../utils/defaultUpdateTravelInfo";
  * @param {string} storeName
  * @param {ExpenseFilterType} filter
  * @param {string} primary_entity_id
+ * @param {string} user_id
  * @returns {Promise<SectionComponentDataType[]>}
  */
-export default async function combineExpensesForSectionComponent(storeName, filter, primary_entity_id) {
+export default async function combineExpensesForSectionComponent(storeName, filter, primary_entity_id, user_id) {
     const isPersonal = filter === 'personal' ? 1 : 0
     const isActual = constants.store.EXPENSES_ACTUAL === storeName
     const isPlan = constants.store.EXPENSES_PLAN === storeName
@@ -42,18 +43,18 @@ export default async function combineExpensesForSectionComponent(storeName, filt
         return []
     }
 
-    list.map(a =>
+    list.map(u =>
         isPersonal
-            ? a.personal
-            : a.common
-    ).forEach(a => totalSectionMap.set(a.section_id, a.total))
+            ? u.personal
+            : u.common
+    ).forEach(u => totalSectionMap.set(u.section_id, u.total))
 
     /**@type{Map<string, string>}*/
     const sectionMap = new Map();
 
     /**@type{SectionType[]}*/
     const sections = await storeDB.getAll(constants.store.SECTION)
-        sections.map(s => sectionMap.set(s.id, s.title))
+    sections.map(s => sectionMap.set(s.id, s.title))
 
     /**@type{LimitType[]}*/
     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
@@ -75,7 +76,7 @@ export default async function combineExpensesForSectionComponent(storeName, filt
     for (const [section_id, expenses] of expenseMap.entries()) {
         result.push({
             expenses,
-            limit: limitsMap.get(section_id) || 0,
+            limit: limitsMap.get(section_id)?.value || 0,
             title: sectionMap.get(section_id) || '',
             total: totalSectionMap.get(section_id) || 0,
             section_id,

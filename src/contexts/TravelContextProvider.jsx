@@ -7,6 +7,7 @@ import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 import Travel from "../classes/Travel";
 import useUpdate from "../hooks/useUpdate";
+import useUserSelector from "../hooks/useUserSelector";
 
 /**
  * @name TravelContextType
@@ -36,12 +37,13 @@ export const TravelContext = createContext(defaultTravel)
 export default function TravelContextProvider() {
     const [loading, setLoading] = useState(true)
     const [state, setState] = useState(defaultTravel)
+    const {user} = useUserSelector()
     const update = useUpdate()
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (travelCode && (!state.travel || state.travel.id !== travelCode)) {
+        if (user && travelCode && (!state.travel || state.travel.id !== travelCode)) {
             setLoading(true)
             storeDB.onReadySubscribe(() => {
                 storeDB
@@ -51,6 +53,7 @@ export default function TravelContextProvider() {
                         const t = item
                             ?  new Travel(item)
                             :  null
+                        t.setUser(user.id)
                         if (t) t.onUpdate(update)
                         setState({travel: t})
                     })
@@ -59,7 +62,7 @@ export default function TravelContextProvider() {
         return () => {
             if (state.travel) state.travel.offUpdate(update)
         }
-    }, [travelCode])
+    }, [travelCode, user])
 
     if (state.travel) {
         window.travel = state.travel
