@@ -479,6 +479,35 @@ export class LocalDB {
         throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
+    // transaction(storeNames){
+    //     return new Promise((resolve, reject) => {
+    //         let openRequest = indexedDB.open(this.dbname, this.version);
+    //
+    //         openRequest.onerror = reject
+    //         openRequest.onsuccess = function() {
+    //             let db = openRequest.result;
+    //             const tx = db.transaction(storeNames, "readwrite")
+    //             return {
+    //                 /**
+    //                  * @param {string} name
+    //                  * @returns {IDBObjectStore}
+    //                  */
+    //                 store(name){
+    //                     const _store = tx.objectStore(name)
+    //                     return class {
+    //                         add(item){
+    //                             /**@type{IDBRequest<IDBValidKey>}*/
+    //                             const req = _store.add(item)
+    //                             req.onerror = reject
+    //                             req.onsuccess = (e) => e.result
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     })
+    // }
+
 
     /**
      * метод для создания транзакции

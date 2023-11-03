@@ -16,6 +16,7 @@ import Expense from "./classes/Expense";
 import createId from "./utils/createId";
 import sleep from "./utils/sleep";
 import Travel from "./classes/Travel";
+import {pushAlertMessage} from "./components/Alerts/Alerts";
 
 
 let theme = localStorage.getItem(THEME)
@@ -130,6 +131,12 @@ serviceWorkerRegistration.register()
 if (ServiceWorker in window) {
     navigator.serviceWorker.ready.then(registration => console.log(registration))
 }
+
+
+document.addEventListener('devicemotion',/** @param {DeviceMotionEvent} e */(e) => {
+    const {x, y, z} = e.acceleration
+    pushAlertMessage({type: "info", message:`Device move: (${x}, ${y}, ${z})`})
+})
 
 
 // If you want to start measuring performance in your app, pass a function

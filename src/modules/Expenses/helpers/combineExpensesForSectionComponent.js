@@ -83,6 +83,7 @@ export default async function combineExpensesForSectionComponent(storeName, filt
         })
     }
 
+    console.log(result)
     return result
 }
 

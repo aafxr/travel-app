@@ -7,6 +7,7 @@ import aFetch from "../axios";
 
 console.log('====worker=====')
 
+
 function fetchActions(message) {
     functionDurationTest(getActionsList.bind(null, message), '[Worker] Время обработки actions: ')
 }

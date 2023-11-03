@@ -179,7 +179,7 @@ export default class Travel extends BaseTravel {
      * @private
      */
     _onChangeLimit() {
-        const worker = new Worker(new URL('../workers/worker-limits-update.js', import.meta.url))
+        const worker = new Worker(new URL('../workers/w2-update-limits.js', import.meta.url))
         worker.onerror = this._errorHandle
         /**@param{MessageEvent<WorkerMessageType>} e */
         worker.onmessage = (e) => {
