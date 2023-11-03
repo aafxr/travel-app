@@ -15,6 +15,7 @@ import Line from "../Line/Line";
 
 import './Section.css'
 import useTravelContext from "../../../../hooks/useTravelContext";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * @function
@@ -119,7 +120,8 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
  */
 function SectionItem({expense, isPlan, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
-    const dispatch = useDispatch()
+    const {travel} = useTravelContext()
+    // const dispatch = useDispatch()
     const navigate = useNavigate();
 
     let time = dateToStringFormat(datetime)
@@ -131,18 +133,9 @@ function SectionItem({expense, isPlan, user_id}) {
 
     async function handleRemove() {
         if (expense) {
-            const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-
-            await storeDB.removeElement(storeName, expense.id).catch(console.error)
-            await storeDB.addElement(
-                constants.store.EXPENSES_ACTIONS,
-                createAction(storeName, user_id, 'remove', expense)
-            )
-
-            const action = isPlan
-                ? actions.expensesActions.removeExpensePlan
-                : actions.expensesActions.removeExpenseActual
-            dispatch(action(expense))
+            isPlan
+                ? await travel.expenses.planned.delete(expense, user_id).catch(defaultHandleError)
+                : await travel.expenses.actual.delete(expense, user_id).catch(defaultHandleError)
             pushAlertMessage({type: 'success', message: `Успешно удалено`})
         }
     }

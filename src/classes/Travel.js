@@ -152,12 +152,14 @@ export default class Travel extends BaseTravel {
                 // debugger
                 if (e.data.type === 'done') {
                     console.log(e.data)
-                    if (type === 'planned'){
+                    if (type === 'planned') {
                         this._onChangeLimit()
+                        worker.terminate()
+                    } else {
+                        this._update()
+                        worker.terminate()
                     }
-                    worker.terminate()
-                    this._update()
-                } else if (e.data.type === 'error'){
+                } else if (e.data.type === 'error') {
                     this._errorHandle(e.data.payload)
                 }
             }
@@ -186,7 +188,7 @@ export default class Travel extends BaseTravel {
                 console.log(e.data)
                 worker.terminate()
                 this._update()
-            } else if (e.data.type === 'error'){
+            } else if (e.data.type === 'error') {
                 this._errorHandle(e.data.payload)
             }
         }
