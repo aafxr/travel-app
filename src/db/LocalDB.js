@@ -2,6 +2,7 @@ import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import sleep from "../utils/sleep";
 import ErrorReport from "../controllers/ErrorReport";
+import TransactionObjectStore from "./TransactionObjectStore";
 
 
 /**
@@ -479,152 +480,33 @@ export class LocalDB {
         throw new Error(`[DB/${this.dbname}]: Store '${storeName}' not exist`)
     }
 
-    // transaction(storeNames){
-    //     return new Promise((resolve, reject) => {
-    //         let openRequest = indexedDB.open(this.dbname, this.version);
-    //
-    //         openRequest.onerror = reject
-    //         openRequest.onsuccess = function() {
-    //             let db = openRequest.result;
-    //             const tx = db.transaction(storeNames, "readwrite")
-    //             return {
-    //                 /**
-    //                  * @param {string} name
-    //                  * @returns {IDBObjectStore}
-    //                  */
-    //                 store(name){
-    //                     const _store = tx.objectStore(name)
-    //                     return class {
-    //                         add(item){
-    //                             /**@type{IDBRequest<IDBValidKey>}*/
-    //                             const req = _store.add(item)
-    //                             req.onerror = reject
-    //                             req.onsuccess = (e) => e.result
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         };
-    //     })
-    // }
-
-
     /**
-     * метод для создания транзакции
-     * @param {string[]} stores
-     * @param {IDBTransactionMode} mode
-     * @deprecated
+     * @method
+     * @name @LocalDB.transaction
+     * @param {Array.<string>} storeNames
+     * @returns {Promise<IDBTransaction>}
      */
-    transaction(stores, mode) {
-        const dbname = this.dbname
-        const version = this.version
-        const schema = this.stores
+    transaction(storeNames){
+        return new Promise((resolve, reject) => {
+            let openRequest = indexedDB.open(this.dbname, this.version);
 
-        let currentStore = stores[0]
-        /**
-         * @typedef {Object} OperationType
-         * @property {string} store
-         * @property {'add' | 'update' | 'delete'} method
-         * @property  payload
-         */
-        /**@type {OperationType[]}*/
-        const operations = []
-
-        /**
-         * @param {string} store
-         * @param  item
-         * @param {'add' | 'put' | 'delete'} method
-         * @private
-         */
-        function _pushOperation(item, store, method) {
-            if (typeof store === 'string' && stores.includes(store)) {
-                operations.push({store, payload: item, method: 'add'})
-            } else if (typeof store === 'undefined' && currentStore) {
-                operations.push({store: currentStore, payload: item, method: 'add'})
-            } else {
-                console.warn(`"${store}" не содержится в массиве "${stores}"`)
+            openRequest.onerror = reject
+            openRequest.onsuccess = function() {
+                let db = openRequest.result;
+                const tx = db.transaction(storeNames, "readwrite")
+                resolve(tx)
             }
-        }
-
-        return {
-            /**
-             * @param {string} store
-             */
-            setStore(store) {
-                if (typeof store === 'string' && stores.includes(store)) {
-                    currentStore = store
-                } else {
-                    console.warn(`"${store}" не содержится в массиве "${stores}"`)
-                }
-                return this
-            },
-            /**
-             * @param {string} [store]
-             * @param  item
-             */
-            add(item, store) {
-                _pushOperation(item, store, 'add')
-                return this
-            },
-            /**
-             * @param {string} [store]
-             * @param  item
-             */
-            update(item, store) {
-                _pushOperation(item, store, 'put')
-                return this
-            },
-            /**
-             * @param {string} [store]
-             * @param  item
-             */
-            remove(item, store) {
-                _pushOperation(item, store, 'delete')
-                return this
-            },
-            /**
-             * @returns {Promise<boolean>}
-             */
-            done() {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        console.log(this)
-                        const db = await openDataBase(dbname, version, schema)
-
-                        const storeNames = []
-                        console.log(stores)
-                        for (let i = 0; i < db.objectStoreNames.length; i++) {
-                            const sni = db.objectStoreNames.item(i)
-                            // console.log(`${stores[0]} === ${sni}`, stores[0] === sni)
-                            // console.log(sni, ~stores.findIndex(s=> s === sni.name), sni.length)
-
-                            if (stores.includes(sni)) {
-                                storeNames.push(sni)
-                            }
-                        }
-                        console.log('--------------------')
-                        console.log(storeNames)
-                        console.log(stores)
-                        if (storeNames.length !== stores.length) {
-                            console.error(new Error('Один из элементов списка stores содержит не корректное имя таблицы'))
-                            resolve(false)
-                        }
-
-                        const trx = db.transaction(db.objectStoreNames, mode)
-                        await Promise.all(
-                            operations.map(o => {
-                                const store = trx.objectStore(o.store)
-                                return store[o.method](o.payload)
-                            })
-                        )
-
-                        resolve(true)
-                    } catch (err) {
-                        ErrorReport.sendError(err).catch(console.error)
-                        resolve(false)
-                    }
-                })
-            }
-        }
+        })
     }
 }
+
+// {
+//     /**
+//      * @param {string} name
+//      * @returns {TransactionObjectStore}
+//      */
+//     store(name) {
+//     const store = tx.objectStore(name)
+//     return new TransactionObjectStore(store)
+// }
+// }

@@ -60,8 +60,9 @@ self.onmessage = async (e) => {
             }
 
             const promises = expensesList.map(async (expense) => {
+                const query  = IDBKeyRange.upperBound(new Date(expense.created_at).getTime())
                 /**@type{ExchangeType}*/
-                const exchange = await storeDB.getOne(constants.store.CURRENCY, expense.created_at)
+                const exchange = await storeDB.getOne(constants.store.CURRENCY, query)
                 const exchangeForDate = exchange.value.find(ex => ex.symbol === expense.currency)
                 const exchangeVal = exchangeForDate ? exchangeForDate.value : 1
 

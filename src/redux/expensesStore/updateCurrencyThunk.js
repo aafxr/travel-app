@@ -16,13 +16,14 @@ export const updateCurrencyThunk = createAsyncThunk(
         try {
             let currencyList
             if (range) {
-                currencyList = await storeDB.getMany(constants.store.CURRENCY, IDBKeyRange.bound(range.date_start, range.date_end))
+                const query = IDBKeyRange.bound(new Date(range.date_start).getTime(), new Date(range.date_end).getTime())
+                currencyList = await storeDB.getMany(constants.store.CURRENCY, query)
             } else {
                 currencyList = await storeDB.getAll(constants.store.CURRENCY)
             }
             return currencyList.reduce((acc, c) => {
                 if (!['message', 'ok'].includes(c.date)){
-                    acc[c.date] = c.value
+                    acc[c.date] = new Date(c.value).getTime()
                 }
                 return acc
             }, {})

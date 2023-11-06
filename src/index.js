@@ -35,12 +35,7 @@ window.store = storeDB
 // const promises = range(0, 2000)
 //     .map(i => {
 //         const date = new Date(Date.now() - MS_IN_DAY * i)
-//             .toISOString()
-//             .split('T')
-//             .shift()
-//             .split('-')
-//             .reverse()
-//             .join('.')
+//             .getTime()
 //         /**@type{CurrencyType}*/
 //         const rub = {char_code:"RUB", name: 'Рубль', value: 1, num_code: 643, symbol: '₽'}
 //         /**@type{CurrencyType}*/

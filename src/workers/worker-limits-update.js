@@ -17,6 +17,7 @@ self.onmessage = async (e) => {
         const {type, payload} = data
         const {primary_entity_id, user_id} = payload
 
+
         if (!user_id) {
             const error = new Error('Payload should contain field "user_id"')
             self.postMessage({type: 'error', payload: error})
@@ -29,69 +30,94 @@ self.onmessage = async (e) => {
         }
 
         if (type === 'update-limit' && payload) {
-            const limitService = new BaseService(constants.store.LIMIT)
+            const tx = await storeDB
+                .transaction([constants.store.CURRENCY, constants.store.EXPENSES_PLAN])
 
-            /**@type{UpdateTravelInfoType}*/
-            const updatedTravelInfo = await storeDB.getOne(constants.store.UPDATED_TRAVEL_INFO, primary_entity_id)
-
-            if (updatedTravelInfo) {
-                /**@type{Map<string, number>}*/
-                const totalPersonalMap = new Map()
-
-                /**@type{Map<string, number>}*/
-                const totalCommonMap = new Map()
-
-                updatedTravelInfo.planned_list
-                    .forEach(u => {
-                        u.personal.total > 0 && totalPersonalMap.set(u.personal.section_id, u.personal.total)
-                        u.common.total > 0 && totalCommonMap.set(u.common.section_id, u.common.total)
-                    })
-
-                let cursor = await limitService.getCursor()
-
-                while (cursor) {
-                    /**@type{LimitType}*/
-                    const limit = cursor.value
-                    const luID = limit.id.split(':')[0]
-                    if (limit.primary_entity_id === primary_entity_id) {
-                        if (limit.personal === 1 && luID === user_id && totalPersonalMap.has(limit.section_id)) {
-                            const total = totalPersonalMap.get(limit.section_id)
-                            if (limit.value < total) {
-                                limit.value = total
-                            }
-                            totalPersonalMap.delete(limit.section_id)
-                        } else if (limit.personal === 0 && totalCommonMap.has(limit.section_id)) {
-                            const total = totalCommonMap.get(limit.section_id)
-                            if (limit.value < total) {
-                                limit.value = total
-                            }
-                            totalCommonMap.delete(limit.section_id)
-                        }
-                        cursor = await cursor.continue()
-                    }
-                }
-
-                console.log({
-                    totalCommonMap,
-                    totalPersonalMap
-                })
-                const cList = Array.from(totalCommonMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
-                const pList = Array.from(totalPersonalMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
-
-
-                await Promise.all(
-                    cList.map(l => limitService.create(l, user_id))
-                )
-
-                await Promise.all(
-                    pList.map(l => limitService.create(l, user_id))
-                )
+            const index = tx.objectStore(constants.store.EXPENSES_PLAN).index(constants.indexes.PRIMARY_ENTITY_ID)
+            /**@type{IDBRequest<IDBCursorWithValue>}*/
+            const requesCursor = index.openCursor(primary_entity_id)
+            requesCursor.onerror = (err) => {
+                /**@type{WorkerMessageType}*/
+                const msg = {type:'error', payload:err}
+                self.postMessage(msg)
             }
+            console.log('---------------------------------------------------------------------')
+            requesCursor.onsuccess = () => {
+                const cursor = requesCursor.result
+                if(cursor){
+                    console.log(cursor.value)
+                    cursor.continue()
+                } else {
+                    /**@type{WorkerMessageType}*/
+                    const message = {type: "done"}
+                    self.postMessage(message)
+                }
+            }
+            console.log('---------------------------------------------------------------------')
+        //
+        //     const limitService = new BaseService(constants.store.LIMIT)
+        //
+        //     /**@type{UpdateTravelInfoType}*/
+        //     const updatedTravelInfo = await storeDB.getOne(constants.store.UPDATED_TRAVEL_INFO, primary_entity_id)
+        //
+        //     if (updatedTravelInfo) {
+        //         /**@type{Map<string, number>}*/
+        //         const totalPersonalMap = new Map()
+        //
+        //         /**@type{Map<string, number>}*/
+        //         const totalCommonMap = new Map()
+        //
+        //         updatedTravelInfo.planned_list
+        //             .forEach(u => {
+        //                 u.personal.total > 0 && totalPersonalMap.set(u.personal.section_id, u.personal.total)
+        //                 u.common.total > 0 && totalCommonMap.set(u.common.section_id, u.common.total)
+        //             })
+        //
+        //         let cursor = await limitService.getCursor()
+        //
+        //         while (cursor) {
+        //             /**@type{LimitType}*/
+        //             const limit = cursor.value
+        //             const luID = limit.id.split(':')[0]
+        //             if (limit.primary_entity_id === primary_entity_id) {
+        //                 if (limit.personal === 1 && luID === user_id && totalPersonalMap.has(limit.section_id)) {
+        //                     const total = totalPersonalMap.get(limit.section_id)
+        //                     if (limit.value < total) {
+        //                         limit.value = total
+        //                     }
+        //                     totalPersonalMap.delete(limit.section_id)
+        //                 } else if (limit.personal === 0 && totalCommonMap.has(limit.section_id)) {
+        //                     const total = totalCommonMap.get(limit.section_id)
+        //                     if (limit.value < total) {
+        //                         limit.value = total
+        //                     }
+        //                     totalCommonMap.delete(limit.section_id)
+        //                 }
+        //                 cursor = await cursor.continue()
+        //             }
+        //         }
+        //
+        //         console.log({
+        //             totalCommonMap,
+        //             totalPersonalMap
+        //         })
+        //         const cList = Array.from(totalCommonMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
+        //         const pList = Array.from(totalPersonalMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
+        //
+        //
+        //         await Promise.all(
+        //             cList.map(l => limitService.create(l, user_id))
+        //         )
+        //
+        //         await Promise.all(
+        //             pList.map(l => limitService.create(l, user_id))
+        //         )
+        //     }
         }
 
-        /**@type{WorkerMessageType}*/
-        const message = {type: "done"}
-        self.postMessage(message)
+        // /**@type{WorkerMessageType}*/
+        // const message = {type: "done"}
+        // self.postMessage(message)
     } catch (err) {
         /**@type{WorkerMessageType}*/
         const message = {type: "error", payload: err}

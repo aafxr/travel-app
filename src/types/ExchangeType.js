@@ -1,7 +1,7 @@
 /**
  * @name ExchangeType
  * @typedef {Object} ExchangeType
- * @property {string} date
+ * @property {number} date
  * @property {CurrencyType[]} value
  * @category Types
  */

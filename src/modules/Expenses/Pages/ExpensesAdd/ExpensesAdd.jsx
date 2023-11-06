@@ -78,9 +78,9 @@ export default function ExpensesAdd({
     useEffect(() => {
         (async function () {
             if (expense) {
-                const key = dateToCurrencyKey(expense.datetime)
+                const key = new Date(expense.datetime).getTime()
                 /**@type{ExchangeType}*/
-                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(key))
                 let cr = res && res.value
 
                 const cur = cr.find(c => c.symbol === expense.currency) || cr[0]
@@ -91,9 +91,9 @@ export default function ExpensesAdd({
                 expense.currency && setExpCurr(cur.symbol)
                 setCurrency(cr)
             } else {
-                const key = dateToCurrencyKey(Date.now())
+                const key = Date.now()
                 /**@type{ExchangeType}*/
-                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.lowerBound(key))
+                let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(key))
                 setCurrency(res && res.value)
             }
         })()

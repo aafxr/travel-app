@@ -66,7 +66,7 @@ export default function LimitsEdit({
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
             const date = new Date().toLocaleDateString()
-            const curr = currency[date].reduce((a, c) => {
+            const curr = currency[date]?.reduce((a, c) => {
                 a[c.symbol] = c
                 return a
             }, {}) || {}

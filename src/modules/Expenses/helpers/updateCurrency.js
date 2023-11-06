@@ -36,7 +36,7 @@ export default async function updateCurrency(dispatch, range) {
         .then(res => res.data)
         .then(({ok, data}) => {
             if (ok){
-                const c = Object.keys(data).map(k => ({date: k, value: data[k]}))
+                const c = Object.keys(data).map(k => ({date: new Date(k).getTime(), value: data[k]}))
                 Promise.all(c
                     .map(item => storeDB.editElement(constants.store.CURRENCY, item))
                 ).then(() => {
