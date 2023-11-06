@@ -1,16 +1,11 @@
 import clsx from "clsx";
 import React from "react";
-import {useDispatch} from "react-redux";
 import {Link, useNavigate} from "react-router-dom";
 
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {formatter} from "../../../../utils/currencyFormat";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
-import createAction from "../../../../utils/createAction";
-import storeDB from "../../../../db/storeDB/storeDB";
-import constants from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
 import Line from "../Line/Line";
 
 import './Section.css'
@@ -62,7 +57,7 @@ function Section({
                 {
                     !!line && (
                         <>
-                            <Line value={limit ? percent : 0} color={color}/>
+                            <Line value={(!planed && limit) ? percent : 0} color={color}/>
                             {
                                 !!limit && limit > 0 && (
                                     <div className={'flex-between'}>

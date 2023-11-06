@@ -151,7 +151,6 @@ export default class Travel extends BaseTravel {
             worker.onmessage = (e) => {
                 // debugger
                 if (e.data.type === 'done') {
-                    console.log(e.data)
                     if (type === 'planned') {
                         this._onChangeLimit()
                         worker.terminate()
@@ -185,7 +184,6 @@ export default class Travel extends BaseTravel {
         worker.onmessage = (e) => {
 
             if (e.data.type === 'done') {
-                console.log(e.data)
                 worker.terminate()
                 this._update()
             } else if (e.data.type === 'error') {
