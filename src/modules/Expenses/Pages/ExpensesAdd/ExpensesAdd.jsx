@@ -83,12 +83,12 @@ export default function ExpensesAdd({
                 let res = await storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(key))
                 let cr = res && res.value
 
-                const cur = cr.find(c => c.symbol === expense.currency) || cr[0]
+                const cur = cr?.find(c => c.symbol === expense.currency) || (cr && cr[0]) || []
                 setExpName(expense.title)
                 setExpSum(expense.value.toString())
                 setSectionId(expense.section_id)
                 setPersonal(expense.personal === 1)
-                expense.currency && setExpCurr(cur.symbol)
+                expense.currency && setExpCurr(cur.symbol || '₽')
                 setCurrency(cr)
             } else {
                 const key = Date.now()
@@ -142,17 +142,18 @@ export default function ExpensesAdd({
             value: value,
             personal: personal ? 1 : 0,
             currency: expCurr,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            section_id: section_id
         }
 
         if (expensesType === 'actual') {
             edit
-                ? await travel.expenses.actual.update(newExpense, user.id).catch(defaultHandleError)
-                : await travel.expenses.actual.create(newExpense, user.id).catch(defaultHandleError)
+                ? await travel.expensesService.actual.update(newExpense, user.id).catch(defaultHandleError)
+                : await travel.expensesService.actual.create(newExpense, user.id).catch(defaultHandleError)
         } else if (expensesType === 'plan') {
             edit
-                ? await travel.expenses.planned.update(newExpense, user.id).catch(defaultHandleError)
-                : await travel.expenses.planned.create(newExpense, user.id).catch(defaultHandleError)
+                ? await travel.expensesService.planned.update(newExpense, user.id).catch(defaultHandleError)
+                : await travel.expensesService.planned.create(newExpense, user.id).catch(defaultHandleError)
         }
 
 
@@ -218,7 +219,7 @@ export default function ExpensesAdd({
                                             className='expenses-currency flex-0'
                                             value={expCurr ? expCurr : '₽'}
                                             defaultValue=''
-                                            options={currency.map(c => c.symbol)}
+                                            options={currency?.map(c => c.symbol)}
                                             onChange={handleCurrencyChange}
                                         />
                                     </div>

@@ -11,8 +11,6 @@ import constants, {USER_AUTH} from "../../../../static/constants";
 import {updateUser} from "../../../../redux/userStore/updateUser";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import {PageHeader, Tab} from "../../../../components/ui";
-import createAction from "../../../../utils/createAction";
-import storeDB from "../../../../db/storeDB/storeDB";
 import {actions} from "../../../../redux/store";
 import removeTravel from "../../../../utils/removeTravel";
 import Travel from "../../../../classes/Travel";
@@ -28,10 +26,7 @@ import Travel from "../../../../classes/Travel";
  * @returns {JSX.Element}
  * @category Pages
  */
-export default function TravelRoutes({
-                                         primary_entity_type,
-                                         primary_entity_id
-                                     }) {
+export default function TravelRoutes() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const {travelsType} = useParams()
@@ -70,8 +65,9 @@ export default function TravelRoutes({
             /** удаление путешествия из бд и добавление экшена об удалении */
             removeTravel(travel, user.id)
                 .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
+                .then(() => setTravels(travels.filter(t => t.id !== travel.id)))
                 /** обновление global store после успешного удаления */
-                .then(() => dispatch(actions.travelActions.removeTravel(travel)))
+                // .then(() => dispatch(actions.travelActions.removeTravel(travel)))
                 .catch(err => {
                     ErrorReport.sendError(err).catch(console.error)
                     pushAlertMessage({type: 'danger', message: 'Не удалось удалить путешествие'})

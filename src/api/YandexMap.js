@@ -5,42 +5,37 @@ import {pushAlertMessage} from "../components/Alerts/Alerts";
 import createId from "../utils/createId";
 
 /**
+ * @typedef {IMapOptionType} YandexMapOptionsType
+ */
+
+/**
  * интерфейс для работы с api yandex maps
  * @class
  * @extends IMap
  * @name YandexMap
  * @constructor
- * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
- * @param {string} mapContainerID       - id контецнера карты
- * @param {PointType[]} placemarks      - массив добавленных на карту точек, при вызове метода init
- * @param {object} map                  - инстанс карты созданный с помощью api
- * @param {HTMLScriptElement} script
- * @param {string} markerClassName      - класс для кастомного маркера на карте
- * @param {string} iconURL              - URL для кастомного маркера на карте
- *
- *
+ * @param {YandexMapOptionsType} options
  */
 export default class YandexMap extends IMap {
     /**
      * @constructor
-     * @param {string} suggestElementID     - id элемента для которого будут добавлены подсказки
-     * @param {string} mapContainerID       - id контецнера карты
-     * @param {PointType[]} placemarks      - массив добавленных на карту точек, при вызове метода init
-     * @param {object} map                  - инстанс карты созданный с помощью api
-     * @param {HTMLScriptElement} script
-     * @param {string} markerClassName      - класс для кастомного маркера на карте
-     * @param {string} iconURL              - URL для кастомного маркера на карте
+     * @param {YandexMapOptionsType} options
      */
-    constructor({
-                    suggestElementID,
-                    mapContainerID,
-                    placemarks,
-                    map,
-                    script,
-                    markerClassName,
-                    iconURL
-                }) {
+    constructor(options) {
         super();
+
+        const {
+            suggestElementID,
+            mapContainerID,
+            placemarks,
+            map,
+            script,
+            markerClassName,
+            iconURL,
+            onPointUpdate,
+            onPointClick,
+            onPointAdd
+        } = options
 
         if (this.instance) return this.instance
 
@@ -66,6 +61,10 @@ export default class YandexMap extends IMap {
         this.suggest = null
         this.setSuggestsTo(suggestElementID)
 
+        this._onPointUpdate = onPointUpdate || (() => {})
+        this._onPointClick = onPointClick || (() => {})
+        this._onPointAdd = onPointAdd || (() => {})
+
         /** массив с информацией о добавленных на карту точках */
         this.placemarks = placemarks.map(pm =>{
             pm.placemark = this._newPlacemark(pm.coords, pm.textAddress)
@@ -80,6 +79,103 @@ export default class YandexMap extends IMap {
 
         this.map.events.add('dragend', console.log)
         this.instance = this
+    }
+
+    /**
+     *
+     * @param {string} suggestElementID
+     * @param {string} api_key
+     * @param {string} mapContainerID
+     * @param {string} iconClass
+     * @param {string} iconURL
+     * @param {PointType[]} points
+     * @param {string} markerClassName
+     * @param {string} location
+     * @returns {Promise<YandexMap>}
+     */
+    static init({
+                    suggestElementID,
+                    api_key,
+                    mapContainerID,
+                    iconClass,
+                    iconURL,
+                    points,
+                    markerClassName,
+                    location,
+                }) {
+        return new Promise((resolve, reject) => {
+            if (!mapContainerID) reject(new Error('[YandexMap] mapContainerID is required'))
+
+            const element = document.getElementById(mapContainerID)
+            if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
+
+            if (window.ymaps) resolve(window.ymaps)
+            else {
+                const script = document.createElement('script')
+                script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU`//&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route
+
+                //добавление yandex maps api в htmlDOM
+                element.appendChild(script)
+
+                script.onload = () => resolve(window.ymaps)
+            }
+        })
+            .then(() => {
+                return new Promise(resolve => {
+                    window.ymaps.ready(() => {
+                        const map = new window.ymaps.Map(mapContainerID, {
+                            center: location || [55.03, 82.92],
+                            zoom: 7
+                        })
+                        resolve(new YandexMap({
+                            mapContainerID,
+                            suggestElementID,
+                            iconClass,
+                            placemarks: points || [],
+                            map,
+                            iconURL,
+                            markerClassName
+                        }))
+                    })
+                })
+
+            })
+    }
+
+    /**
+     * метод устанавливает колбэк на обновление информации о точке
+     * @set
+     * @name YandexMap.onPointUpdate
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointUpdate(cb){
+        if(typeof cb === 'function'){
+            this._onPointUpdate = cb
+        }
+    }
+
+    /**
+     * метод устанавливает колбэк на клик по точке
+     * @set
+     * @name YandexMap.onPointClick
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointClick(cb){
+        if(typeof cb === 'function'){
+            this._onPointClick = cb
+        }
+    }
+
+    /**
+     * метод устанавливает колбэк на добавление новой точки
+     * @set
+     * @name YandexMap.onPointAdd
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointAdd(cb){
+        if(typeof cb === 'function'){
+            this._onPointAdd = cb
+        }
     }
 
     /**
@@ -134,6 +230,7 @@ export default class YandexMap extends IMap {
         this.placemarks.push(markerInfo)
         this.map.geoObjects.add(markerInfo.placemark)
         this.autoZoom()
+        this._onPointAdd(markerInfo)
         return markerInfo
     }
 
@@ -151,6 +248,7 @@ export default class YandexMap extends IMap {
         }
 
         const coords = geoObject.geometry.getCoordinates()
+        console.log(geoObject.properties.getAll())
         const {
             text: address,
             kind
@@ -207,6 +305,7 @@ export default class YandexMap extends IMap {
                 if (el.dataset.id === pm.id) el.classList.add('input-highlight')
                 else el.classList.remove('input-highlight')
             })
+            this._onPointClick(pm)
         }
     }
 
@@ -248,8 +347,11 @@ export default class YandexMap extends IMap {
             /** удаление прежнего маркера с карты */
             this.map.geoObjects.remove(p)
             /** добавление точки с новыми координатами */
-            this.addMarker(coords, point.id)
-                .then(point => document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}})))
+            this.addMarker(coords, point.id.split(':').shift())
+                .then(point => {
+                    document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}}))
+                    this._onPointUpdate(point)
+                })
                 .catch(this._handleError.bind(this))
             // document.dispatchEvent(new CustomEvent('drag-point', {detail: {point, index: idx}}))
         }
@@ -289,6 +391,7 @@ export default class YandexMap extends IMap {
                     /** добавление маркера на карту */
                     this.map.geoObjects.add(newMarker.placemark)
                     this.autoZoom()
+                    this._onPointAdd(newMarker)
                     return newMarker
                 } else {
                     return null
@@ -302,7 +405,7 @@ export default class YandexMap extends IMap {
      * @method YandexMap.addMarkerByLocalCoords
      * @param {Array.<number,number>} coords
      */
-    addMarkerByLocalCoords(coords) {
+    async addMarkerByLocalCoords(coords) {
         if (!coords || !Array.isArray(coords) || coords.length !== 2)
             throw new Error(`
             [YandexMap] не коректный формат координат
@@ -318,7 +421,8 @@ export default class YandexMap extends IMap {
             this.map.converter.pageToGlobal(coords), this.map.getZoom()
         )
 
-        this.addMarker(transformedCoords)
+
+        return await this.addMarker(transformedCoords)
             .catch(this._handleError.bind(this))
     }
 
@@ -613,52 +717,3 @@ export default class YandexMap extends IMap {
 }
 
 //метод инициализации карты, возвращает экземпляр YandexMap.
-YandexMap.init = function init({
-                                   suggestElementID,
-                                   api_key,
-                                   mapContainerID,
-                                   coordsIDElement,
-                                   iconClass,
-                                   iconURL,
-                                   points,
-                                   markerClassName,
-                                   location,
-                               }) {
-    return new Promise((resolve, reject) => {
-        if (!mapContainerID) reject(new Error('[YandexMap] mapContainerID is required'))
-
-        const element = document.getElementById(mapContainerID)
-        if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
-
-        if (window.ymaps) resolve(window.ymaps)
-        else {
-            const script = document.createElement('script')
-            script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU`//&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route
-
-            //добавление yandex maps api в htmlDOM
-            element.appendChild(script)
-
-            script.onload = () => resolve(window.ymaps)
-        }
-    })
-        .then(() => {
-            return new Promise(resolve => {
-                window.ymaps.ready(() => {
-                    const map = new window.ymaps.Map(mapContainerID, {
-                        center: location || [55.03, 82.92],
-                        zoom: 7
-                    })
-                    resolve(new YandexMap({
-                        mapContainerID,
-                        suggestElementID,
-                        iconClass,
-                        placemarks: points || [],
-                        map,
-                        iconURL,
-                        markerClassName
-                    }))
-                })
-            })
-
-        })
-}

@@ -17,6 +17,33 @@ export default class IMap {
         throw new Error('Method "newPoint" should be override')
     }
 
+    /**
+     * метод устанавливает колбэк на обновление информации о точке
+     * @set
+     * @name IMap.onPointUpdate
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointUpdate(cb){
+    }
+
+    /**
+     * метод устанавливает колбэк на клик по точке
+     * @set
+     * @name IMap.onPointClick
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointClick(cb){
+    }
+
+    /**
+     * метод устанавливает колбэк на добавление новой точки
+     * @set
+     * @name IMap.onPointAdd
+     * @param {(p:PointType) => void} cb
+     */
+    set onPointAdd(cb){
+    }
+
     //управление маркерами (добавление, удаление, список)
     /**
      * дообавить точку на карт по координатам
@@ -33,9 +60,9 @@ export default class IMap {
      * добавить точку на карту по координатам блока-контейнера карты
      * @method IMap.addMarkerByLocalCoords
      * @param {Array.<number,number>} localCoords
-     * @returns {PointType | null}
+     * @returns {Promise<PointType | null>}
      */
-    addMarkerByLocalCoords(localCoords){
+    async addMarkerByLocalCoords(localCoords){
         console.warn('[IMap] addMarkerByLocalCoords not override')
     }
 

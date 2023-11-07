@@ -32,9 +32,12 @@ root.render(
 
 window.store = storeDB
 
+// const t = Date.now()
+// const time = t - t % MS_IN_DAY
 // const promises = range(0, 2000)
 //     .map(i => {
-//         const date = new Date(Date.now() - MS_IN_DAY * i)
+//
+//         const date = new Date(time - MS_IN_DAY * i)
 //             .getTime()
 //         /**@type{CurrencyType}*/
 //         const rub = {char_code:"RUB", name: 'Рубль', value: 1, num_code: 643, symbol: '₽'}

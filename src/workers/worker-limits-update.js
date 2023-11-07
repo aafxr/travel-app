@@ -5,6 +5,9 @@ import BaseService from "../classes/BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import createId from "../utils/createId";
+import defaultLimit from "../utils/default-values/defaultLimit";
+import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
+import getExchange from "./getExchange";
 
 /**
  * @param {MessageEvent<WorkerMessageType<{primary_entity_id: string, user_id: string}>>} e
@@ -33,6 +36,12 @@ self.onmessage = async (e) => {
             const tx = await storeDB
                 .transaction([constants.store.CURRENCY, constants.store.EXPENSES_PLAN])
 
+            /**@type{Map<string, Pick<ExpenseType, 'section_id' | 'value'|'currency'>>}*/
+            const personalExpensesMap = new Map()
+
+            /**@type{Map<string, Pick<ExpenseType, 'section_id' | 'value'|'currency'>>}*/
+            const commonExpensesMap = new Map()
+
             const index = tx.objectStore(constants.store.EXPENSES_PLAN).index(constants.indexes.PRIMARY_ENTITY_ID)
             /**@type{IDBRequest<IDBCursorWithValue>}*/
             const requesCursor = index.openCursor(primary_entity_id)
@@ -42,13 +51,6 @@ self.onmessage = async (e) => {
                 self.postMessage(msg)
             }
 
-            /**@type{Map<string, Pick<ExpenseType, 'section_id' | 'value'|'currency'>>}*/
-            const personalExpensesMap = new Map()
-
-            /**@type{Map<string, Pick<ExpenseType, 'section_id' | 'value'|'currency'>>}*/
-            const commonExpensesMap = new Map()
-
-            console.log('---------------------------------------------------------------------')
             requesCursor.onsuccess = async () => {
                 const cursor = requesCursor.result
                 if (cursor) {
@@ -75,22 +77,31 @@ self.onmessage = async (e) => {
                 } else {
                     const limitService = new BaseService(constants.store.LIMIT)
 
+                    console.log('before ', personalExpensesMap, commonExpensesMap)
+
                     /**@type{LimitType[]}*/
                     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
 
                     const promises = limits.map(l => {
-                        if (l.personal === 0 && l.value < commonExpensesMap.get(l.section_id)?.value) {
-                            l.value = commonExpensesMap.get(l.section_id).value
+                        if (l.personal === 0) {
+                            if (l.value < commonExpensesMap.get(l.section_id)?.value) {
+                                l.value = commonExpensesMap.get(l.section_id).value
+                                commonExpensesMap.delete(l.section_id)
+                                return limitService.update(l, user_id)
+                            }
                             commonExpensesMap.delete(l.section_id)
-                            return limitService.update(l, user_id)
                         } else if (
                             l.id.split(':').shift() === user_id
-                            && l.value < personalExpensesMap.get(l.section_id)?.value
+
                         ) {
-                            l.value = personalExpensesMap.get(l.section_id).value
+                            if (l.value < personalExpensesMap.get(l.section_id)?.value) {
+                                l.value = personalExpensesMap.get(l.section_id).value
+                                personalExpensesMap.delete(l.section_id)
+                                return limitService.update(l, user_id)
+                            }
                             personalExpensesMap.delete(l.section_id)
-                            return limitService.update(l, user_id)
                         }
+                        return null
                     })
 
                     await Promise.all(promises)
@@ -98,102 +109,28 @@ self.onmessage = async (e) => {
                     const cp = Array.from(commonExpensesMap.values())
                         .map((l) => {
                             /**@type{LimitType}*/
-                            const limit = {
-                                id: createId(user_id),
-                                section_id: l.section_id,
-                                value: l.value,
-                                personal: 0,
-                                primary_entity_id
-                            }
-                            return limitService.create(limit, user_id)
-                        })
-
-                    const pp = Array.from(personalExpensesMap.values())
-                        .map((l) => {
-                            /**@type{LimitType}*/
-                            const limit = {
-                                id: createId(user_id),
-                                section_id: l.section_id,
-                                value: l.value,
-                                personal: 0,
-                                primary_entity_id
-                            }
+                            const limit = defaultLimit(primary_entity_id, l.section_id, l.value, user_id, 0)
                             return limitService.create(limit, user_id)
                         })
 
                     await Promise.all(cp)
+                        .then(res => console.log('await Promise.all(cp) ', res))
+
+                    const pp = Array.from(personalExpensesMap.values())
+                        .map((l) => {
+                            /**@type{LimitType}*/
+                            const limit = defaultLimit(primary_entity_id, l.section_id, l.value, user_id, 1)
+                            return limitService.create(limit, user_id)
+                        })
                     await Promise.all(pp)
+                        .then(res => console.log('await Promise.all(pp) ', res))
 
                     /**@type{WorkerMessageType}*/
                     const message = {type: "done"}
                     self.postMessage(message)
                 }
             }
-            console.log('---------------------------------------------------------------------')
-            //
-            //     const limitService = new BaseService(constants.store.LIMIT)
-            //
-            //     /**@type{UpdateTravelInfoType}*/
-            //     const updatedTravelInfo = await storeDB.getOne(constants.store.UPDATED_TRAVEL_INFO, primary_entity_id)
-            //
-            //     if (updatedTravelInfo) {
-            //         /**@type{Map<string, number>}*/
-            //         const totalPersonalMap = new Map()
-            //
-            //         /**@type{Map<string, number>}*/
-            //         const totalCommonMap = new Map()
-            //
-            //         updatedTravelInfo.planned_list
-            //             .forEach(u => {
-            //                 u.personal.total > 0 && totalPersonalMap.set(u.personal.section_id, u.personal.total)
-            //                 u.common.total > 0 && totalCommonMap.set(u.common.section_id, u.common.total)
-            //             })
-            //
-            //         let cursor = await limitService.getCursor()
-            //
-            //         while (cursor) {
-            //             /**@type{LimitType}*/
-            //             const limit = cursor.value
-            //             const luID = limit.id.split(':')[0]
-            //             if (limit.primary_entity_id === primary_entity_id) {
-            //                 if (limit.personal === 1 && luID === user_id && totalPersonalMap.has(limit.section_id)) {
-            //                     const total = totalPersonalMap.get(limit.section_id)
-            //                     if (limit.value < total) {
-            //                         limit.value = total
-            //                     }
-            //                     totalPersonalMap.delete(limit.section_id)
-            //                 } else if (limit.personal === 0 && totalCommonMap.has(limit.section_id)) {
-            //                     const total = totalCommonMap.get(limit.section_id)
-            //                     if (limit.value < total) {
-            //                         limit.value = total
-            //                     }
-            //                     totalCommonMap.delete(limit.section_id)
-            //                 }
-            //                 cursor = await cursor.continue()
-            //             }
-            //         }
-            //
-            //         console.log({
-            //             totalCommonMap,
-            //             totalPersonalMap
-            //         })
-            //         const cList = Array.from(totalCommonMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
-            //         const pList = Array.from(totalPersonalMap).map(([section_id, value]) => defaultLimit(primary_entity_id, section_id, value))
-            //
-            //
-            //         await Promise.all(
-            //             cList.map(l => limitService.create(l, user_id))
-            //         )
-            //
-            //         await Promise.all(
-            //             pList.map(l => limitService.create(l, user_id))
-            //         )
-            //     }
         }
-
-        // /**@type{WorkerMessageType}*/
-        // const message = {type: "done"}
-        // self.postMessage(message)
     } catch (err) {
         /**@type{WorkerMessageType}*/
         const message = {type: "error", payload: err}
@@ -201,25 +138,3 @@ self.onmessage = async (e) => {
     }
 }
 
-/**
- * @param {IDBTransaction} transaction
- * @param {string | number} date
- * @returns {Promise<ExchangeType | null>}
- */
-function getExchange(transaction, date) {
-    return new Promise(res => {
-        const key = new Date(date).getTime()
-        const store = transaction.objectStore(constants.store.CURRENCY)
-
-        const req = store.get(IDBKeyRange.upperBound(key))
-        req.onerror = () => res(null)
-        req.onsuccess = () => {
-            const ex = req.result
-            if (ex) {
-                res(ex)
-            } else {
-                res(null)
-            }
-        }
-    })
-}

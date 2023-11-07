@@ -62,7 +62,7 @@ export default function ExpensesPlan() {
                     sectionComponentData.length > 0
                         ? sectionComponentData.map(sk => (
                             <Section
-                                key={sk}
+                                key={sk.section_id}
                                 {...sk}
                                 user_id={user.id}
                                 line

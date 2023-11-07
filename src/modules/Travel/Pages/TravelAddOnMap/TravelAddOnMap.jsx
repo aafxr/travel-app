@@ -35,6 +35,10 @@ export default function TravelAddOnMap() {
 
     const draggedPoint = useDragPoint()
 
+    useEffect(() => {
+        if(map) map.onPointUpdate = (p) => console.log('handler ', p)
+    }, [map])
+
     //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
         if (draggedPoint) {
@@ -91,7 +95,7 @@ export default function TravelAddOnMap() {
             <div className='fixed-bottom-button'>
                 <Button
                     onClick={handleRouteSubmit}
-                    disabled={!map || !map.getMarkers().length}
+                    disabled={!map || map.getMarkers().length === 0}
                 >
                     Продолжить
                 </Button>

@@ -6,6 +6,8 @@ import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
 import dateToCurrencyKey from "../utils/dateToCurrencyKey";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import getExchange from "./getExchange";
 
 
 /**
@@ -53,33 +55,32 @@ self.onmessage = async (e) => {
                 const expense = cursor.value
                 if (expense.primary_entity_id === item.primary_entity_id) {
                     const {currency, created_at, personal, section_id, value, user_id} = expense
-                    const exchangeKey = dateToCurrencyKey(created_at)
-                    expensesList.push({currency, created_at: exchangeKey, personal, section_id, value, user_id})
+                    expensesList.push({currency, created_at, personal, section_id, value, user_id})
                 }
                 cursor = await cursor.continue();
             }
 
             const promises = expensesList.map(async (expense) => {
-                const query  = IDBKeyRange.upperBound(new Date(expense.created_at).getTime())
+                const query = IDBKeyRange.upperBound(new Date(expense.created_at).getTime())
                 /**@type{ExchangeType}*/
                 const exchange = await storeDB.getOne(constants.store.CURRENCY, query)
-                const exchangeForDate = exchange.value.find(ex => ex.symbol === expense.currency)
+                const exchangeForDate = exchange?.value.find(ex => ex.symbol === expense.currency)
                 const exchangeVal = exchangeForDate ? exchangeForDate.value : 1
 
                 if (map.has(expense.section_id)) {
-                    if (expense.personal === 1 && expense.user_id === user_id){
+                    if (expense.personal === 1 && expense.user_id === user_id) {
                         map.get(expense.section_id).personal.total += (expense.value || 0)
-                    } else if(expense.personal === 0){
+                    } else if (expense.personal === 0) {
                         map.get(expense.section_id).common.total += (expense.value || 0)
                     }
                 } else {
                     /**@type{{common: TotalBySectionType, personal: TotalBySectionType}}*/
                     const newVal = defaultTotalBySectionValue(expense.section_id)
 
-                    if (expense.personal === 1 && expense.user_id === user_id){
+                    if (expense.personal === 1 && expense.user_id === user_id) {
                         newVal.personal.total += (expense.value || 0) * exchangeVal
                         map.set(expense.section_id, newVal)
-                    } else if(expense.personal === 0){
+                    } else if (expense.personal === 0) {
                         newVal.common.total += (expense.value || 0) * exchangeVal
                         map.set(expense.section_id, newVal)
                     }
@@ -87,6 +88,8 @@ self.onmessage = async (e) => {
             })
 
             await Promise.all(promises)
+
+
 
             isPlan
                 ? updateTravelInfo.planned_list = Array.from(map.values())
@@ -127,5 +130,38 @@ function defaultTotalBySectionValue(section_id) {
             section_id: section_id
         }
     }
+}
+
+
+/**
+ * @param {string} storeName
+ * @param {(e: ExpenseType) => boolean} filter функция фильтрует записи которые будут суммироваться
+ * @returns {Promise<number | null>}
+ */
+function calcTotal(storeName, filter) {
+    return new Promise(async (res, rej) => {
+        if(!filter) res(null)
+        const tx = await storeDB.transaction([storeName, constants.store.CURRENCY])
+        const store = tx.objectStore(storeName)
+        /**@type{IDBRequest<IDBCursorWithValue>}*/
+        const req = store.index(constants.indexes.PRIMARY_ENTITY_ID).openCursor(IDBKeyRange)
+
+        let total = 0
+        req.onerror = (err) => rej(err)
+        req.onsuccess = async () => {
+            const cursor = req.result
+            if (cursor) {
+                /**@type{ExpenseType}*/
+                const expense = cursor.value
+                if(filter(expense)) {
+                    const exchange = await getExchange(tx, expense.datetime)
+                    const coef = exchange?.value.find(e => e.symbol === expense.currency) || 1
+                    total += expense.value * coef
+                }
+
+                cursor.continue()
+            } else res(total)
+        }
+    })
 }
 

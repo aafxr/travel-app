@@ -1,3 +1,8 @@
+/**
+ * @class
+ * @name TransactionObjectStore
+ * @deprecated
+ */
 export default class TransactionObjectStore {
     /**
      * @param {IDBObjectStore} objectStore

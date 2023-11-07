@@ -1,7 +1,7 @@
-import createId from "../utils/createId";
 import constants from "../static/constants";
 import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
 import Entity from "./Entity";
+import storeDB from "../db/storeDB/storeDB";
 
 /**
  * данный класс позволяет работать с расходами
@@ -32,18 +32,34 @@ export default class Expense extends Entity{
         primary_entity_type: () => '',
         currency: () => '₽'
     }
+
+    /**@type{Travel}*/
+    _travel
+
+    /**@type{ExchangeType}*/
+    _exchange
+
+    _coef = 1
+
+    _user_id
+
     /**
+     * @param {Travel} travel instance Travel
      * @param {ExpenseType} item прошлая запись о расзоде (если есть)
      * @param {string} user_id id пользователя, создавшего запись о расходе
      * @param {'plan' | 'actual'} type тип расходов
      * @constructor
      */
-    constructor(item, user_id, type) {
+    constructor(travel, item, user_id, type) {
         super()
         if (!item) {
             item = {}
             this._new = true
         }
+
+        this._travel = travel
+
+        this._user_id = user_id
 
         /***@type{ExpenseType}*/
         this._modified = {}
@@ -63,6 +79,16 @@ export default class Expense extends Entity{
             .setEntityID(item.entity_id)
             .setEntityType(item.entity_type)
             .setPrimaryEntityType(item.primary_entity_type)
+
+
+        storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(new Date(this.datetime).getTime()))
+            .then(/**@param{ExchangeType} t*/t => {
+                if(t){
+                this._exchange = t
+                this._coef = t.value.find(e => e.symbol === this.currency)?.value || 1
+                    this._travel.forceUpdate()
+                }
+            })
 
         this.change = this._new
         this.type = type
@@ -244,6 +270,26 @@ export default class Expense extends Entity{
             this.change = true
         }
         return this
+    }
+
+    /**
+     * геттер возвращает пересчитанное значение расхода
+     * @get
+     * @name Expense.convertedValue
+     * @returns {number}
+     */
+    get convertedValue(){
+        return this._modified.value * this._coef
+    }
+
+    /**
+     * метод проверяет является ли этот расход личным
+     * @method
+     * @name Expense.isPersonal
+     * @returns {boolean}
+     */
+    isPersonal(){
+        return this._user_id === this._modified.user_id
     }
 
     /**

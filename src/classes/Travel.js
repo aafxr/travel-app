@@ -6,6 +6,7 @@ import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import Subscription from "./Subscription";
+import Expense from "./Expense";
 
 // Продумать структуру менеджера для работы с сущностями отели, встречи, расходы и тд
 // реалирзовать абстракцию менеджера
@@ -25,22 +26,41 @@ import Subscription from "./Subscription";
  */
 export default class Travel extends BaseTravel {
     /**@type{{actual: BaseService, planned:BaseService}}*/
-    expenses
+    expensesService
 
     /**@type{BaseService.<LimitType>}*/
-    limit
+    limitService
 
     /**@type{BaseService}*/
-    section
+    sectionService
 
     /**@type{BaseService}*/
-    hotel
+    hotelService
 
     /**@type{BaseService}*/
-    appointment
+    appointmentService
+
+    /**
+     * @type {{actual: {all: [], common: [], personal: []}, planned: {all: [], common: [], personal: []}}}
+     * @private
+     */
+    _expenses = {
+        actual: {
+            all: [],
+            personal: [],
+            common: []
+        },
+        planned: {
+            all: [],
+            personal: [],
+            common: []
+        }
+    }
 
     /**@type{Subscription<Travel>}*/
     _updateManager
+
+    _forceUpdateTimerID = 0
 
     /**
      * @param {TravelType} item
@@ -52,7 +72,32 @@ export default class Travel extends BaseTravel {
 
         this._updateManager = new Subscription()
 
-        this.expenses = {
+        storeDB
+            .getAllFromIndex(constants.store.EXPENSES_ACTUAL, constants.indexes.PRIMARY_ENTITY_ID, this.id)
+            .then(/** @param{ExpenseType[]} e*/e => e.map(ae => new Expense(this, ae, this.user_id, 'actual')))
+            .then(ae => {
+                ae.forEach(e => {
+                    e.isPersonal()
+                        ? this._expenses.actual.personal.push(e)
+                        : this._expenses.actual.common.push(e)
+                    this._expenses.actual.all.push(e)
+                })
+            })
+
+        storeDB
+            .getAllFromIndex(constants.store.EXPENSES_PLAN, constants.indexes.PRIMARY_ENTITY_ID, this.id)
+            .then(/** @param{ExpenseType[]} e*/e => e.map(pe => new Expense(this, pe, this.user_id, 'plan')))
+            .then(pe =>{
+                pe.forEach(e => {
+                    e.isPersonal()
+                        ? this._expenses.planned.personal.push(e)
+                        : this._expenses.planned.common.push(e)
+                    this._expenses.planned.all.push(e)
+                })
+            })
+
+
+        this.expensesService = {
             actual: new BaseService(constants.store.EXPENSES_ACTUAL, {
                 onCreate: this._onChangeExpense.bind(this, 'actual'),
                 onUpdate: this._onChangeExpense.bind(this, 'actual'),
@@ -65,10 +110,11 @@ export default class Travel extends BaseTravel {
             })
         }
 
-        this.limit = new BaseService(constants.store.LIMIT, {})
-        this.section = new BaseService(constants.store.SECTION, {})
-        this.hotel = new BaseService(constants.store.HOTELS, {})
-        this.appointment = new BaseService(constants.store.APPOINTMENTS, {})
+
+        this.limitService = new BaseService(constants.store.LIMIT, {})
+        this.sectionService = new BaseService(constants.store.SECTION, {})
+        this.hotelService = new BaseService(constants.store.HOTELS, {})
+        this.appointmentService = new BaseService(constants.store.APPOINTMENTS, {})
     }
 
     /**
@@ -226,6 +272,20 @@ export default class Travel extends BaseTravel {
     }
 
     /**
+     * метод обновляет приложение с задержой
+     * @method
+     * @name Travel.forceUpdate
+     * @param {number} [delay] default = 300
+     */
+    forceUpdate(delay = 300) {
+        if (this._forceUpdateTimerID) clearTimeout(this._forceUpdateTimerID)
+        this._forceUpdateTimerID = setTimeout(() => {
+            this._updateManager.dispatch(this)
+            this._forceUpdateTimerID = undefined
+        }, delay)
+    }
+
+    /**
      * метод удаляет callback, который будет вызываться в случае необходимости перерисовать контент
      * @method
      * @name Travel.offUpdate
@@ -243,6 +303,14 @@ export default class Travel extends BaseTravel {
      */
     _update() {
         this._updateManager.dispatch(this)
+    }
+
+    get expensesActual() {
+        return this._expenses.actual
+    }
+
+    get expensesPlanned() {
+        return this._expenses.planned
     }
 
 }

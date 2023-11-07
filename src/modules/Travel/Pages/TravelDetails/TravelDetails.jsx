@@ -127,16 +127,16 @@ export default function TravelDetails() {
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                        <div className='flex-between flex-nowrap gap-0.5 pb-20'>
-                            <IconButton icon={<Money/>} title='Расходы'
-                                        onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
-                            <IconButton
-                                icon={<ChecklistIcon/>}
-                                title='Чек-лист'
-                                onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
-                            />
-                            <IconButton icon={<ChatIcon badge/>}/>
-                        </div>
+                    </div>
+                    <div className='flex-between flex-nowrap gap-0.5 pb-20 footer'>
+                        <IconButton icon={<Money/>} title='Расходы'
+                                    onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
+                        <IconButton
+                            icon={<ChecklistIcon/>}
+                            title='Чек-лист'
+                            onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
+                        />
+                        <IconButton icon={<ChatIcon badge/>}/>
                     </div>
                 </div>
             </Container>
