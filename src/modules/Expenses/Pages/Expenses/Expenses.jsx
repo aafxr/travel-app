@@ -35,13 +35,13 @@ export default function Expenses() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(constants.store.EXPENSES_ACTUAL, filter, travel.id, user.id)
+        combineExpensesForSectionComponent(travel,"actual", filter)
             .then(setSectionComponentData)
     }, [travel, filter])
 
     useEffect(() => {
         function sub(){
-            combineExpensesForSectionComponent(constants.store.EXPENSES_ACTUAL, filter, travel.id, user.id)
+            combineExpensesForSectionComponent(travel,"actual", filter)
                 .then(setSectionComponentData)
         }
         travel.onUpdate(sub)

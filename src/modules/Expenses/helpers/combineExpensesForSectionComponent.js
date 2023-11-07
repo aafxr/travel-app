@@ -9,40 +9,15 @@
 
 import storeDB from "../../../db/storeDB/storeDB";
 import constants from "../../../static/constants";
-import defaultUpdateTravelInfo from "../../../utils/defaultUpdateTravelInfo";
 
 /**
- *
- * @param {string} storeName
+ * @param {Travel} travel
+ * @param {'actual' | 'planned'} type
  * @param {ExpenseFilterType} filter
- * @param {string} primary_entity_id
- * @param {string} user_id
  * @returns {Promise<SectionComponentDataType[]>}
  */
-export default async function combineExpensesForSectionComponent(storeName, filter, primary_entity_id, user_id) {
-    const isPersonal = filter === 'personal' ? 1 : 0
-    const isActual = constants.store.EXPENSES_ACTUAL === storeName
-    const isPlan = constants.store.EXPENSES_PLAN === storeName
-
-    /**@type{Map<string,number>}*/
-    const totalSectionMap = new Map()
-
-    // /**@type{{common: TotalBySectionType, personal: TotalBySectionType}[]}*/
-    // let list
-    // if (isActual) {
-    //     list = updatedTravelInfo.actual_list
-    // } else if (isPlan) {
-    //     list = updatedTravelInfo.planned_list
-    // } else {
-    //     console.error(new Error(`unknown value of prop storeName: ${storeName}`))
-    //     return []
-    // }
-
-    // list.map(u =>
-    //     isPersonal
-    //         ? u.personal
-    //         : u.common
-    // ).forEach(u => totalSectionMap.set(u.section_id, u.total))
+export default async function combineExpensesForSectionComponent(travel, type, filter,) {
+    if (!travel) return []
 
     /**@type{Map<string, string>}*/
     const sectionMap = new Map();
@@ -52,20 +27,20 @@ export default async function combineExpensesForSectionComponent(storeName, filt
     sections.map(s => sectionMap.set(s.id, s.title))
 
     /**@type{LimitType[]}*/
-    const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
+    const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travel.id)
 
     /**@type{Map<string, LimitType[]>}*/
     const limitsMap = new Map()
 
     limits
         .forEach(l => {
-            if(!limitsMap.has(l.section_id)) limitsMap.set(l.section_id, [])
+            if (!limitsMap.has(l.section_id)) limitsMap.set(l.section_id, [])
             limitsMap.get(l.section_id).push(l)
         })
 
 
-    const expenses = await storeDB.getAllFromIndex(storeName, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
-    const expenseMap = getSectionsList(expenses, filter, user_id)
+    const expenses = travel.expenses(type, filter)
+    const expenseMap = getSectionsList(expenses, filter, travel.user_id)
 
     /**@type{SectionComponentDataType[]}*/
     const result = []
@@ -74,13 +49,13 @@ export default async function combineExpensesForSectionComponent(storeName, filt
      * @param {LimitType[]} limits
      * @returns {number}
      */
-    function exactLimit(limits){
+    function exactLimit(limits) {
         if (!limits || !limits.length) return 0
-        if(filter === 'All' || filter === 'Common'){
-            const res = limits.find(l=> l.personal === 0)
+        if (filter === 'All' || filter === 'Common') {
+            const res = limits.find(l => l.personal === 0)
             return res?.value || 0
-        }else if(filter === 'Personal'){
-            const res = limits.find(l=> l.personal === 1 && l.id.split(':').shift() === user_id)
+        } else if (filter === 'Personal') {
+            const res = limits.find(l => l.personal === 1 && l.id.split(':').shift() === travel.user_id)
             return res?.value || 0
         }
     }
@@ -90,7 +65,7 @@ export default async function combineExpensesForSectionComponent(storeName, filt
             expenses,
             limit: exactLimit(limitsMap.get(section_id)),
             title: sectionMap.get(section_id) || '',
-            total: totalSectionMap.get(section_id) || 0,
+            total: expenses.reduce((acc, e) => e.convertedValue + acc, 0) || 0,
             section_id,
         })
     }
@@ -104,10 +79,10 @@ export default async function combineExpensesForSectionComponent(storeName, filt
  * Хук возвращает сгрупированный список секция-расходы для выбранного фильтра
  * @function
  * @name getSectionsList
- * @param {ExpenseType[]} expenses
+ * @param {Expense[]} expenses
  * @param {ExpenseFilterType} filter
  * @param {string} user_id
- * @returns {Map<string, ExpenseType[]>}
+ * @returns {Map<string, Expense[]>}
  * @category Hooks
  */
 function getSectionsList(expenses, filter, user_id) {
@@ -121,19 +96,12 @@ function getSectionsList(expenses, filter, user_id) {
     function addExpenseToMap(map, expense) {
         if (map.has(expense.section_id)) {
             map.get(expense.section_id).push(expense)
-        }
-        else {
+        } else {
             map.set(expense.section_id, [expense])
         }
     }
 
-    if (filter === "All") {
-        expenses.forEach(e => addExpenseToMap(map, e))
-    } else if (filter === "Common") {
-        expenses.forEach(e => e.personal === 0 && addExpenseToMap(map, e))
-    } else if (filter === "Personal") {
-        expenses.forEach(e => e.personal === 1 && e.user_id === user_id && addExpenseToMap(map, e))
-    }
+    expenses.forEach(e => addExpenseToMap(map, e))
 
     return map
 

@@ -487,6 +487,15 @@ export default class Expense extends Entity{
     }
 
     /**
+     * @method
+     * @name Expense.object
+     * @returns {TravelType}
+     */
+    get object() {
+        return this._modified;
+    }
+
+    /**
      * метод удаляет запись о расходе из бд
      * @method
      * @name Expense.delete

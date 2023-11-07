@@ -41,19 +41,20 @@ export default class Travel extends BaseTravel {
     appointmentService
 
     /**
-     * @type {{actual: {all: [], common: [], personal: []}, planned: {all: [], common: [], personal: []}}}
+     *
+     * @type {{actual: {All: [], Personal: [], Common: []}, planned: {All: [], Personal: [], Common: []}}}
      * @private
      */
     _expenses = {
         actual: {
-            all: [],
-            personal: [],
-            common: []
+            All: [],
+            Personal: [],
+            Common: []
         },
         planned: {
-            all: [],
-            personal: [],
-            common: []
+            All: [],
+            Personal: [],
+            Common: []
         }
     }
 
@@ -78,9 +79,9 @@ export default class Travel extends BaseTravel {
             .then(ae => {
                 ae.forEach(e => {
                     e.isPersonal()
-                        ? this._expenses.actual.personal.push(e)
-                        : this._expenses.actual.common.push(e)
-                    this._expenses.actual.all.push(e)
+                        ? this._expenses.actual.Personal.push(e)
+                        : this._expenses.actual.Common.push(e)
+                    this._expenses.actual.All.push(e)
                 })
             })
 
@@ -90,9 +91,9 @@ export default class Travel extends BaseTravel {
             .then(pe =>{
                 pe.forEach(e => {
                     e.isPersonal()
-                        ? this._expenses.planned.personal.push(e)
-                        : this._expenses.planned.common.push(e)
-                    this._expenses.planned.all.push(e)
+                        ? this._expenses.planned.Personal.push(e)
+                        : this._expenses.planned.Common.push(e)
+                    this._expenses.planned.All.push(e)
                 })
             })
 
@@ -305,12 +306,70 @@ export default class Travel extends BaseTravel {
         this._updateManager.dispatch(this)
     }
 
-    get expensesActual() {
-        return this._expenses.actual
+    /**
+     * @method
+     * @name Travel.expensesActualPersonal
+     * @returns {Expense[]}
+     */
+    get expensesActualPersonal() {
+        return this._expenses.actual.Personal
+    }
+    /**
+     * @method
+     * @name Travel.expensesActualCommon
+     * @returns {Expense[]}
+     */
+    get expensesActualCommon() {
+        return this._expenses.actual.Common
+    }
+    /**
+     * @method
+     * @name Travel.expensesActualAll
+     * @returns {Expense[]}
+     */
+    get expensesActualAll() {
+        return this._expenses.actual.All
     }
 
-    get expensesPlanned() {
-        return this._expenses.planned
+    /**
+     * @method
+     * @name Travel.expensesPlannedPersonal
+     * @returns {Expense[]}
+     */
+    get expensesPlannedPersonal() {
+        return this._expenses.planned.Personal
     }
+    /**
+     * @method
+     * @name Travel.expensesPlannedCommon
+     * @returns {Expense[]}
+     */
+    get expensesPlannedCommon() {
+        return this._expenses.planned.Common
+    }
+    /**
+     * @method
+     * @name Travel.expensesPlannedAll
+     * @returns {Expense[]}
+     */
+    get expensesPlannedAll() {
+        return this._expenses.planned.All
+    }
+
+    /**
+     * @method
+     * @name Travel.expenses
+     * @param {'actual' | 'planned'} type
+     * @param {ExpenseFilterType} filter
+     * @returns {Expense[]}
+     */
+    expenses(type, filter){
+        if(type === 'actual'){
+            return this._expenses.actual[filter]
+        } else if (type === 'planned'){
+            return this._expenses.planned[filter]
+        }
+    }
+
 
 }

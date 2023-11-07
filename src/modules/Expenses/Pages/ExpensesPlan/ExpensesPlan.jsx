@@ -35,11 +35,11 @@ export default function ExpensesPlan() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id, user.id)
+        combineExpensesForSectionComponent(travel,"planned", filter)
             .then(setSectionComponentData)
 
         function sub(){
-            combineExpensesForSectionComponent(constants.store.EXPENSES_PLAN, filter, travel.id, user.id)
+            combineExpensesForSectionComponent(travel,"planned", filter)
                 .then(setSectionComponentData)
         }
         travel.onUpdate(sub)

@@ -107,7 +107,7 @@ function Section({
 
 /**
  * @function
- * @param {import('../../../../types/ExpenseType').ExpenseType} expense
+ * @param {Expense} expense
  * @param isPlan
  * @param user_id
  * @returns {JSX.Element}
@@ -129,8 +129,8 @@ function SectionItem({expense, isPlan, user_id}) {
     async function handleRemove() {
         if (expense) {
             isPlan
-                ? await travel.expenses.planned.delete(expense, user_id).catch(defaultHandleError)
-                : await travel.expenses.actual.delete(expense, user_id).catch(defaultHandleError)
+                ? await travel.expensesService.planned.delete(expense.object, user_id).catch(defaultHandleError)
+                : await travel.expensesService.actual.delete(expense.object, user_id).catch(defaultHandleError)
             pushAlertMessage({type: 'success', message: `Успешно удалено`})
         }
     }
