@@ -32,3 +32,4 @@ jobs:
           sftpArgs: '-o ConnectTimeout=5'
           # sftp_only: true
           password: ${{secrets.SSH_PASSWORD}}
+          delete_remote_files: 'true'
