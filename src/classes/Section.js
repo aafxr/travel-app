@@ -1,5 +1,5 @@
 import Entity from "./Entity";
-import aFetch from "../axios";
+import RestAPI from "./RestAPI";
 import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
 
@@ -26,21 +26,7 @@ export default class Section extends Entity {
     /**@type{SectionType}*/
     _modified = {}
 
-    /**
-     * метод делает запрос к api и возвращает список SectionType
-     * @static
-     * @name Section.fetchSections
-     * @returns {Promise<SectionType[]>}
-     */
-    static async fetchSections() {
-        /**@type {axios.AxiosResponse<APIResponseType<SectionType[]>>}*/
-        const response = await aFetch.get('/expenses/getSections/')
-        const {ok, data} = response.data
-        if(ok){
-            return data
-        }
-        return []
-    }
+
 
     /**
      * метод возвращает дефолтные секции из бд или делает запрос к api
@@ -51,7 +37,8 @@ export default class Section extends Entity {
     static async defaultSections() {
         let defaultSections = await storeDB.getAll(constants.store.SECTION)
         if(defaultSections.length === 0) {
-            let defaultSections = await Section.fetchSections()
+            let defaultSections = await RestAPI.fetchSections()
+            defaultSections = defaultSections.map(s => new Section(s).object)
             const promises = defaultSections.map(s => storeDB.editElement(constants.store.SECTION, s))
             await Promise.all(promises)
         }

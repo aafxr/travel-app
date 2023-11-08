@@ -23,6 +23,7 @@ import useExpense from "../../hooks/useExpense";
 
 import '../../css/Expenses.css'
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import Expense from "../../../../classes/Expense";
 
 
 /**
@@ -30,13 +31,13 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  * в зависимости от expensesType добавляются либо плановые либо текущие
  * @function
  * @name ExpensesAdd
- * @param {'actual' | 'plan'} expensesType - default =  actual
+ * @param {'actual' | 'planned'} expensesType - default =  actual
  * @param {boolean} edit - default =  false
  * @returns {JSX.Element}
  * @category Pages
  */
 export default function ExpensesAdd({
-                                        expensesType = 'plan',
+                                        expensesType = 'planned',
                                         edit = false
                                     }) {
     const { expenseCode} = useParams()
@@ -58,7 +59,7 @@ export default function ExpensesAdd({
 
     const expense = useExpense(expenseCode, expensesType)
 
-    const isPlan = expensesType === 'plan'
+    const isPlan = expensesType === 'planned'
 
     const expNameTitle = isPlan ? 'На что планируете потратить' : 'На что потратили'
     const buttonTitle = edit ? 'Сохранить' : 'Добавить'
@@ -67,10 +68,10 @@ export default function ExpensesAdd({
 
 
     useEffect(() => {
-        if (defaultSection) {
-            setSectionId(defaultSection.id)
+        if (travel) {
+            setSectionId(travel.defaultSections.find(s => s.id === 'misc')?.id)
         }
-    }, [defaultSection])
+    }, [travel])
 
 
     useEffect(() => {
@@ -133,34 +134,24 @@ export default function ExpensesAdd({
             return
         }
 
-        /**@type{ExpenseType}*/
-        const newExpense = {
-            ...expense,
-            title: expName,
-            value: value,
-            personal: personal ? 1 : 0,
-            currency: expCurr,
-            created_at: new Date().toISOString(),
-            section_id: section_id
-        }
+        /**@type{Expense}*/
+        let _ex
+        if(expense) _ex = expense
+        else _ex = new Expense()
 
-        if (expensesType === 'actual') {
-            edit
-                ? await travel.expensesService.actual.update(newExpense, user.id).catch(defaultHandleError)
-                : await travel.expensesService.actual.create(newExpense, user.id).catch(defaultHandleError)
-        } else if (expensesType === 'plan') {
-            edit
-                ? await travel.expensesService.planned.update(newExpense, user.id).catch(defaultHandleError)
-                : await travel.expensesService.planned.create(newExpense, user.id).catch(defaultHandleError)
-        }
-
-
-        // if (isPlan) {
-        //     await updateLimits(primary_entity_id, user_id)()
-        //         .catch(defaultHandleError)
-        // }
-        navigate(-1)
+        _ex
+            .setTitle(expName)
+            .setValue(value)
+            .setPersonal(personal ? 1 : 0)
+            .setCurrency(expCurr)
+            .setCreatedAt(new Date().toISOString())
+            .setSectionId(section_id)
+            .save()
+            .then(e => travel.addExpense(e, isPlan ? 'planned': 'actual'))
+            .catch(defaultHandleError)
+            .finally(() => navigate(-1))
     }
+
 
     return (
         <div className='wrapper'>
@@ -172,7 +163,7 @@ export default function ExpensesAdd({
                             <div className='title'>Категория</div>
                             <div className={clsx('row flex-wrap gap-0.75 bb-2-grey pb-20')}>
                                 {
-                                    sections && !!sections.length && sections.map(
+                                    !!travel.defaultSections.length && travel.defaultSections.map(
                                         (section) => (
                                             <Chip
                                                 key={section.id}

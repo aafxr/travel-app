@@ -13,9 +13,14 @@ export default function useExpense(id, type = 'planned') {
     const [expense, setExpense] = useState(null)
 
     useEffect(() => {
-        let exp = travel.getExpense(type, id)
-        setExpense(exp)
-    }, [id, type])
+        const sub = () => {
+            let exp = travel.getExpense(type, id)
+            setExpense(exp)
+        }
+        sub()
+        travel.onUpdate(sub)
+        return () => travel.offUpdate(sub)
+    }, [id, type, travel])
 
     return expense
 }

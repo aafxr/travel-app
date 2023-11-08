@@ -1,12 +1,10 @@
 // /**@type{DedicatedWorkerGlobalScope}*/
 // self.postMessage('done')
 
+import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
 import BaseService from "../classes/BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
-import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
-import dateToCurrencyKey from "../utils/dateToCurrencyKey";
-import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 import getExchange from "./getExchange";
 
 

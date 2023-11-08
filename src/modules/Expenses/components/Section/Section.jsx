@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "react";
+import React, {useMemo} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
@@ -44,6 +44,11 @@ function Section({
 
     let balance = limit - total
 
+    const sortedExpenses = useMemo(() => {
+        return expenses
+            .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
+    }, [expenses])
+
 
     return (
         <div className='expenses-list'>
@@ -80,7 +85,7 @@ function Section({
                     !!expenses.length && (
                         <div className='section-items column gap-0.5'>
                             {
-                                expenses
+                                sortedExpenses
                                     .map(
                                         item => (
                                             <SectionItem
@@ -116,7 +121,6 @@ function Section({
 function SectionItem({expense, isPlan, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
     const {travel} = useTravelContext()
-    // const dispatch = useDispatch()
     const navigate = useNavigate();
 
     let time = dateToStringFormat(datetime)

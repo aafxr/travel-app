@@ -8,6 +8,7 @@ import {pushAlertMessage} from "../components/Alerts/Alerts";
 import Subscription from "./Subscription";
 import Expense from "./Expense";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
+import Section from "./Section";
 
 // Продумать структуру менеджера для работы с сущностями отели, встречи, расходы и тд
 // реалирзовать абстракцию менеджера
@@ -40,6 +41,9 @@ export default class Travel extends BaseTravel {
 
     /**@type{BaseService}*/
     appointmentService
+
+    /**@type{SectionType[]}*/
+    _defaultSections = []
 
 
     /**
@@ -119,6 +123,8 @@ export default class Travel extends BaseTravel {
         this.appointmentService = new BaseService(constants.store.APPOINTMENTS, {})
 
         this._expenseFilter = defaultFilterValue()
+        Section.defaultSections()
+            .then(sl => this._defaultSections = sl)
     }
 
     /**
@@ -144,6 +150,15 @@ export default class Travel extends BaseTravel {
             this._update()
         }
         return this
+    }
+
+    /**
+     * @get
+     * @name BaseTravel.getDefaultSections
+     * @returns {SectionType[]}
+     */
+    get defaultSections() {
+        return this._defaultSections
     }
 
     /**
@@ -224,7 +239,6 @@ export default class Travel extends BaseTravel {
 
             /**@param{MessageEvent<WorkerMessageType>} e */
             worker.onmessage = (e) => {
-                // debugger
                 if (e.data.type === 'done') {
                     if (type === 'planned') {
                         this._onChangeLimit()
@@ -257,7 +271,6 @@ export default class Travel extends BaseTravel {
         worker.onerror = this._errorHandle
         /**@param{MessageEvent<WorkerMessageType>} e */
         worker.onmessage = (e) => {
-
             if (e.data.type === 'done') {
                 worker.terminate()
                 this._update()
@@ -380,7 +393,13 @@ export default class Travel extends BaseTravel {
      */
     addExpense(expense, type) {
         const personal = expense.isPersonal(this.user_id)
+
         if (expense && type) {
+            this._expenses.actual.Personal.delete(expense.id)
+            this._expenses.actual.Common.delete(expense.id)
+            this._expenses.planned.Personal.delete(expense.id)
+            this._expenses.planned.Common.delete(expense.id)
+
             if (type === 'actual') {
                 personal
                     ? this._expenses.actual.Personal.set(expense.id, expense)
@@ -392,7 +411,7 @@ export default class Travel extends BaseTravel {
             }
         }
 
-        this._update()
+        this._onChangeExpense(type, expense.object)
         return this
     }
 

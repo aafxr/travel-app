@@ -89,7 +89,6 @@ export class ExpenseService {
      */
     async update(expense) {
         try {
-            debugger
             const action = createAction(this.storeName, expense.user_id, "update", expense)
             await storeDB.editElement(this.storeName, expense)
             await storeDB.addElement(constants.store.EXPENSES_ACTIONS, action)

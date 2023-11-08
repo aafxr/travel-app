@@ -1,12 +1,10 @@
 /**
  * @param {MessageEvent<WorkerMessageType>} e
  */
+import defaultLimit from "../utils/default-values/defaultLimit";
 import BaseService from "../classes/BaseService";
 import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
-import createId from "../utils/createId";
-import defaultLimit from "../utils/default-values/defaultLimit";
-import defaultUpdateTravelInfo from "../utils/defaultUpdateTravelInfo";
 import getExchange from "./getExchange";
 
 /**

@@ -70,7 +70,6 @@ export default async function combineExpensesForSectionComponent(travel, type, f
         })
     }
 
-    console.log(result)
     return result
 }
 

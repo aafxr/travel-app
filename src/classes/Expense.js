@@ -86,7 +86,7 @@ export default class Expense extends Entity {
                 if (t) {
                     this._exchange = t
                     this._coef = t.value.find(e => e.symbol === this.currency)?.value || 1
-                    this._travel && this._travel.forceUpdate()
+                    this.setCurrency(this.currency)
                 }
             })
 
@@ -142,6 +142,11 @@ export default class Expense extends Entity {
     setCurrency(currency) {
         if (typeof currency === 'string' && currency.length > 0) {
             this._modified.currency = currency
+            const c = this._exchange?.value.find(e => e.symbol === currency)
+            if(c) {
+                this._coef = c.value
+            }
+            this._travel?.forceUpdate()
             this.change = true
         }
         return this
@@ -492,7 +497,7 @@ export default class Expense extends Entity {
     /**
      * @method
      * @name Expense.object
-     * @returns {TravelType}
+     * @returns {ExpenseType}
      */
     get object() {
         return this._modified;
