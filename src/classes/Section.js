@@ -1,4 +1,7 @@
 import Entity from "./Entity";
+import aFetch from "../axios";
+import storeDB from "../db/storeDB/storeDB";
+import constants from "../static/constants";
 
 /**
  * класс для работы с сущностью Section
@@ -11,9 +14,9 @@ import Entity from "./Entity";
  * @param {SectionType} item
  * @constructor
  */
-export default class Section extends Entity{
+export default class Section extends Entity {
     /**@type{SectionType}*/
-    static initValue= {
+    static initValue = {
         id: () => '',
         title: () => '',
         color: () => '',
@@ -24,12 +27,44 @@ export default class Section extends Entity{
     _modified = {}
 
     /**
+     * метод делает запрос к api и возвращает список SectionType
+     * @static
+     * @name Section.fetchSections
+     * @returns {Promise<SectionType[]>}
+     */
+    static async fetchSections() {
+        /**@type {axios.AxiosResponse<APIResponseType<SectionType[]>>}*/
+        const response = await aFetch.get('/expenses/getSections/')
+        const {ok, data} = response.data
+        if(ok){
+            return data
+        }
+        return []
+    }
+
+    /**
+     * метод возвращает дефолтные секции из бд или делает запрос к api
+     * @static
+     * @name Section.defaultSections
+     * @returns {Promise<SectionType[]>}
+     */
+    static async defaultSections() {
+        let defaultSections = await storeDB.getAll(constants.store.SECTION)
+        if(defaultSections.length === 0) {
+            let defaultSections = await Section.fetchSections()
+            const promises = defaultSections.map(s => storeDB.editElement(constants.store.SECTION, s))
+            await Promise.all(promises)
+        }
+        return defaultSections
+    }
+
+    /**
      * @constructor
      * @param {SectionType} item
      */
     constructor(item) {
         super();
-        if(!item){
+        if (!item) {
             item = {}
             this._new = true
         }
@@ -50,7 +85,7 @@ export default class Section extends Entity{
      * @name Section.id
      * @returns {string}
      */
-    get id(){
+    get id() {
         return this._modified.id
     }
 
@@ -61,7 +96,7 @@ export default class Section extends Entity{
      * @param {string} id id секции
      * @returns {Section}
      */
-    setID(id){
+    setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
             this._change = true
@@ -75,7 +110,7 @@ export default class Section extends Entity{
      * @name Section.title
      * @returns {string}
      */
-    get title(){
+    get title() {
         return this._modified.title
     }
 
@@ -86,7 +121,7 @@ export default class Section extends Entity{
      * @param {string} title title секции
      * @returns {Section}
      */
-    setTitle(title){
+    setTitle(title) {
         if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
             this._change = true
@@ -100,7 +135,7 @@ export default class Section extends Entity{
      * @name Section.color
      * @returns {string}
      */
-    get color(){
+    get color() {
         return this._modified.color
     }
 
@@ -111,7 +146,7 @@ export default class Section extends Entity{
      * @param {string} color color секции
      * @returns {Section}
      */
-    setColor(color){
+    setColor(color) {
         if (typeof color === 'string' && color.length > 0) {
             this._modified.color = color
             this._change = true
@@ -125,7 +160,7 @@ export default class Section extends Entity{
      * @name Section.hidden
      * @returns {DBFlagType}
      */
-    get hidden(){
+    get hidden() {
         return this._modified.hidden
     }
 
@@ -136,7 +171,7 @@ export default class Section extends Entity{
      * @param {DBFlagType} flag color секции
      * @returns {Section}
      */
-    setHidden(flag){
+    setHidden(flag) {
         if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.hidden = flag
             this._change = true
@@ -144,5 +179,6 @@ export default class Section extends Entity{
         return this
     }
 
-    async save() {}
+    async save() {
+    }
 }

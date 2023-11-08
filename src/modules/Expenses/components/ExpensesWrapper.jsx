@@ -37,52 +37,52 @@ export default function ExpensesWrapper() {
     const {user} = useSelector(state => state[constants.redux.USER])
     const user_id = user.id
 
-    useDefaultSection(primary_entity_id, user_id)
+    // useDefaultSection(primary_entity_id, user_id)
 
     usePostMessage(worker, primary_entity_id)
 
-    useEffect(() => {
-        function handleMessage(action){
-            switch (action.type){
-                case constants.store.EXPENSES_ACTUAL:
-                    storeDB.getManyFromIndex(constants.store.EXPENSES_ACTUAL, primary_entity_id)
-                        .then(items => dispatch(actions.expensesActions.setExpensesActual(items)))
-                    break;
-                case constants.store.EXPENSES_PLAN:
-                    storeDB.getManyFromIndex(constants.store.EXPENSES_PLAN, primary_entity_id)
-                        .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
-                    break;
-                case constants.store.LIMIT:
-                    storeDB.getManyFromIndex(constants.store.LIMIT, primary_entity_id)
-                        .then(items => dispatch(actions.expensesActions.setExpensesLimit(items)))
-                    break;
-                default:
-                    break;
-            }
-        }
-        if (worker){
-            worker.addEventListener('message', handleMessage)
-        }
-
-        return () => worker.removeEventListener('message', handleMessage)
-    },[])
+    // useEffect(() => {
+    //     function handleMessage(action){
+    //         switch (action.type){
+    //             case constants.store.EXPENSES_ACTUAL:
+    //                 storeDB.getManyFromIndex(constants.store.EXPENSES_ACTUAL, primary_entity_id)
+    //                     .then(items => dispatch(actions.expensesActions.setExpensesActual(items)))
+    //                 break;
+    //             case constants.store.EXPENSES_PLAN:
+    //                 storeDB.getManyFromIndex(constants.store.EXPENSES_PLAN, primary_entity_id)
+    //                     .then(items => dispatch(actions.expensesActions.setExpensesPlan(items)))
+    //                 break;
+    //             case constants.store.LIMIT:
+    //                 storeDB.getManyFromIndex(constants.store.LIMIT, primary_entity_id)
+    //                     .then(items => dispatch(actions.expensesActions.setExpensesLimit(items)))
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+    //     }
+    //     if (worker){
+    //         worker.addEventListener('message', handleMessage)
+    //     }
+    //
+    //     return () => worker.removeEventListener('message', handleMessage)
+    // },[])
 
     // console.log(state)
     useEffect(() => {
         updateCurrency(dispatch)
     }, [])
 
-    useEffect(() => {
-        dispatch(initExpensesThunk(primary_entity_id))
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(initExpensesThunk(primary_entity_id))
+    // }, [dispatch])
 
-    useEffect(() => {
-        if (sections && sections.length) {
-            const section = sections.find(s => s.title === 'Прочие расходы')
-            const defaultSection = section ? section : null
-            dispatch(actions.expensesActions.setDefaultSection(defaultSection))
-        }
-    }, [sections])
+    // useEffect(() => {
+    //     if (sections && sections.length) {
+    //         const section = sections.find(s => s.title === 'Прочие расходы')
+    //         const defaultSection = section ? section : null
+    //         dispatch(actions.expensesActions.setDefaultSection(defaultSection))
+    //     }
+    // }, [sections])
 
 
     return <Outlet/>

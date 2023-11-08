@@ -1,29 +1,20 @@
-import React, {useEffect, useState} from 'react'
-import constants from "../../../static/constants";
-import storeDB from "../../../db/storeDB/storeDB";
-import defaultExpense from "../helpers/defaultExpense";
-import useUserSelector from "../../../hooks/useUserSelector";
+import {useEffect, useState} from 'react'
 import useTravelContext from "../../../hooks/useTravelContext";
 
 
 /**
  * поиск информации о расходах по id
  * @param {string} id expense ID
- * @param {'plan' | 'actual'} type
- * @returns {ExpenseType | null}
+ * @param {'planned' | 'actual'} type
+ * @returns {Expense | undefined}
  */
-export default function useExpense(id, type = 'plan') {
-    const {user} = useUserSelector()
+export default function useExpense(id, type = 'planned') {
     const {travel} = useTravelContext()
     const [expense, setExpense] = useState(null)
 
     useEffect(() => {
-        const isPlan = type === 'plan'
-        const storeName = isPlan ? constants.store.EXPENSES_PLAN : constants.store.EXPENSES_ACTUAL
-
-        storeDB.getOne(storeName, id)
-            .then(e => e && setExpense(e))
-            .catch(() => setExpense(defaultExpense(travel.id, user.id)))
+        let exp = travel.getExpense(type, id)
+        setExpense(exp)
     }, [id, type])
 
     return expense

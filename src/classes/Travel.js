@@ -7,6 +7,7 @@ import storeDB from "../db/storeDB/storeDB";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import Subscription from "./Subscription";
 import Expense from "./Expense";
+import {defaultFilterValue} from "../modules/Expenses/static/vars";
 
 // Продумать структуру менеджера для работы с сущностями отели, встречи, расходы и тд
 // реалирзовать абстракцию менеджера
@@ -40,21 +41,20 @@ export default class Travel extends BaseTravel {
     /**@type{BaseService}*/
     appointmentService
 
+
     /**
      *
-     * @type {{actual: {All: [], Personal: [], Common: []}, planned: {All: [], Personal: [], Common: []}}}
+     * @type {{actual: {Personal: Map<string, Expense>, Common: Map<string, Expense>}, planned: {Personal: Map<string, Expense>, Common: Map<string, Expense>}}}
      * @private
      */
     _expenses = {
         actual: {
-            All: [],
-            Personal: [],
-            Common: []
+            Personal: new Map(),
+            Common: new Map()
         },
         planned: {
-            All: [],
-            Personal: [],
-            Common: []
+            Personal: new Map(),
+            Common: new Map()
         }
     }
 
@@ -62,6 +62,9 @@ export default class Travel extends BaseTravel {
     _updateManager
 
     _forceUpdateTimerID = 0
+
+    /**@type{ExpenseFilterType}*/
+    _expenseFilter
 
     /**
      * @param {TravelType} item
@@ -79,21 +82,19 @@ export default class Travel extends BaseTravel {
             .then(ae => {
                 ae.forEach(e => {
                     e.isPersonal()
-                        ? this._expenses.actual.Personal.push(e)
-                        : this._expenses.actual.Common.push(e)
-                    this._expenses.actual.All.push(e)
+                        ? this._expenses.actual.Personal.set(e.id, e)
+                        : this._expenses.actual.Common.set(e.id, e)
                 })
             })
 
         storeDB
             .getAllFromIndex(constants.store.EXPENSES_PLAN, constants.indexes.PRIMARY_ENTITY_ID, this.id)
             .then(/** @param{ExpenseType[]} e*/e => e.map(pe => new Expense(this, pe, this.user_id, 'plan')))
-            .then(pe =>{
+            .then(pe => {
                 pe.forEach(e => {
                     e.isPersonal()
-                        ? this._expenses.planned.Personal.push(e)
-                        : this._expenses.planned.Common.push(e)
-                    this._expenses.planned.All.push(e)
+                        ? this._expenses.planned.Personal.set(e.id, e)
+                        : this._expenses.planned.Common.set(e.id, e)
                 })
             })
 
@@ -116,6 +117,33 @@ export default class Travel extends BaseTravel {
         this.sectionService = new BaseService(constants.store.SECTION, {})
         this.hotelService = new BaseService(constants.store.HOTELS, {})
         this.appointmentService = new BaseService(constants.store.APPOINTMENTS, {})
+
+        this._expenseFilter = defaultFilterValue()
+    }
+
+    /**
+     * получение типа фильтра расходов
+     * @get
+     * @name BaseTravel.expenseFilter
+     * @returns {ExpenseFilterType}
+     */
+    get expenseFilter() {
+        return this._expenseFilter
+    }
+
+    /**
+     * установка типа фильтра расходов
+     * @method
+     * @name BaseTravel.setExpenseFilter
+     * @param {ExpenseFilterType} value
+     * @returns {Travel}
+     */
+    setExpenseFilter(value) {
+        if (typeof value === 'string' && value.length > 0) {
+            this._expenseFilter = value
+            this._update()
+        }
+        return this
     }
 
     /**
@@ -308,68 +336,88 @@ export default class Travel extends BaseTravel {
 
     /**
      * @method
-     * @name Travel.expensesActualPersonal
-     * @returns {Expense[]}
-     */
-    get expensesActualPersonal() {
-        return this._expenses.actual.Personal
-    }
-    /**
-     * @method
-     * @name Travel.expensesActualCommon
-     * @returns {Expense[]}
-     */
-    get expensesActualCommon() {
-        return this._expenses.actual.Common
-    }
-    /**
-     * @method
-     * @name Travel.expensesActualAll
-     * @returns {Expense[]}
-     */
-    get expensesActualAll() {
-        return this._expenses.actual.All
-    }
-
-    /**
-     * @method
-     * @name Travel.expensesPlannedPersonal
-     * @returns {Expense[]}
-     */
-    get expensesPlannedPersonal() {
-        return this._expenses.planned.Personal
-    }
-    /**
-     * @method
-     * @name Travel.expensesPlannedCommon
-     * @returns {Expense[]}
-     */
-    get expensesPlannedCommon() {
-        return this._expenses.planned.Common
-    }
-    /**
-     * @method
-     * @name Travel.expensesPlannedAll
-     * @returns {Expense[]}
-     */
-    get expensesPlannedAll() {
-        return this._expenses.planned.All
-    }
-
-    /**
-     * @method
      * @name Travel.expenses
      * @param {'actual' | 'planned'} type
-     * @param {ExpenseFilterType} filter
+     * @param {ExpenseFilterType} [filter] по дефолту берется значение созраненное в localstorage или установленое с помощью метод setFilter
      * @returns {Expense[]}
      */
-    expenses(type, filter){
-        if(type === 'actual'){
-            return this._expenses.actual[filter]
-        } else if (type === 'planned'){
-            return this._expenses.planned[filter]
+    expenses(type, filter) {
+        const ft = filter || this.expenseFilter
+        if (type === 'actual') {
+            if (ft === 'Personal') return [...this._expenses.actual.Personal.values()]
+            else if (ft === 'Common') return [...this._expenses.actual.Common.values()]
+            else if (ft === 'All') return [...this._expenses.actual.Personal.values(), ...this._expenses.actual.Common.values()]
+            else return []
+        } else if (type === 'planned') {
+            if (ft === 'Personal') return [...this._expenses.planned.Personal.values()]
+            else if (ft === 'Common') return [...this._expenses.planned.Common.values()]
+            else if (ft === 'All') return [...this._expenses.planned.Personal.values(), ...this._expenses.planned.Common.values()]
+            else return []
         }
     }
 
+    /**
+     * @method
+     * @name Travel.getExpense
+     * @param {'actual' | 'planned'} type
+     * @param {string} id
+     * @returns {Expense | undefined}
+     */
+    getExpense(type, id) {
+        if (type === 'actual') {
+            return this._expenses.actual.Personal.get(id) || this._expenses.actual.Common.get(id)
+        } else if (type === 'planned') {
+            return this._expenses.planned.Personal.get(id) || this._expenses.planned.Common.get(id)
+        }
+    }
 
+    /**
+     * @method
+     * @name Travel.addExpense
+     * @param {Expense} expense
+     * @param {'actual' | 'planned'} type
+     * @returns {Travel}
+     */
+    addExpense(expense, type) {
+        const personal = expense.isPersonal(this.user_id)
+        if (expense && type) {
+            if (type === 'actual') {
+                personal
+                    ? this._expenses.actual.Personal.set(expense.id, expense)
+                    : this._expenses.actual.Common.set(expense.id, expense)
+            } else if (type === 'planned') {
+                personal
+                    ? this._expenses.planned.Personal.set(expense.id, expense)
+                    : this._expenses.planned.Common.set(expense.id, expense)
+            }
+        }
+
+        this._update()
+        return this
+    }
+
+    /**
+     * @method
+     * @name Travel.removeExpense
+     * @param {Expense} expense
+     * @param {'actual' | 'planned'} type
+     * @returns {Travel}
+     */
+    removeExpense(expense, type) {
+        const personal = expense.isPersonal(this.user_id)
+        if (expense && type) {
+            if (type === 'actual') {
+                personal
+                    ? this._expenses.actual.Personal.delete(expense.id)
+                    : this._expenses.actual.Common.delete(expense.id)
+            } else if (type === 'planned') {
+                personal
+                    ? this._expenses.planned.Personal.delete(expense.id)
+                    : this._expenses.planned.Common.delete(expense.id)
+            }
+        }
+
+        this._update()
+        return this
+    }
 }

@@ -15,7 +15,7 @@ import storeDB from "../db/storeDB/storeDB";
  * @constructor
  *
  */
-export default class Expense extends Entity{
+export default class Expense extends Entity {
     /**@type{ExpenseType}*/
     static initValue = {
         id: () => '',
@@ -83,17 +83,17 @@ export default class Expense extends Entity{
 
         storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(new Date(this.datetime).getTime()))
             .then(/**@param{ExchangeType} t*/t => {
-                if(t){
-                this._exchange = t
-                this._coef = t.value.find(e => e.symbol === this.currency)?.value || 1
-                    this._travel.forceUpdate()
+                if (t) {
+                    this._exchange = t
+                    this._coef = t.value.find(e => e.symbol === this.currency)?.value || 1
+                    this._travel && this._travel.forceUpdate()
                 }
             })
 
         this.change = this._new
         this.type = type
-        if(type === 'actual')   this.storeName = constants.store.EXPENSES_ACTUAL
-        if(type === 'plan')     this.storeName = constants.store.EXPENSES_PLAN
+        if (type === 'actual') this.storeName = constants.store.EXPENSES_ACTUAL
+        if (type === 'plan') this.storeName = constants.store.EXPENSES_PLAN
 
     }
 
@@ -103,7 +103,7 @@ export default class Expense extends Entity{
      * @name Expense.id
      * @returns {string}
      */
-    get id(){
+    get id() {
         return this._modified.id
     }
 
@@ -114,8 +114,8 @@ export default class Expense extends Entity{
      * @param {string} id id расхода
      * @returns {Expense}
      */
-    setID(id){
-        if(typeof id === 'string' && id.length > 0) {
+    setID(id) {
+        if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
             this.change = true
         }
@@ -128,7 +128,7 @@ export default class Expense extends Entity{
      * @name Expense.id
      * @returns {string}
      */
-    get currency(){
+    get currency() {
         return this._modified.currency
     }
 
@@ -139,8 +139,8 @@ export default class Expense extends Entity{
      * @param {string} currency валюта расхода
      * @returns {Expense}
      */
-    setCurrency(currency){
-        if(typeof currency === 'string' && currency.length > 0) {
+    setCurrency(currency) {
+        if (typeof currency === 'string' && currency.length > 0) {
             this._modified.currency = currency
             this.change = true
         }
@@ -153,7 +153,7 @@ export default class Expense extends Entity{
      * @name Expense.section_id
      * @returns {string}
      */
-    get section_id(){
+    get section_id() {
         return this._modified.section_id
     }
 
@@ -164,8 +164,8 @@ export default class Expense extends Entity{
      * @param {string} id id секции
      * @returns {Expense}
      */
-    setSectionId(id){
-        if(typeof id === 'string' && id.length > 0) {
+    setSectionId(id) {
+        if (typeof id === 'string' && id.length > 0) {
             this._modified.section_id = id
             this.change = true
         }
@@ -178,7 +178,7 @@ export default class Expense extends Entity{
      * @name Expense.user_id
      * @returns {string}
      */
-    get user_id(){
+    get user_id() {
         return this._modified.user_id
     }
 
@@ -189,8 +189,8 @@ export default class Expense extends Entity{
      * @param {string} id user id
      * @returns {Expense}
      */
-    setUserID(id){
-        if(typeof id === 'string' && id.length > 0) {
+    setUserID(id) {
+        if (typeof id === 'string' && id.length > 0) {
             this._modified.user_id = id
             this.change = true
         }
@@ -203,7 +203,7 @@ export default class Expense extends Entity{
      * @name Expense.personal
      * @returns {DBFlagType}
      */
-    get personal(){
+    get personal() {
         return this._modified.personal
     }
 
@@ -214,8 +214,8 @@ export default class Expense extends Entity{
      * @param {DBFlagType} flag is expense personal
      * @returns {Expense}
      */
-    setPersonal(flag){
-        if(typeof flag === 'number' && (flag === 1 || flag === 0)) {
+    setPersonal(flag) {
+        if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.personal = flag
             this.change = true
         }
@@ -228,7 +228,7 @@ export default class Expense extends Entity{
      * @name Expense.title
      * @returns {string}
      */
-    get title(){
+    get title() {
         return this._modified.title
     }
 
@@ -239,8 +239,8 @@ export default class Expense extends Entity{
      * @param {string} title expense title
      * @returns {Expense}
      */
-    setTitle(title){
-        if(typeof title === 'string' && title.length > 0) {
+    setTitle(title) {
+        if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
             this.change = true
         }
@@ -253,7 +253,7 @@ export default class Expense extends Entity{
      * @name Expense.value
      * @returns {number}
      */
-    get value(){
+    get value() {
         return this._modified.value
     }
 
@@ -264,8 +264,8 @@ export default class Expense extends Entity{
      * @param {number} value  expense value
      * @returns {Expense}
      */
-    setValue(value){
-        if(typeof value === 'number' && value >= 0) {
+    setValue(value) {
+        if (typeof value === 'number' && value >= 0) {
             this._modified.value = value
             this.change = true
         }
@@ -278,7 +278,7 @@ export default class Expense extends Entity{
      * @name Expense.convertedValue
      * @returns {number}
      */
-    get convertedValue(){
+    get convertedValue() {
         return this._modified.value * this._coef
     }
 
@@ -286,10 +286,11 @@ export default class Expense extends Entity{
      * метод проверяет является ли этот расход личным
      * @method
      * @name Expense.isPersonal
+     * @param {string} user_id
      * @returns {boolean}
      */
-    isPersonal(){
-        return this._user_id === this._modified.user_id
+    isPersonal(user_id) {
+        return this.personal === 1 && (user_id === this._modified.user_id || this._user_id === this._modified.user_id)
     }
 
     /**
@@ -298,7 +299,7 @@ export default class Expense extends Entity{
      * @name Expense.primary_entity_id
      * @returns {string}
      */
-    get primary_entity_id(){
+    get primary_entity_id() {
         return this._modified.primary_entity_id
     }
 
@@ -309,8 +310,8 @@ export default class Expense extends Entity{
      * @param {string} primary_entity_id  expense primary_entity_id
      * @returns {Expense}
      */
-    setPrimaryEntityID(primary_entity_id){
-        if(typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
+    setPrimaryEntityID(primary_entity_id) {
+        if (typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
             this._modified.primary_entity_id = primary_entity_id
             this.change = true
         }
@@ -323,7 +324,7 @@ export default class Expense extends Entity{
      * @name Expense.entity_id
      * @returns {string}
      */
-    get entity_id(){
+    get entity_id() {
         return this._modified.entity_id
     }
 
@@ -334,8 +335,8 @@ export default class Expense extends Entity{
      * @param {string} id  expense entity_id
      * @returns {Expense}
      */
-    setEntityID(id){
-        if(typeof id === 'string' && id.length > 0) {
+    setEntityID(id) {
+        if (typeof id === 'string' && id.length > 0) {
             this._modified.entity_id = id
             this.change = true
         }
@@ -348,7 +349,7 @@ export default class Expense extends Entity{
      * @name Expense.entity_type
      * @returns {string}
      */
-    get entity_type(){
+    get entity_type() {
         return this._modified.entity_type
     }
 
@@ -359,8 +360,8 @@ export default class Expense extends Entity{
      * @param {string} type  expense entity_type
      * @returns {Expense}
      */
-    setEntityType(type){
-        if(typeof type === 'string' && type.length > 0) {
+    setEntityType(type) {
+        if (typeof type === 'string' && type.length > 0) {
             this._modified.entity_type = type
             this.change = true
         }
@@ -373,7 +374,7 @@ export default class Expense extends Entity{
      * @name Expense.primary_entity_type
      * @returns {string}
      */
-    get primary_entity_type(){
+    get primary_entity_type() {
         return this._modified.primary_entity_type
     }
 
@@ -384,8 +385,8 @@ export default class Expense extends Entity{
      * @param {string} type  expense primary_entity_type
      * @returns {Expense}
      */
-    setPrimaryEntityType(type){
-        if(typeof type === 'string' && type.length > 0) {
+    setPrimaryEntityType(type) {
+        if (typeof type === 'string' && type.length > 0) {
             this._modified.primary_entity_type = type
             this.change = true
         }
@@ -398,7 +399,7 @@ export default class Expense extends Entity{
      * @name Expense.created_at
      * @returns {string}
      */
-    get created_at(){
+    get created_at() {
         return this._modified.created_at
     }
 
@@ -409,13 +410,13 @@ export default class Expense extends Entity{
      * @param {string | Date} time время когда была созданна запись о расходе впервые
      * @returns {Expense}
      */
-    setCreatedAt(time){
-        if(time instanceof Date){
+    setCreatedAt(time) {
+        if (time instanceof Date) {
             this._modified.created_at = time.toISOString()
             this.change = true
-        } else if(typeof  time === 'string'){
+        } else if (typeof time === 'string') {
             const date = new Date(time)
-            if(!Number.isNaN(date.getTime())){
+            if (!Number.isNaN(date.getTime())) {
                 this._modified.created_at = date.toISOString()
                 this.change = true
             }
@@ -429,7 +430,7 @@ export default class Expense extends Entity{
      * @name Expense.datetime
      * @returns {string}
      */
-    get datetime(){
+    get datetime() {
         return this._modified.datetime
     }
 
@@ -440,13 +441,13 @@ export default class Expense extends Entity{
      * @param {string | Date} time время когда была созданна запись о расходе впервые
      * @returns {Expense}
      */
-    setDatetime(time){
-        if(time instanceof Date){
+    setDatetime(time) {
+        if (time instanceof Date) {
             this._modified.datetime = time.toISOString()
             this.change = true
-        } else if(typeof  time === 'string'){
+        } else if (typeof time === 'string') {
             const date = new Date(time)
-            if(!Number.isNaN(date.getTime())){
+            if (!Number.isNaN(date.getTime())) {
                 this._modified.datetime = date.toISOString()
                 this.change = true
             }
@@ -459,7 +460,7 @@ export default class Expense extends Entity{
      * @name Expense.changed
      * @returns {boolean}
      */
-    get changed(){
+    get changed() {
         return this.change
     }
 
@@ -469,18 +470,20 @@ export default class Expense extends Entity{
      * @name Expense.save
      * @returns {Promise<Expense>}
      */
-    async save(){
-        if(this.change){
+    async save() {
+        if (this.change) {
             let expenseService
-            if(this.type === 'plan') {
+            if (this.type === 'plan') {
                 expenseService = expenses_plan_service
-            } else if(this.type === 'actual'){
+            } else if (this.type === 'actual') {
                 expenseService = expenses_actual_service
             }
-            if(expenseService){
-            this._new
-                ? await expenseService.create(this._modified)
-                : await expenseService.update(this._modified)
+            if (expenseService) {
+                this._new
+                    ? await expenseService.create(this._modified)
+                        .then(() => this._travel.forceUpdate())
+                    : await expenseService.update(this._modified)
+                        .then(() => this._travel.forceUpdate())
             }
         }
         return this
@@ -501,14 +504,14 @@ export default class Expense extends Entity{
      * @name Expense.delete
      * @returns {Promise<Expense>}
      */
-    async delete(){
+    async delete() {
         let expenseService
-        if(this.type === 'plan') {
+        if (this.type === 'plan') {
             expenseService = expenses_plan_service
-        } else if(this.type === 'actual'){
+        } else if (this.type === 'actual') {
             expenseService = expenses_actual_service
         }
-        if(expenseService){
+        if (expenseService) {
             await expenseService.delete(this._modified)
         }
         return this

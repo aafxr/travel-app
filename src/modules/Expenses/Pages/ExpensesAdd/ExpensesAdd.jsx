@@ -30,20 +30,18 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  * в зависимости от expensesType добавляются либо плановые либо текущие
  * @function
  * @name ExpensesAdd
- * @param {string} primary_entity_type
  * @param {'actual' | 'plan'} expensesType - default =  actual
  * @param {boolean} edit - default =  false
  * @returns {JSX.Element}
  * @category Pages
  */
 export default function ExpensesAdd({
-                                        primary_entity_type,
-                                        expensesType = 'plan', // 'actual' | 'plan'
+                                        expensesType = 'plan',
                                         edit = false
                                     }) {
-    const {travelCode: primary_entity_id, expenseCode} = useParams()
+    const { expenseCode} = useParams()
     const {travel} = useTravelContext()
-    const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
+    // const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
     const {user} = useUserSelector()
     const navigate = useNavigate()
 

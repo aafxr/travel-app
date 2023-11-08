@@ -23,7 +23,6 @@ import '../../css/Expenses.css'
 export default function ExpensesPlan() {
     const {user} = useUserSelector()
     const {travel} = useTravelContext()
-    const [filter, setFilter] = useState(/**@type{ExpenseFilterType} */defaultFilterValue)
     const [sectionComponentData, setSectionComponentData] = useState(/**@type{SectionComponentDataType[]} */[])
 
     const [noDataMessage, setNoDataMessage] = useState('')
@@ -35,11 +34,11 @@ export default function ExpensesPlan() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(travel,"planned", filter)
+        combineExpensesForSectionComponent(travel,"planned", travel.expenseFilter)
             .then(setSectionComponentData)
 
         function sub(){
-            combineExpensesForSectionComponent(travel,"planned", filter)
+            combineExpensesForSectionComponent(travel,"planned", travel.expenseFilter)
                 .then(setSectionComponentData)
         }
         travel.onUpdate(sub)
@@ -47,7 +46,7 @@ export default function ExpensesPlan() {
         return () => {
             travel.offUpdate(sub)
         }
-    }, [travel, filter])
+    }, [travel])
 
     useEffect(() => {
 
@@ -72,7 +71,11 @@ export default function ExpensesPlan() {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant className='footer' value={filter} onChange={setFilter}/>
+            <ExpensesFilterVariant
+                className='footer'
+                value={travel.expenseFilter}
+                onChange={travel.setExpenseFilter.bind(travel)}
+            />
 
         </>
     )

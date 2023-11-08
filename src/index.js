@@ -63,8 +63,8 @@ window.store = storeDB
 //
 // sleep(2000)
 //     .then(() => {
-//         const promises = range(1,500)
-//             .map(i => new Expense({
+//         const promises = range(1,100)
+//             .map(i => new Expense(null,{
 //                 id: '12:'+i,
 //                 user_id: '12',
 //                 personal: 0,

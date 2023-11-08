@@ -23,7 +23,7 @@ export default function TelegramAuth({handleAuth}) {
     /** добавление виджета telegram для получения инфо пользователя */
     useEffect(() => {
         if (ref.current) {
-            const botName = location.hostname.startsWith('dev.')
+            const botName = location.hostname.includes('dev.')
                 ? process.env.REACT_APP_DEV_BOT
                 : process.env.REACT_APP_BOT
 

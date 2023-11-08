@@ -1,6 +1,7 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
 import {defaultMovementTags} from "../static/constants";
+import {defaultFilterValue} from "../modules/Expenses/static/vars";
 
 const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
@@ -41,6 +42,8 @@ export default class BaseTravel extends Entity {
     /***@type{TravelType} */
     _modified = {}
 
+
+
     /**
      * @param {TravelType} item
      * @constructor
@@ -80,6 +83,8 @@ export default class BaseTravel extends Entity {
 
         this.change = this._new
     }
+
+
 
     /**
      * от этого флага зависит бкдет ли записываться сущносьть Travel в бд или нет (если false)
