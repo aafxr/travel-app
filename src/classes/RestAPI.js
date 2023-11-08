@@ -1,5 +1,12 @@
 import aFetch from "../axios";
 
+
+/**
+ * Клас со статическими методами для обращения к api
+ * @class
+ * @name RestAPI
+ * @category Classes
+ */
 export default class RestAPI{
     /**
      * метод делает запрос к api и возвращает список SectionType

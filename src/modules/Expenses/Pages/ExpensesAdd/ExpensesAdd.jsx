@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from 'react'
 
@@ -24,6 +24,7 @@ import useExpense from "../../hooks/useExpense";
 import '../../css/Expenses.css'
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import Expense from "../../../../classes/Expense";
+import {type} from "@testing-library/user-event/dist/type";
 
 
 /**
@@ -40,7 +41,7 @@ export default function ExpensesAdd({
                                         expensesType = 'planned',
                                         edit = false
                                     }) {
-    const { expenseCode} = useParams()
+    const {expenseCode} = useParams()
     const {travel} = useTravelContext()
     // const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
     const {user} = useUserSelector()
@@ -136,9 +137,11 @@ export default function ExpensesAdd({
 
         /**@type{Expense}*/
         let _ex
-        if(expense) _ex = expense
-        else _ex = new Expense()
+        if (expense) _ex = expense
+        else _ex = new Expense(undefined, undefined, user.id, expensesType)
 
+
+        debugger
         _ex
             .setTitle(expName)
             .setValue(value)
@@ -147,7 +150,7 @@ export default function ExpensesAdd({
             .setCreatedAt(new Date().toISOString())
             .setSectionId(section_id)
             .save()
-            .then(e => travel.addExpense(e, isPlan ? 'planned': 'actual'))
+            .then(e => travel.addExpense(e, isPlan ? 'planned' : 'actual'))
             .catch(defaultHandleError)
             .finally(() => navigate(-1))
     }

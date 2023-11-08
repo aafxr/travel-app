@@ -80,6 +80,11 @@ self.onmessage = async (e) => {
                     /**@type{LimitType[]}*/
                     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, primary_entity_id)
 
+                    console.log('перед обработкой')
+                    logger('personal', personalExpensesMap)
+                    logger('common', commonExpensesMap)
+
+
                     const promises = limits.map(l => {
                         if (l.personal === 0) {
                             if (l.value < commonExpensesMap.get(l.section_id)?.value) {
@@ -103,6 +108,10 @@ self.onmessage = async (e) => {
                     })
 
                     await Promise.all(promises)
+
+                    console.log('после обработкой')
+                    logger('personal', personalExpensesMap)
+                    logger('common', commonExpensesMap)
 
                     const cp = Array.from(commonExpensesMap.values())
                         .map((l) => {
@@ -133,6 +142,20 @@ self.onmessage = async (e) => {
         /**@type{WorkerMessageType}*/
         const message = {type: "error", payload: err}
         self.postMessage(message)
+    }
+}
+
+/**
+ * @param {string} message
+ * @param {Map<string, Pick<ExpenseType, 'section_id' | 'value'|'currency'>>} map
+ */
+function logger(message, map) {
+    console.log('-------------------------------')
+    if (message) console.log(message)
+    for (const entry of map.entries()) {
+        const [_, value] = entry
+
+        console.log(value.section_id, ' ', value.value, ' ', value.currency)
     }
 }
 

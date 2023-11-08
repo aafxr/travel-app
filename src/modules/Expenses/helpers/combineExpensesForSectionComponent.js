@@ -22,9 +22,7 @@ export default async function combineExpensesForSectionComponent(travel, type, f
     /**@type{Map<string, string>}*/
     const sectionMap = new Map();
 
-    /**@type{SectionType[]}*/
-    const sections = await storeDB.getAll(constants.store.SECTION)
-    sections.map(s => sectionMap.set(s.id, s.title))
+    travel.defaultSections.map(s => sectionMap.set(s.id, s.title))
 
     /**@type{LimitType[]}*/
     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travel.id)
@@ -51,7 +49,7 @@ export default async function combineExpensesForSectionComponent(travel, type, f
      */
     function exactLimit(limits) {
         if (!limits || !limits.length) return 0
-        if (filter === 'All' || filter === 'Common') {
+        if (filter === 'Common') {
             const res = limits.find(l => l.personal === 0)
             return res?.value || 0
         } else if (filter === 'Personal') {
@@ -75,7 +73,7 @@ export default async function combineExpensesForSectionComponent(travel, type, f
 
 
 /**
- * Хук возвращает сгрупированный список секция-расходы для выбранного фильтра
+ * Функция возвращает сгрупированный список секция-расходы для выбранного фильтра
  * @function
  * @name getSectionsList
  * @param {Expense[]} expenses

@@ -2,6 +2,7 @@ import constants from "../static/constants";
 import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
 import Entity from "./Entity";
 import storeDB from "../db/storeDB/storeDB";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 
 /**
  * данный класс позволяет работать с расходами
@@ -9,9 +10,10 @@ import storeDB from "../db/storeDB/storeDB";
  * @name Expense
  * @extends Entity
  *
+ * @param {Travel} travel instance Travel
  * @param {ExpenseType} item прошлая запись о расзоде (если есть)
  * @param {string} user_id id пользователя, создавшего запись о расходе
- * @param {'plan' | 'actual'} type тип расходов
+ * @param {'planned' | 'actual'} type тип расходов
  * @constructor
  *
  */
@@ -47,7 +49,7 @@ export default class Expense extends Entity {
      * @param {Travel} travel instance Travel
      * @param {ExpenseType} item прошлая запись о расзоде (если есть)
      * @param {string} user_id id пользователя, создавшего запись о расходе
-     * @param {'plan' | 'actual'} type тип расходов
+     * @param {'planned' | 'actual'} type тип расходов
      * @constructor
      */
     constructor(travel, item, user_id, type) {
@@ -478,17 +480,18 @@ export default class Expense extends Entity {
     async save() {
         if (this.change) {
             let expenseService
-            if (this.type === 'plan') {
+            if (this.type === 'planned') {
                 expenseService = expenses_plan_service
             } else if (this.type === 'actual') {
                 expenseService = expenses_actual_service
             }
             if (expenseService) {
                 this._new
-                    ? await expenseService.create(this._modified)
+                    ? await expenseService.create(this.object)
+                        .catch(defaultHandleError)
+                    : await expenseService.update(this.object)
                         .then(() => this._travel.forceUpdate())
-                    : await expenseService.update(this._modified)
-                        .then(() => this._travel.forceUpdate())
+                this.change = false
             }
         }
         return this
