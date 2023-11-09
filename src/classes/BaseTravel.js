@@ -1,7 +1,9 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
-import {defaultMovementTags} from "../static/constants";
+import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, MS_IN_DAY} from "../static/constants";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
+import RouteBuilder from "./RouteBuilder";
+import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 
 const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
@@ -31,6 +33,7 @@ export default class BaseTravel extends Entity {
         hotels: () => [],
         movementTypes: () => defaultMovementTypes,
         waypoints: () => [],
+        places: () => [],
         adults_count: () => 1,
         childs_count: () => 0,
         date_start: () => new Date().toISOString(),
@@ -41,6 +44,12 @@ export default class BaseTravel extends Entity {
     }
     /***@type{TravelType} */
     _modified = {}
+
+    /**@type{RouteBuilder}*/
+    routeBuilder
+
+    /**@type{TravelDetailsFilterType}*/
+    _travelDetailsFilter
 
 
 
@@ -73,6 +82,7 @@ export default class BaseTravel extends Entity {
             .setHotels(item.hotels)
             .setMovementTypes(item.movementTypes?.length > 0 && item.movementTypes)
             .setWaypoints(item.waypoints)
+            .setPlaces(item.places)
             .setAdultsCount(item.adults_count)
             .setChildsCount(item.childs_count)
             .setDateStart(item.date_start)
@@ -81,7 +91,18 @@ export default class BaseTravel extends Entity {
             ._setIsFromPoint(item.isFromPoint)
             .setPhoto(item.photo)
 
+        this._travelDetailsFilter = defaultTravelDetailsFilter()
+
         this.change = this._new
+
+
+        this.routeBuilder = new RouteBuilder({
+            travel: this,
+            places: this.places,
+            appointments: this.appointments,
+            hotels: this.hotels,
+            waypoints: this.waypoints
+        })
     }
 
 
@@ -659,6 +680,70 @@ export default class BaseTravel extends Entity {
         return this
     }
 
+    /**
+     * геттер возвращает список places
+     * @get
+     * @name BaseTravel.places
+     * @returns {PlaceType[]}
+     */
+    get places() {
+        return this._modified.places
+    }
+
+    /**
+     * добавление (или обновление существующей) точки маршрута
+     * @method
+     * @name BaseTravel.addPlace
+     * @param {PointType} item посещаемое место
+     * @returns {BaseTravel}
+     */
+    addPlace(item) {
+        if (item) {
+            const idx = this.places.findIndex(p => p.id === item.id)
+            if (~idx) {
+                this.places.splice(idx, 1, item)
+            } else {
+                this._modified.places.push(item)
+            }
+            this.change = true
+            this.routeBuilder.updateRoute()
+        }
+        return this
+    }
+
+    /**
+     * удаление точки маршрута
+     * @method
+     * @name BaseTravel.removePlace
+     * @param {PointType} item посещаемое место
+     * @returns {BaseTravel}
+     */
+    removePlace(item) {
+        if (item) {
+            this._modified.places = this._modified.places.filter(i => item.id !== i.id)
+            this.change = true
+            this.routeBuilder.updateRoute()
+        }
+        return this
+    }
+
+    /**
+     * устонавливает посещаемые места
+     * @method
+     * @name BaseTravel.setPlaces
+     * @param {PlaceType[]} items посещаемые места
+     * @returns {BaseTravel}
+     */
+    setPlaces(items) {
+        if (Array.isArray(items)) {
+            this._modified.places = items
+            this.change = true
+            this._updateDirection()
+            this.routeBuilder.updateRoute()
+        }
+        return this
+    }
+
     _updateDirection() {
         this._modified.direction = this.waypoints
             .reduce((acc, p) => {
@@ -858,6 +943,49 @@ export default class BaseTravel extends Entity {
         }
         return this
     }
+
+    /**
+     * @get
+     * @name BaseTravel.travelDetailsFilter
+     * @returns {TravelDetailsFilterType}
+     */
+    get travelDetailsFilter(){
+        return this._travelDetailsFilter
+    }
+
+    /**
+     * @method
+     * @name BaseTravel.setTravelDetailsFilter
+     * @param {TravelDetailsFilterType} value
+     * @returns {BaseTravel}
+     */
+    setTravelDetailsFilter(value){
+        if(typeof value === 'string' && value.length){
+            localStorage.setItem(DEFAULT_TRAVEL_DETAILS_FILTER, value)
+            this._travelDetailsFilter = value
+            this.forceUpdate()
+        }
+        return this
+
+    }
+
+    /**
+     * возвращает количество дней в путешествии
+     * @get
+     * @name BaseTravel.days
+     * @returns {number|number}
+     */
+    get days(){
+        let days = new Date(this.date_end).getTime() - new Date(this.date_start).getTime() /MS_IN_DAY
+        days = Math.ceil(days)
+        return days ? days : this.routeBuilder.days
+    }
+    /**
+     * @method
+     * @name BaseTravel.forceUpdate
+     * @abstract
+     */
+    forceUpdate(){}
 
     /**
      * метод реализует создание / обновление заприси о путешествии в бд

@@ -101,3 +101,5 @@ export const defaultMovementTags = [
 ]
 
 export const DEFAULT_PLACEMARK_ICON = new URL('../../public/icons/Navigation.png', import.meta.url).toString()
+
+export const DEFAULT_TRAVEL_DETAILS_FILTER = 'defaultTravelDetailsFilter'

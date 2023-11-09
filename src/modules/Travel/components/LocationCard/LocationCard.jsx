@@ -2,38 +2,41 @@ import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import EditePencil from "../../../../components/svg/EditePencil";
-import {PhotoIcon, PlusIcon, TrashIcon} from "../../../../components/svg";
+import {CheckIcon, PhotoIcon, PlusIcon, TrashIcon} from "../../../../components/svg";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Chip} from "../../../../components/ui";
 
 import './LocationCard.css'
+import useTravelContext from "../../../../hooks/useTravelContext";
 
 /**
  * Компонент - карточка с описанием места
  * @function
  * @name LocationCard
+ * @param {string} id
  * @param {string} imgID
  * @param {string[]} imgURLs
  * @param {string} dateStart
  * @param {string} dateEnd
  * @param {string} title
  * @param {string} entityType
+ * @param {boolean} selected
  * @param children
- * @param {() => void} onAdd
- * @param {() => void} onEdite
- * @param {() => void} onDelete
+ * @param {(itemID: string) => void} onAdd
+ * @param {(itemID: string) => void} onEdite
+ * @param {(itemID: string) => void} onDelete
  * @returns {JSX.Element}
  */
-export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd, onEdite, onDelete}) {
+export default function LocationCard({imgID,id, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd, onEdite, onDelete, selected}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
     const rightElement = (
         <div className='column gap-0.5'>
-            <PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd()}/>
-            <EditePencil className='control-button flex-0' onClick={() => onEdite && onEdite()}/>
-            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete()}/>
+            {/*<PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd(id)}/>*/}
+            {/*<EditePencil className='control-button flex-0' onClick={() => onEdite && onEdite(id)}/>*/}
+            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete(id)}/>
         </div>
     )
 
@@ -69,9 +72,10 @@ export default function LocationCard({imgID, imgURLs, dateStart, dateEnd, title,
                         <IconButton
                             className='location-add-button'
                             iconClass='location-add-button-icon'
-                            icon={<PlusIcon/>}
+                            icon={selected ? <CheckIcon/> : <PlusIcon/>}
                             border={true}
                             shadow={false}
+                            onClick={() => onAdd && onAdd(id)}
                             small
                         />
                     )

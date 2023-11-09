@@ -1,6 +1,8 @@
 /**
  * @typedef {PlaceType} PlaceOptionsType
  * @property {Travel} travel
+ * @property {string} date_start
+ * @property {string} date_end
  */
 import Entity from "./Entity";
 

@@ -9,7 +9,7 @@ import {Input} from "../index";
  * вызова колбэка "onPlaces"
  * @function
  * @name InputWithPlaces
- * @param {function} onPlaces callback, вызывается в случае успешного получения рекомендуемых мест для посещения
+ * @param {(places: PlaceType[]) => void} onPlaces callback, вызывается в случае успешного получения рекомендуемых мест для посещения
  * @param {number} delay время (в миллисекундах) задержки запроса на получение рекомендуемых мест для посещения
  * @param props other props
  * @param {React.Ref} ref react ref

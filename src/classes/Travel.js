@@ -10,11 +10,6 @@ import Expense from "./Expense";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import Section from "./Section";
 
-// Продумать структуру менеджера для работы с сущностями отели, встречи, расходы и тд
-// реалирзовать абстракцию менеджера
-// добавить описание абстракции
-// Реализовать получение "курсора" для работы с большим объемом данных в бд
-// Добавить описание методов для работы с "курсором"
 
 /**
  * класс для обработки логики приложения при редактировании путешествия
@@ -44,6 +39,7 @@ export default class Travel extends BaseTravel {
 
     /**@type{SectionType[]}*/
     _defaultSections = []
+
 
 
     /**
@@ -121,6 +117,7 @@ export default class Travel extends BaseTravel {
         this.sectionService = new BaseService(constants.store.SECTION, {})
         this.hotelService = new BaseService(constants.store.HOTELS, {})
         this.appointmentService = new BaseService(constants.store.APPOINTMENTS, {})
+
 
         this._expenseFilter = defaultFilterValue()
         Section.defaultSections()

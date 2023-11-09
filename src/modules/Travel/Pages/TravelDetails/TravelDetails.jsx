@@ -3,11 +3,9 @@ import React, {useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
 import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
-import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import LocationCard from "../../components/LocationCard/LocationCard";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
@@ -32,20 +30,13 @@ import './TravelDetails.css'
  * @category Pages
  */
 export default function TravelDetails() {
-    const {travelCode} = useParams()
+    const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(false)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
-
-    //переменная для задания количества табов (по дням)
-    let travelDaysCount = 0
-    if (travel && travel.date_start && travel.date_end) {
-        travelDaysCount = (new Date(travel.date_end).getTime() - new Date(travel.date_start).getTime()) / (1000 * 60 * 60 * 24)
-        travelDaysCount = Math.ceil(travelDaysCount)
-    }
 
     const menu = (
         <Menu>
@@ -142,52 +133,36 @@ export default function TravelDetails() {
             </Container>
 
             <Curtain
-                direction={travel?.direction}
+                direction={travel.direction}
                 onChange={setCurtainOpen}
                 defaultOffsetPercents={1}
 
             >
                 <Container>
                     <div className='flex-between gap-1 pt-20'>
-                        <Button>по дням</Button>
-                        <Button>на карте</Button>
-                        <Button>все места</Button>
+                        <Button onClick={() => travel.setTravelDetailsFilter('byDays')}
+                                disabled={() => travel.travelDetailsFilter !== 'byDays'}
+                        >по дням</Button>
+                        <Button onClick={() => travel.setTravelDetailsFilter('onMap')}
+                                disabled={() => travel.travelDetailsFilter !== 'onMap'}
+                        >на карте</Button>
+                        <Button onClick={() => travel.setTravelDetailsFilter('allPlaces')}
+                                disabled={() => travel.travelDetailsFilter !== 'allPlaces'}
+                        >все места</Button>
                     </div>
                 </Container>
                 {
-                    !!travelDaysCount &&
                     <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
                         {
-                            !!travelDaysCount &&
-                            new Array(travelDaysCount)
-                                .fill(0)
-                                .map(
-                                    (_, i) => (<Tab key={i} name={`${i + 1} день`}/>)
-                                )
+                            new Array(travel.days).fill(0)
+                                .map((_, i) => (
+                                    <Tab to={`/travel/${travel.id}/${i + 1}/`} key={i} name={`${i + 1} день`}/>
+                                ))
                         }
                     </div>
                 }
                 <Container className='overflow-x-hidden pt-20 pb-20'>
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2}
-                        dateEnd={Date.now()}
-                    />
-                    <RecommendLocation items={items}/>
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-                        dateEnd={Date.now()}
-                    />
-                    <RecommendLocation items={items}/>
-                    <LocationCard
-                        title='Новосибирск-Сочи'
-                        entityType='Перелет'
-                        dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-                    />
-                    <AddButton>Добавить локацию</AddButton>
+
                 </Container>
             </Curtain>
             {curtainOpen &&
@@ -200,3 +175,24 @@ export default function TravelDetails() {
         </>
     )
 }
+
+// <LocationCard
+//     title='Новосибирск-Сочи'
+//     entityType='Перелет'
+//     dateStart={Date.now() - 1000 * 60 * 60 * 2}
+//     dateEnd={Date.now()}
+// />
+// <RecommendLocation items={items}/>
+// <LocationCard
+//     title='Новосибирск-Сочи'
+//     entityType='Перелет'
+//     dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
+//     dateEnd={Date.now()}
+// />
+// <RecommendLocation items={items}/>
+// <LocationCard
+//     title='Новосибирск-Сочи'
+//     entityType='Перелет'
+//     dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
+// />
+// <AddButton>Добавить локацию</AddButton>

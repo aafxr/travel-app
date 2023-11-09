@@ -12,6 +12,7 @@ import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap
 import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
 import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
+import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
@@ -27,7 +28,6 @@ import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
-import {initTravelsThunk} from "./redux/travelStore/initTravelsThunk";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import TravelContextProvider from "./contexts/TravelContextProvider";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
@@ -110,6 +110,7 @@ function App() {
                             <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
+                            <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
                             <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                             <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
@@ -117,6 +118,7 @@ function App() {
                             <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
                             <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                             <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
+                            <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                             <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
                             <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
                             <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>

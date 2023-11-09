@@ -141,7 +141,7 @@ export default function ExpensesAdd({
         else _ex = new Expense(undefined, undefined, user.id, expensesType)
 
 
-        debugger
+
         _ex
             .setTitle(expName)
             .setValue(value)

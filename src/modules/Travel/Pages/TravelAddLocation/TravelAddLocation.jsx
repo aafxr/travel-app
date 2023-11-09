@@ -7,7 +7,8 @@ import Container from "../../../../components/Container/Container";
 import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import Place from "../../../../classes/Place";
 
 /**
  * Страница отображения локации
@@ -17,14 +18,13 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
  * @category Pages
  */
 export default function TravelAddLocation() {
-    const {travelCode} = useParams()
+    const {travel} = useTravelContext()
+    const [title, setTitle] = useState('')
     const dateHandlers = useChangeInputType('date')
     const timeHandlers = useChangeInputType('time')
 
-    const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[])
 
     function handleSave() {
-
     }
 
     return (
@@ -32,10 +32,11 @@ export default function TravelAddLocation() {
             <Container className='column gap-1 pb-20'>
                 <PageHeader arrowBack title='Добавить локацию'/>
                 <div className='column gap-0.25'>
-                    <InputWithSuggests
+                    <Input
                         type='text'
+                        value={title}
+                        onChange={(e)=> setTitle(e.target.value) }
                         placeholder='Выберите место'
-                        onPlaces={setPlaces}
                     />
                     <div className='flex-stretch'>
                         <Input
@@ -60,17 +61,18 @@ export default function TravelAddLocation() {
                 </ul>
             </Container>
             <Container className='content column gap-1 overflow-x-hidden'>
-                {
-                    Array.isArray(places) && places.map(p => (
+                {/*{*/}
+                {/*    Array.isArray(places) && places.map(p => (*/}
 
-                        <LocationCard
-                            key={p.formatted_address}
-                            title={p.name}
-                            imgURLs={p.photos || [DEFAULT_IMG_URL]}
-                            entityType={p.formatted_address}
-                        />
-                    ))
-                }
+                {/*        <LocationCard*/}
+                {/*            key={p.id}*/}
+                {/*            title={p.name}*/}
+                {/*            imgURLs={p.photos || [DEFAULT_IMG_URL]}*/}
+                {/*            entityType={p.formatted_address}*/}
+                {/*            // onAdd={}*/}
+                {/*        />*/}
+                {/*    ))*/}
+                {/*}*/}
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave}>Добавить</Button>
