@@ -1,30 +1,31 @@
-import useTravelContext from "../../../../hooks/useTravelContext";
-import LocationCard from "../../components/LocationCard/LocationCard";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import React from "react";
 import {useParams} from "react-router-dom";
-import {Tab} from "../../../../components/ui";
+
+import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import {Tab} from "../../../../components/ui";
 
 export default function ShowPlaces() {
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
 
-    console.log(travel.routeBuilder.getRouteByDay(+dayNumber || 1))
+
     return (
         <>
             {
                 <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
                     {
-                        travel.routeBuilder.getDaysWithActivity()
+                        travel.routeBuilder.getActivityDays()
                             .sort()
                             .map((i) => (
-                                <Tab to={`/travel/${travel.id}/${i }/`} key={i} name={`${i} день`}/>
+                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
                     }
                 </div>
             }
-            <Container className='overflow-x-hidden pt-20 pb-20'>
+            <Container className='column overflow-x-hidden pt-20 pb-20 gap-1'>
                 {
                     travel.routeBuilder.getRouteByDay(+dayNumber || 1).map(p => (
                         <LocationCard

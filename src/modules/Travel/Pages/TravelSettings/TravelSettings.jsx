@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import {defaultMovementTags} from "../../../../static/constants";
-import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
+import FlatButton from "../../../../components/FlatButton/FlatButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
@@ -283,7 +283,7 @@ export default function TravelSettings() {
                     <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>
                 </div>
             </div>
-            <ButtonsBlock
+            <FlatButton
                 className={'buttons-block'}
                 onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
                 onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}

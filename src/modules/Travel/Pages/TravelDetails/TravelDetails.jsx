@@ -4,7 +4,7 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import ButtonsBlock from "../../../../components/ButtonsBlock/ButtonsBlock";
+import FlatButton from "../../../../components/FlatButton/FlatButton";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
@@ -161,11 +161,12 @@ export default function TravelDetails() {
                     }
             </Curtain>
             {curtainOpen &&
-                <ButtonsBlock
+                <FlatButton
                     className={'travel-details-buttons'}
                     onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
                     onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
                     onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
+                    onPlace={() => navigate(`/travel/${travel.id}/add/place/`)}
                 />}
         </>
     )

@@ -83,7 +83,6 @@ export default function TravelAddHotel() {
 
     /** обработчик изменения диапазона дат заселения в отель */
     function handleHotelRangeChange({start, end}) {
-        debugger
         if (hotel) {
             if (hotel.check_in !== start) setHotel({...hotel, check_in: start})
             if (hotel.check_out !== end) setHotel({...hotel, check_out: start})

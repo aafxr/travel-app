@@ -23,6 +23,8 @@
 .page-header {
     flex: 1;
     pointer-events: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .page-header-icon, .page-header-icons {

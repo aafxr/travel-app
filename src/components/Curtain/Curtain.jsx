@@ -208,7 +208,7 @@ export default function Curtain({
                     >
                         {
                             (typeof direction === 'string' && direction.length > 0)
-                            ? <button className='curtain-top-btn--direction'>{direction}</button>
+                            ? <div className='title-semi-bold center' style={{height: "1.8rem",textAlign: 'center'}}>{direction}</div>
                             : <button className='curtain-top-btn'/>
                         }
                     </div>

@@ -77,8 +77,6 @@ export default class RouteBuilder {
                     if (!this.placesMap.has(i)) this.placesMap.set(i, [])
                     this.placesMap.get(i).push(p)
                 }
-        console.log(startDay + daysCount)
-                console.log(this.placesMap)
             }
         })
 
@@ -99,10 +97,10 @@ export default class RouteBuilder {
     /**
      * возвращает список дней с активностями
      * @method
-     * @name RouteBuilder.getDaysWithActivity
+     * @name RouteBuilder.getActivityDays
      * @returns {number[]}
      */
-    getDaysWithActivity(){
+    getActivityDays(){
         return Array.from(this.placesMap.keys()).filter((key) => this.placesMap.get(key).length > 0)
 
     }

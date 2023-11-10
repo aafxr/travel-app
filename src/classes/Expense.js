@@ -3,6 +3,7 @@ import {expenses_actual_service, expenses_plan_service} from "../services/expens
 import Entity from "./Entity";
 import storeDB from "../db/storeDB/storeDB";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import createId from "../utils/createId";
 
 /**
  * данный класс позволяет работать с расходами
@@ -68,10 +69,10 @@ export default class Expense extends Entity {
 
         Object.keys(Expense.initValue).forEach(key => this._modified[key] = Expense.initValue[key]())
         this
-            .setID(item.id)
+            .setID(item.id || createId(user_id))
             .setCurrency(item.currency)
             .setSectionId(item.section_id)
-            .setUserID(item.user_id)
+            .setUserID(item.user_id || user_id)
             .setPersonal(item.personal)
             .setTitle(item.title)
             .setValue(item.value)
