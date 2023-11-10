@@ -8,8 +8,17 @@
  * @property {number} zoom
  * @property {CoordinatesType} center
  * @property {string} container_id
- *
- *
+ * @property {string} add_location_icon
+ * @property {string} location_icon
+ * @property {[number, number]} icon_size
+ */
+
+/**
+ * @typedef YMapPointOptionsType
+ * @property {string} hintContent
+ * @property {string} balloonContent
+ * @property {'add' | 'exist'} markerType
+ * @property {boolean} draggable
  */
 
 
@@ -36,6 +45,8 @@ export default class YMap {
     _center
     /**@type{string}*/
     _container_id
+    /**@type{Map<string, Object>}*/
+    _pointsMap= new Map()
 
 
     /** @param {YMapOptionsType} options */
@@ -50,6 +61,9 @@ export default class YMap {
         this._zoom = options.zoom                   || 7
         this._center = options.center               || [55.02629924781924, 82.92193912995225]
         this._container_id = options.container_id   || 'map'
+        this._add_location_icon = options.add_location_icon || ''
+        this._location_icon = options.location_icon || ''
+        this._icon_size = options.icon_size         || [32,32]
     }
 
     /**
@@ -108,24 +122,35 @@ export default class YMap {
      * @method
      * @name YMap.addPoint
      * @param {PointType} point
+     * @param {YMapPointOptionsType} [options]
      */
-    addPoint(point){
+    addPoint(point, options = {}){
         if(point){
-            window.ymaps.GeoObject({
-                geometry: {
-                    type: "Point",
-                    coordinates: [55.8, 37.8]
-                },
-                properties: {
-                    iconContent: 'Я тащусь',
-                    hintContent: 'Ну давай уже тащи'
-                }
+            const placemark = window.ymaps.Placemark(point.coords, {
+                hintContent: options.hintContent,
+                balloonContent: options.balloonContent,
             }, {
-                preset: 'islands#blackStretchyIcon',
-                draggable: true
+                iconLayout: 'default#image',
+                iconImageHref: options.markerType === 'exist' ? this._location_icon : this._add_location_icon,
+                iconImageSize: this._icon_size,
+                iconImageOffset: [-this._icon_size[0] / 2, -this._icon_size[1]],
+                draggable: options.draggable ?? true,
+                cursor: 'pointer',
             })
+
+            this._map.geoObjects.add(placemark)
+            this._pointsMap.set(point.id, placemark)
         }
     }
 
+    async getPointByAddres(address){
+        const geocoder = window.ymaps.geocode(address)
+        await geocoder
+            .then(res => {
+                window.res = res
+                /** информация о найденом месте */
+                const geoObject = res.geoObjects.get(0)
+            })
+    }
 
 }
