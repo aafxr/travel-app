@@ -54,7 +54,7 @@ export default function TravelContextProvider() {
                             ?  new Travel(item)
                             :  null
                         t.setUser(user.id)
-                        if (t) t.onUpdate(update)
+                        if (t) t.onUpdate(() => setState(prev => ({...prev})))
                         setState({travel: t})
                     })
             })
@@ -63,6 +63,7 @@ export default function TravelContextProvider() {
             if (state.travel) state.travel.offUpdate(update)
         }
     }, [travelCode, user])
+
 
     if (state.travel) {
         window.travel = state.travel

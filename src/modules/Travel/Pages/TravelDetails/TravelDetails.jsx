@@ -21,6 +21,7 @@ import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
 
 import './TravelDetails.css'
+import ShowPlaces from "./ShowPlaces";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -133,37 +134,31 @@ export default function TravelDetails() {
             </Container>
 
             <Curtain
-                direction={travel.direction}
+                direction={travel.routeBuilder.getRouteByDay(+dayNumber)[0]?.name}
                 onChange={setCurtainOpen}
                 defaultOffsetPercents={1}
 
             >
                 <Container>
                     <div className='flex-between gap-1 pt-20'>
-                        <Button onClick={() => travel.setTravelDetailsFilter('byDays')}
-                                disabled={() => travel.travelDetailsFilter !== 'byDays'}
+                        <Button
+                            onClick={() => travel.setTravelDetailsFilter('byDays')}
+                            active={travel.travelDetailsFilter === 'byDays'}
                         >по дням</Button>
-                        <Button onClick={() => travel.setTravelDetailsFilter('onMap')}
-                                disabled={() => travel.travelDetailsFilter !== 'onMap'}
+                        <Button
+                            onClick={() => travel.setTravelDetailsFilter('onMap')}
+                            active={travel.travelDetailsFilter === 'onMap'}
                         >на карте</Button>
-                        <Button onClick={() => travel.setTravelDetailsFilter('allPlaces')}
-                                disabled={() => travel.travelDetailsFilter !== 'allPlaces'}
+                        <Button
+                            onClick={() => travel.setTravelDetailsFilter('allPlaces')}
+                            active={travel.travelDetailsFilter === 'allPlaces'}
                         >все места</Button>
                     </div>
                 </Container>
-                {
-                    <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                        {
-                            new Array(travel.days).fill(0)
-                                .map((_, i) => (
-                                    <Tab to={`/travel/${travel.id}/${i + 1}/`} key={i} name={`${i + 1} день`}/>
-                                ))
-                        }
-                    </div>
-                }
-                <Container className='overflow-x-hidden pt-20 pb-20'>
 
-                </Container>
+                    {
+                        travel.travelDetailsFilter === 'allPlaces' && <ShowPlaces />
+                    }
             </Curtain>
             {curtainOpen &&
                 <ButtonsBlock

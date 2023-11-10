@@ -16,7 +16,7 @@ export default class RouteBuilder {
     _date_end
 
     /** @type{Map<number, PlaceType[]>}*/
-     placesMap
+    placesMap
 
     /**@param {RouteBuilderOptionsType} options*/
     constructor(options) {
@@ -38,40 +38,50 @@ export default class RouteBuilder {
      * @method
      * @name RouteBuilder.updateRoute
      */
-    updateRoute(){
+    updateRoute() {
+        if (!this._travel.places.length) return
+        this.placesMap.clear()
         let range = {start: Number.POSITIVE_INFINITY, end: Number.NEGATIVE_INFINITY}
 
-        this.places.reduce((acc, p) => {
+        this._travel.places.reduce((acc, p) => {
             const dateStart = new Date(p.date_start)
             const dateEnd = new Date(p.date_end)
-            if(!Number.isNaN(dateStart.getTime()) && acc.start > dateStart.getTime()){
+            if (!Number.isNaN(dateStart.getTime()) && acc.start > dateStart.getTime()) {
                 acc.start = dateStart.getTime()
             }
-            if(!Number.isNaN(dateEnd.getTime()) && acc.end < dateEnd.getTime()){
+            if (!Number.isNaN(dateEnd.getTime()) && acc.end < dateEnd.getTime()) {
                 acc.start = dateEnd.getTime()
             }
             return acc
-        },range)
+        }, range)
+
+        this._date_start = range.start
+        this._date_end = range.end
 
         let days = (range.end - range.start) / MS_IN_DAY
         days = Math.floor(Math.max(1, days))
 
-        for (let i = 1; i <= days; i++){
+        for (let i = 1; i <= days; i++) {
             this.placesMap.set(i, [])
         }
 
-        this._travel.places.forEach(p=> {
+        this._travel.places.forEach(p => {
             const start = new Date(p.date_start)
             const end = new Date(p.date_end)
             let daysCount = (start - end) / MS_IN_DAY
             daysCount = Math.max(Math.ceil(daysCount), 1)
 
-            if(!Number.isNaN(daysCount)){
-                for (let i = 1; i <= days; i++){
+            let startDay = Math.floor((this._date_start - start.getTime()) / MS_IN_DAY)
+            if (!Number.isNaN(daysCount)) {
+                for (let i = startDay; i <= startDay + daysCount; i++) {
+                    if (!this.placesMap.has(i)) this.placesMap.set(i, [])
                     this.placesMap.get(i).push(p)
                 }
+        console.log(startDay + daysCount)
+                console.log(this.placesMap)
             }
         })
+
     }
 
 
@@ -82,16 +92,26 @@ export default class RouteBuilder {
      * @param {number} i
      * @returns {PlaceType[]}
      */
-    getRouteByDay(i){
-            return this.places.get(i) || []
+    getRouteByDay(i) {
+        return this.placesMap.get(i) || []
     }
 
+    /**
+     * возвращает список дней с активностями
+     * @method
+     * @name RouteBuilder.getDaysWithActivity
+     * @returns {number[]}
+     */
+    getDaysWithActivity(){
+        return Array.from(this.placesMap.keys()).filter((key) => this.placesMap.get(key).length > 0)
+
+    }
     /**
      * @get
      * @name RouteBuilder.days
      * @returns {number}
      */
-    get days(){
+    get days() {
         let days = (this._date_end - this._date_start) / MS_IN_DAY
         return Math.max(Math.ceil(days), 1)
     }

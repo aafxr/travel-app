@@ -68,6 +68,14 @@ export default class BaseTravel extends Entity {
             .keys(BaseTravel.initValue)
             .forEach(key => this._modified[key] = BaseTravel.initValue[key]())
 
+        this.routeBuilder = new RouteBuilder({
+            travel: this,
+            places: this.places,
+            appointments: this.appointments,
+            hotels: this.hotels,
+            waypoints: this.waypoints
+        })
+
         this
             .setID(item.id)
             .setCode(item.code)
@@ -94,15 +102,6 @@ export default class BaseTravel extends Entity {
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
         this.change = this._new
-
-
-        this.routeBuilder = new RouteBuilder({
-            travel: this,
-            places: this.places,
-            appointments: this.appointments,
-            hotels: this.hotels,
-            waypoints: this.waypoints
-        })
     }
 
 
@@ -976,9 +975,11 @@ export default class BaseTravel extends Entity {
      * @returns {number|number}
      */
     get days(){
-        let days = new Date(this.date_end).getTime() - new Date(this.date_start).getTime() /MS_IN_DAY
+        let days = (new Date(this.date_end).getTime() - new Date(this.date_start).getTime()) /MS_IN_DAY
         days = Math.ceil(days)
         return days ? days : this.routeBuilder.days
+
+
     }
     /**
      * @method

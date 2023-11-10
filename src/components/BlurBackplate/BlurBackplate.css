@@ -6,7 +6,7 @@
     bottom: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
+    background: var(--color-blur-backdrop);
     backdrop-filter: blur(2px);
-    transition: backdrop-filter 0.3s;
+    transition: backdrop-filter 0.3s, background 0.3s;
 }
