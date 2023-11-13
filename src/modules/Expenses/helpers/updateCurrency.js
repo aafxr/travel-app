@@ -3,13 +3,6 @@ import {updateCurrencyThunk} from "../../../redux/expensesStore/updateCurrencyTh
 import constants, {reducerConstants} from "../../../static/constants";
 import storeDB from "../../../db/storeDB/storeDB";
 
-// const t = {
-//     char_code: "KZT",
-//     name: "Казахстанских тенге",
-//     num_code: 398,
-//     symbol: "₸",
-//     value: 20.3433,
-// }
 /**@type{RangeType} */
 const defaultRange = {
     date_start:new Date().toLocaleDateString(),
@@ -36,7 +29,14 @@ export default async function updateCurrency(dispatch, range) {
         .then(res => res.data)
         .then(({ok, data}) => {
             if (ok){
-                const c = Object.keys(data).map(k => ({date: new Date(k).getTime(), value: data[k]}))
+                const c = Object
+                    .keys(data)
+                    .map(k => {
+                        const [dd,mm,yy]= k.split('.')
+                        return [mm,dd,yy].join('.')
+                    })
+                    .map(k => ({date: new Date(k).getTime(), value: data[k]}))
+                console.log(c)
                 Promise.all(c
                     .map(item => storeDB.editElement(constants.store.CURRENCY, item))
                 ).then(() => {
