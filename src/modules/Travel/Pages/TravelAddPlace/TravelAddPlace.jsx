@@ -1,17 +1,15 @@
 import React, {useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
-import {Chip, Input, InputWithSuggests, PageHeader} from "../../../../components/ui";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {Chip,  InputWithSuggests, PageHeader} from "../../../../components/ui";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
-import useChangeInputType from "../../hooks/useChangeInputType";
+import DateRange from "../../../../components/DateRange/DateRange";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import Place from "../../../../classes/Place";
-import DateRange from "../../../../components/DateRange/DateRange";
-import useUserSelector from "../../../../hooks/useUserSelector";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * Страница отображения компонент добавления места путешествия
@@ -31,8 +29,9 @@ export default function TravelAddPlace() {
 
     const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[])
 
-    function handleSelectPlace(itemID){
-        const p = places.find(p => p.id === itemID)
+    /**@param{PlaceType} item*/
+    function handleSelectPlace(item){
+        const p = places.find(p => p.id === item.id)
         if(p){
             setPlace(p)
             setTitle(p.name)
@@ -90,6 +89,7 @@ export default function TravelAddPlace() {
                             imgURLs={p.photos || [DEFAULT_IMG_URL]}
                             entityType={p.formatted_address}
                             selected={p.id === place?.id}
+                            item={p}
                             onAdd={handleSelectPlace}
                         />
                     ))

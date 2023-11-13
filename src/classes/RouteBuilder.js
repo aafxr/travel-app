@@ -39,8 +39,8 @@ export default class RouteBuilder {
      * @name RouteBuilder.updateRoute
      */
     updateRoute() {
-        if (!this._travel.places.length) return
         this.placesMap.clear()
+        if (!this._travel.places.length) return
         let range = {start: Number.POSITIVE_INFINITY, end: Number.NEGATIVE_INFINITY}
 
         this._travel.places.reduce((acc, p) => {
@@ -72,6 +72,7 @@ export default class RouteBuilder {
             daysCount = Math.max(Math.ceil(daysCount), 1)
 
             let startDay = Math.floor((this._date_start - start.getTime()) / MS_IN_DAY)
+            startDay = Math.max(startDay, 1)
             if (!Number.isNaN(daysCount)) {
                 for (let i = startDay; i <= startDay + daysCount; i++) {
                     if (!this.placesMap.has(i)) this.placesMap.set(i, [])

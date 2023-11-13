@@ -145,7 +145,7 @@ export default class YMap {
      * @name YMap.getZoom
      * @returns {number}
      */
-    getZoom(){
+    getZoom() {
         return this._zoom
     }
 
@@ -155,8 +155,8 @@ export default class YMap {
      * @param value
      * @returns {YMap}
      */
-    setZoom(value){
-        if(!value) return this
+    setZoom(value) {
+        if (!value) return this
         this._zoom = value
         this._map.setZoom(this._zoom, {smooth: true})
         return this
@@ -277,11 +277,9 @@ export default class YMap {
             strokeOpacity: 1,
         });
 
-        console.log(this._polyLine)
-        window.polyline = this._polyLine
         this._map.geoObjects.add(this._polyLine)
         const bounds = this._map.geoObjects.getBounds()
-        this._map.setBounds(bounds)
+        if (bounds) this._map.setBounds(bounds)
         this._map.setZoom(this._zoom, {smooth: true})
 
         return this

@@ -37,7 +37,7 @@ export default function TravelDetails() {
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
-    const [curtainOpen, setCurtainOpen] = useState(false)
+    const [curtainOpen, setCurtainOpen] = useState(true)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
 
     const menu = (

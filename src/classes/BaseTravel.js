@@ -722,6 +722,7 @@ export default class BaseTravel extends Entity {
             this._modified.places = this._modified.places.filter(i => item.id !== i.id)
             this.change = true
             this.routeBuilder.updateRoute()
+            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
         return this
@@ -1003,7 +1004,6 @@ export default class BaseTravel extends Entity {
         travelDTO.waypoints = travelDTO.waypoints.map(({address, id, locality, coords, kind}) => ({
             address, id, locality, coords, kind, placemark: null
         }))
-        console.log('travelDTO ', travelDTO)
         if (this.change) {
             this._new
                 ? await travel_service.create(travelDTO, userOK ? user_id : this.user_id)

@@ -100,7 +100,7 @@ export default function LocationCard({
                             icon={selected ? <CheckIcon/> : <PlusIcon/>}
                             border={true}
                             shadow={false}
-                            onClick={() => onAdd && onAdd(id)}
+                            onClick={() => onAdd && onAdd(item)}
                             small
                         />
                     )
