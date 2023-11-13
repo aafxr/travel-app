@@ -13,9 +13,9 @@ import './FlatButton.css'
 const icon_size = +getComputedStyle(document.documentElement).getPropertyValue('--control-button-size') || 40;
 
 const buttons = [
+    {id: 'appointment', description: "Добавить встречу", icon: <AppointmentIcon/>},
     {id: 'hotel', description: "Добавить отель", icon: <HotelIcon/>},
     {id: 'place', description: "Добавить место", icon: <TerrainIcon/>},
-    {id: 'appointment', description: "Добавить встречу", icon: <AppointmentIcon/>},
     {id: 'invite', description: "Пригласить пользователя", icon: <ShareLinkIcon/>}
 ]
 
@@ -123,9 +123,9 @@ export default function FlatButton({
                             onClick={(e) => handleButtonClick(b, e)}
                         >
                             <div className='title-semi-bold flex-1'>{b.description}</div>
-                            <button className='rounded-button'
-                                    onClick={(e) => handleButtonClick(b, e)}
-                            >{b.icon}</button>
+                            <button className='rounded-button'>
+                                {b.icon}
+                            </button>
                         </motion.div>
                     ))
                 }
