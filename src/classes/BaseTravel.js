@@ -714,7 +714,7 @@ export default class BaseTravel extends Entity {
      * удаление точки маршрута
      * @method
      * @name BaseTravel.removePlace
-     * @param {PointType} item посещаемое место
+     * @param {PlaceType} item посещаемое место
      * @returns {BaseTravel}
      */
     removePlace(item) {
@@ -722,6 +722,7 @@ export default class BaseTravel extends Entity {
             this._modified.places = this._modified.places.filter(i => item.id !== i.id)
             this.change = true
             this.routeBuilder.updateRoute()
+            this.forceUpdate()
         }
         return this
     }

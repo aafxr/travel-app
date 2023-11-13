@@ -51,6 +51,7 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
+import MapContext from "./contexts/MapContext";
 
 
 function App() {
@@ -96,7 +97,7 @@ function App() {
 
     return (
         <Provider store={store}>
-            <>
+            <MapContext>
                 <Routes>
                     <Route element={<WorkerContextProvider/>}>
                         <Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>
@@ -151,7 +152,7 @@ function App() {
                     <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
                 </Routes>
                 <Alerts count={2}/>
-            </>
+            </MapContext>
         </Provider>
     );
 }

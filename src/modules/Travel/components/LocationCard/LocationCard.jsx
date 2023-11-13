@@ -22,13 +22,30 @@ import useTravelContext from "../../../../hooks/useTravelContext";
  * @param {string} title
  * @param {string} entityType
  * @param {boolean} selected
+ * @param item
  * @param children
- * @param {(itemID: string) => void} onAdd
- * @param {(itemID: string) => void} onEdite
- * @param {(itemID: string) => void} onDelete
+ * @param {(item) => void} onAdd
+ * @param {(item) => void} onEdite
+ * @param {(item) => void} onDelete
+ * @param {(item) => void} onPhotoAdd
  * @returns {JSX.Element}
  */
-export default function LocationCard({imgID,id, imgURLs, dateStart, dateEnd, title, entityType, children, onAdd, onEdite, onDelete, selected}) {
+export default function LocationCard({
+                                         imgID,
+                                         id,
+                                         imgURLs,
+                                         dateStart,
+                                         dateEnd,
+                                         title,
+                                         entityType,
+                                         children,
+                                         onAdd,
+                                         onEdite,
+                                         onDelete,
+                                         selected,
+                                         item,
+                                         onPhotoAdd
+}) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
@@ -36,7 +53,7 @@ export default function LocationCard({imgID,id, imgURLs, dateStart, dateEnd, tit
         <div className='column gap-0.5'>
             {/*<PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd(id)}/>*/}
             {/*<EditePencil className='control-button flex-0' onClick={() => onEdite && onEdite(id)}/>*/}
-            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete(id)}/>
+            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete(item)}/>
         </div>
     )
 
@@ -60,8 +77,16 @@ export default function LocationCard({imgID,id, imgURLs, dateStart, dateEnd, tit
                     }
                     {/*<PhotoCarousel urls={imgURLs} />*/}
                     <div className='location-buttons'>
-                        <button className='rounded-button location-btn'><PhotoIcon/></button>
-                        <button className='rounded-button location-btn'><EditePencil/></button>
+                        <button
+                            className='rounded-button location-btn'
+                            onClick={() => onPhotoAdd && onPhotoAdd(item)}
+                        >
+                            <PhotoIcon/></button>
+                        <button
+                            className='rounded-button location-btn'
+                            onClick={() => onEdite && onEdite(item)}
+                        >
+                            <EditePencil/></button>
                     </div>
                 </div>
                 <div className='location-title'>{title}</div>

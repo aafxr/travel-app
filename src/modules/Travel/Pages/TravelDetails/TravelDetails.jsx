@@ -22,6 +22,7 @@ import Menu from "../../../../components/Menu/Menu";
 
 import './TravelDetails.css'
 import ShowPlaces from "./ShowPlaces";
+import ShowRouteOnMap from "./ShowRouteOnMap";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -136,29 +137,35 @@ export default function TravelDetails() {
             <Curtain
                 direction={travel.routeBuilder.getRouteByDay(+dayNumber)[0]?.name}
                 onChange={setCurtainOpen}
-                defaultOffsetPercents={1}
+                defaultOffsetPercents={0}
 
             >
-                <Container>
-                    <div className='flex-between gap-1 pt-20'>
-                        <Button
-                            onClick={() => travel.setTravelDetailsFilter('byDays')}
-                            active={travel.travelDetailsFilter === 'byDays'}
-                        >по дням</Button>
-                        <Button
-                            onClick={() => travel.setTravelDetailsFilter('onMap')}
-                            active={travel.travelDetailsFilter === 'onMap'}
-                        >на карте</Button>
-                        <Button
-                            onClick={() => travel.setTravelDetailsFilter('allPlaces')}
-                            active={travel.travelDetailsFilter === 'allPlaces'}
-                        >все места</Button>
-                    </div>
-                </Container>
+                <div className='h-full relative'>
+
+                    <Container className='flex-0'>
+                        <div className='flex-between gap-1 pt-20 pb-20'>
+                            <Button
+                                onClick={() => travel.setTravelDetailsFilter('byDays')}
+                                active={travel.travelDetailsFilter === 'byDays'}
+                            >по дням</Button>
+                            <Button
+                                onClick={() => travel.setTravelDetailsFilter('onMap')}
+                                active={travel.travelDetailsFilter === 'onMap'}
+                            >на карте</Button>
+                            <Button
+                                onClick={() => travel.setTravelDetailsFilter('allPlaces')}
+                                active={travel.travelDetailsFilter === 'allPlaces'}
+                            >все места</Button>
+                        </div>
+                    </Container>
 
                     {
-                        travel.travelDetailsFilter === 'allPlaces' && <ShowPlaces />
+                        travel.travelDetailsFilter === 'allPlaces' && <ShowPlaces/>
                     }
+                    {
+                        travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
+                    }
+                </div>
             </Curtain>
             {curtainOpen &&
                 <FlatButton

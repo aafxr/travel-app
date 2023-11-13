@@ -59,7 +59,7 @@ export default function Curtain({
     const windowSize = useResize()
 
     useEffect(() => {
-        if (defaultOffsetPX || defaultOffsetPercents) {
+        if (typeof defaultOffsetPX === 'number' || typeof defaultOffsetPercents === 'number' ) {
             const curtainHeight = cRef.current.getBoundingClientRect().height
             const topButtonHeight = cTopRef.current.getBoundingClientRect().height
             const height = curtainHeight - topButtonHeight

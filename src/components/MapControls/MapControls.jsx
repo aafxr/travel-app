@@ -42,14 +42,18 @@ function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationC
 
     /*** попытка получить геолокацию пользователя и установить центр карты на текущие координаты пользователя */
     async function handleUserLocation() {
-        const userCoords = await map.getUserLocation()
-        if (userCoords) {
-            /*** установить центр карты на текущие координаты пользователя */
-            map.focusOnPoint(userCoords)
-            /*** передача геолокации пользователя в родительский компонент */
-            onUserLocationClick && onUserLocationClick(userCoords)
-        } else {
-            pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})
+        try {
+            const userCoords = await map.getUserLocation()
+            if (userCoords) {
+                /*** установить центр карты на текущие координаты пользователя */
+                map.focusOnPoint(userCoords)
+                /*** передача геолокации пользователя в родительский компонент */
+                onUserLocationClick && onUserLocationClick(userCoords)
+            } else {
+                pushAlertMessage({type: 'warning', message: 'Не удалось получить геолокацию устройства'})
+            }
+        }catch (err){
+            pushAlertMessage({type: 'warning', message: 'Не удалось определить координаты'})
         }
     }
 
