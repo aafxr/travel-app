@@ -285,4 +285,27 @@ export default class YMap {
         return this
     }
 
+    /**
+     * метод добавляет балун к метке на карте. __Метка должна буть предварительно добавлена__. Возвращает true если
+     * балун успешно добавлен
+     * @method
+     * @name YMap.setBalloonToPoint
+     * @param {string} point_id
+     * @param {BalloonOptionsType} balloonOptions
+     * @param {PlaceMarkOptionsType} [placeMarkOptions]
+     * @returns {boolean}
+     */
+    setBalloonToPoint(point_id, balloonOptions, placeMarkOptions) {
+        if (this._pointsMap.has(point_id)) {
+            const placeMark = this._pointsMap.get(point_id)
+            placeMark.properties.setAll(balloonOptions)
+            if (placeMarkOptions) {
+                Object.keys(placeMarkOptions)
+                    .forEach(key => placeMark.options.set(key, placeMarkOptions[key]))
+            }
+            return true
+        }
+        return false
+    }
+
 }

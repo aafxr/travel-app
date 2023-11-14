@@ -7,11 +7,10 @@ import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import constants, {USER_AUTH} from "../../../../static/constants";
+import constants, {MS_IN_DAY, USER_AUTH} from "../../../../static/constants";
 import {updateUser} from "../../../../redux/userStore/updateUser";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import {PageHeader, Tab} from "../../../../components/ui";
-import {actions} from "../../../../redux/store";
 import removeTravel from "../../../../utils/removeTravel";
 import Travel from "../../../../classes/Travel";
 
@@ -125,7 +124,7 @@ export default function TravelRoutes() {
  */
 function getTravelDateStatus(travel) {
     if (!travel) return "old"
-    const msInDay = 1000 * 60 * 60 * 24 // число милисекунд в сутках
+    const msInDay = MS_IN_DAY // число милисекунд в сутках
     const now = Date.now()
     /** время, прошедшее с начала суток */
     const dayOffset = now % msInDay

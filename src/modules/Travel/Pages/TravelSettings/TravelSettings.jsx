@@ -280,7 +280,7 @@ export default function TravelSettings() {
                     }
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton}>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={hasChanges()}>Построить маршрут</Button>
                 </div>
             </div>
             <FlatButton

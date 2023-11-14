@@ -395,3 +395,43 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: var(--icon-size);
     height: var(--icon-size);
 }
+
+.balloon-header{
+    display: flex;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color:var(--color-text);
+}
+
+.balloon-body{
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 0.25rem;
+
+    font-weight: 400;
+    font-size: 1rem;
+    color:var(--color-text);
+}
+
+.balloon-image{
+    position: relative;
+    /*flex-basis: 40%;*/
+    padding-top: 56%;
+    overflow: hidden;
+}
+
+.balloon-content{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.5;
+}
+
+.balloon-footer{
+    border-top: 2px solid var(--color-grey-light);
+    font-weight: 400;
+    font-size: 0.7rem;
+    color:var(--color-text-light);
+}

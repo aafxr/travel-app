@@ -11,7 +11,7 @@ import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
-import {Chip, PageHeader, Tab} from "../../../../components/ui";
+import {Chip, PageHeader} from "../../../../components/ui";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
 import Photo from "../../../../components/Poto/Photo";
@@ -47,11 +47,11 @@ export default function TravelDetails() {
             <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Настройки'}/>
         </Menu>
     )
-    const items = [
-        {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
-        {id: 2, entityType: 'Кафе', entityName: 'Malina'},
-        {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
-    ]
+    // const items = [
+    //     {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
+    //     {id: 2, entityType: 'Кафе', entityName: 'Malina'},
+    //     {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
+    // ]
 
 
     function handleTravelPhotoChange(photo) {

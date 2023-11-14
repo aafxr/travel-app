@@ -1,5 +1,4 @@
 import React from "react";
-import {useParams} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
@@ -14,7 +13,6 @@ import Button from "../../../../components/ui/Button/Button";
  * @category Pages
  */
 export default function TravelAddPlane() {
-    const {travelCode} = useParams()
     const dateHandlers = useChangeInputType('date')
     const timeHandlers = useChangeInputType('time')
 

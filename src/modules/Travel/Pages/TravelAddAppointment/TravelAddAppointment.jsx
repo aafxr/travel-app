@@ -1,4 +1,3 @@
-import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
@@ -6,16 +5,11 @@ import defaultAppointmentData from "../../../../utils/default-values/defaultAppo
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import createAction from "../../../../utils/createAction";
-import constants from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
-import useTravel from "../../hooks/useTravel";
-import saveTravel from "../../../../utils/saveTravel";
-import useUserSelector from "../../../../hooks/useUserSelector";
-import useTravelContext from "../../../../hooks/useTravelContext";
 
 /**
  * компонент для добавления встреч

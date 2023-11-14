@@ -1,14 +1,10 @@
 import React, {useState} from "react";
-import {useParams} from "react-router-dom";
 
-import {Chip, Input, InputWithSuggests, PageHeader} from "../../../../components/ui";
-import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import {Chip, Input, PageHeader} from "../../../../components/ui";
 import useChangeInputType from "../../hooks/useChangeInputType";
 import Button from "../../../../components/ui/Button/Button";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import Place from "../../../../classes/Place";
 
 /**
  * Страница отображения локации
