@@ -433,5 +433,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-top: 2px solid var(--color-grey-light);
     font-weight: 400;
     font-size: 0.7rem;
-    color:var(--color-text-light);
+    color:var(--color-text);
 }
