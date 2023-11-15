@@ -5,6 +5,12 @@ import Graph from "../utils/data-structures/Graph";
 import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
 
 /**
+ * @typedef SalesmanItemType
+ * @property {string} id
+ * @property {CoordinatesType} coords
+ */
+
+/**
  * @typedef RouteBuilderOptionsType
  * @property {Travel} travel
  * @property {HotelType[]} hotels
@@ -91,17 +97,14 @@ export default class RouteBuilder {
     }
 
     /**
-     * @typedef SalesmanItemType
-     * @property {string} id
-     * @property {CoordinatesType} coords
-     */
-
-    /**
+     * метод решает задачу коммивояжёра ( travelling salesman problem) —
+     * цель задачи заключающаяся в поиске самого выгодного маршрута,
+     * проходящего через указанные города по одному разу
      * @method
      * @name RouteBuilder.sortPlacesByDistance
-     * @param {any[]} placesList
-     * @param {(item: any) => SalesmanItemType} transformCB
-     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB
+     * @param {any[]} placesList список точек для сортировки
+     * @param {(item: any) => SalesmanItemType} transformCB callback, извлекает необходимые для алгоритма поля
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
      * @returns {{distance: number, list: any[]}}
      */
     sortPlacesByDistance(placesList, transformCB ,distanceCB){
