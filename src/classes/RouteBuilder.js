@@ -1,4 +1,8 @@
 import {MS_IN_DAY} from "../static/constants";
+import GraphVertex from "../utils/data-structures/GraphVertex";
+import GraphEdge from "../utils/data-structures/GraphEdge";
+import Graph from "../utils/data-structures/Graph";
+import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
 
 /**
  * @typedef RouteBuilderOptionsType
@@ -84,6 +88,65 @@ export default class RouteBuilder {
                 }
             }
         })
+    }
+
+    /**
+     * @method
+     * @name RouteBuilder.sortPlacesByDistance
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB
+     * @return {number}
+     */
+    sortPlacesByDistance(distanceCB){
+        if(!distanceCB) return 0
+
+        const list = []
+        /**@type{Map<string, PointType>}*/
+        const placeMap  = new Map()
+        /**@type{Map<string, GraphVertex>}*/
+        const vertexMap  = new Map()
+        /**@type{GraphEdge[]}*/
+        const edges = []
+        /**@type{Graph}*/
+        const graph = new Graph(true)
+
+        this._travel.waypoints.forEach(p => {
+            list.push(p.id)
+            placeMap.set(p.id, p)
+            vertexMap.set(p.id, new GraphVertex(p.id))
+        })
+        for (const place_id of list){
+            for (const vertex_key of vertexMap.keys()){
+                if(place_id === vertex_key) continue
+                // const {lat: lt1, lng: ln1} = placeMap.get(place_id).location
+                // const {lat: lt2, lng: ln2} = placeMap.get(vertex_key).location
+
+                const coord_1 = placeMap.get(place_id).coords
+                const coord_2 = placeMap.get(vertex_key).coords
+
+                const e = new GraphEdge(
+                    vertexMap.get(place_id),
+                    vertexMap.get(vertex_key),
+                    distanceCB(coord_1, coord_2)
+                )
+                edges.push(e)
+            }
+        }
+
+        edges.forEach(e => graph.addEdge(e))
+
+        const start = Date.now()
+        const res = bfTravellingSalesman(graph)
+        const end = Date.now()
+        console.log(res)
+        console.log('calc time: ', end - start)
+        const weights = res.map((v, i, arr) => i + 1 < arr.length
+            ? v.findEdge(arr[i + 1]).weight
+            : 0
+        )
+        const d = weights.reduce((a, i) => a + i, 0)
+        const km = Math.floor(d / 1000)
+        const m = Math.round(d % 1000)
+        console.log('Веса граней ', weights, `${km}km ${m}m`)
     }
 
 
