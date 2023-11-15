@@ -151,7 +151,7 @@ export default class RouteBuilder {
 
 
     /**
-     * Меьод возвращает сгруппированный спиок мест по дням
+     * Метод возвращает сгруппированный спиок мест по дням
      * @method
      * @name RouteBuilder.getRouteByDay
      * @param {number} i
