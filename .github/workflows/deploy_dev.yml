@@ -2,7 +2,7 @@ name: Continuous Deploy
 on:
   push:
     branches:
-      - 'tctx'
+      - 'main'
 
 jobs:
   deploy_job:
