@@ -1,29 +1,14 @@
 /**
- * @typedef YMapOptionsType
- * @property {Travel} travel
- * @property {PointType[]} points
- * @property {(point: PointType) => unknown} onPointMoved
- * @property {(point: PointType) => unknown} onPointClick
- * @property {(point: PointType) => unknown} onPointAdd
- * @property {number} zoom
- * @property {CoordinatesType} center
- * @property {string} container_id
- * @property {string} add_location_icon
- * @property {string} location_icon
- * @property {[number, number]} icon_size
- */
+ * @typedef {IMapOptionsType} YMapOptionsType
 
 /**
- * @typedef YMapPointOptionsType
- * @property {string} hintContent
- * @property {string} balloonContent
- * @property {'add' | 'exist'} markerType
- * @property {boolean} draggable
+ * @typedef {IMapPointOptionsType} YMapPointOptionsType
  */
 
 
 import defaultPoint from "../utils/default-values/defaultPoint";
 import userLocation from "../utils/userLocation";
+import IMap from "../api/IMap";
 
 /**
  * #### Данный класс предполагается использовать когда скрипт карты уже загружен и готов к работе
@@ -36,7 +21,7 @@ import userLocation from "../utils/userLocation";
  * @constructor
  * @param {YMapOptionsType} options
  */
-export default class YMap {
+export default class YMap extends IMap{
     /**@type{PointType[]}*/
     points = []
     _map
@@ -54,6 +39,7 @@ export default class YMap {
 
     /** @param {YMapOptionsType} options */
     constructor(options) {
+        super(options)
         this._travel = options.travel
         if (options.points) this.points = options.points
 
@@ -73,13 +59,20 @@ export default class YMap {
     }
 
     /**
-     * Метод выподняет первую настройку карты
+     * Метод выподняет настройку карты после очистки или при первой инициализации
      * @method
      * @name YMap._initializeMap
      * @private
      */
     _initializeMap() {
-
+        if(this._map){
+            for(const placeMark  of this._pointsMap.entries()){
+                this._map.geoObjects.add(placeMark)
+            }
+            if(this._polyLine){
+                this._map.geoObjects.add(this._polyLine)
+            }
+        }
     }
 
     /**
@@ -308,4 +301,19 @@ export default class YMap {
         return false
     }
 
+    autoZoom() {
+        const bounds = this._map.geoObjects.getBounds()
+        this._map.setBounds(bounds)
+        const zoom = Math.min(this._map.getZoom(), 15)
+        this._map.setZoom(zoom)
+        return this
+    }
+
+    showPoint(coords, zoomLevel) {
+        this._map.setCenter(coords, zoomLevel)
+        if(zoomLevel){
+            this._zoom = zoomLevel
+        }
+        return this
+    }
 }

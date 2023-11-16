@@ -185,11 +185,9 @@ export default class RouteBuilder {
      * @returns {number[]}
      */
     getActivityDays(){
-        console.log(this)
-        console.log(this.placesMap)
         return Array.from(this.placesMap.keys()).filter((key) => this.placesMap.get(key).length > 0)
-
     }
+
     /**
      * @get
      * @name RouteBuilder.days

@@ -111,13 +111,12 @@ export default class YandexMap extends IMap {
 
             if (window.ymaps) resolve(window.ymaps)
             else {
-                const script = document.createElement('script')
-                script.src = `https://api-maps.yandex.ru/2.1/?apikey=${api_key}&lang=ru_RU`//&load=Map,Placemark,geoQuery,templateLayoutFactory,geolocation,map.Converter,geocode,SuggestView,templateLayoutFactory,route
-
-                //добавление yandex maps api в htmlDOM
-                element.appendChild(script)
-
-                script.onload = () => resolve(window.ymaps)
+                const script = document.querySelector('#ymaps-script')
+                if(script) {
+                    script.onload = () => resolve(window.ymaps)
+                } else {
+                    reject(new Error('You have to include ymaps-script in your index.html file'))
+                }
             }
         })
             .then(() => {

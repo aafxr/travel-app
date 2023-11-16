@@ -1,11 +1,43 @@
 /**
+ * @typedef IMapOptionsType
+ * @property {Travel} travel
+ * @property {PointType[]} points
+ * @property {(point: PointType) => unknown} onPointMoved
+ * @property {(point: PointType) => unknown} onPointClick
+ * @property {(point: PointType) => unknown} onPointAdd
+ * @property {number} zoom
+ * @property {CoordinatesType} center
+ * @property {string} container_id
+ * @property {string} add_location_icon
+ * @property {string} location_icon
+ * @property {[number, number]} icon_size
+ */
+
+/**
+ * @typedef IMapPointOptionsType
+ * @property {string} hintContent
+ * @property {string} balloonContent
+ * @property {'add' | 'exist'} markerType
+ * @property {boolean} draggable
+ */
+
+
+/**
  * интерфейс для работы с картами. карта создается при помощи метода init
  * @classdesc Not a real class but an interface. Etc...
  * @name IMap
  * @class
+ *
+ * @constructor
+ * @param {IMapOptionType} options
+ *
  */
 export default class IMap {
-    async init(){}
+    /**
+     * @param {IMapOptionType} options
+     */
+    constructor(options) {}
+
 
     /**
      * @abstract
@@ -14,65 +46,45 @@ export default class IMap {
      * @returns{PointType}
      */
     newPoint(primary_entity_id){
-        throw new Error('Method "newPoint" should be override')
     }
 
     /**
-     * метод устанавливает колбэк на обновление информации о точке
-     * @set
-     * @name IMap.onPointUpdate
-     * @param {(p:PointType) => void} cb
+     * Возвращает кратчайшее (вдоль геодезической линии) расстояние между двумя заданными точками (в метрах).
+     * @abstract
+     * @name IMap.getDistance
+     * @param {CoordinatesType} point_1
+     * @param {CoordinatesType} point_2
+     * @returns {number}
      */
-    set onPointUpdate(cb){
+    getDistance(point_1, point_2) {
     }
 
     /**
-     * метод устанавливает колбэк на клик по точке
-     * @set
-     * @name IMap.onPointClick
-     * @param {(p:PointType) => void} cb
+     * установка нового id контейнера карты
+     * @abstract
+     * @name IMap.setContainerID
+     * @param {string} container_id
+     * @returns {IMap}
      */
-    set onPointClick(cb){
+    setContainerID(container_id) {
     }
 
     /**
-     * метод устанавливает колбэк на добавление новой точки
-     * @set
-     * @name IMap.onPointAdd
-     * @param {(p:PointType) => void} cb
+     * @abstract
+     * @name IMap.clearMap
+     * @returns {IMap}
      */
-    set onPointAdd(cb){
+    clearMap() {
     }
 
     //управление маркерами (добавление, удаление, список)
     /**
-     * дообавить точку на карт по координатам
-     * @method IMap.addMarker
-     * @param {Array.<number,number>} coords
-     * @param {string} primary_travel_id
-     * @returns{Promise<PointType | null>}
+     * @abstract
+     * @name IMap.addPoint
+     * @param {PointType} point
+     * @param {IMapPointOptionsType} [options]
      */
-    addMarker(coords, primary_travel_id) {
-        console.warn('[IMap] addMarker not override')
-    }
-
-    /**
-     * добавить точку на карту по координатам блока-контейнера карты
-     * @method IMap.addMarkerByLocalCoords
-     * @param {Array.<number,number>} localCoords
-     * @returns {Promise<PointType | null>}
-     */
-    async addMarkerByLocalCoords(localCoords){
-        console.warn('[IMap] addMarkerByLocalCoords not override')
-    }
-
-    /**
-     * удалить точку на карту по координатам блока-контейнера карты
-     * @method IMap.removeMarkerByLocalCoords
-     * @param {Array.<number,number>} localCoords
-     */
-    removeMarkerByLocalCoords(localCoords){
-        console.warn('[IMap] removeMarkerByLocalCoords not override')
+    addPoint(point, options = {}) {
     }
 
     /**
@@ -90,24 +102,56 @@ export default class IMap {
     /**
      * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
      * @method IMap.removeMarker
-     * @param {{[id]: string, [placemark]: Object }} marker
+     * @param {string} point_id
      */
-    removeMarker(marker) {
+    removePoint(point_id) {
         console.warn('[IMap] removeMarker not override')
     }
 
     /**
-     * возвращает массив объектов, описывающих точки на карте. Каждый объект содержит адрес, координаты
-     * @method IMap.getMarkers
-     * @returns {PointType[]}
+     * @abstract
+     * @name IMap.destroyMap
      */
-    getMarkers() {
-        console.warn('[IMap] getMarkers not override')
+    destroyMap() {
+    }
+
+    /**
+     * поиск подходящих под переданный адресс мест. Возвращается массив найденных мест
+     * @abstract
+     * @name IMap.getPointByAddress
+     * @param {string} address
+     * @returns {Promise<any[]>}
+     */
+    async getPointByAddress(address) {
+    }
+
+    /**
+     * @abstract
+     * @name IMap.showRoute
+     * @param {PlaceType[]} points
+     * @param {string} routeName
+     * @returns {IMap}
+     */
+    showRoute(points, routeName) {
+    }
+
+    /**
+     * метод добавляет балун к метке на карте. __Метка должна буть предварительно добавлена__. Возвращает true если
+     * балун успешно добавлен
+     * @abstract
+     * @name IMap.setBalloonToPoint
+     * @param {string} point_id
+     * @param {BalloonOptionsType} balloonOptions
+     * @param {PlaceMarkOptionsType} [placeMarkOptions]
+     * @returns {boolean}
+     */
+    setBalloonToPoint(point_id, balloonOptions, placeMarkOptions) {
     }
 
     /**
      * установка зума карты
-     * @method IMap.setZoom
+     * @abstract
+     * @name IMap.setZoom
      * @param {number} value
      */
     setZoom(value){
@@ -116,7 +160,8 @@ export default class IMap {
 
     /**
      * получение текущего зума карты
-     * @method IMap.getZoom
+     * @abstract
+     * @name IMap.getZoom
      * @returns {number}
      */
     getZoom(){
@@ -125,47 +170,44 @@ export default class IMap {
 
     /**
      * установка зума карты так, чтобы все точки на карте попадали в область блока-контейнера карты
-     * @method IMap.autoZoom
+     * @abstract
+     * @name IMap.autoZoom
+     * @return {IMap}
      */
     autoZoom(){
         console.warn('[IMap] autoZoom not override')
     }
 
-    /**
-     * добавление подсказок к полю ввода адреса
-     * @method IMap.setSuggestsTo
-     * @param {string} elementID - id  поля ввода
-     */
-    setSuggestsTo(elementID){
-        console.warn('[IMap] setSuggestsTo not override')
-    }
+    // /**
+    //  * добавление подсказок к полю ввода адреса
+    //  * @method IMap.setSuggestsTo
+    //  * @param {string} elementID - id  поля ввода
+    //  */
+    // setSuggestsTo(elementID){
+    //     console.warn('[IMap] setSuggestsTo not override')
+    // }
 
-    /**
-     * удаление подсказок
-     * @method IMap.removeSuggest
-     */
-    removeSuggest(){
-        console.warn('[IMap] removeSuggest not override')
-    }
+    // /**
+    //  * удаление подсказок
+    //  * @method IMap.removeSuggest
+    //  */
+    // removeSuggest(){
+    //     console.warn('[IMap] removeSuggest not override')
+    // }
 
     /**
      * установка фокуса на точке (точка утанавливается по центру экрана)
-     * @method IMap.focusOnPointType
-     * @param {Array.<number,number>} coords
-     * @param {number} zoomLevel
+     * @abstract
+     * @name IMap.showPoint
+     * @param {CoordinatesType} coords
+     * @param {number} [zoomLevel]
+     * @return {IMap}
      */
-    focusOnPointType(coords, zoomLevel){
+    showPoint(coords, zoomLevel){
         console.warn('[IMap] focusOnPointType not override')
     }
 
     // построить маршрут
-    /**
-     * @method IMap.buildRoute
-     */
-    buildRoute() {
-        console.warn('[IMap] buildRoute not override')
-    }
-
     /**
      * @method IMap.destroyRoute
      */
@@ -174,6 +216,14 @@ export default class IMap {
     }
 
     //локация пользователя
+    /**
+     * метод пытается получить координаты средствами браузера или средствами yandex maps api
+     * @abstract
+     * @name IMap.getUserLocation
+     * @returns {Promise<[number, number]>}
+     */
+    getUserLocation() {
+    }
     // setUserLocation() {
     //     console.warn('[IMap] setUserLocation not override')
     // }
