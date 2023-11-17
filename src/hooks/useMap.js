@@ -1,50 +1,48 @@
 import {useEffect, useRef, useState} from "react";
 
-import {DEFAULT_PLACEMARK_ICON} from "../static/constants";
-import ErrorReport from "../controllers/ErrorReport";
-import YandexMap from "../api/YandexMap";
+import YMap from "../classes/YMap";
+import useTravelContext from "./useTravelContext";
 
 /**
  * хук загружает api карты и инициализирует карту
- * @param {Travel | null} travel
- * @param {[number, number] | null} userLocation
- * @param {boolean} withSelectedPoints default = true
+ * @function
+ * @name useMap
+ * @param {IMapOptionType} options
  * @returns {IMap}
  */
-export default function useMap(travel, userLocation, withSelectedPoints = true) {
+export default function useMap(options = {}) {
+    const {travel} = useTravelContext()
     const [map, setMap] = useState(/**@type {IMap | null} */null)
-    const [loading, setLoading] = useState(/**@type {boolean} */false)
-    const error = useRef(/**@type {Error | null} */null)
+    // const [loading, setLoading] = useState(/**@type {boolean} */false)
+    // const error = useRef(/**@type {Error | null} */null)
+    const optionsRef = useRef(/**@type{IMapOptionType}*/null)
 
     useEffect(() => {
-        if (!map && !loading && !error.current) {
-            setLoading(true)
-            /** инициализация карты */
-            YandexMap.init({
-                api_key: process.env.REACT_APP_API_KEY,
-                mapContainerID: 'map',
-                iconClass: 'location-marker',
-                points: (withSelectedPoints && travel?.waypoints ) ? travel.waypoints : [],
-                location: userLocation,
-                iconURL: DEFAULT_PLACEMARK_ICON,
-                // suggestElementID: points[0]?.id,
-                markerClassName: 'location-marker'
-            }).then(newMap => {
-                window.map = newMap
-                setMap(newMap)
-                setLoading(false)
-                error.current = null
+        optionsRef.current = options
+    }, [options])
 
-            }).catch(err => {
-                ErrorReport.sendError(err).catch(console.error)
-                console.error(err)
-                setLoading(false)
-                error.current = err
-            })
-        }
+    useEffect(() => {
+        /** инициализация карты */
+        const m = new YMap({
+            travel,
+            icon_size: [32, 32],
+            zoom: 7,
+            add_location_icon: process.env.PUBLIC_URL + '/icons/add_location_24px.svg',
+            location_icon: process.env.PUBLIC_URL + '/icons/location_on_24px.svg',
+            onPointAdd(point) {
+                optionsRef.current.onPointAdd && optionsRef.current.onPointAdd(point)
+            },
+            onPointClick(point) {
+                optionsRef.current.onPointClick && optionsRef.current.onPointClick(point)
+            },
+            onPointMoved(point) {
+                optionsRef.current.onPointMoved && optionsRef.current.onPointMoved(point)
+            },
+        })
 
+        setMap(m)
         return () => map && map.destroyMap()
-    }, [map, loading])
+    }, [])
 
 
     return map

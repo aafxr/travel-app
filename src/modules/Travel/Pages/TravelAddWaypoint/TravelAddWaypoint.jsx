@@ -57,12 +57,18 @@ export default function TravelAddWaypoint() {
     //==================================================================================================================
     function handleKeyDown(e) {
         if (e.keyCode === 13) {
-            map.clear()
-
-            map.addMarkerByAddress(point.address, point.id)
-                .then(markerInfo => {
+            map.getPointByAddress(point.address)
+                .then(/**@param {GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
                     if (markerInfo) {
-                        setPoint({...markerInfo})
+                        const {text: address,boundedBy : coords } = markerInfo[0]
+                        const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
+                        const newPoint = {...point, address, coords: coords[0], kind }
+debugger
+                        map
+                            .clearMap()
+                            .addPoint(newPoint)
+
+                        setPoint(newPoint)
                     }
                 })
         }

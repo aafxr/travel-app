@@ -13,18 +13,26 @@ import MapControls from "../MapControls/MapControls";
  * @param {Travel} travel
  * @param {[number,number]} userLocation
  * @param children
- * @param {HandleMapSelected} onMapReady
+ * @param {(p: PointType) => void} onPointUpdate Callback вызывается при обновлении информации о точке
+ * @param {(p: PointType) => void} onPointClick Callback вызывается при клике на точке
+ * @param {(p: PointType) => void} onPointAdd Callback вызывается при доьавлении новой точки
+ * @param {(map:IMap) => unknown}
  * @returns {JSX.Element}
  * @category Components
  */
-function YandexMapContainer({travel, userLocation, children, onMapReady}){
+function YandexMapContainer({travel, userLocation, children, onPointAdd, onPointClick, onPointUpdate, onMapReady}) {
     /** интерфейс для взаимодействия с картой */
-    const map = useMap(travel, userLocation)
+    const map = useMap({
+        onPointAdd,
+        onPointClick,
+        onPointUpdate
+    })
+
 
     useEffect(() => {
-        if (onMapReady && map) onMapReady(map)
-    }, [map, onMapReady])
-
+        if (map && onMapReady) onMapReady(map)
+        if (map) map.setContainerID('map')
+    }, [map])
 
     // обработка зума при прокрутки колесика мыши
     function handleWheel(e) {

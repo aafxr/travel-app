@@ -316,4 +316,11 @@ export default class YMap extends IMap{
         }
         return this
     }
+
+    /**
+     * @returns {PointType[]}
+     */
+    getMarkers() {
+        return this._travel.waypoints || []
+    }
 }

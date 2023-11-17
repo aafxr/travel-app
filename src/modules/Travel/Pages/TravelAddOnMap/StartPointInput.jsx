@@ -44,7 +44,6 @@ export default function StartPointInput({  map}) {
                 .then(p => {
                     if(p){
                         console.log(travel.fromPoint, p)
-                        map.removeMarker({id: p.id})
                         travel.setFromPoint(p)
                         setPoint(p)
                         update()

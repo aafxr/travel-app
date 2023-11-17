@@ -14,6 +14,7 @@ import StartPointInput from "./StartPointInput";
 import usePoints from "./usePoints";
 
 import './TravelAddOnMap.css'
+import useMap from "../../../../hooks/useMap";
 
 
 /**
@@ -27,23 +28,19 @@ export default function TravelAddOnMap() {
     const navigate = useNavigate()
     const {travel, update} = useTravelContext()
     const {user, userLoc} = useUserSelector()
+    const [map, setMap] = useState(/**@type{IMap}*/ null)
 
-    /** интерфейс для взаимодействия с картой */
-    const [map, setMap] = useState(/** @type {IMap | null} */ null)
+
 
     const {points, setPoints} = usePoints(map)
 
     const draggedPoint = useDragPoint()
 
-    useEffect(() => {
-        if(map) map.onPointUpdate = (p) => console.log('handler ', p)
-    }, [map])
-
     //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
         if (draggedPoint) {
             const newPoints = points.map(p => ({...p}))
-            newPoints[draggedPoint.index].text = draggedPoint.dragPoint.textAddress
+            newPoints[draggedPoint.index].text = draggedPoint.dragPoint.address
             newPoints[draggedPoint.index].point = draggedPoint.dragPoint
             setPoints(newPoints)
         }
@@ -88,14 +85,12 @@ export default function TravelAddOnMap() {
                 </div>
             </Container>
             <div className='content'>
-                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}>
-                    <MapControls className='map-controls' map={map}/>
-                </YandexMapContainer>
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}/>
             </div>
             <div className='fixed-bottom-button'>
                 <Button
                     onClick={handleRouteSubmit}
-                    disabled={!map || map.getMarkers().length === 0}
+                    disabled={!map || map.getMarkers()?.length === 0}
                 >
                     Продолжить
                 </Button>

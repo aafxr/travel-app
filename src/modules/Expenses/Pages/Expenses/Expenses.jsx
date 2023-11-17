@@ -68,11 +68,15 @@ export default function Expenses() {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant
-                className='footer'
-                value={travel.expenseFilter}
-                onChange={travel.setExpenseFilter.bind(travel)}
-            />
+            {
+                travel.adults_count > 1 && (
+                    <ExpensesFilterVariant
+                        className='footer'
+                        value={travel.expenseFilter}
+                        onChange={travel.setExpenseFilter.bind(travel)}
+                    />
+                )
+            }
         </>
     )
 }

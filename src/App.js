@@ -51,7 +51,7 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import MapContext from "./contexts/MapContext";
+import MapContextProvider from "./contexts/MapContextProvider";
 
 
 function App() {
@@ -97,62 +97,60 @@ function App() {
 
     return (
         <Provider store={store}>
-            <MapContext>
-                <Routes>
-                    <Route element={<WorkerContextProvider/>}>
-                        <Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>
-                        <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                        <Route path={'/events/'} element={<Events/>}/>
-                        <Route path={'/favorite/'} element={<Favorite/>}/>
-                        <Route path={'/auth/'} element={<TelegramAuth/>}/>
-                        <Route path={'/dev/'} element={<Dev/>}/>
-                        <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
-                        <Route element={<TravelContextProvider/>}>
-                            <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
-                            <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
-                            <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
-                            <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
-                            <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
-                            <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
-                            <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
-                            <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
-                            <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
-                            <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>
-                            <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
-                            <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
-                            <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>
-                            <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
-                            <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
-                            <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
-                                <Route element={<ExpensesLayout/>}>
-                                    <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
-                                    <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
-                                </Route>
-                                <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
+            <Routes>
+                <Route element={<WorkerContextProvider/>}>
+                    <Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>
+                    <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                    <Route path={'/events/'} element={<Events/>}/>
+                    <Route path={'/favorite/'} element={<Favorite/>}/>
+                    <Route path={'/auth/'} element={<TelegramAuth/>}/>
+                    <Route path={'/dev/'} element={<Dev/>}/>
+                    <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
+                    <Route element={<TravelContextProvider/>}>
+                        <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
+                        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
+                        <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
+                        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
+                        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
+                        <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
+                        <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
+                        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
+                        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
+                        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>
+                        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
+                        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
+                        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>
+                        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
+                        <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
+                        <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
+                            <Route element={<ExpensesLayout/>}>
+                                <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
+                                <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                             </Route>
+                            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>
+                            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>
+                            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>
+                            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>
+                            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                         </Route>
-                        <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                        <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
-                        <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
-                        <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
-                        <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
-                        <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
-                        <Route path={'/login/'} element={<Login/>}/>
                     </Route>
-                    <Route path={'/error/'} element={<ErrorPage/>}/>
-                    <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
-                </Routes>
-                <Alerts count={2}/>
-            </MapContext>
+                    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
+                    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
+                    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
+                    <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
+                    <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
+                    <Route path={'/login/'} element={<Login/>}/>
+                </Route>
+                <Route path={'/error/'} element={<ErrorPage/>}/>
+                <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
+            </Routes>
+            <Alerts count={2}/>
         </Provider>
     );
 }
