@@ -69,6 +69,7 @@ export default function ShowRouteOnMap() {
 
     return (
         <div
+            ref={ref}
             id='on-map'
             className='flex-1 relative'
             style={{height: '100%'}}

@@ -78,6 +78,7 @@ export default class IMap {
      * @name IMap.addPoint
      * @param {MapPointType} point
      * @param {IMapPointOptionsType} [options]
+     * @return {IMap}
      */
     addPoint(point, options = {}) {
     }
@@ -258,5 +259,23 @@ export default class IMap {
      * @deprecated
      */
     getMarkers(){}
+
+    /**
+     * @method
+     * @name IMap.showPolyline
+     * @param {MapPointType} polyline
+     * @param {BalloonOptionsType} options
+     * @return {IMap}
+     */
+    showPolyline(polyline, options){}
+
+    /**
+     * @method
+     * @name IMap.showPolyRoute
+     * @param polylineDots
+     * @param BalloonOptionsType
+     * @return {IMap}
+     */
+    showPolyRoute(polylineDots, BalloonOptionsType){}
 }
 

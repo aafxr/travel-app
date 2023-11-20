@@ -132,7 +132,7 @@ export default class Travel extends BaseTravel {
      */
     get expenseFilter() {
         if(this.adults_count === 1) {
-            return 'All'
+            return 'Personal'
         }
 
         return this._expenseFilter

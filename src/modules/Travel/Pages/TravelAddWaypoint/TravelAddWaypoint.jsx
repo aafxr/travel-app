@@ -63,10 +63,11 @@ export default function TravelAddWaypoint() {
                         const {text: address,boundedBy : coords } = markerInfo[0]
                         const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
                         const newPoint = {...point, address, coords: coords[0], kind }
-debugger
+
                         map
                             .clearMap()
-                            .addPoint(newPoint)
+                            .addPoint(newPoint,{markerType: "exist"})
+                            .showPoint(newPoint.coords)
 
                         setPoint(newPoint)
                     }
@@ -112,7 +113,7 @@ debugger
                 </div>
             </Container>
             <div className='content'>
-                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}/>
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReadyCB={setMap}/>
             </div>
             <div className='fixed-bottom-button'>
                 <Button

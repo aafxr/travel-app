@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 
 import combineExpensesForSectionComponent from "../../helpers/combineExpensesForSectionComponent";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
@@ -7,8 +7,6 @@ import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Section from "../../components/Section/Section";
-import {defaultFilterValue} from "../../static/vars";
-import constants from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 
@@ -34,13 +32,14 @@ export default function ExpensesPlan() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(travel,"planned", travel.expenseFilter)
+        combineExpensesForSectionComponent(travel, "planned", travel.expenseFilter)
             .then(setSectionComponentData)
 
-        function sub(){
-            combineExpensesForSectionComponent(travel,"planned", travel.expenseFilter)
+        function sub() {
+            combineExpensesForSectionComponent(travel, "planned", travel.expenseFilter)
                 .then(setSectionComponentData)
         }
+
         travel.onUpdate(sub)
 
         return () => {
@@ -71,11 +70,15 @@ export default function ExpensesPlan() {
                         : <div>{noDataMessage}</div>
                 }
             </Container>
-            <ExpensesFilterVariant
-                className='footer'
-                value={travel.expenseFilter}
-                onChange={travel.setExpenseFilter.bind(travel)}
-            />
+            {
+                travel.adults_count > 1 && (
+                    <ExpensesFilterVariant
+                        className='footer'
+                        value={travel.expenseFilter}
+                        onChange={travel.setExpenseFilter.bind(travel)}
+                    />
+                )
+            }
 
         </>
     )

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {Chip,  InputWithSuggests, PageHeader} from "../../../../components/ui";
+import {Chip, InputWithSuggests, PageHeader} from "../../../../components/ui";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
@@ -10,6 +10,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import YMap from "../../../../classes/YMap";
 
 /**
  * Страница отображения компонент добавления места путешествия
@@ -23,28 +24,44 @@ export default function TravelAddPlace() {
     const {travel} = useTravelContext()
     const navigate = useNavigate()
     const [title, setTitle] = useState('')
-    const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{start: travel.date_start, end: travel.date_start})
+    const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
+        start: travel.date_start,
+        end: travel.date_start
+    })
 
     const [place, setPlace] = useState(/**@type{PlaceType}*/null)
 
     const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[])
 
     /**@param{PlaceType} item*/
-    function handleSelectPlace(item){
+    function handleSelectPlace(item) {
         const p = places.find(p => p.id === item.id)
-        if(p){
+        if (p) {
             setPlace(p)
             setTitle(p.name)
         }
     }
+
     function handleSave() {
-        if (place){
+        if (place) {
             travel.addPlace({
                     ...place,
                     date_start: dateRange.start,
                     date_end: dateRange.end
                 }
             )
+
+            const extractPlaceDataCB =
+                /**@param {PlaceType} p */
+                    (p) => {
+                    const {id, location: {lat, lng}} = p
+                    return {id, coords: [+lat, +lng]}
+                }
+            const sortedPlaces = travel.routeBuilder
+                    .sortPlacesByDistance(travel.places, extractPlaceDataCB, YMap.getDistance)
+
+            travel.setPlaces(sortedPlaces.list)
+
             travel
                 .save(user.id)
                 .then(() => navigate(-1))
@@ -60,7 +77,7 @@ export default function TravelAddPlace() {
                     <InputWithSuggests
                         type='text'
                         value={title}
-                        onChange={(e)=> setTitle(e.target.value) }
+                        onChange={(e) => setTitle(e.target.value)}
                         placeholder='Выберите место'
                         onPlaces={setPlaces}
                     />
@@ -69,7 +86,7 @@ export default function TravelAddPlace() {
                         minDateValue={travel.date_start}
                         maxDateValue={travel.date_end}
                         onChange={setDateRange}
-                        />
+                    />
                 </div>
                 <ul className='row gap-1'>
                     <li><Chip rounded color='grey'>Архитектура</Chip></li>

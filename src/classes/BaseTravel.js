@@ -745,6 +745,23 @@ export default class BaseTravel extends Entity {
         return this
     }
 
+    /**
+     * сортировка мест по дистанции
+     * @method
+     * @name BaseTravel.sortPlaces
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
+     */
+    sortPlaces(distanceCB){
+        this.routeBuilder.sortPlacesByDistance(this.places,
+            /**@param {PlaceType} p */
+            ( p ) => {
+            const {id, location: {lat, lng}} = p
+                return {id, coords: [lat,lng]}
+            },
+            distanceCB
+        )
+    }
+
     _updateDirection() {
         this._modified.direction = this.waypoints
             .reduce((acc, p) => {

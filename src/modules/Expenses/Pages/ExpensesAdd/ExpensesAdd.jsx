@@ -1,12 +1,11 @@
 import clsx from "clsx";
-import {useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useRef, useState} from 'react'
 
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import dateToCurrencyKey from "../../../../utils/dateToCurrencyKey";
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import useTravelContext from "../../../../hooks/useTravelContext";
@@ -14,17 +13,13 @@ import {Input, PageHeader, Chip} from "../../../../components/ui";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Select from "../../../../components/ui/Select/Select";
 import Button from "../../../../components/ui/Button/Button";
-import {updateLimits} from "../../helpers/updateLimits";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {defaultFilterValue} from "../../static/vars";
-import handleAddExpense from "./handleAddExpense";
+import Expense from "../../../../classes/Expense";
 import useExpense from "../../hooks/useExpense";
 
 import '../../css/Expenses.css'
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import Expense from "../../../../classes/Expense";
-import {type} from "@testing-library/user-event/dist/type";
 
 
 /**
@@ -53,7 +48,7 @@ export default function ExpensesAdd({
     const [currency, setCurrency] = useState(/**@type{CurrencyType[]}*/[])
 
     const [section_id, setSectionId] = useState(null)
-    const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
+    const [personal, setPersonal] = useState(() => travel.adults_count === 1 ? true : defaultFilterValue() === 'personal')
 
     const inputNameRef = useRef()
     const inputSumRef = useRef()
@@ -141,7 +136,6 @@ export default function ExpensesAdd({
         else _ex = new Expense(undefined, undefined, user.id, expensesType)
 
 
-
         _ex
             .setTitle(expName)
             .setValue(value)
@@ -160,7 +154,7 @@ export default function ExpensesAdd({
         <div className='wrapper'>
             <div className='content'>
                 <div className='expenses-wrapper'>
-                    <Container className='bb-2-grey'>
+                    <Container className='bb-2-grey pb-20'>
                         <PageHeader arrowBack title={'Добавить расходы'}/>
                         <div className='column gap-1'>
                             <div className='title'>Категория</div>
@@ -218,8 +212,12 @@ export default function ExpensesAdd({
                                 </div>
                             </div>
 
-                            <Checkbox checked={personal}
-                                      onChange={e => setPersonal(e)} left>Личные</Checkbox>
+                            {
+                                travel.adults_count > 1 && (
+                                    <Checkbox checked={personal}
+                                              onChange={e => setPersonal(e)} left>Личные</Checkbox>
+                                )
+                            }
                         </div>
                     </Container>
                 </div>

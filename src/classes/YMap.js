@@ -77,13 +77,13 @@ export default class YMap extends IMap{
 
     /**
      * Возвращает кратчайшее (вдоль геодезической линии) расстояние между двумя заданными точками (в метрах).
-     * @method
+     * @static
      * @name YMap.getDistance
      * @param {CoordinatesType} point_1
      * @param {CoordinatesType} point_2
      * @returns {number}
      */
-    getDistance(point_1, point_2) {
+    static getDistance(point_1, point_2) {
         if (point_1 && point_2) {
             return window.ymaps.coordSystem.geo.getDistance(point_1, point_2)
         } else {
@@ -186,6 +186,7 @@ export default class YMap extends IMap{
      * @name YMap.addPoint
      * @param {MapPointType} point
      * @param {YMapPointOptionsType} [options]
+     * @return {YMap}
      */
     addPoint(point, options = {}) {
         if (point) {
@@ -204,6 +205,7 @@ export default class YMap extends IMap{
             this._map.geoObjects.add(placemark)
             this._pointsMap.set(point.id, placemark)
         }
+        return this
     }
 
     /**
@@ -277,6 +279,30 @@ export default class YMap extends IMap{
         if (bounds) this._map.setBounds(bounds)
         this._map.setZoom(this._zoom, {smooth: true})
 
+        return this
+    }
+
+    /**
+     * @method
+     * @name YMap.showPolyRoute
+     * @param {[number, number][]} polylineDots
+     * @param {BalloonOptionsType} [options]
+     * @return {YMap}
+     */
+    showPolyRoute(polylineDots, options = {}){
+        if(!Array.isArray(polylineDots)) return this
+        if(this._polyLine) this._map.geoObjects.remove(this._polyLine)
+
+        let polyline = new window.ymaps.Polyline(polylineDots, {
+            ...options
+        }, {
+            draggable: false,
+            strokeColor: "#FF8E09",
+            strokeWidth: 4,
+        });
+
+        this._map.geoObjects.add(polyline)
+        this._polyLine = polyline
         return this
     }
 
