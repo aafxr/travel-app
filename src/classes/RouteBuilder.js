@@ -105,13 +105,11 @@ export default class RouteBuilder {
      * @param {any[]} placesList список точек для сортировки
      * @param {(item: any) => SalesmanItemType} transformCB callback, извлекает необходимые для алгоритма поля
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
-     * @returns {{distance: number, list: any[]}}
+     * @returns {any[]}
      */
     sortPlacesByDistance(placesList, transformCB ,distanceCB){
         if(!distanceCB) return {distance: 0, list: placesList}
         if(placesList.length === 0) return {distance: 0, list: placesList}
-
-        const start = Date.now()
 
         const list = []
         /**@type{Map<string, PointType>}*/
@@ -147,23 +145,10 @@ export default class RouteBuilder {
         edges.forEach(e => graph.addEdge(e))
 
         const res = bfTravellingSalesman(graph)
-        const weights = res.map((v, i, arr) => i + 1 < arr.length
-            ? v.findEdge(arr[i + 1]).weight
-            : 0
-        )
-        const d = weights.reduce((a, i) => a + i, 0)
+
         const resultList = res.map(/**@param {GraphVertex} r*/r => placeMap.get(r.getKey()))
 
-        const end = Date.now()
-
-        const ss = Math.floor((end - start) / 1000)
-        const ms = Math.floor((end - start) % 1000)
-
-        return {
-            "calculation-time": `${ss}s ${ms}ms`,
-            distance: d,
-            list: resultList
-        }
+        return resultList
     }
 
 

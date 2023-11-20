@@ -380,3 +380,6 @@ export default class YMap extends IMap{
         return this._travel.waypoints || []
     }
 }
+
+
+window.distance = YMap.getDistance

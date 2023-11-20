@@ -85,6 +85,15 @@ registerRoute(
         ],
     })
 )
+registerRoute(
+    ({url}) => url.origin === self.location.origin && /api\./.test(location.origin), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+    new StaleWhileRevalidate({
+        cacheName: 'api',
+        plugins: [
+            new ExpirationPlugin({maxAgeSeconds: 14 * 24 * 60 * 60}),
+        ],
+    })
+)
 
 const apiCache = [
     '/main/currency/getList/',
@@ -95,7 +104,7 @@ registerRoute(
     new CacheFirst({
         cacheName: 'api',
         plugins: [
-            new ExpirationPlugin({maxAgeSeconds:  60}),
+            new ExpirationPlugin({maxAgeSeconds:  24 * 60 * 60}),
         ],
     })
 );

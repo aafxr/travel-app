@@ -19,10 +19,10 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
+import ShowRouteOnMap from "./ShowRouteOnMap";
+import ShowPlaces from "./ShowPlaces";
 
 import './TravelDetails.css'
-import ShowPlaces from "./ShowPlaces";
-import ShowRouteOnMap from "./ShowRouteOnMap";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -174,7 +174,8 @@ export default function TravelDetails() {
                     onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
                     onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
                     onPlace={() => navigate(`/travel/${travel.id}/add/place/`)}
-                />}
+                />
+            }
         </>
     )
 }

@@ -60,7 +60,7 @@ export default function TravelAddPlace() {
             const sortedPlaces = travel.routeBuilder
                     .sortPlacesByDistance(travel.places, extractPlaceDataCB, YMap.getDistance)
 
-            travel.setPlaces(sortedPlaces.list)
+            travel.setPlaces(sortedPlaces)
 
             travel
                 .save(user.id)
