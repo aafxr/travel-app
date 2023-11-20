@@ -1,10 +1,10 @@
 /**
  * @typedef IMapOptionsType
  * @property {Travel} travel
- * @property {PointType[]} points
- * @property {(point: PointType) => unknown} onPointMoved
- * @property {(point: PointType) => unknown} onPointClick
- * @property {(point: PointType) => unknown} onPointAdd
+ * @property {MapPointType[]} points
+ * @property {(point: MapPointType) => unknown} onPointMoved
+ * @property {(point: MapPointType) => unknown} onPointClick
+ * @property {(point: MapPointType) => unknown} onPointAdd
  * @property {number} zoom
  * @property {CoordinatesType} center
  * @property {string} container_id
@@ -15,10 +15,10 @@
 
 /**
  * @typedef IMapPointOptionsType
- * @property {string} hintContent
- * @property {string} balloonContent
+ * @property {string} [hintContent]
+ * @property {string} [balloonContent]
  * @property {'add' | 'exist'} markerType
- * @property {boolean} draggable
+ * @property {boolean} [draggable]
  */
 
 
@@ -33,17 +33,12 @@
  *
  */
 export default class IMap {
-    /**
-     * @param {IMapOptionType} options
-     */
-    constructor(options) {}
-
 
     /**
      * @abstract
      * @name IMap.newPoint
      * @param {string} primary_entity_id
-     * @returns{PointType}
+     * @returns{MapPointType}
      */
     newPoint(primary_entity_id){
     }
@@ -81,23 +76,23 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.addPoint
-     * @param {PointType} point
+     * @param {MapPointType} point
      * @param {IMapPointOptionsType} [options]
      */
     addPoint(point, options = {}) {
     }
 
-    /**
-     * добавить точку на карту по указанному адресу
-     * @method IMap.addMarkerByAddress
-     * @param {string} address
-     * @param {string} id
-     * @returns {PointType | null}
-     * @returns {Promise<PointType | null>}
-     */
-    addMarkerByAddress(address, id){
-        console.warn('[IMap] addMarkerByAddress not override')
-    }
+    // /**
+    //  * добавить точку на карту по указанному адресу
+    //  * @method IMap.addMarkerByAddress
+    //  * @param {string} address
+    //  * @param {string} id
+    //  * @returns {MapPointType | null}
+    //  * @returns {Promise<MapPointType | null>}
+    //  */
+    // addMarkerByAddress(address, id){
+    //     console.warn('[IMap] addMarkerByAddress not override')
+    // }
 
     /**
      * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
@@ -121,11 +116,11 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.showRoute
-     * @param {PlaceType[]} points
-     * @param {string} routeName
+     * @param {MapPointType[]} points
+     * @param {IMapOptionsType} options
      * @returns {IMap}
      */
-    showRoute(points, routeName) {
+    showRoute(points, options) {
     }
 
     /**
@@ -197,7 +192,7 @@ export default class IMap {
      * @return {IMap}
      */
     showPoint(coords, zoomLevel){
-        console.warn('[IMap] focusOnPointType not override')
+        console.warn('[IMap] focusOnMapPointType not override')
     }
 
     // построить маршрут

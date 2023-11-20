@@ -22,7 +22,7 @@ import IMap from "../api/IMap";
  * @param {YMapOptionsType} options
  */
 export default class YMap extends IMap{
-    /**@type{PointType[]}*/
+    /**@type{MapPointType[]}*/
     points = []
     _map
     /**@type{number}*/
@@ -114,7 +114,7 @@ export default class YMap extends IMap{
     /**
      * @method
      * @name YMap.newPoint
-     * @returns {PointType}
+     * @returns {MapPointType}
      */
     newPoint() {
         return defaultPoint(this._travel.id)
@@ -184,14 +184,14 @@ export default class YMap extends IMap{
     /**
      * @method
      * @name YMap.addPoint
-     * @param {PointType} point
+     * @param {MapPointType} point
      * @param {YMapPointOptionsType} [options]
      */
     addPoint(point, options = {}) {
         if (point) {
-            const placemark = window.ymaps.Placemark(point.coords, {
-                hintContent: options.hintContent,
-                balloonContent: options.balloonContent,
+            const placemark = new window.ymaps.Placemark(point.coords, {
+                hintContent: options.hintContent || '',
+                balloonContent: options.balloonContent || '',
             }, {
                 iconLayout: 'default#image',
                 iconImageHref: options.markerType === 'exist' ? this._location_icon : this._add_location_icon,
@@ -226,10 +226,11 @@ export default class YMap extends IMap{
             })
     }
 
+    /** @typedef {MapPointType & Partial<BalloonOptionsType>} MapPointWithOptionsType*/
     /**
      * @method
      * @name YMap.showRoute
-     * @param {PlaceType[]} points
+     * @param {MapPointWithOptionsType[]} points
      * @param {string} routeName
      * @returns {YMap}
      */
@@ -239,12 +240,13 @@ export default class YMap extends IMap{
 
         }
         for (const point of points) {
-
             try {
 
                 const placemark = new window.ymaps.Placemark([+point.location.lat, +point.location.lng], {
-                    hintContent: point.name,
-                    balloonContent: point.name,
+                    hintContent: point.hintContent || '',
+                    balloonContentHeader: point.balloonContentHeader || '',
+                    balloonContentBody: point.balloonContentBody || '',
+                    balloonContentFooter: point.balloonContentFooter || '',
                 }, {
                     iconLayout: 'default#image',
                     iconImageHref: this._location_icon,
@@ -305,7 +307,8 @@ export default class YMap extends IMap{
         const bounds = this._map.geoObjects.getBounds()
         this._map.setBounds(bounds)
         const zoom = Math.min(this._map.getZoom(), 15)
-        this._map.setZoom(zoom)
+        this._zoom = zoom - 1
+        this._map.setZoom(this._zoom)
         return this
     }
 
@@ -315,6 +318,33 @@ export default class YMap extends IMap{
             this._zoom = zoomLevel
         }
         return this
+    }
+
+    /**
+     * @methos
+     * @name YMap.buildRoute
+     * @param {MapPointType[]} points
+     * @returns {Promise<Array<[number, number]>>}
+     */
+    buildsRoute(points){
+        return new Promise(res => {
+            window.ymaps.route(points.map(p => (
+                { type: 'viaPoint', point: p.coords })), {
+                mapStateAutoApply: true
+            }).then(function (route) {
+                const routePoints = []
+                for (let i = 0; i < route.getPaths().getLength(); i++) {
+                    const way = route.getPaths().get(i);
+                    const segments = way.getSegments();
+                    for (let j = 0; j < segments.length; j++) {
+                        /**@type{Array<[number,number]>}*/
+                        const  c = segments[j].getCoordinates();
+                        c.forEach(_c => routePoints.push(_c))
+                    }
+                }
+                res(routePoints)
+            });
+        })
     }
 
     /**

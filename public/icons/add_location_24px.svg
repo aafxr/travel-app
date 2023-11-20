@@ -1,6 +1,11 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="24" height="24" fill="#F5F5F5"/>
 <g id="add_location_24px">
-<path id="icon/maps/add_location_24px" fill-rule="evenodd" clip-rule="evenodd" d="M5 9C5 5.14 8.14 2 12 2C15.86 2 19 5.14 19 9C19 14.25 12 22 12 22C12 22 5 14.25 5 9ZM13 10H16V8H13V5H11V8H8V10H11V13H13V10Z" fill="black" fill-opacity="0.54"/>
+<path
+        id="icon/maps/add_location_24px"
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M5 9C5 5.14 8.14 2 12 2C15.86 2 19 5.14 19 9C19 14.25 12 22 12 22C12 22 5 14.25 5 9ZM13 10H16V8H13V5H11V8H8V10H11V13H13V10Z"
+        fill="#FF8E09"
+/>
 </g>
 </svg>

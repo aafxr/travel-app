@@ -10,7 +10,7 @@ import isString from "./validation/isString";
  * @category Utils
  */
 export default function currencyToFixedFormat(currency, fractionDigitsCount = 2){
-    if(isString(currency) && /^\d*([\.,]*)\d*$/.test(currency)){
+    if(isString(currency) && /^\d*([.,]*)\d*$/.test(currency)){
         let temp =  currency.replace(',', '.')
         temp = parseFloat(temp)
 

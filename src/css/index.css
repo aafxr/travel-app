@@ -326,8 +326,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .map-controls{
-    position: fixed;
-    top: 65%;
+    position: absolute;
+    bottom: 20%;
     right: 12px;
 }
 

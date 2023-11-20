@@ -1,10 +1,12 @@
+import {useParams} from "react-router-dom";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
+
 import YMap from "../../../../classes/YMap";
 import useTravelContext from "../../../../hooks/useTravelContext";
-import {useParams} from "react-router-dom";
 import MapControls from "../../../../components/MapControls/MapControls";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import dateRange from "../../../../utils/dateRange";
+import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
@@ -14,15 +16,14 @@ export default function ShowRouteOnMap() {
     const [map, setMap] = useState(/**@type{YMap}*/null)
 
     useEffect(() => {
-        window.ymaps.ready(() => {
-            const m = new YMap({
-                container_id: 'on-map',
-                points: [],
-                location_icon: process.env.PUBLIC_URL + '/icons/location_on_24px.svg'
-            })
-            const route = travel.routeBuilder.getRouteByDay(+dayNumber)
-            m
-                .setContainerID('on-map')
+        if (map) {
+            const route = travel.routeBuilder
+                .getRouteByDay(+dayNumber)
+
+            /**@type{MapPointType[]}*/
+            const routePointForMap = route
+                .map(({id, location: {lat, lng}}) => ({id, coords: [lat, lng]}))
+            map
                 .showRoute(route, travel.routeBuilder.getRouteByDay(+dayNumber)[0]?.name || '')
 
             route.forEach(r => {
@@ -50,13 +51,11 @@ export default function ShowRouteOnMap() {
                     `,
                     balloonContentFooter: `<div class="balloon-footer">${r.formatted_address}</div>`,
                 }
-                m.setBalloonToPoint(r.id, ballonOptions, {maxWidth: window.innerWidth * 0.6})
+                map.setBalloonToPoint(r.id, ballonOptions, {maxWidth: window.innerWidth * 0.6})
             })
-            setMap(m)
-            window.map = m
-        })
-        return () => map && map.destroyMap()
-    }, [])
+            window.map = map
+        }
+    }, [map])
 
     useLayoutEffect(() => {
         if (ref.current) {
@@ -70,13 +69,11 @@ export default function ShowRouteOnMap() {
 
     return (
         <div
-            ref={ref}
             id='on-map'
             className='flex-1 relative'
-            style={{
-                height: '100%',
-            }}>
-            <MapControls className='map-controls' map={map}/>
+            style={{height: '100%'}}
+        >
+            <YandexMapContainer onMapReadyCB={setMap}/>
         </div>
     )
 }

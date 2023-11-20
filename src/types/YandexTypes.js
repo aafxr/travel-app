@@ -22,9 +22,14 @@
  */
 
 /**
+ * @typedef YSubAdministrativeAreaType
+ * @property {{LocalityName: string}} Locality
+ * @property {YSubAdministrativeAreaType} [SubAdministrativeArea]
+ */
+/**
  * @typedef YAdministrativeAreaType
  * @property {string} AdministrativeAreaName
- * @property SubAdministrativeArea
+ * @property {YSubAdministrativeAreaType} SubAdministrativeArea
  */
 
 /**

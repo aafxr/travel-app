@@ -78,12 +78,21 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         const idx = points.findIndex(p => p.id === item.id)
         if (~idx) {
             const {address, id} = points[idx]
-            const marker = await map.addMarkerByAddress(address, id)
-            if (marker) {
+            /**@type{GeoObjectPropertiesType[]}*/
+            const markers = await map.getPointByAddress(address)
+            if (markers.length > 0) {
                 /*** обновляем адресс в массиве points по полученным данным от api карты */
                 const newPoints = pointsList.map(p => {
+                    const marker = markers[0]
+                debugger
                     return p.id === item.id
-                        ? {...marker, id: p.id}
+                        ? {
+                        ...p,
+                            address: marker.name,
+                            coords: marker.boundedBy[0],
+                            kind: marker.metaDataProperty.GeocoderMetaData.kind,
+                            locality: marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.LocalityName
+                    }
                         : p
                 })
                 const list = newPoints.map(({id, address}) => ({id, address}))

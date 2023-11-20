@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
-import MapControls from "../../../../components/MapControls/MapControls";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
@@ -14,7 +13,6 @@ import StartPointInput from "./StartPointInput";
 import usePoints from "./usePoints";
 
 import './TravelAddOnMap.css'
-import useMap from "../../../../hooks/useMap";
 
 
 /**
@@ -26,7 +24,7 @@ import useMap from "../../../../hooks/useMap";
  */
 export default function TravelAddOnMap() {
     const navigate = useNavigate()
-    const {travel, update} = useTravelContext()
+    const {travel} = useTravelContext()
     const {user, userLoc} = useUserSelector()
     const [map, setMap] = useState(/**@type{IMap}*/ null)
 
@@ -35,6 +33,14 @@ export default function TravelAddOnMap() {
     const {points, setPoints} = usePoints(map)
 
     const draggedPoint = useDragPoint()
+
+    useEffect(() => {
+        if (map && points.length){
+            map.clearMap()
+            points.forEach(/**@param{PointType} p*/ p => map.addPoint({id: p.id, coords: p.coords}, {markerType: "exist"}))
+            map.autoZoom()
+        }
+    }, [points, map])
 
     //обработка изменения положения точки после взаимодейсвия ==========================================================
     useEffect(() => {
@@ -68,6 +74,9 @@ export default function TravelAddOnMap() {
         travel.isFromPoint
             ? travel.setWaypoints([travel.fromPoint, ...newPoints])
             : travel.setWaypoints(newPoints)
+
+        map.clearMap()
+        travel.waypoints.forEach(({id, coords}) => map.addPoint())
     }
 
 
@@ -85,7 +94,7 @@ export default function TravelAddOnMap() {
                 </div>
             </Container>
             <div className='content'>
-                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReady={setMap}/>
+                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReadyCB={setMap}/>
             </div>
             <div className='fixed-bottom-button'>
                 <Button

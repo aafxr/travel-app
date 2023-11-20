@@ -16,11 +16,11 @@ import MapControls from "../MapControls/MapControls";
  * @param {(p: PointType) => void} onPointUpdate Callback вызывается при обновлении информации о точке
  * @param {(p: PointType) => void} onPointClick Callback вызывается при клике на точке
  * @param {(p: PointType) => void} onPointAdd Callback вызывается при доьавлении новой точки
- * @param {(map:IMap) => unknown}
+ * @param {(map:IMap) => unknown} onMapReadyCB
  * @returns {JSX.Element}
  * @category Components
  */
-function YandexMapContainer({travel, userLocation, children, onPointAdd, onPointClick, onPointUpdate, onMapReady}) {
+function YandexMapContainer({travel, userLocation, children, onPointAdd, onPointClick, onPointUpdate, onMapReadyCB}) {
     /** интерфейс для взаимодействия с картой */
     const map = useMap({
         onPointAdd,
@@ -30,7 +30,7 @@ function YandexMapContainer({travel, userLocation, children, onPointAdd, onPoint
 
 
     useEffect(() => {
-        if (map && onMapReady) onMapReady(map)
+        if (map && onMapReadyCB) onMapReadyCB(map)
         if (map) map.setContainerID('map')
     }, [map])
 

@@ -102,7 +102,7 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
     }
 
     function appendAlert(type, message) {
-        const icon_url = `${process.env.PUBLIC_URL}\/icons\/${type}_icon.png`
+        const icon_url = `${process.env.PUBLIC_URL}/icons/${type}_icon.png`
         const div = document.createElement('div')
         div.className = clsx('alert-item')
         div.innerHTML = `
