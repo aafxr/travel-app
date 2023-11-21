@@ -1,8 +1,14 @@
-import {MS_IN_DAY} from "../static/constants";
+import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
 import GraphVertex from "../utils/data-structures/GraphVertex";
 import GraphEdge from "../utils/data-structures/GraphEdge";
 import Graph from "../utils/data-structures/Graph";
-import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
+import {MS_IN_DAY} from "../static/constants";
+import dijkstra from "../utils/sort/dijkstra";
+import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
+import bellmanFord from "../utils/sort/bellmanFord";
+import hamiltonianCycle from "../utils/sort/hamiltonianCycle";
+import floydWarshall from "../utils/sort/floydWarshall";
+import PriorityQueue from "../utils/data-structures/PriorityQueue";
 
 /**
  * @typedef SalesmanItemType
@@ -102,20 +108,18 @@ export default class RouteBuilder {
      * проходящего через указанные города по одному разу
      * @method
      * @name RouteBuilder.sortPlacesByDistance
-     * @param {any[]} placesList список точек для сортировки
-     * @param {(item: any) => SalesmanItemType} transformCB callback, извлекает необходимые для алгоритма поля
-     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
-     * @returns {any[]}
+     * @param {SortPointType[]} placesList список точек для сортировки
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
+     * @returns {SortPointType[]}
      */
-    sortPlacesByDistance(placesList, transformCB ,distanceCB){
-        if(!distanceCB) return {distance: 0, list: placesList}
-        if(placesList.length === 0) return {distance: 0, list: placesList}
+    sortPlacesByDistance(placesList, distanceCB = getDistanceFromTwoPoints) {
+        if (placesList.length === 0) return placesList
 
         const list = []
-        /**@type{Map<string, PointType>}*/
-        const placeMap  = new Map()
+        /**@type{Map<string, SortPointType>}*/
+        const placeMap = new Map()
         /**@type{Map<string, GraphVertex>}*/
-        const vertexMap  = new Map()
+        const vertexMap = new Map()
         /**@type{GraphEdge[]}*/
         const edges = []
         /**@type{Graph}*/
@@ -126,9 +130,9 @@ export default class RouteBuilder {
             placeMap.set(p.id, p)
             vertexMap.set(p.id, new GraphVertex(p.id))
         })
-        for (const place_id of list){
-            for (const vertex_key of vertexMap.keys()){
-                if(place_id === vertex_key) continue
+        for (const place_id of list) {
+            for (const vertex_key of vertexMap.keys()) {
+                if (place_id === vertex_key) continue
 
                 const coord_1 = placeMap.get(place_id).coords
                 const coord_2 = placeMap.get(vertex_key).coords
@@ -151,6 +155,173 @@ export default class RouteBuilder {
         return resultList
     }
 
+    /**
+     * @param {SortPointType[]} points
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
+     * @return {Graph}
+     * @private
+     */
+    _prepareData(points, distanceCB = getDistanceFromTwoPoints) {
+        this.id_list = []
+        /**@type{Map<string, SortPointType>}*/
+        this.placeMap = new Map()
+        /**@type{Map<string, GraphVertex>}*/
+        this.vertexMap = new Map()
+        /**@type{GraphEdge[]}*/
+        this.edges = []
+        /**@type{Graph}*/
+        const graph = new Graph(true)
+
+
+        points.forEach(p => {
+            this.id_list.push(p.id)
+            this.placeMap.set(p.id, p)
+            const vertex = new GraphVertex(p.id)
+            this.vertexMap.set(p.id, vertex)
+        })
+        for (const place_id of this.id_list) {
+            for (const vertex_key of this.vertexMap.keys()) {
+                if (place_id === vertex_key) continue
+
+                const coord_1 = this.placeMap.get(place_id).coords
+                const coord_2 = this.placeMap.get(vertex_key).coords
+
+                const e = new GraphEdge(
+                    this.vertexMap.get(place_id),
+                    this.vertexMap.get(vertex_key),
+                    distanceCB(coord_1, coord_2)
+                )
+                this.edges.push(e)
+            }
+        }
+
+        this.edges.forEach(e => graph.addEdge(e))
+        return graph
+    }
+
+    /**
+     * @typedef SortPointType
+     * @property {string} id
+     * @property {CoordinatesType} coords
+     * @property {string} start_time date format iso string
+     * @property {string} end_time date format iso string
+     */
+
+    /**
+     * @param {SortPointType[]} points
+     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
+     */
+    sortDijkstra(points, distanceCB = getDistanceFromTwoPoints) {
+        const graph = this._prepareData(points, distanceCB)
+        const startVertex = graph.getAllVertices()[0]
+
+        const res = dijkstra(graph, startVertex)
+
+        console.log(res)
+        window.result = res
+    }
+
+    sortBellmanFord(points, distanceCB = getDistanceFromTwoPoints) {
+        const graph = this._prepareData(points, distanceCB)
+        const startVertex = graph.getAllVertices()[0]
+
+        const res = bellmanFord(graph, startVertex)
+
+        console.log(res)
+        window.result = res
+    }
+
+    sortHamiltonianCycle(points, distanceCB = getDistanceFromTwoPoints) {
+        const graph = this._prepareData(points, distanceCB)
+        const startVertex = graph.getAllVertices()[0]
+
+        const res = hamiltonianCycle(graph)
+
+        console.log(res)
+        window.result = res
+    }
+
+    sortFloydWarshall(points, distanceCB = getDistanceFromTwoPoints) {
+        const graph = this._prepareData(points, distanceCB)
+        const startVertex = graph.getAllVertices()[0]
+
+        const res = floydWarshall(graph)
+
+
+        console.log(res)
+        window.result = res
+    }
+
+    /**
+     * @typedef CombinePointsOptionsType
+     * @property {SortPointType[]} points список мест для посещения
+     * @property {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, расчитывает растояние между точками
+     * @property {number} [sightseeingTime] default = 45min, глубина осмотра дочтопримечательностей
+     */
+
+    /**
+     * @param {CombinePointsOptionsType} options
+     */
+    combinePoints({points, distanceCB = getDistanceFromTwoPoints, sightseeingTime = 45}) {
+        const distances = {}
+        const pointsMap = {}
+        for (const point_a of points) {
+            pointsMap[point_a.id] = point_a
+            for (const point_b of points) {
+                const id_a = point_a.id
+                const id_b = point_b.id
+
+                if (point_a === point_b) continue
+                if (distances[id_a + '-' + id_b] || distances[id_b + '-' + id_a]) continue
+
+                distances[id_a + '-' + id_b] = distanceCB(point_a.coords, point_b.coords)
+            }
+        }
+
+        const priorityQueue = new PriorityQueue()
+        for (let i = 0; i < distancesKeys.length; i++) {
+            const priority = distancesKeys.length - i
+            distancesMap.get(distancesKeys[i]).forEach(p => priorityQueue.add(p, priority))
+        }
+
+        console.log(priorityQueue.toString())
+        window.result = distances
+
+        return {
+            distances, priorityQueue
+        }
+    }
+
+    /**
+     *
+     * @param {SortPointType[]} points
+     * @param {number} [maxDist] default = 30
+     * @param {Set<SortPointType>} [pointsSet]
+     * @return {SortPointType[][]}
+     * @private
+     */
+    _groupPoints(points, maxDist = 30, pointsSet) {
+        if (!points || points.length) return []
+        if (!pointsSet) {
+            pointsSet = new Set(points)
+        }
+        const currentPoint = points[0]
+        const closestPoints = [currentPoint]
+        pointsSet.delete(closestPoints)
+
+        for (const point of points) {
+            if (currentPoint === point) continue
+            if (getDistanceFromTwoPoints(currentPoint.coords, point.coords) < maxDist) {
+                closestPoints.push(point)
+                pointsSet.delete(point)
+            }
+        }
+
+        return pointsSet.size
+            ? [currentPoint, ...this._groupPoints([...pointsSet], maxDist, pointsSet)]
+            : [currentPoint]
+    }
+
 
     /**
      * Метод возвращает сгруппированный спиок мест по дням
@@ -169,7 +340,7 @@ export default class RouteBuilder {
      * @name RouteBuilder.getActivityDays
      * @returns {number[]}
      */
-    getActivityDays(){
+    getActivityDays() {
         return Array.from(this.placesMap.keys()).filter((key) => this.placesMap.get(key).length > 0)
     }
 
@@ -183,3 +354,45 @@ export default class RouteBuilder {
         return Math.max(Math.ceil(days), 1)
     }
 }
+
+// const result = {
+//     distances: {}
+// }
+//
+//
+// const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
+//     id: (idx + 1).toString(),
+//     coords: [
+//         50 + Math.random() * 2,
+//         50 + Math.random() * 2
+//     ]
+// }))
+//
+// const distanceMap = new Map([
+//     [10, []],
+//     [20, []],
+//     [30, []],
+//     [40, []],
+//     [50, []],
+//     [60, []],
+//     [-1, []],
+// ])
+//
+// Object.keys(result.distances).forEach(key => {
+//     if (result.distances[key] === 0)
+//         return
+//     else if (result.distances[key] <= 10)
+//         distanceMap.get(10).push(key)
+//     else if (result.distances[key] <= 20)
+//         distanceMap.get(20).push(key)
+//     else if (result.distances[key] <= 30)
+//         distanceMap.get(30).push(key)
+//     else if (result.distances[key] <= 40)
+//         distanceMap.get(40).push(key)
+//     else if (result.distances[key] <= 50)
+//         distanceMap.get(50).push(key)
+//     else if (result.distances[key] <= 60)
+//         distanceMap.get(60).push(key)
+//     else
+//         distanceMap.get(-1).push(key)
+// })

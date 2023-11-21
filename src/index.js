@@ -22,6 +22,9 @@ import Graph from "./utils/data-structures/Graph";
 import GraphEdge from "./utils/data-structures/GraphEdge";
 import GraphVertex from "./utils/data-structures/GraphVertex";
 import bfTravellingSalesman from "./utils/sort/bfTravellingSalesman";
+import PriorityQueue from "./utils/data-structures/PriorityQueue";
+import LinkedList from "./utils/data-structures/LinkedList";
+import getDistanceFromTwoPoints from "./utils/getDistanceFromTwoPoints";
 
 
 let theme = localStorage.getItem(THEME)
@@ -146,78 +149,4 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
-
-
-// const graph = new Graph(true)
-// const vertexs = {
-//     ['1']: new GraphVertex(1),
-//     ['2']: new GraphVertex(2),
-//     ['3']: new GraphVertex(3),
-//     ['5']: new GraphVertex(5),
-//     ['7']: new GraphVertex(7),
-//     ['12']: new GraphVertex(12),
-//     ['14']: new GraphVertex(14),
-// }
-// console.log(vertexs[1])
-// graph
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[2],4))
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[3],5))
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[7],6))
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[5],2))
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[12],6))
-//     .addEdge(new GraphEdge(vertexs[1], vertexs[14],5))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[1],4))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[3],8))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[7],4))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[5],1))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[12],2))
-//     .addEdge(new GraphEdge(vertexs[2], vertexs[14],5))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[1],5))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[2],8))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[7],1))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[5],3))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[12],3))
-//     .addEdge(new GraphEdge(vertexs[3], vertexs[14],5))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[1],5))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[3],3))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[7],9))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[2],10))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[12],2))
-//     .addEdge(new GraphEdge(vertexs[5], vertexs[14],9))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[1],6))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[3],1))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[2],4))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[5],9))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[12],5))
-//     .addEdge(new GraphEdge(vertexs[7], vertexs[14],2))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[1],6))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[3],3))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[7],5))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[5],2))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[2],2))
-//     .addEdge(new GraphEdge(vertexs[12], vertexs[14],8))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[1],6))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[3],5))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[7],2))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[5],9))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[2],5))
-//     .addEdge(new GraphEdge(vertexs[14], vertexs[12],8))
-//
-// console.log(graph)
-// console.log(graph.getAdjacencyMatrix())
-// console.log(graph.getAllVertices())
-// console.log(graph.getAllEdges())
-//
-// const start = Date.now()
-// const res = bfTravellingSalesman(graph)
-// const end = Date.now()
-// console.log(res)
-// console.log('calc time: ', end - start)
-// const weights = res.map((v, i, arr) => i + 1 < arr.length
-//     ? v.findEdge(arr[i + 1]).weight
-//     : 0
-// )
-// console.log('Веса граней ', weights, weights.reduce((a, i) => a + i, 0))
-//
-// console.log(vertexs["7"].findEdge(vertexs["1"]).weight)
 

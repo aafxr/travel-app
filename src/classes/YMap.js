@@ -381,5 +381,4 @@ export default class YMap extends IMap{
     }
 }
 
-
 window.distance = YMap.getDistance
