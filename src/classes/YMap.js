@@ -233,7 +233,7 @@ export default class YMap extends IMap{
      * @method
      * @name YMap.showRoute
      * @param {MapPointWithOptionsType[]} points
-     * @param {string} routeName
+     * @param {YMapOptionsType} routeName
      * @returns {YMap}
      */
     showRoute(points, routeName) {

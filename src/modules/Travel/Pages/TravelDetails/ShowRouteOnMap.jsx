@@ -16,6 +16,46 @@ export default function ShowRouteOnMap() {
     const [map, setMap] = useState(/**@type{YMap}*/null)
 
     useEffect(() => {
+        if (map){
+            const points = Array.from({length: 16}).fill(0).map((_, idx) => ({
+                id: (idx + 1).toString(),
+                coords: [
+                    50 + Math.random() * 6,
+                    40 + Math.random() * 18
+                ]
+            }))
+
+            window.genetic = (mutation = 50, cycles = 200) => {
+                const start = new Date()
+
+                const result = travel.routeBuilder.sortByGeneticAlgoritm(points, mutation, cycles);
+
+                const end = new Date()
+                const ms = (end - start) % 1000
+                const sec = (end - start - ms) / 1000
+                console.log('Spent time: ', `${sec}sec ${ms}ms`)
+                console.log(map)
+                map.clearMap()
+                map.showRoute(result);
+            }
+
+            window.salesman = (dist = 70) => {
+                const start = new Date()
+
+                const result = travel.routeBuilder.sortPlacesByDistance(points, dist);
+
+                const end = new Date()
+                const ms = (end - start) % 1000
+                const sec = (end - start - ms) / 1000
+                console.log('Spent time: ', `${sec}sec ${ms}ms`)
+                map.clearMap()
+                map.showRoute(result);
+            }
+        }
+
+    }, [map])
+
+    useEffect(() => {
         if (map) {
             const route = travel.routeBuilder
                 .getRouteByDay(+dayNumber)

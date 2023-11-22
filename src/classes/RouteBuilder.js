@@ -8,7 +8,6 @@ import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 import bellmanFord from "../utils/sort/bellmanFord";
 import hamiltonianCycle from "../utils/sort/hamiltonianCycle";
 import floydWarshall from "../utils/sort/floydWarshall";
-import PriorityQueue from "../utils/data-structures/PriorityQueue";
 
 /**
  * @typedef SalesmanItemType
@@ -102,57 +101,242 @@ export default class RouteBuilder {
         })
     }
 
+
+    /**
+     * @param startFrom
+     * @param {any[]} array
+     * @returns {any[]}
+     * @private
+     */
+    _shuffle(startFrom, array) {
+        const arr = array.filter(el => el !== startFrom)
+
+        let currentIndex = arr.length, randomIndex;
+
+        while (currentIndex > 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
+        }
+        return [startFrom, ...arr];
+    }
+
     /**
      * метод решает задачу коммивояжёра ( travelling salesman problem) —
      * цель задачи заключающаяся в поиске самого выгодного маршрута,
      * проходящего через указанные города по одному разу
      * @method
      * @name RouteBuilder.sortPlacesByDistance
-     * @param {SortPointType[]} placesList список точек для сортировки
+     * @param {SortPointType[]} points список точек для сортировки
+     * @param {number} [maxDist] радиус поиска точек
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
      * @returns {SortPointType[]}
      */
-    sortPlacesByDistance(placesList, distanceCB = getDistanceFromTwoPoints) {
-        if (placesList.length === 0) return placesList
+    sortPlacesByDistance(points, maxDist, distanceCB = getDistanceFromTwoPoints) {
+        if (points.length === 0) return points
 
-        const list = []
-        /**@type{Map<string, SortPointType>}*/
-        const placeMap = new Map()
-        /**@type{Map<string, GraphVertex>}*/
-        const vertexMap = new Map()
-        /**@type{GraphEdge[]}*/
-        const edges = []
-        /**@type{Graph}*/
-        const graph = new Graph(true)
+        const pointGroupes = this._groupPoints(points, maxDist)
+        /**@type{Map<string, SortPointType[]>}*/
+        const groupesMap = new Map()
+        /**@type{SortPointType[]}*/
+        const majorPointsToSort = []
+        /**@type{SortPointType[]}*/
+        const resulPointsArr = []
 
-        placesList.forEach(p => {
-            list.push(p.id)
-            placeMap.set(p.id, p)
-            vertexMap.set(p.id, new GraphVertex(p.id))
-        })
-        for (const place_id of list) {
-            for (const vertex_key of vertexMap.keys()) {
-                if (place_id === vertex_key) continue
-
-                const coord_1 = placeMap.get(place_id).coords
-                const coord_2 = placeMap.get(vertex_key).coords
-
-                const e = new GraphEdge(
-                    vertexMap.get(place_id),
-                    vertexMap.get(vertex_key),
-                    distanceCB(coord_1, coord_2)
-                )
-                edges.push(e)
+        pointGroupes.forEach(gp => {
+            if (gp.length) {
+                groupesMap.set(gp[0].id, gp)
+                majorPointsToSort.push(gp[0])
             }
+        })
+
+        let idx = 0
+        const MAX_SORT_ELEMENTS = 9
+
+        while (idx < majorPointsToSort.length) {
+            let temp = majorPointsToSort.slice(idx, idx + MAX_SORT_ELEMENTS)
+            idx += temp.length
+
+            const graph = this._prepareData(temp, distanceCB)
+
+            /**@type{SortPointType[]}*/
+            temp = bfTravellingSalesman(graph)
+                .map(/**@param {GraphVertex} gv*/gv => temp.find(tp => tp.id === gv.getKey()))
+
+            temp.forEach(tp => {
+                resulPointsArr.push(...groupesMap.get(tp.id))
+                groupesMap.delete(tp.id)
+            })
         }
 
-        edges.forEach(e => graph.addEdge(e))
+        resulPointsArr.forEach(p => {
+            p.location = {};
+            p.location.lat = p.coords[0];
+            p.location.lng = p.coords[1];
+        })
 
-        const res = bfTravellingSalesman(graph)
+        return resulPointsArr
+    }
 
-        const resultList = res.map(/**@param {GraphVertex} r*/r => placeMap.get(r.getKey()))
+    /**
+     * @param {SortPointType[]} points
+     * @param {number} mutation  0 - 100, вероятность мутации
+     * @param {number} cycles количество циклов
+     * @returns {*[]}
+     */
+    sortByGeneticAlgoritm(points, mutation = 20, cycles = 100) {
+        const start = new Date()
+        if (!points || !points.length) return []
 
-        return resultList
+        const graph = this._prepareData(points)
+        const verteces = graph.getAllVertices()
+        const startVertex = verteces[0]
+        /**@type{Map<GraphVertex[], number>}*/
+        const populationMap = new Map()
+        let population =
+            Array
+                .from({length: Math.min(500, points.length * 10)})
+                .fill(0)
+                .map(() => this._shuffle(startVertex, [...verteces]))
+        const MAX_POPULATION_SIZE = population.length
+
+        population.forEach(p => {
+            const dist = this._pathLength(graph, p)
+            populationMap.set(p, dist)
+        })
+
+        let maxDist = Math.max(...populationMap.values())
+        let shortest = [...shortestPath(populationMap)]
+
+        /**
+         * @param {Map<GraphVertex[],number>} map
+         * @return {GraphVertex[]}
+         */
+        function shortestPath(map) {
+            let shortestPath
+            let dist = Number.MAX_SAFE_INTEGER
+            for (const [v, d] of map.entries()) {
+                if (!shortestPath) {
+                    shortestPath = v
+                    dist = d
+                    continue
+                }
+                if (d < dist) {
+                    shortestPath = v
+                    dist = d
+                }
+            }
+            return shortestPath
+        }
+
+        /**
+         * @param {GraphVertex[]} parent_1
+         * @param {GraphVertex[]} parent_2
+         */
+        function generateChild(parent_1, parent_2) {
+            let split_idx = Math.floor(Math.random() * parent_1.length)
+            const result = parent_1.slice(0, split_idx + 1)
+            parent_2.slice(0, split_idx + 1)
+                .forEach(v => !result.includes(v) && result.push(v))
+            parent_1.slice(split_idx + 1, parent_1.length)
+                .forEach(v => !result.includes(v) && result.push(v))
+            parent_2.slice(split_idx + 1, parent_2.length)
+                .forEach(v => !result.includes(v) && result.push(v))
+            return result
+        }
+
+        /**
+         * @param {GraphVertex[]} child
+         */
+        function mutateChild(child) {
+            const first_idx = Math.floor(Math.random() * child.length)
+            const second_idx = child.length - 1 - first_idx;
+            [child[first_idx], child[second_idx]] = [child[second_idx], child[first_idx]]
+        }
+
+        for (let cycle_idx = 0; cycle_idx < cycles; cycle_idx += 1) {
+            if (populationMap.size > MAX_POPULATION_SIZE * 2) {
+                let list = Array
+                    .from(populationMap.entries())
+                    .sort((a, b) => a[1] - b[1])
+
+                let idx = 0
+                while (idx < list.length) {
+                    if (list[idx][1] > maxDist) break
+                    idx += 1
+                }
+
+                list = list.slice(0, Math.min(MAX_POPULATION_SIZE * 2, idx))
+
+                populationMap.clear()
+                list.forEach(l => populationMap.set(...l))
+                maxDist = Math.max(...populationMap.values())
+                // console.log(populationMap)
+            }
+
+            if (!population.length) break
+
+            for (let j = 0; j < population.length; j += 2) {
+                const isMutate = Math.random() * 100 < mutation
+                if (population[j] && !population[j + 1]) {
+                    if (isMutate) mutateChild(population[j])
+                    populationMap.set(population[j], this._pathLength(graph, population[j]))
+                    continue
+                }
+                const ch1 = generateChild(population[j], population[j + 1])
+                const ch2 = generateChild(population[j + 1], population[j])
+                if (isMutate) {
+                    mutateChild(ch1)
+                    mutateChild(ch2)
+                }
+                const pathLength1 = this._pathLength(graph, ch1)
+                const pathLength2 = this._pathLength(graph, ch2)
+                pathLength1 < maxDist && populationMap.set(ch1, pathLength1)
+                pathLength2 < maxDist && populationMap.set(ch2, pathLength2)
+            }
+
+
+            for (const [v, d] of populationMap.entries()) {
+                if (d > maxDist) populationMap.delete(v)
+            }
+
+            // console.log(populationMap.size, maxDist)
+            if (populationMap.size < 2) break
+
+            maxDist = Math.max(...populationMap.values())
+            shortest = [...shortestPath(populationMap)]
+            population = [...populationMap.keys()]
+        }
+
+
+        console.log('Shortest route length: ', this._pathLength(graph, shortest))
+
+        shortest = shortest.map(vp => this.placeMap.get(vp.getKey()))
+
+        shortest.forEach(p => {
+            p.location = {};
+            p.location.lat = p.coords[0];
+            p.location.lng = p.coords[1];
+        })
+
+        return shortest
+    }
+
+    /**
+     * @param {Graph} graph
+     * @param {GraphVertex[]} vertices
+     * @return {number}
+     * @private
+     */
+    _pathLength(graph, vertices) {
+        if (!vertices || vertices.length < 2) return 0
+
+        let result = 0
+        for (let i = 0; i < vertices.length - 1; i += 1) {
+            const edge = graph.findEdge(vertices[i], vertices[i + 1])
+            if (edge) result += edge.weight
+        }
+        return result
     }
 
     /**
@@ -262,64 +446,66 @@ export default class RouteBuilder {
     /**
      * @param {CombinePointsOptionsType} options
      */
-    combinePoints({points, distanceCB = getDistanceFromTwoPoints, sightseeingTime = 45}) {
-        const distances = {}
-        const pointsMap = {}
-        for (const point_a of points) {
-            pointsMap[point_a.id] = point_a
-            for (const point_b of points) {
-                const id_a = point_a.id
-                const id_b = point_b.id
-
-                if (point_a === point_b) continue
-                if (distances[id_a + '-' + id_b] || distances[id_b + '-' + id_a]) continue
-
-                distances[id_a + '-' + id_b] = distanceCB(point_a.coords, point_b.coords)
-            }
-        }
-
-        const priorityQueue = new PriorityQueue()
-        for (let i = 0; i < distancesKeys.length; i++) {
-            const priority = distancesKeys.length - i
-            distancesMap.get(distancesKeys[i]).forEach(p => priorityQueue.add(p, priority))
-        }
-
-        console.log(priorityQueue.toString())
-        window.result = distances
-
-        return {
-            distances, priorityQueue
-        }
-    }
+    // combinePoints({points, distanceCB = getDistanceFromTwoPoints, sightseeingTime = 45}) {
+    //     const distances = {}
+    //     const pointsMap = {}
+    //     for (const point_a of points) {
+    //         pointsMap[point_a.id] = point_a
+    //         for (const point_b of points) {
+    //             const id_a = point_a.id
+    //             const id_b = point_b.id
+    //
+    //             if (point_a === point_b) continue
+    //             if (distances[id_a + '-' + id_b] || distances[id_b + '-' + id_a]) continue
+    //
+    //             distances[id_a + '-' + id_b] = distanceCB(point_a.coords, point_b.coords)
+    //         }
+    //     }
+    //
+    //     const priorityQueue = new PriorityQueue()
+    //     for (let i = 0; i < distancesKeys.length; i++) {
+    //         const priority = distancesKeys.length - i
+    //         distancesMap.get(distancesKeys[i]).forEach(p => priorityQueue.add(p, priority))
+    //     }
+    //
+    //     console.log(priorityQueue.toString())
+    //     window.result = distances
+    //
+    //     return {
+    //         distances, priorityQueue
+    //     }
+    // }
 
     /**
      *
      * @param {SortPointType[]} points
      * @param {number} [maxDist] default = 30
-     * @param {Set<SortPointType>} [pointsSet]
      * @return {SortPointType[][]}
      * @private
      */
-    _groupPoints(points, maxDist = 30, pointsSet) {
-        if (!points || points.length) return []
-        if (!pointsSet) {
-            pointsSet = new Set(points)
-        }
-        const currentPoint = points[0]
-        const closestPoints = [currentPoint]
-        pointsSet.delete(closestPoints)
+    _groupPoints(points, maxDist = 30) {
+        if (!points || !points.length) return []
+        /**@type{Map<SortPointType, SortPointType[]>}*/
+        const groups = new Map()
 
         for (const point of points) {
-            if (currentPoint === point) continue
-            if (getDistanceFromTwoPoints(currentPoint.coords, point.coords) < maxDist) {
-                closestPoints.push(point)
-                pointsSet.delete(point)
+            let isAdd = false
+            if (groups.size === 0) {
+                groups.set(point, [point])
+                continue
             }
+
+            for (const group_point of groups.keys()) {
+                if (getDistanceFromTwoPoints(group_point.coords, point.coords) <= maxDist) {
+                    groups.get(group_point).push(point)
+                    isAdd = true
+                    break
+                }
+            }
+            if (!isAdd) groups.set(point, [point])
         }
 
-        return pointsSet.size
-            ? [currentPoint, ...this._groupPoints([...pointsSet], maxDist, pointsSet)]
-            : [currentPoint]
+        return Array.from(groups.values())
     }
 
 
@@ -360,13 +546,13 @@ export default class RouteBuilder {
 // }
 //
 //
-// const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
-//     id: (idx + 1).toString(),
-//     coords: [
-//         50 + Math.random() * 2,
-//         50 + Math.random() * 2
-//     ]
-// }))
+const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
+    id: (idx + 1).toString(),
+    coords: [
+        50 + Math.random() * 2,
+        50 + Math.random() * 2
+    ]
+}))
 //
 // const distanceMap = new Map([
 //     [10, []],
