@@ -1,12 +1,9 @@
 import {useParams} from "react-router-dom";
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 
-import YMap from "../../../../classes/YMap";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import MapControls from "../../../../components/MapControls/MapControls";
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import dateRange from "../../../../utils/dateRange";
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
+import useTravelContext from "../../../../hooks/useTravelContext";
+import dateRange from "../../../../utils/dateRange";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
@@ -17,11 +14,11 @@ export default function ShowRouteOnMap() {
 
     useEffect(() => {
         if (map){
-            const points = Array.from({length: 16}).fill(0).map((_, idx) => ({
+            const points = Array.from({length: 18}).fill(0).map((_, idx) => ({
                 id: (idx + 1).toString(),
                 coords: [
-                    50 + Math.random() * 6,
-                    40 + Math.random() * 18
+                    50 + Math.random() * 4,
+                    50 + Math.random() * 4
                 ]
             }))
 
