@@ -1,18 +1,18 @@
+import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
 import GraphVertex from "../utils/data-structures/GraphVertex";
 import GraphEdge from "../utils/data-structures/GraphEdge";
 import Graph from "../utils/data-structures/Graph";
 import {MS_IN_DAY} from "../static/constants";
-import dijkstra from "../utils/sort/dijkstra";
-import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
-import bellmanFord from "../utils/sort/bellmanFord";
-import hamiltonianCycle from "../utils/sort/hamiltonianCycle";
-import floydWarshall from "../utils/sort/floydWarshall";
+import randomNumber from "../utils/randomNumber";
+
 
 /**
- * @typedef SalesmanItemType
+ * @typedef SortPointType
  * @property {string} id
  * @property {CoordinatesType} coords
+ * @property {string} start_time date format iso string
+ * @property {string} end_time date format iso string
  */
 
 /**
@@ -25,10 +25,10 @@ import floydWarshall from "../utils/sort/floydWarshall";
  */
 export default class RouteBuilder {
     /**@type{number}*/
-    _date_start
+    _time_start
 
     /**@type{number}*/
-    _date_end
+    _time_end
 
     /** @type{Map<number, PlaceType[]>}*/
     placesMap
@@ -59,9 +59,9 @@ export default class RouteBuilder {
         let range = {start: Number.POSITIVE_INFINITY, end: Number.NEGATIVE_INFINITY}
 
         this._travel.places.reduce((acc, p) => {
-            let dateStart = new Date(p.date_start).getTime()
+            let dateStart = new Date(p.time_start).getTime()
             dateStart -= dateStart % MS_IN_DAY
-            let dateEnd = new Date(p.date_end).getTime()
+            let dateEnd = new Date(p.time_end).getTime()
             dateEnd -= dateEnd % MS_IN_DAY
             if (!Number.isNaN(dateStart) && acc.start > dateStart) {
                 acc.start = dateStart
@@ -72,8 +72,8 @@ export default class RouteBuilder {
             return acc
         }, range)
 
-        this._date_start = range.start
-        this._date_end = range.end
+        this._time_start = range.start
+        this._time_end = range.end
 
         let days = (range.end - range.start) / MS_IN_DAY
         days = Math.floor(Math.max(1, days))
@@ -83,14 +83,14 @@ export default class RouteBuilder {
         }
 
         this._travel.places.forEach(p => {
-            let start = new Date(p.date_start).getTime()
+            let start = new Date(p.time_start).getTime()
             start -= start % MS_IN_DAY
-            let end = new Date(p.date_end).getTime()
+            let end = new Date(p.time_end).getTime()
             end -= end % MS_IN_DAY
             let daysCount = (start - end) / MS_IN_DAY
             daysCount = Math.max(Math.ceil(daysCount), 1)
 
-            let startDay = Math.floor((this._date_start - start) / MS_IN_DAY)
+            let startDay = Math.floor((this._time_start - start) / MS_IN_DAY)
             startDay = Math.max(startDay, 1)
             if (!Number.isNaN(daysCount)) {
                 for (let i = startDay + 1; i <= startDay + daysCount + 1; i++) {
@@ -184,7 +184,7 @@ export default class RouteBuilder {
      * @param {number} cycles количество циклов
      * @returns {*[]}
      */
-    sortByGeneticAlgoritm(points, mutation = 20, cycles = 100) {
+    sortByGeneticAlgorithm(points, mutation = 100, cycles = 500) {
         const start = new Date()
         if (!points || !points.length) return []
 
@@ -242,6 +242,8 @@ export default class RouteBuilder {
                 .forEach(v => !result.includes(v) && result.push(v))
             parent_2.slice(split_idx + 1, parent_2.length)
                 .forEach(v => !result.includes(v) && result.push(v))
+            const r_idx = result.indexOf(parent_1[parent_1.length - 1]);
+            [result[r_idx], result[result.length - 1]] = [result[result.length - 1], result[r_idx]]
             return result
         }
 
@@ -249,8 +251,9 @@ export default class RouteBuilder {
          * @param {GraphVertex[]} child
          */
         function mutateChild(child) {
-            const first_idx = Math.floor(Math.random() * child.length)
-            const second_idx = child.length - 1 - first_idx;
+            // меняются местами рандомные две точки кроме 1 и последней
+            const first_idx = randomNumber(1, child.length - 2, [0, child.length - 1])
+            const second_idx = randomNumber(1, child.length - 2, [0, first_idx, child.length - 1]);
             [child[first_idx], child[second_idx]] = [child[second_idx], child[first_idx]]
         }
 
@@ -285,7 +288,7 @@ export default class RouteBuilder {
                 }
                 const ch1 = generateChild(population[j], population[j + 1])
                 const ch2 = generateChild(population[j + 1], population[j])
-                if (isMutate) {
+                if (isMutate && ch1.length > 4) {
                     mutateChild(ch1)
                     mutateChild(ch2)
                 }
@@ -383,98 +386,7 @@ export default class RouteBuilder {
         return graph
     }
 
-    /**
-     * @typedef SortPointType
-     * @property {string} id
-     * @property {CoordinatesType} coords
-     * @property {string} start_time date format iso string
-     * @property {string} end_time date format iso string
-     */
 
-    /**
-     * @param {SortPointType[]} points
-     * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
-     */
-    sortDijkstra(points, distanceCB = getDistanceFromTwoPoints) {
-        const graph = this._prepareData(points, distanceCB)
-        const startVertex = graph.getAllVertices()[0]
-
-        const res = dijkstra(graph, startVertex)
-
-        console.log(res)
-        window.result = res
-    }
-
-    sortBellmanFord(points, distanceCB = getDistanceFromTwoPoints) {
-        const graph = this._prepareData(points, distanceCB)
-        const startVertex = graph.getAllVertices()[0]
-
-        const res = bellmanFord(graph, startVertex)
-
-        console.log(res)
-        window.result = res
-    }
-
-    sortHamiltonianCycle(points, distanceCB = getDistanceFromTwoPoints) {
-        const graph = this._prepareData(points, distanceCB)
-        const startVertex = graph.getAllVertices()[0]
-
-        const res = hamiltonianCycle(graph)
-
-        console.log(res)
-        window.result = res
-    }
-
-    sortFloydWarshall(points, distanceCB = getDistanceFromTwoPoints) {
-        const graph = this._prepareData(points, distanceCB)
-        const startVertex = graph.getAllVertices()[0]
-
-        const res = floydWarshall(graph)
-
-
-        console.log(res)
-        window.result = res
-    }
-
-    /**
-     * @typedef CombinePointsOptionsType
-     * @property {SortPointType[]} points список мест для посещения
-     * @property {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, расчитывает растояние между точками
-     * @property {number} [sightseeingTime] default = 45min, глубина осмотра дочтопримечательностей
-     */
-
-    /**
-     * @param {CombinePointsOptionsType} options
-     */
-    // combinePoints({points, distanceCB = getDistanceFromTwoPoints, sightseeingTime = 45}) {
-    //     const distances = {}
-    //     const pointsMap = {}
-    //     for (const point_a of points) {
-    //         pointsMap[point_a.id] = point_a
-    //         for (const point_b of points) {
-    //             const id_a = point_a.id
-    //             const id_b = point_b.id
-    //
-    //             if (point_a === point_b) continue
-    //             if (distances[id_a + '-' + id_b] || distances[id_b + '-' + id_a]) continue
-    //
-    //             distances[id_a + '-' + id_b] = distanceCB(point_a.coords, point_b.coords)
-    //         }
-    //     }
-    //
-    //     const priorityQueue = new PriorityQueue()
-    //     for (let i = 0; i < distancesKeys.length; i++) {
-    //         const priority = distancesKeys.length - i
-    //         distancesMap.get(distancesKeys[i]).forEach(p => priorityQueue.add(p, priority))
-    //     }
-    //
-    //     console.log(priorityQueue.toString())
-    //     window.result = distances
-    //
-    //     return {
-    //         distances, priorityQueue
-    //     }
-    // }
 
     /**
      *
@@ -536,49 +448,9 @@ export default class RouteBuilder {
      * @returns {number}
      */
     get days() {
-        let days = (this._date_end - this._date_start) / MS_IN_DAY
+        let days = (this._time_end - this._time_start) / MS_IN_DAY
         return Math.max(Math.ceil(days), 1)
     }
-}
 
-// const result = {
-//     distances: {}
-// }
-//
-//
-const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
-    id: (idx + 1).toString(),
-    coords: [
-        50 + Math.random() * 2,
-        50 + Math.random() * 2
-    ]
-}))
-//
-// const distanceMap = new Map([
-//     [10, []],
-//     [20, []],
-//     [30, []],
-//     [40, []],
-//     [50, []],
-//     [60, []],
-//     [-1, []],
-// ])
-//
-// Object.keys(result.distances).forEach(key => {
-//     if (result.distances[key] === 0)
-//         return
-//     else if (result.distances[key] <= 10)
-//         distanceMap.get(10).push(key)
-//     else if (result.distances[key] <= 20)
-//         distanceMap.get(20).push(key)
-//     else if (result.distances[key] <= 30)
-//         distanceMap.get(30).push(key)
-//     else if (result.distances[key] <= 40)
-//         distanceMap.get(40).push(key)
-//     else if (result.distances[key] <= 50)
-//         distanceMap.get(50).push(key)
-//     else if (result.distances[key] <= 60)
-//         distanceMap.get(60).push(key)
-//     else
-//         distanceMap.get(-1).push(key)
-// })
+
+}

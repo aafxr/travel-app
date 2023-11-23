@@ -14,7 +14,7 @@ export default function ShowRouteOnMap() {
 
     useEffect(() => {
         if (map){
-            const points = Array.from({length: 18}).fill(0).map((_, idx) => ({
+            const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
                 id: (idx + 1).toString(),
                 coords: [
                     50 + Math.random() * 4,
@@ -25,7 +25,7 @@ export default function ShowRouteOnMap() {
             window.genetic = (mutation = 50, cycles = 200) => {
                 const start = new Date()
 
-                const result = travel.routeBuilder.sortByGeneticAlgoritm(points, mutation, cycles);
+                const result = travel.routeBuilder.sortByGeneticAlgorithm(points, mutation, cycles);
 
                 const end = new Date()
                 const ms = (end - start) % 1000
