@@ -84,7 +84,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 /*** обновляем адресс в массиве points по полученным данным от api карты */
                 const newPoints = pointsList.map(p => {
                     const marker = markers[0]
-                debugger
+
                     return p.id === item.id
                         ? {
                         ...p,

@@ -24,15 +24,15 @@ export default class RoadActivity extends Activity{
 
         this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000
 
-        if(this.distance < 5) {
+        if(this.distance < 5_000) {
             this.status = Activity.WALK
             this.speed = RoadActivity.WALK_SPEED
         }
-        else if (this.distance < 50) {
+        else if (this.distance < 50_000) {
             this.status = Activity.PUBLIC_TRANSPORT
             this.speed = RoadActivity.PUBLIC_TRANSPORT__SPEED
         }
-        else if (this.distance > 50) {
+        else if (this.distance > 50_000) {
             this.status = Activity.CAR
             this.speed = RoadActivity.CAR_SPEED
         }

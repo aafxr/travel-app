@@ -4,6 +4,7 @@ import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import dateRange from "../../../../utils/dateRange";
+import defaultPlace from "../../../../utils/default-values/defaultPlace";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
@@ -14,13 +15,7 @@ export default function ShowRouteOnMap() {
 
     useEffect(() => {
         if (map){
-            const points = Array.from({length: 20}).fill(0).map((_, idx) => ({
-                id: (idx + 1).toString(),
-                coords: [
-                    50 + Math.random() * 4,
-                    50 + Math.random() * 4
-                ]
-            }))
+            const points = Array.from({length: 20}).fill(0).map((_, idx) => (defaultPlace()))
 
             window.genetic = (mutation = 50, cycles = 200) => {
                 const start = new Date()
@@ -47,6 +42,11 @@ export default function ShowRouteOnMap() {
                 console.log('Spent time: ', `${sec}sec ${ms}ms`)
                 map.clearMap()
                 map.showRoute(result);
+            }
+
+            travel.setPlaces(points)
+            window.activities = () => {
+                travel.routeBuilder.updateRoute()
             }
         }
 

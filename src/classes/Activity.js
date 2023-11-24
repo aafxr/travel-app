@@ -169,7 +169,7 @@ export default class Activity {
     }
 
     log(){
-        console.log(this)
+        console.log(this.day)
         if(this.next)
             this.next.log()
     }

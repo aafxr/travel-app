@@ -103,7 +103,9 @@ export default class RouteBuilder {
         //     }
         // })
 
-        this._travel.setPlaces(this.sortByGeneticAlgorithm(places))
+
+        if(!this._travel.places.length) return
+        this._travel._places = this.sortByGeneticAlgorithm(places)
         const activities = this._travel.places.map(p => new PlaceActivity({
             place: p,
             defaultActivitySpentTime: 1.5 * 60 * 60 * 1000,
@@ -118,6 +120,7 @@ export default class RouteBuilder {
                 defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
             })
         }
+        console.log(activities)
         activities[0].shiftTimeBy()
         activities[0].log()
 
