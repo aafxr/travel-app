@@ -13,6 +13,7 @@ const PLANE_SPEED = 900 * 1000 / 3600
 
 /**
  * @typedef MovementPreferencesOptionsType
+ * @property {Movement} [prevMovement]
  * @property {PlaceType} from
  * @property {PlaceType} to
  * @property {PreferredMovementType[]} movement_type
@@ -25,6 +26,7 @@ export default class Movement {
      * @param {MovementPreferencesOptionsType} options
      */
     constructor(options) {
+        this.options = options
 
         this.from = options.from
         this.to = options.to
@@ -50,13 +52,22 @@ export default class Movement {
             else
                 this.arrive_at = this._calcArriveTime()
         }
+
+        this.activityTime = new Date(this.to.time_end).getTime() - new Date(this.to.time_start).getTime()
     }
 
+    /**
+     * @returns {Date}
+     * @private
+     */
     _calcArriveTime() {
         const timeSpentOnRoad_ms = this.distance / this.speed * 1000
-        const arrive_at = new Date(this.from.time_end).getTime() + timeSpentOnRoad_ms
+        let arrive_at
+        if(this.options.prevMovement){
+            arrive_at = this.options.prevMovement.arrive_at.getTime() + this.options.prevMovement.activityTime + timeSpentOnRoad_ms
+        }else{
+            arrive_at = new Date(this.from.time_end).getTime() + timeSpentOnRoad_ms
+        }
         return new Date(arrive_at)
     }
-
-
 }

@@ -5,6 +5,8 @@ import GraphEdge from "../utils/data-structures/GraphEdge";
 import Graph from "../utils/data-structures/Graph";
 import {MS_IN_DAY} from "../static/constants";
 import randomNumber from "../utils/randomNumber";
+import PlaceActivity from "./PlaceActivity";
+import RoadActivity from "./RoadActivity";
 
 
 /**
@@ -52,53 +54,73 @@ export default class RouteBuilder {
      * метод выполняет пересчет маршрута
      * @method
      * @name RouteBuilder.updateRoute
+     * @apram {PlaceType} places
      */
-    updateRoute() {
+    updateRoute(places) {
         this.placesMap.clear()
-        if (!this._travel.places.length) return
-        let range = {start: Number.POSITIVE_INFINITY, end: Number.NEGATIVE_INFINITY}
+        // if (!this._travel.places.length) return
+        // let range = {start: Number.POSITIVE_INFINITY, end: Number.NEGATIVE_INFINITY}
 
-        this._travel.places.reduce((acc, p) => {
-            let dateStart = new Date(p.time_start).getTime()
-            dateStart -= dateStart % MS_IN_DAY
-            let dateEnd = new Date(p.time_end).getTime()
-            dateEnd -= dateEnd % MS_IN_DAY
-            if (!Number.isNaN(dateStart) && acc.start > dateStart) {
-                acc.start = dateStart
-            }
-            if (!Number.isNaN(dateEnd) && acc.end < dateEnd) {
-                acc.end = dateEnd
-            }
-            return acc
-        }, range)
+        // this._travel.places.reduce((acc, p) => {
+        //     let dateStart = new Date(p.time_start).getTime()
+        //     dateStart -= dateStart % MS_IN_DAY
+        //     let dateEnd = new Date(p.time_end).getTime()
+        //     dateEnd -= dateEnd % MS_IN_DAY
+        //     if (!Number.isNaN(dateStart) && acc.start > dateStart) {
+        //         acc.start = dateStart
+        //     }
+        //     if (!Number.isNaN(dateEnd) && acc.end < dateEnd) {
+        //         acc.end = dateEnd
+        //     }
+        //     return acc
+        // }, range)
+        //
+        // this._time_start = range.start
+        // this._time_end = range.end
+        //
+        // let days = (range.end - range.start) / MS_IN_DAY
+        // days = Math.floor(Math.max(1, days))
+        //
+        // for (let i = 1; i <= days; i++) {
+        //     this.placesMap.set(i, [])
+        // }
+        //
+        // this._travel.places.forEach(p => {
+        //     let start = new Date(p.time_start).getTime()
+        //     start -= start % MS_IN_DAY
+        //     let end = new Date(p.time_end).getTime()
+        //     end -= end % MS_IN_DAY
+        //     let daysCount = (start - end) / MS_IN_DAY
+        //     daysCount = Math.max(Math.ceil(daysCount), 1)
+        //
+        //     let startDay = Math.floor((this._time_start - start) / MS_IN_DAY)
+        //     startDay = Math.max(startDay, 1)
+        //     if (!Number.isNaN(daysCount)) {
+        //         for (let i = startDay + 1; i <= startDay + daysCount + 1; i++) {
+        //             if (!this.placesMap.has(i)) this.placesMap.set(i, [])
+        //             this.placesMap.get(i).push(p)
+        //         }
+        //     }
+        // })
 
-        this._time_start = range.start
-        this._time_end = range.end
+        this._travel.setPlaces(this.sortByGeneticAlgorithm(places))
+        const activities = this._travel.places.map(p => new PlaceActivity({
+            place: p,
+            defaultActivitySpentTime: 1.5 * 60 * 60 * 1000,
+            travel_start_time: new Date(this._travel.date_start)
+        }))
 
-        let days = (range.end - range.start) / MS_IN_DAY
-        days = Math.floor(Math.max(1, days))
-
-        for (let i = 1; i <= days; i++) {
-            this.placesMap.set(i, [])
+        for (let i = 0; i < activities.length -1 ; i++) {
+            new RoadActivity({
+                to:activities[i+1],
+                from: activities[i],
+                travel_start_time: new Date(this._travel.date_start),
+                defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
+            })
         }
+        activities[0].shiftTimeBy()
+        activities[0].log()
 
-        this._travel.places.forEach(p => {
-            let start = new Date(p.time_start).getTime()
-            start -= start % MS_IN_DAY
-            let end = new Date(p.time_end).getTime()
-            end -= end % MS_IN_DAY
-            let daysCount = (start - end) / MS_IN_DAY
-            daysCount = Math.max(Math.ceil(daysCount), 1)
-
-            let startDay = Math.floor((this._time_start - start) / MS_IN_DAY)
-            startDay = Math.max(startDay, 1)
-            if (!Number.isNaN(daysCount)) {
-                for (let i = startDay + 1; i <= startDay + daysCount + 1; i++) {
-                    if (!this.placesMap.has(i)) this.placesMap.set(i, [])
-                    this.placesMap.get(i).push(p)
-                }
-            }
-        })
     }
 
 
@@ -385,7 +407,6 @@ export default class RouteBuilder {
         this.edges.forEach(e => graph.addEdge(e))
         return graph
     }
-
 
 
     /**
