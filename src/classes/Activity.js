@@ -174,4 +174,20 @@ export default class Activity {
             this.next.log()
     }
 
+    /**
+     * @param {Activity} activity
+     */
+    append(activity){
+        if(!activity) return
+
+        if(this.next) this.next.append(activity)
+        else {
+            this.next = activity
+            activity.prev = this
+            activity.shiftTimeBy()
+        }
+    }
+
+    
+
 }
