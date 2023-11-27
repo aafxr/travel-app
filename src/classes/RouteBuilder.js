@@ -214,7 +214,7 @@ export default class RouteBuilder {
      * @returns {*[]}
      */
     sortByGeneticAlgorithm(points, mutation = 100, cycles = 500) {
-        const start = new Date()
+        // const start = new Date()
         if (!points || !points.length) return []
 
         const graph = this._prepareData(points)
