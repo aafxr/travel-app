@@ -12,7 +12,7 @@ import RoadActivity from "../../../../classes/RoadActivity";
 import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteByDays() {
-    const {user} = useUserSelector()
+    // const {user} = useUserSelector()
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
 
