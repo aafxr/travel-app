@@ -69,9 +69,9 @@ export default class Activity {
 
     get days() {
         let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
-        time_start = Math.floor(time_start) || 1
+        time_start = Math.floor(time_start) + 1
         let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
-        time_end = Math.floor(time_end) || 1
+        time_end = Math.floor(time_end) + 1
 
         return range(time_start, time_end)
     }
@@ -223,6 +223,27 @@ export default class Activity {
         if (this.days.includes(day)) activities.push(this)
         if(this.next) return this.next.getActivitiesAtDay(day, activities)
         else return activities
+    }
+
+    /**
+     * возвращает список уникальных дней
+     * @returns {number[]}
+     */
+    getUniqDaysList(){
+        return [...new Set(this.getDaysList())]
+    }
+
+    /**
+     *
+     * @returns {string}
+     */
+    toTimeStingFormat(){
+        const time = Math.round((this.end - this.start) / 1000)
+        const sec = time % 60
+        const min = (time - sec) / 60 % 60
+        const hour = Math.floor((time - sec - min * 60) / (60 * 60))
+
+        return `${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
     }
 
 }

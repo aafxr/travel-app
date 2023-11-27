@@ -54,14 +54,20 @@ export default class RestTimeActivity extends Activity {
         }
 
         const newStartTime = new Date(this.startAt)
-        if (newStartTime.getHours() * 60 * 60 * 1000 >= Activity.MORNING_TIME) {
-            this.prev.next = this.next
-            this.next?.shiftTimeBy(ms)
-            return
-        } else
-            this.start = newStartTime
 
-        if (this.next) this.next.shiftTimeBy(ms)
+        if(newStartTime > this.end){
+            this.prev.next = this.next
+            this.next.prev = this.prev
+            this.next.shiftTimeBy(ms)
+        } else {
+            this.start = newStartTime
+        }
+
+        // if (newStartTime.getHours() * 60 * 60 * 1000 >= Activity.MORNING_TIME) {
+        //     this.prev.next = this.next
+        //     this.next?.shiftTimeBy(ms)
+        // } else
+        //     this.start = newStartTime
     }
 
     toString() {

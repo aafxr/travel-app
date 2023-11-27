@@ -23,6 +23,7 @@ import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
 
 import './TravelDetails.css'
+import ShowRouteByDays from "./ShowRouteByDays";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -164,6 +165,9 @@ export default function TravelDetails() {
                     }
                     {
                         travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
+                    }
+                    {
+                        travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
                     }
                 </div>
             </Curtain>

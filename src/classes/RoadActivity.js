@@ -54,10 +54,7 @@ export default class RoadActivity extends Activity {
     }
 
     toString() {
-        const time = Math.round(this.distance / this.speed)
-        const sec = time % 60
-        const min = (time - sec) / 60 % 60
-        const hour = Math.floor((time - sec - min * 60) / (60 * 60))
+
 
         let emoji
 
@@ -78,7 +75,7 @@ export default class RoadActivity extends Activity {
         Заккончится: ${dateToStringFormat(this.end.toISOString())}
         Дистанция: ${Math.round(this.distance)} м
         Сккорость: ${this.speed.toFixed(2)} м/с
-        Время в пути: ${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}
+        Время в пути: ${this.toTimeStingFormat()}
         
         ==================
         `
