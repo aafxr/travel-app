@@ -75,6 +75,8 @@ function showActivity(a) {
                 imgURLs={a.place.photos || [DEFAULT_IMG_URL]}
                 entityType={a.place.formatted_address}
                 item={a.place}
+                dateStart={a.start.toISOString()}
+                dateEnd={a.end.toISOString()}
 
             />
         )

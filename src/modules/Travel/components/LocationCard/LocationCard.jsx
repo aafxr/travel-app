@@ -71,7 +71,7 @@ export default function LocationCard({
                 {!!end && <Chip className='location-date-end'>{end}</Chip>}
                 <div className='location-img'>
                     {
-                        (imgURLs)
+                        (imgURLs && imgURLs.length)
                             ? <PhotoCarousel urls={imgURLs} className='img-abs'/>
                             : <PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs'/>
                     }
