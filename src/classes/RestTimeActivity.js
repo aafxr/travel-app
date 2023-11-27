@@ -21,7 +21,7 @@ export default class RestTimeActivity extends Activity {
         this.delta_ms = this.deltaHourse * 1000 * 60 * 60
         this.start = new Date(this.prev.end.getTime())
 
-        const d = Math.floor(this.next.start.getTime() / MS_IN_DAY)
+        // const d = Math.floor(this.next.start.getTime() / MS_IN_DAY)
         // const dayTime = this._getLocalDayTimeMS()
         // const end = dayTime < Activity.MORNING_TIME
         //     ? Activity.MORNING_TIME + this.delta_ms
