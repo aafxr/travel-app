@@ -5,7 +5,6 @@ import LocationCard from "../../components/LocationCard/LocationCard";
 import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
 import PlaceActivity from "../../../../classes/PlaceActivity";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import RoadActivity from "../../../../classes/RoadActivity";
