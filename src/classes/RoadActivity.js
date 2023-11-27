@@ -5,12 +5,14 @@
  */
 import Activity from "./Activity";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
+import dateToStringFormat from "../utils/dateToStringFormat";
 
 export default class RoadActivity extends Activity{
     static WALK_SPEED = 5 * 1000 / 3600
     static CAR_SPEED = 50 * 1000 / 3600
     static PUBLIC_TRANSPORT__SPEED = 25 * 1000 / 3600
     static PLANE_SPEED = 900 * 1000 / 3600
+
     /**
      * @param {RoadActivityOptionsType} options
      */
@@ -36,7 +38,8 @@ export default class RoadActivity extends Activity{
             this.status = Activity.CAR
             this.speed = RoadActivity.CAR_SPEED
         }
-        this.end = new Date(this.distance / this.speed * 1000)
+        this.end = new Date(this.prev.end.getTime() + this.distance / this.speed * 1000)
+        this.duration = this.end - this.start
         this.next.shiftTimeBy()
     }
 
@@ -46,5 +49,34 @@ export default class RoadActivity extends Activity{
 
     isPlace() {
         return true
+    }
+
+    _init() {
+        super._init()
+    }
+
+    toString() {
+        const time = Math.round(this.distance / this.speed)
+        const sec = time % 60
+        const min = (time - sec) / 60 % 60
+        const hour = Math.floor((time - sec - min * 60) / (60 * 60))
+
+        return `
+        ==================
+        
+        В пути 🚗 
+        Начало: ${dateToStringFormat(this.start.toISOString())}
+        Заккончится: ${dateToStringFormat(this.end.toISOString())}
+        Дистанция: ${Math.round(this.distance)} м
+        Сккорость: ${this.speed.toFixed(2)} м/с
+        Время в пути: ${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}
+        
+        ==================
+        `
+    }
+
+    shiftTimeBy(ms) {
+        super.shiftTimeBy(ms)
+        if (this.next) this.next.shiftTimeBy(ms)
     }
 }

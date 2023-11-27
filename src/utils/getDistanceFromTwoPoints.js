@@ -1,4 +1,5 @@
 /**
+ * возвращает растояние поп прямой в киллометрах __(км)__
  * @function
  * @name getDistanceFromTwoPoints
  * @param {CoordinatesType} point_1

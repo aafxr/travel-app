@@ -9,7 +9,7 @@ import {MS_IN_DAY} from "../static/constants";
 import range from "../utils/range";
 
 export default class Activity {
-    static EVNING_TIME = 21 * 60 * 60 * 1000
+    static EVENING_TIME = 21 * 60 * 60 * 1000
     static MORNING_TIME = 9 * 60 * 60 * 1000
 
     static WALK = 100
@@ -24,6 +24,8 @@ export default class Activity {
     static AIRPORT = 205
 
     static REST_TIME = 300
+
+    duration = 0
 
 
     /**  @type{Date} */
@@ -65,7 +67,7 @@ export default class Activity {
 
     }
 
-    get day(){
+    get day() {
         let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
         time_start = Math.floor(time_start) + 1
         let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
@@ -100,27 +102,27 @@ export default class Activity {
      * @param {number} ms
      */
     shiftTimeBy(ms = 0) {
-        if (!this.prev){
+        if (!this.prev)
             this.start.setTime(this.start.getTime() + ms)
-        }else {
+        else
             this.start.setTime(this.startAt)
-        }
-        if(this.next)this.next.shiftTimeBy(ms)
+
+        this.end = new Date(this.start.getTime() + this.duration)
     }
 
     /**
      * @param {Activity} activity
      */
-    setPrev(activity){
-        if(!activity) return
+    setPrev(activity) {
+        if (!activity) return
 
-        if(this.prev){
+        if (this.prev) {
             let temp = this.prev
             temp.next = activity
             activity.prev = temp
             activity.next = this
             this.prev = activity
-        }else{
+        } else {
             activity.prev = null
             activity.next = this
             this.prev = activity
@@ -131,16 +133,16 @@ export default class Activity {
     /**
      * @param {Activity} activity
      */
-    setNext(activity){
-        if(!activity) return
+    setNext(activity) {
+        if (!activity) return
 
-        if (this.next){
+        if (this.next) {
             const temp = this.next
             this.next = activity
-            activity.prev= this
+            activity.prev = this
             activity.next = temp
             temp.prev = activity
-        }else{
+        } else {
             this.next = activity
             activity.prev = this
         }
@@ -151,7 +153,7 @@ export default class Activity {
      * @get
      * @returns {number}
      */
-    get startAt(){
+    get startAt() {
         if (this.prev)
             return this.prev.end.getTime()
         else
@@ -168,19 +170,19 @@ export default class Activity {
         return time > Activity.MORNING_TIME && time < Activity.EVNING_TIME
     }
 
-    log(){
-        console.log(this.day)
-        if(this.next)
+    log() {
+        console.log(this.toString())
+        if (this.next)
             this.next.log()
     }
 
     /**
      * @param {Activity} activity
      */
-    append(activity){
-        if(!activity) return
+    append(activity) {
+        if (!activity) return
 
-        if(this.next) this.next.append(activity)
+        if (this.next) this.next.append(activity)
         else {
             this.next = activity
             activity.prev = this
@@ -188,6 +190,18 @@ export default class Activity {
         }
     }
 
-    
+    /**
+     * @param {[]} [array]
+     * @return {Activity[]}
+     */
+    toArray(array = []) {
+        array.push(this)
+        if (this.next) this.next.toArray(array)
+        return array
+    }
+
+    toString() {
+        return 'abstract activity'
+    }
 
 }

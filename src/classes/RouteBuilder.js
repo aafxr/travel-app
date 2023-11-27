@@ -120,9 +120,13 @@ export default class RouteBuilder {
                 defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
             })
         }
-        console.log(activities)
         activities[0].shiftTimeBy()
-        activities[0].log()
+        /**@type{Activity}*/
+        const activity = activities[0]
+        activity.shiftTimeBy()
+        console.log(activity)
+        activity.log()
+
 
     }
 
