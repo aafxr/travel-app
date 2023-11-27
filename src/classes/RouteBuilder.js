@@ -126,6 +126,11 @@ export default class RouteBuilder {
         activity.shiftTimeBy()
         console.log(activity)
         activity.log()
+        // console.log(...new Set(activity.getDaysList()))
+        // activity.getActivitiesAtDay(10).forEach(a => {
+        //     console.log(a.toString())
+        //     console.log(a)
+        // })
 
 
     }

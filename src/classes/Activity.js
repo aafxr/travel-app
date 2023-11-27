@@ -67,11 +67,11 @@ export default class Activity {
 
     }
 
-    get day() {
+    get days() {
         let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
-        time_start = Math.floor(time_start) + 1
+        time_start = Math.floor(time_start) || 1
         let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
-        time_end = Math.floor(time_end) + 1
+        time_end = Math.floor(time_end) || 1
 
         return range(time_start, time_end)
     }
@@ -202,6 +202,27 @@ export default class Activity {
 
     toString() {
         return 'abstract activity'
+    }
+
+    /**
+     * @param {number[]} [days]
+     * @returns {number[]}
+     */
+    getDaysList(days = []){
+        days.push(...this.days)
+        if(this.next) return this.next.getDaysList(days)
+        else return days
+    }
+
+    /**
+     * @param {number} day
+     * @param {Activity[]} [activities]
+     * @returns {Activity[]}
+     */
+    getActivitiesAtDay(day, activities = []){
+        if (this.days.includes(day)) activities.push(this)
+        if(this.next) return this.next.getActivitiesAtDay(day, activities)
+        else return activities
     }
 
 }
