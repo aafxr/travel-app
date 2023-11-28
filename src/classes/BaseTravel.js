@@ -488,6 +488,7 @@ export default class BaseTravel extends Entity {
                 : this._modified.waypoints.unshift(point)
             this._modified.isFromPoint = 1
             this.change = true
+            this.forceUpdate()
         }
         return this
     }
@@ -693,7 +694,7 @@ export default class BaseTravel extends Entity {
      * добавление (или обновление существующей) точки маршрута
      * @method
      * @name BaseTravel.addPlace
-     * @param {PointType} item посещаемое место
+     * @param {PlaceType} item посещаемое место
      * @returns {BaseTravel}
      */
     addPlace(item) {

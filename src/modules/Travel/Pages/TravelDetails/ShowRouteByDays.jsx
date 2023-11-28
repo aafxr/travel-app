@@ -1,6 +1,7 @@
 import {useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 
+import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
@@ -14,6 +15,8 @@ export default function ShowRouteByDays() {
     // const {user} = useUserSelector()
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
+    const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
+    const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
 
     const [activity, setActivity] = useState(/**@type{Activity}*/ null)
 
@@ -22,30 +25,41 @@ export default function ShowRouteByDays() {
         setActivity(act)
     }, [])
 
+    useLayoutEffect(() => {
+        if (tabs_ref.current && container_ref) {
+            const rect = tabs_ref.current.getBoundingClientRect()
+            container_ref.current.style.height = window.screen.height - rect.bottom + 'px'
+        }
+    })
+
+
     if (activity)
 
-    return (
-        <>
-            {
-                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                    {
-                        activity?.getUniqDaysList()
-                            .map((i) => (
-                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
-                            ))
-                    }
-                </div>
-            }
-            <Container className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+        return (
+            <>
                 {
-                    activity
-                        ? activity.getActivitiesAtDay(+dayNumber).map(showActivity)
-                        : <div>Loading...</div>
+                    <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                        {
+                            activity?.getUniqDaysList()
+                                .map((i) => (
+                                    <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
+                                ))
+                        }
+                    </div>
                 }
+                <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+                    {
+                        activity
+                            ? activity.getActivitiesAtDay(+dayNumber).map((a, idx) => (
+                                <React.Fragment key={idx}>
+                                    {showActivity(a)}
+                                </React.Fragment>))
+                            : <div>Loading...</div>
+                    }
 
-            </Container>
-        </>
-    )
+                </Container>
+            </>
+        )
 }
 
 
@@ -56,20 +70,19 @@ export default function ShowRouteByDays() {
 function showActivity(a) {
     if (a instanceof RoadActivity) {
         return (
-            <div key={a.start.getTime()}>
-                <dl>
-                    <dt>Переезд</dt>
-                    <dd>{(a.distance / 1000).toFixed(2)} km</dd>
-                    <dt>Время до места</dt>
-                    <dd>{a.toTimeStingFormat()}</dd>
-                </dl>
-            </div>
+            <>
+                <RecommendLocation
+                    items={[
+                        {id: 1, entityType: 'hotel', entityName: '123'},
+                        {id: 2, entityType: 'hotel', entityName: 'name'},
+                    ]}
+                    activity={a}
+                />
+            </>
         )
-    }
-    else if (a instanceof PlaceActivity)
+    } else if (a instanceof PlaceActivity)
         return (
             <LocationCard
-                key={a.place.id}
                 id={a.place.id}
                 title={a.place.name}
                 imgURLs={a.place.photos || [DEFAULT_IMG_URL]}
@@ -82,7 +95,7 @@ function showActivity(a) {
         )
     else if (a instanceof RestTimeActivity)
         return (
-            <div key={a.start.getTime()}>
+            <div>
                 <div className='title-semi-bold'>Свободное время</div>
                 <dl>
                     <dt>Время до месьа</dt>

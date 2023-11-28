@@ -9,6 +9,7 @@
 import defaultPoint from "../utils/default-values/defaultPoint";
 import userLocation from "../utils/userLocation";
 import IMap from "../api/IMap";
+import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 
 /**
  * #### Данный класс предполагается использовать когда скрипт карты уже загружен и готов к работе
@@ -100,7 +101,6 @@ export default class YMap extends IMap{
      */
     setContainerID(container_id) {
         if (container_id) {
-            if (this._map) this._map.destructor()
             this._container_id = container_id
             this._map = new window.ymaps.Map(this._container_id, {
                 center: this._center,
@@ -241,10 +241,11 @@ export default class YMap extends IMap{
         if (!this._map) {
 
         }
+
         for (const point of points) {
             try {
 
-                const placemark = new window.ymaps.Placemark([+point.location.lat, +point.location.lng], {
+                const placemark = new window.ymaps.Placemark(point.coords ? point.coords : [point.location.lat, point.location.lng], {
                     hintContent: point.hintContent || '',
                     balloonContentHeader: point.balloonContentHeader || '',
                     balloonContentBody: point.balloonContentBody || '',
@@ -265,7 +266,7 @@ export default class YMap extends IMap{
             }
         }
 
-        this._polyLine = new window.ymaps.Polyline(points.map(p => [p.location.lat, p.location.lng]), {
+        this._polyLine = new window.ymaps.Polyline(points.map(p => p.coords ? p.coords : [p.location.lat, p.location.lng]), {
             balloonContent: routeName || ''
         }, {
             balloonCloseButton: false,
@@ -330,6 +331,7 @@ export default class YMap extends IMap{
     }
 
     autoZoom() {
+        if(!this._map) return this
         const bounds = this._map.geoObjects.getBounds()
         this._map.setBounds(bounds)
         const zoom = Math.min(this._map.getZoom(), 15)
@@ -344,6 +346,43 @@ export default class YMap extends IMap{
             this._zoom = zoomLevel
         }
         return this
+    }
+
+    getClosestAddressTo(coords) {
+        return new Promise((resolve, reject) => {
+            if(!(Array.isArray(coords) && coords.length === 2))
+                reject(new Error(`Bad coordinates, method expect receive [number, number] but receive ${coords}`))
+
+            if('ymaps' in window){
+                window.ymaps.geocode(coords, {results: 5})
+                    .then(res => {
+                        /**@type{GeoObjectPropertiesType[]}*/
+                        let pointsProperties = []
+                        res.geoObjects.each(p => pointsProperties.push(p.properties.getAll()))
+
+                        let closest = pointsProperties[0]
+                        let dist = getDistanceFromTwoPoints(coords, closest.boundedBy[0])
+                        for (let i = 1; i < pointsProperties.length; i+=1){
+                            const d = getDistanceFromTwoPoints(pointsProperties[i].boundedBy[0], closest.boundedBy[0])
+                            if(d < dist)
+                                closest = pointsProperties[i]
+                        }
+                        /**@type{PointType}*/
+                        const point = {
+                            address: closest.metaDataProperty.GeocoderMetaData.Address.formatted,
+                            coords:closest.boundedBy[0],
+                            kind: closest.metaDataProperty.GeocoderMetaData.kind,
+                            locality: closest.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality
+                        }
+
+                        resolve(point)
+                    })
+                    .catch(reject)
+            } else {
+                reject(new Error('Script ymaps is not loaded'))
+            }
+
+        })
     }
 
     /**
@@ -371,6 +410,14 @@ export default class YMap extends IMap{
                 res(routePoints)
             });
         })
+    }
+
+    removePoint(point_id) {
+        if(this._pointsMap.has(point_id)){
+            this._map.geoObjects.remove(this._pointsMap.get(point_id))
+            this._pointsMap.delete(point_id)
+        }
+        return this
     }
 
     /**

@@ -5,7 +5,7 @@ import createId from "../createId";
  * @function
  * @name defaultPoint
  * @param {string} primary_entity_id
- * @param {Partial<Omit<PointType, 'id'>>} options
+ * @param {Partial<PointType>} options
  * @returns {PointType}
  */
 export default function defaultPoint(primary_entity_id, options= {}){

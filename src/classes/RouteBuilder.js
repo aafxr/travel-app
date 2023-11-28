@@ -34,6 +34,9 @@ export default class RouteBuilder {
 
     /** @type{Map<number, PlaceType[]>}*/
     placesMap
+    /** @type{Activity}*/
+    activity = null
+
 
     /**@param {RouteBuilderOptionsType} options*/
     constructor(options) {
@@ -45,7 +48,7 @@ export default class RouteBuilder {
         this.places = places
         this.waypoints = waypoints
 
-        this.placesMap = new Map()
+        // this.placesMap = new Map()
 
         this.updateRoute()
     }
@@ -57,16 +60,9 @@ export default class RouteBuilder {
      * @apram {PlaceType} places
      */
     updateRoute(places) {
-        this.placesMap.clear()
+        // this.placesMap.clear()
         this._travel._places = this.sortByGeneticAlgorithm(places)
         this.getActivities()
-
-        // console.log(...new Set(activity.getDaysList()))
-        // activity.getActivitiesAtDay(10).forEach(a => {
-        //     console.log(a.toString())
-        //     console.log(a)
-        // })
-
     }
 
     /**
@@ -94,8 +90,8 @@ export default class RouteBuilder {
         /**@type{Activity}*/
         const activity = activities[0]
         activity.shiftTimeBy()
-        console.log(activity)
-        activity.log()
+
+        this.activity = activity
 
         return activity
     }
@@ -427,7 +423,15 @@ export default class RouteBuilder {
      * @returns {PlaceType[]}
      */
     getRouteByDay(i) {
-        return this.placesMap.get(i) || []
+        if(!this.activity)
+            this.getActivities()
+
+        if(!this.activity) return []
+
+        return this.activity
+            .getActivitiesAtDay(i)
+            .filter(a => a instanceof PlaceActivity)
+            .map(a => a.place)
     }
 
     /**
@@ -437,7 +441,12 @@ export default class RouteBuilder {
      * @returns {number[]}
      */
     getActivityDays() {
-        return Array.from(this.placesMap.keys()).filter((key) => this.placesMap.get(key).length > 0)
+        if(!this.activity)
+            this.getActivities()
+
+        if(!this.activity) return []
+
+        return this.activity.getUniqDaysList()
     }
 
     /**

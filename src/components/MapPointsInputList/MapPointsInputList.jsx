@@ -9,6 +9,7 @@ import DragIcon from "../svg/DragIcon";
 import Swipe from "../ui/Swipe/Swipe";
 import sleep from "../../utils/sleep";
 import {Input} from "../ui";
+import defaultPoint from "../../utils/default-values/defaultPoint";
 
 /**
  * @typedef {{address: string, id: string}} PointsListChangeType

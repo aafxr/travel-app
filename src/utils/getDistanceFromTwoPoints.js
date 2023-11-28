@@ -7,6 +7,7 @@
  * @returns {number}
  */
 export default function getDistanceFromTwoPoints(point_1, point_2) {
+    if(!point_1 || !point_2) return 0
     const R = 6371;
 
     const [lat1, lon1] = point_1

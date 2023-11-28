@@ -1,18 +1,25 @@
-import React from "react";
+import React, {forwardRef} from "react";
 import clsx from "clsx";
 
 import './container.css'
 
 /**
- * компонент, задает базовые отступы по бокам
- * @param children
- * @param {string} className css class
- * @returns {JSX.Element}
- * @category Components
+ * @typedef ContainerPropsType
+ * @property children
+ * @property {string} className css class
  */
-export default function Container({children, className}) {
 
-    return <div className={clsx('container', className)}>
+/**
+ * компонент, задает базовые отступы по бокам
+ * @param {ContainerPropsType} props
+ * @param {React.Ref<HTMLDivElement>} ref
+ */
+ function Container({children, className}, ref) {
+
+    return <div ref={ref} className={clsx('container', className)}>
         {children}
     </div>
 }
+
+export default forwardRef(Container)
+

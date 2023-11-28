@@ -37,13 +37,19 @@ export default function TravelAddPlace() {
     function handleSelectPlace(item) {
         const p = places.find(p => p.id === item.id)
         if (p) {
-            setPlace(p)
+            setPlace({
+                ...p,
+                _id: p.id + ':' + travel.id,
+                coords: [+p.location.lat, +p.location.lng],
+                visited: 0
+            })
             setTitle(p.name)
         }
     }
 
     function handleSave() {
         if (place) {
+            console.log(place)
             travel.addPlace({
                     ...place,
                     date_start: dateRange.start,

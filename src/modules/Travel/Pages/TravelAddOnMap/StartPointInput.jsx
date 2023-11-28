@@ -5,6 +5,8 @@ import {CloseIcon} from "../../../../components/svg";
 import {Input} from "../../../../components/ui";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import defaultPoint from "../../../../utils/default-values/defaultPoint";
+import createId from "../../../../utils/createId";
 
 
 /**
@@ -24,6 +26,7 @@ export default function StartPointInput({  map}) {
 
     function handleRemoveFromPoint(){
         travel.removeFromPoint()
+        map.removePoint(point.id)
         update()
     }
 
@@ -43,7 +46,6 @@ export default function StartPointInput({  map}) {
             map.addMarkerByAddress(point.address, point.id)
                 .then(p => {
                     if(p){
-                        console.log(travel.fromPoint, p)
                         travel.setFromPoint(p)
                         setPoint(p)
                         update()
@@ -63,12 +65,17 @@ export default function StartPointInput({  map}) {
         })
 
         if (coords) {
+            const newPoint = defaultPoint(travel.id, {coords})
+            const id = newPoint.id
             /** добавление места с координатами пользователя */
             map
-                .addMarker(coords, travel.id)
+                .addPoint(newPoint, {markerType: "exist"})
+                .getClosestAddressTo(coords)
                 .then(p => {
                     if (p) {
+                        p.id = id
                         travel.setFromPoint(p)
+                        setPoint(p)
                         update()
                     }
                 })

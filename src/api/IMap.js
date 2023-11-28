@@ -37,10 +37,9 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.newPoint
-     * @param {string} primary_entity_id
      * @returns{MapPointType}
      */
-    newPoint(primary_entity_id){
+    newPoint(){
     }
 
     /**
@@ -99,6 +98,7 @@ export default class IMap {
      * Метод удаляет точку с карты. Метод принимает обЪект, который возвращает метод "getMarkers"
      * @method IMap.removeMarker
      * @param {string} point_id
+     * @return {IMap}
      */
     removePoint(point_id) {
         console.warn('[IMap] removeMarker not override')
@@ -277,5 +277,13 @@ export default class IMap {
      * @return {IMap}
      */
     showPolyRoute(polylineDots, BalloonOptionsType){}
+
+    /**
+     * @abstract
+     * @name IMap.getClosestAddressTo
+     * @param {CoordinatesType} coords
+     * @return {Promise<Omit<PointType, 'id'>>}
+     */
+    getClosestAddressTo(coords){}
 }
 

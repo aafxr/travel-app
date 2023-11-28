@@ -13,3 +13,19 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
+
+.recommend-movement-time{
+}
+
+.recommend-movement-time svg{
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
+.recommend-activity-end{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    transform: translate(-43%, 100%);
+    font-size: 1.005rem;
+}

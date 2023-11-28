@@ -31,7 +31,8 @@ function YandexMapContainer({travel, userLocation, children, onPointAdd, onPoint
 
     useEffect(() => {
         if (map && onMapReadyCB) onMapReadyCB(map)
-        if (map) map.setContainerID('map')
+        if (map)
+            map.setContainerID('map')
     }, [map])
 
     // обработка зума при прокрутки колесика мыши

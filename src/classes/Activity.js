@@ -26,6 +26,7 @@ export default class Activity {
     static REST_TIME = 300
 
     duration = 0
+    distance = 0
 
 
     /**  @type{Date} */
@@ -34,7 +35,7 @@ export default class Activity {
     end
 
     /**@type{PlaceType}*/
-    palce
+    place
     /**@type{Activity}*/
     next = null
     /**@type{Activity}*/
@@ -208,9 +209,9 @@ export default class Activity {
      * @param {number[]} [days]
      * @returns {number[]}
      */
-    getDaysList(days = []){
+    getDaysList(days = []) {
         days.push(...this.days)
-        if(this.next) return this.next.getDaysList(days)
+        if (this.next) return this.next.getDaysList(days)
         else return days
     }
 
@@ -219,9 +220,9 @@ export default class Activity {
      * @param {Activity[]} [activities]
      * @returns {Activity[]}
      */
-    getActivitiesAtDay(day, activities = []){
+    getActivitiesAtDay(day, activities = []) {
         if (this.days.includes(day)) activities.push(this)
-        if(this.next) return this.next.getActivitiesAtDay(day, activities)
+        if (this.next) return this.next.getActivitiesAtDay(day, activities)
         else return activities
     }
 
@@ -229,7 +230,7 @@ export default class Activity {
      * возвращает список уникальных дней
      * @returns {number[]}
      */
-    getUniqDaysList(){
+    getUniqDaysList() {
         return [...new Set(this.getDaysList())]
     }
 
@@ -237,13 +238,22 @@ export default class Activity {
      *
      * @returns {string}
      */
-    toTimeStingFormat(){
+    toTimeStingFormat() {
         const time = Math.round((this.end - this.start) / 1000)
         const sec = time % 60
         const min = (time - sec) / 60 % 60
         const hour = Math.floor((time - sec - min * 60) / (60 * 60))
 
         return `${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isEndAtNight() {
+        const [hh, mm, ss] = this.end.toLocaleTimeString().split(':').map(el => +el)
+        const time_ms = hh * 60 * 60 * 1000 + mm * 60 * 1000 + ss * 1000
+        return (time_ms > Activity.EVENING_TIME || time_ms < Activity.MORNING_TIME);
     }
 
 }

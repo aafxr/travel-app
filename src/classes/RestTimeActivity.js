@@ -17,6 +17,7 @@ export default class RestTimeActivity extends Activity {
         this.status = Activity.REST_TIME
         this.prev = options.prev
         this.next = options.next
+        debugger
         this.deltaHourse = this.end.getTimezoneOffset() / 60
         this.delta_ms = this.deltaHourse * 1000 * 60 * 60
         this.start = new Date(this.prev.end.getTime())

@@ -30,27 +30,29 @@ export default function TravelAddOnMap() {
 
 
 
-    const {points, setPoints} = usePoints(map)
+    // const {points, setPoints} = usePoints(map)
 
     const draggedPoint = useDragPoint()
 
     useEffect(() => {
-        if (map && points.length){
+        if (map && travel.waypoints.length){
+            const waypoints = travel.waypoints
             map.clearMap()
-            points.forEach(/**@param{PointType} p*/ p => map.addPoint({id: p.id, coords: p.coords}, {markerType: "exist"}))
+            waypoints.forEach(/**@param{PointType} p*/ p => map.addPoint({id: p.id, coords: p.coords}, {markerType: "exist"}))
+            map.showRoute(waypoints)
             map.autoZoom()
         }
-    }, [points, map])
+    }, [travel, map])
 
     //обработка изменения положения точки после взаимодейсвия ==========================================================
-    useEffect(() => {
-        if (draggedPoint) {
-            const newPoints = points.map(p => ({...p}))
-            newPoints[draggedPoint.index].text = draggedPoint.dragPoint.address
-            newPoints[draggedPoint.index].point = draggedPoint.dragPoint
-            setPoints(newPoints)
-        }
-    }, [draggedPoint])
+    // useEffect(() => {
+    //     if (draggedPoint) {
+    //         const newPoints = points.map(p => ({...p}))
+    //         newPoints[draggedPoint.index].text = draggedPoint.dragPoint.address
+    //         newPoints[draggedPoint.index].point = draggedPoint.dragPoint
+    //         setPoints(newPoints)
+    //     }
+    // }, [draggedPoint])
 
 
 
@@ -67,7 +69,7 @@ export default function TravelAddOnMap() {
 
 
     /**
-     * обработка изменения списка точек ( добавлена / удалена / переытавленна)
+     * обработка изменения списка точек ( добавлена / удалена / переставленна)
      * @param {PointType[]} newPoints
      */
     function handlePointListChange(newPoints) {
@@ -76,7 +78,7 @@ export default function TravelAddOnMap() {
             : travel.setWaypoints(newPoints)
 
         map.clearMap()
-        travel.waypoints.forEach(({id, coords}) => map.addPoint())
+        // travel.waypoints.forEach(({id, coords}) => map.addPoint())
     }
 
 
@@ -88,13 +90,13 @@ export default function TravelAddOnMap() {
                     <StartPointInput map={map}/>
                     <MapPointsInputList
                         map={map}
-                        pointsList={travel.isFromPoint ? points.slice(1) : points}
+                        pointsList={travel.isFromPoint ? travel.waypoints.slice(1) : travel.waypoints}
                         onListChange={handlePointListChange}
                     />
                 </div>
             </Container>
             <div className='content'>
-                <YandexMapContainer travel={travel} userLocation={userLoc} onMapReadyCB={setMap}/>
+                <YandexMapContainer onMapReadyCB={setMap}/>
             </div>
             <div className='fixed-bottom-button'>
                 <Button

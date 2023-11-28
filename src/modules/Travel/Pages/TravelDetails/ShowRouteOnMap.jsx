@@ -17,37 +17,37 @@ export default function ShowRouteOnMap() {
         if (map){
             const points = Array.from({length: 20}).fill(0).map((_, idx) => (defaultPlace()))
 
-            window.genetic = (mutation = 50, cycles = 200) => {
-                const start = new Date()
+            // window.genetic = (mutation = 50, cycles = 200) => {
+            //     const start = new Date()
+            //
+            //     const result = travel.routeBuilder.sortByGeneticAlgorithm(points, mutation, cycles);
+            //
+            //     const end = new Date()
+            //     const ms = (end - start) % 1000
+            //     const sec = (end - start - ms) / 1000
+            //     console.log('Spent time: ', `${sec}sec ${ms}ms`)
+            //     console.log(map)
+            //     map.clearMap()
+            //     map.showRoute(result);
+            // }
+            //
+            // window.salesman = (dist = 70) => {
+            //     const start = new Date()
+            //
+            //     const result = travel.routeBuilder.sortPlacesByDistance(points, dist);
+            //
+            //     const end = new Date()
+            //     const ms = (end - start) % 1000
+            //     const sec = (end - start - ms) / 1000
+            //     console.log('Spent time: ', `${sec}sec ${ms}ms`)
+            //     map.clearMap()
+            //     map.showRoute(result);
+            // }
 
-                const result = travel.routeBuilder.sortByGeneticAlgorithm(points, mutation, cycles);
-
-                const end = new Date()
-                const ms = (end - start) % 1000
-                const sec = (end - start - ms) / 1000
-                console.log('Spent time: ', `${sec}sec ${ms}ms`)
-                console.log(map)
-                map.clearMap()
-                map.showRoute(result);
-            }
-
-            window.salesman = (dist = 70) => {
-                const start = new Date()
-
-                const result = travel.routeBuilder.sortPlacesByDistance(points, dist);
-
-                const end = new Date()
-                const ms = (end - start) % 1000
-                const sec = (end - start - ms) / 1000
-                console.log('Spent time: ', `${sec}sec ${ms}ms`)
-                map.clearMap()
-                map.showRoute(result);
-            }
-
-            travel.setPlaces(points)
-            window.activities = () => {
-                travel.routeBuilder.updateRoute()
-            }
+            // travel.setPlaces(points)
+            // window.activities = () => {
+            //     travel.routeBuilder.updateRoute()
+            // }
         }
 
     }, [map])

@@ -51,7 +51,6 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import MapContextProvider from "./contexts/MapContextProvider";
 
 
 function App() {

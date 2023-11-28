@@ -10,7 +10,6 @@
  * @property {CoordinatesType} coords
  * @property {string} [time_start]
  * @property {string} [time_end]
- * @property {string} [time_end]
  * @property {DBFlagType} visited
  * @category Types
  */

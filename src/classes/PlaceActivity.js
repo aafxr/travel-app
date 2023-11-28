@@ -63,31 +63,33 @@ export default class PlaceActivity extends Activity {
 
     shiftTimeBy(ms) {
         super.shiftTimeBy(ms)
-        if (!this._isStartAtDayTime()) {
-            const d = Math.ceil(this.start.getTime() / MS_IN_DAY)
-            this.start = new Date(d * MS_IN_DAY + Activity.MORNING_TIME)
-            this.end = new Date(this.start.getTime() + this.duration)
+        if (this.prev && this.next){
+            if (!this._isStartAtDayTime()) {
+                const d = Math.ceil(this.start.getTime() / MS_IN_DAY)
+                this.start = new Date(d * MS_IN_DAY + Activity.MORNING_TIME)
+                this.end = new Date(this.start.getTime() + this.duration)
 
-            const restActivity = new RestTimeActivity({
-                prev:this.prev,
-                next: this,
-                prevActivity: this.prev,
-                defaultActivitySpentTime: 0,
-                travel_start_time: this.travel_start_time
-            })
-            this.prev.next = restActivity
-            this.prev = restActivity
-            // this.prev.prev.shiftTimeBy()
-        } else if(this.prev && this.prev.end.getDay() !== this.start.getDay()){
-            const restActivity = new RestTimeActivity({
-                prev:this.prev,
-                next: this,
-                prevActivity: this.prev,
-                defaultActivitySpentTime: 0,
-                travel_start_time: this.travel_start_time
-            })
-            this.prev.next = restActivity
-            this.prev = restActivity
+                const restActivity = new RestTimeActivity({
+                    prev:this.prev,
+                    next: this,
+                    prevActivity: this.prev,
+                    defaultActivitySpentTime: 0,
+                    travel_start_time: this.travel_start_time
+                })
+                this.prev.next = restActivity
+                this.prev = restActivity
+                // this.prev.prev.shiftTimeBy()
+            } else if(this.prev && this.prev.end.getDay() !== this.start.getDay()){
+                const restActivity = new RestTimeActivity({
+                    prev:this.prev,
+                    next: this,
+                    prevActivity: this.prev,
+                    defaultActivitySpentTime: 0,
+                    travel_start_time: this.travel_start_time
+                })
+                this.prev.next = restActivity
+                this.prev = restActivity
+            }
         }
 
         if (this.next) this.next.shiftTimeBy(ms)

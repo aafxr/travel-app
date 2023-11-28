@@ -22,25 +22,31 @@ export default function useMap(options = {}) {
     }, [options])
 
     useEffect(() => {
-        /** инициализация карты */
-        const m = new YMap({
-            travel,
-            icon_size: [32, 32],
-            zoom: 7,
-            add_location_icon: process.env.PUBLIC_URL + '/icons/add_location_24px.svg',
-            location_icon: process.env.PUBLIC_URL + '/icons/location_on_24px.svg',
-            onPointAdd(point) {
-                optionsRef.current.onPointAdd && optionsRef.current.onPointAdd(point)
-            },
-            onPointClick(point) {
-                optionsRef.current.onPointClick && optionsRef.current.onPointClick(point)
-            },
-            onPointMoved(point) {
-                optionsRef.current.onPointMoved && optionsRef.current.onPointMoved(point)
-            },
-        })
+        function init(){
+            /** инициализация карты */
+            const m = new YMap({
+                travel,
+                icon_size: [32, 32],
+                zoom: 7,
+                add_location_icon: process.env.PUBLIC_URL + '/icons/add_location_24px.svg',
+                location_icon: process.env.PUBLIC_URL + '/icons/location_on_24px.svg',
+                onPointAdd(point) {
+                    optionsRef.current.onPointAdd && optionsRef.current.onPointAdd(point)
+                },
+                onPointClick(point) {
+                    optionsRef.current.onPointClick && optionsRef.current.onPointClick(point)
+                },
+                onPointMoved(point) {
+                    optionsRef.current.onPointMoved && optionsRef.current.onPointMoved(point)
+                },
+            })
+            setMap(m)
+        }
 
-        setMap(m)
+        if('ymaps' in window){
+            window.ymaps.ready(init)
+        }
+
         return () => map && map.destroyMap()
     }, [])
 
