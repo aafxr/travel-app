@@ -1,20 +1,22 @@
 import {useParams} from "react-router-dom";
-import {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import dateRange from "../../../../utils/dateRange";
 import defaultPlace from "../../../../utils/default-values/defaultPlace";
+import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
     const {dayNumber} = useParams()
+    const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const ref = useRef(/** @type{HTMLDivElement}*/null)
 
     const [map, setMap] = useState(/**@type{YMap}*/null)
 
     useEffect(() => {
-        if (map){
+        if (map) {
             const points = Array.from({length: 20}).fill(0).map((_, idx) => (defaultPlace()))
 
             // window.genetic = (mutation = 50, cycles = 200) => {
@@ -53,7 +55,7 @@ export default function ShowRouteOnMap() {
     }, [map])
 
     useEffect(() => {
-        if (map) {
+        if (map && dayNumber) {
             const route = travel.routeBuilder
                 .getRouteByDay(+dayNumber)
 
@@ -92,7 +94,7 @@ export default function ShowRouteOnMap() {
             })
             window.map = map
         }
-    }, [map])
+    }, [map, dayNumber])
 
     useLayoutEffect(() => {
         if (ref.current) {
@@ -105,13 +107,25 @@ export default function ShowRouteOnMap() {
     })
 
     return (
-        <div
-            ref={ref}
-            id='on-map'
-            className='flex-1 relative'
-            style={{height: '100%'}}
-        >
-            <YandexMapContainer onMapReadyCB={setMap}/>
-        </div>
+        <>
+            {
+                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                    {
+                        travel.routeBuilder.getActivityDays()
+                            .map((i) => (
+                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
+                            ))
+                    }
+                </div>
+            }
+            <div
+                ref={ref}
+                id='on-map'
+                className='flex-1 relative'
+                style={{height: '100%'}}
+            >
+                <YandexMapContainer onMapReadyCB={setMap}/>
+            </div>
+        </>
     )
 }
