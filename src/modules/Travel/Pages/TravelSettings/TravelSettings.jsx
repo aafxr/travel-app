@@ -63,6 +63,7 @@ export default function TravelSettings() {
      */
     function handleAdultChange(num) {
         setAdultCount(num)
+        travel.setAdultsCount(num)
     }
 
     /** обновление предпологаемого числа детей в путешествии
@@ -70,6 +71,7 @@ export default function TravelSettings() {
      */
     function handleTeenagerChange(num) {
         setChildCount(num)
+        travel.setChildsCount(num)
     }
 
     // travel members change handlers ==================================================================================
@@ -83,14 +85,11 @@ export default function TravelSettings() {
             : [...movement, movementType]
         console.log(newTagList)
         setMovement(newTagList)
+        travel.setMovementTypes(newTagList)
     }
 
     function hasChanges() {
-        return (
-            range?.start !== travel.date_start
-            || range?.end !== travel.date_end
-            || movement !== travel.movementTypes
-        )
+        return travel.change
     }
 
     //==================================================================================================================
@@ -99,9 +98,11 @@ export default function TravelSettings() {
      * @param {string} start
      * @param {string} end
      */
-    function handleDateRangeChange({start, end}) {
-        setRange({start, end})
-    }
+    // function handleDateRangeChange({start, end}) {
+    //     setRange({start, end})
+    //     if (start) travel.date_start = start
+    //     if (end) travel.date_end = end
+    // }
 
     //==================================================================================================================
     /** сохранение параметров путешествия */
@@ -143,7 +144,6 @@ export default function TravelSettings() {
             })
     }
 
-    console.log(travel)
     return (
         <>
             <div className='travel-settings wrapper'>
@@ -168,14 +168,14 @@ export default function TravelSettings() {
                                         )
                                     }
 
-                                    <section className='travel-settings-date column gap-0.5 block'>
-                                        <h4 className='title-semi-bold'>Дата поездки</h4>
-                                        <DateRange
-                                            init={{start: travel.date_start, end: travel.date_end}}
-                                            minDateValue={travel.date_start || ''}
-                                            onChange={handleDateRangeChange}
-                                        />
-                                    </section>
+                                    {/*<section className='travel-settings-date column gap-0.5 block'>*/}
+                                    {/*    <h4 className='title-semi-bold'>Дата поездки</h4>*/}
+                                    {/*    <DateRange*/}
+                                    {/*        init={{start: travel.date_start, end: travel.date_end}}*/}
+                                    {/*        minDateValue={travel.date_start || ''}*/}
+                                    {/*        onChange={handleDateRangeChange}*/}
+                                    {/*    />*/}
+                                    {/*</section>*/}
 
                                     <section className='travel-settings-members column gap-0.5 block'>
                                         <h4 className='title-semi-bold'>Участники</h4>
@@ -256,39 +256,39 @@ export default function TravelSettings() {
                                         )
                                     }
 
-                                    <section className='travel-settings-movement column gap-0.5 block'>
-                                        <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
-                                        <div className='flex-wrap gap-1'>
-                                            {
-                                                defaultMovementTags.map(dmt => (
-                                                    <Chip
-                                                        key={dmt.id}
-                                                        icon={dmt.icon}
-                                                        color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}
-                                                        rounded
-                                                        onClick={() => handleMovementSelect(dmt)}
-                                                    >
-                                                        {dmt.title}
-                                                    </Chip>
-                                                ))
-                                            }
-                                        </div>
-                                    </section>
+                                    {/*<section className='travel-settings-movement column gap-0.5 block'>*/}
+                                    {/*    <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>*/}
+                                    {/*    <div className='flex-wrap gap-1'>*/}
+                                    {/*        {*/}
+                                    {/*            defaultMovementTags.map(dmt => (*/}
+                                    {/*                <Chip*/}
+                                    {/*                    key={dmt.id}*/}
+                                    {/*                    icon={dmt.icon}*/}
+                                    {/*                    color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}*/}
+                                    {/*                    rounded*/}
+                                    {/*                    onClick={() => handleMovementSelect(dmt)}*/}
+                                    {/*                >*/}
+                                    {/*                    {dmt.title}*/}
+                                    {/*                </Chip>*/}
+                                    {/*            ))*/}
+                                    {/*        }*/}
+                                    {/*    </div>*/}
+                                    {/*</section>*/}
                                 </div>
                             )
                             : (<div>загрузка информации о путешествии</div>)
                     }
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton} disabled={hasChanges()}>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={!hasChanges()}>Построить маршрут</Button>
                 </div>
             </div>
-            <FlatButton
-                className={'buttons-block'}
-                onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
-                onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
-                onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
-            />
+            {/*<FlatButton*/}
+            {/*    className={'buttons-block'}*/}
+            {/*    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}*/}
+            {/*    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}*/}
+            {/*    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}*/}
+            {/*/>*/}
         </>
     )
 }

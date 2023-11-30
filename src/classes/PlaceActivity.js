@@ -22,6 +22,7 @@ export default class PlaceActivity extends Activity {
         if (this.place.time_start && this.place.time_end)
             duration = new Date(this.place.time_end) - new Date(this.place.time_start)
         this.duration = duration || options.defaultActivitySpentTime || 0
+        console.log(this.place)
     }
 
     isPlace() {

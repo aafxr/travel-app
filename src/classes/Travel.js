@@ -324,7 +324,6 @@ export default class Travel extends BaseTravel {
         if (this._forceUpdateTimerID) clearTimeout(this._forceUpdateTimerID)
         this._forceUpdateTimerID = setTimeout(() => {
             this._updateManager.dispatch(this)
-            console.log(this._updateManager)
             this._forceUpdateTimerID = undefined
         }, delay)
     }

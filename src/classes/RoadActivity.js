@@ -65,7 +65,6 @@ export default class RoadActivity extends Activity {
         else if (this.speed === RoadActivity.PUBLIC_TRANSPORT__SPEED)
             emoji = '🚌💨'
 
-
         return `
         ==================
         День ${this.days}

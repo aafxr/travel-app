@@ -40,7 +40,7 @@ export default function TravelAddPlace() {
             setPlace({
                 ...p,
                 _id: p.id + ':' + travel.id,
-                coords: [+p.location.lat, +p.location.lng],
+                coords: p.location,
                 visited: 0
             })
             setTitle(p.name)

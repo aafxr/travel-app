@@ -165,9 +165,7 @@ export default class RouteBuilder {
         }
 
         resulPointsArr.forEach(p => {
-            p.location = {};
-            p.location.lat = p.coords[0];
-            p.location.lng = p.coords[1];
+            p.location = p.coords
         })
 
         return resulPointsArr
@@ -311,11 +309,7 @@ export default class RouteBuilder {
 
         shortest = shortest.map(vp => this.placeMap.get(vp.getKey()))
 
-        shortest.forEach(p => {
-            p.location = {};
-            p.location.lat = p.coords[0];
-            p.location.lng = p.coords[1];
-        })
+        shortest.forEach(p => p.location = p.coords)
 
         return shortest
     }

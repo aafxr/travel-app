@@ -238,14 +238,11 @@ export default class YMap extends IMap{
      */
     showRoute(points, routeName) {
         this.clearMap()
-        if (!this._map) {
-
-        }
 
         for (const point of points) {
             try {
 
-                const placemark = new window.ymaps.Placemark(point.coords ? point.coords : [point.location.lat, point.location.lng], {
+                const placemark = new window.ymaps.Placemark(point.coords ? point.coords : point.location, {
                     hintContent: point.hintContent || '',
                     balloonContentHeader: point.balloonContentHeader || '',
                     balloonContentBody: point.balloonContentBody || '',
@@ -266,7 +263,7 @@ export default class YMap extends IMap{
             }
         }
 
-        this._polyLine = new window.ymaps.Polyline(points.map(p => p.coords ? p.coords : [p.location.lat, p.location.lng]), {
+        this._polyLine = new window.ymaps.Polyline(points.map(p => p.coords ? p.coords : p.location), {
             balloonContent: routeName || ''
         }, {
             balloonCloseButton: false,
@@ -425,6 +422,33 @@ export default class YMap extends IMap{
      */
     getMarkers() {
         return this._travel.waypoints || []
+    }
+
+    /**
+     * @returns {Promise<[number, number][]>}
+     */
+    _getDetailRoute(){
+        return new Promise((resolve, reject) => {
+            if('ymaps' in window){
+                window.ymaps.route(this._travel.places.map(p => ({type: 'viaPoint', point: p.coords})))
+                    .then(route =>{
+                        const track = []
+                        for (let i = 0; i < route.getPaths().getLength(); i++) {
+                            const way = route.getPaths().get(i);
+                            const segments = way.getSegments();
+                            for (let j = 0; j < segments.length; j++) {
+                                track.push(...segments[j].getCoordinates())
+                            }
+                        }
+                        resolve(track)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        resolve(this._travel.places.map(p => p.coords))
+                    })
+            } else
+                resolve(this._travel.places.map(p => p.coords))
+        })
     }
 }
 

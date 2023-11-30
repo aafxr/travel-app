@@ -40,6 +40,7 @@ export default function TravelEdit() {
     /*** способы передвижения */
     const [tags, setTags] = useState(/**@type{MovementType[]}*/[])
     const [isPublic, setIsPublic] = useState(false)
+    const [changed, setChanged] = useState(false)
 
     // const currentDay = new Date().toISOString().split('T').shift()
 
@@ -86,14 +87,7 @@ export default function TravelEdit() {
     }
 
     function hasChanges(){
-        return (
-            title !== travel.title
-            || range?.start !== travel.date_start
-            || range?.end !== travel.date_end
-            || description !== travel.direction
-            || tags !== travel.movementTypes
-            || (travel.isPublic === 1) === isPublic
-        )
+        return changed
     }
 
     /***
@@ -105,6 +99,7 @@ export default function TravelEdit() {
             ? tags.filter(t => t !== tag)
             : [...tags, tag]
         setTags(newTagList)
+        setChanged(true)
     }
 
     /***
@@ -118,6 +113,7 @@ export default function TravelEdit() {
         if (start) newRange.start = start
         if (end) newRange.end = end
         setRange(newRange)
+        setChanged(true)
     }
 
     /***
@@ -127,7 +123,6 @@ export default function TravelEdit() {
     function handleTravelDays(e) {
         const val = /[0-9]+/.exec(e.target.value)
         if (val && val[0]) {
-            console.log(Math.ceil(+val))
             const days = parseInt(val[0])
             if (!Number.isNaN(days) && days > 0) {
                 updateDateRange(range, days)
@@ -138,6 +133,7 @@ export default function TravelEdit() {
             setDaysCount(undefined)
         }
         setDaysInputValue(e.target.value)
+        if(travel.days !== +e.target.value) setChanged(true)
     }
 
     /***
@@ -155,6 +151,13 @@ export default function TravelEdit() {
                 setRange({...range, start: new Date(tempTime).toISOString()})
             }
         }
+        setChanged(true)
+    }
+
+    /**@param {InputEvent} e*/
+    function handleTitleChange(e){
+        setTitle(e.target.value)
+        if(e.target.value && e.target.value !== travel.title) setChanged(true)
     }
 
 
@@ -172,7 +175,7 @@ export default function TravelEdit() {
                                 type='text'
                                 placeholder={'Название поездки'}
                                 value={title}
-                                onChange={e => setTitle(e.target.value)}
+                                onChange={handleTitleChange}
                             />
                         </div>
                         <div className='block column gap-0.5'>

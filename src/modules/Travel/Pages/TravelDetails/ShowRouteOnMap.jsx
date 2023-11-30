@@ -9,65 +9,26 @@ import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
-    const {dayNumber} = useParams()
-    const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
+    // const {dayNumber} = useParams()
+    // const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const ref = useRef(/** @type{HTMLDivElement}*/null)
 
     const [map, setMap] = useState(/**@type{YMap}*/null)
 
     useEffect(() => {
         if (map) {
-            const points = Array.from({length: 20}).fill(0).map((_, idx) => (defaultPlace()))
-
-            // window.genetic = (mutation = 50, cycles = 200) => {
-            //     const start = new Date()
-            //
-            //     const result = travel.routeBuilder.sortByGeneticAlgorithm(points, mutation, cycles);
-            //
-            //     const end = new Date()
-            //     const ms = (end - start) % 1000
-            //     const sec = (end - start - ms) / 1000
-            //     console.log('Spent time: ', `${sec}sec ${ms}ms`)
-            //     console.log(map)
-            //     map.clearMap()
-            //     map.showRoute(result);
-            // }
-            //
-            // window.salesman = (dist = 70) => {
-            //     const start = new Date()
-            //
-            //     const result = travel.routeBuilder.sortPlacesByDistance(points, dist);
-            //
-            //     const end = new Date()
-            //     const ms = (end - start) % 1000
-            //     const sec = (end - start - ms) / 1000
-            //     console.log('Spent time: ', `${sec}sec ${ms}ms`)
-            //     map.clearMap()
-            //     map.showRoute(result);
-            // }
-
-            // travel.setPlaces(points)
-            // window.activities = () => {
-            //     travel.routeBuilder.updateRoute()
-            // }
-        }
-
-    }, [map])
-
-    useEffect(() => {
-        if (map && dayNumber) {
             const route = travel.places
 
-            /**@type{MapPointType[]}*/
-            const routePointForMap = route
-                .map(({id, location: {lat, lng}}) => ({id, coords: [lat, lng]}))
+            // /**@type{MapPointType[]}*/
+            // const routePointForMap = route
+            //     .map(({id, coords}) => ({id, coords}))
             map
                 .showRoute(route, {})
                 .autoZoom()
 
             route.forEach(r => {
                 /**@type{BalloonOptionsType}*/
-                const ballonOptions = {
+                const balloonOptions = {
                     hintContent: r.name,
                     balloonContentHeader: `<div class="balloon-header">${r.name}</div>`,
                     balloonContentBody: `
@@ -79,22 +40,22 @@ export default function ShowRouteOnMap() {
                         <div class="balloon-content">
                             <div>
                                 <span>Координаты: </span >
-                                <span class="title-semi-bold">${r.location.lat}, ${r.location.lng}</span>
+                                <span class="title-semi-bold">${r.location[0]}, ${r.location[1]}</span>
                             </div>
                             <div>
                                 <span>Запланировано на: </span>
-                                <span class="title-semi-bold">${dateRange(r.date_start, r.date_end)}</span>
+                                <span class="title-semi-bold">${dateRange(r.time_start, r.time_end)}</span>
                             </div>
                         </div>
                     </div>
                     `,
                     balloonContentFooter: `<div class="balloon-footer">${r.formatted_address}</div>`,
                 }
-                map.setBalloonToPoint(r.id, ballonOptions, {maxWidth: window.innerWidth * 0.6})
+                map.setBalloonToPoint(r.id, balloonOptions, {maxWidth: window.innerWidth * 0.6})
             })
             window.map = map
         }
-    }, [map, dayNumber])
+    }, [map])
 
     useLayoutEffect(() => {
         if (ref.current) {

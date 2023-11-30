@@ -44,15 +44,10 @@ export default function TravelDetails() {
     const menu = (
         <Menu>
             <LinkComponent to={`/travel/${travelCode}/params/`} title={'Детали путешествия'}/>
-            <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Редактировать'}/>
-            <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Настройки'}/>
+            <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Основные настройки'}/>
+            <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Редактировать детали'}/>
         </Menu>
     )
-    // const items = [
-    //     {id: 1, entityType: 'Прокат', entityName: 'Велопрокат'},
-    //     {id: 2, entityType: 'Кафе', entityName: 'Malina'},
-    //     {id: 3, entityType: 'Кафе', entityName: 'Brusnika'},
-    // ]
 
 
     function handleTravelPhotoChange(photo) {
@@ -167,7 +162,7 @@ export default function TravelDetails() {
                         travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
                     }
                     {
-                        travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
+                        // travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
                     }
                 </div>
             </Curtain>

@@ -162,11 +162,11 @@ export default class Hotel extends Entity{
      * метод устанавливает location отеля
      * @method
      * @name Hotel.setLocation
-     * @param {LocationType} location check_out отеля
+     * @param {CoordinatesType} location check_out отеля
      * @returns {Hotel}
      */
     setLocation(location){
-        if (location && location.lng && location.lat) {
+        if (Array.isArray(location) ) {
             this._modified.location = location
             this._change = true
         }

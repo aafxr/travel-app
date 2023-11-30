@@ -4,6 +4,7 @@ import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, MS_IN_DAY} from "../
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
+import createId from "../utils/createId";
 
 const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
@@ -50,7 +51,6 @@ export default class BaseTravel extends Entity {
 
     /**@type{TravelDetailsFilterType}*/
     _travelDetailsFilter
-
 
 
     /**
@@ -104,6 +104,21 @@ export default class BaseTravel extends Entity {
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
         this.change = this._new
+
+        this._init()
+    }
+
+    _init() {
+        this._modified.places = this._modified.places.map(p => {
+            if (!p._id) p._id = createId(this.id)
+            if (p.location.lat){
+                const{lat, lng} = p.location
+                p.location = [lat, lng]
+            }
+            if (p.location ) p.coords = p.location
+            if (p.visited === undefined) p.visited = 0
+            return p
+        })
     }
 
     /**
@@ -111,7 +126,7 @@ export default class BaseTravel extends Entity {
      * @return {TravelType}
      * @private
      */
-    _checkTravelFields(travel){
+    _checkTravelFields(travel) {
         // travel.places.forEach((t, i, arr) => {
         //
         // })
@@ -119,7 +134,6 @@ export default class BaseTravel extends Entity {
         // [54.2311, 54.3665]
         return travel
     }
-
 
 
     /**
@@ -720,7 +734,7 @@ export default class BaseTravel extends Entity {
             //     this.places.splice(idx, 1, item)
             // } else {
             // }
-                this._modified.places.push(item)
+            this._modified.places.push(item)
             this.change = true
             this.routeBuilder.updateRoute()
         }
@@ -768,7 +782,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.sortPlaces
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
      */
-    sortPlaces(distanceCB){
+    sortPlaces(distanceCB) {
         this.routeBuilder.sortByGeneticAlgorithm(this.places)
     }
 
@@ -835,7 +849,7 @@ export default class BaseTravel extends Entity {
      */
     removeMember(item) {
         if (item) {
-            this._modified.members = this._modified.members.filter(m => m.id !==item.id)
+            this._modified.members = this._modified.members.filter(m => m.id !== item.id)
             this.change = true
         }
         return this
@@ -977,7 +991,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.travelDetailsFilter
      * @returns {TravelDetailsFilterType}
      */
-    get travelDetailsFilter(){
+    get travelDetailsFilter() {
         return this._travelDetailsFilter
     }
 
@@ -987,8 +1001,8 @@ export default class BaseTravel extends Entity {
      * @param {TravelDetailsFilterType} value
      * @returns {BaseTravel}
      */
-    setTravelDetailsFilter(value){
-        if(typeof value === 'string' && value.length){
+    setTravelDetailsFilter(value) {
+        if (typeof value === 'string' && value.length) {
             localStorage.setItem(DEFAULT_TRAVEL_DETAILS_FILTER, value)
             this._travelDetailsFilter = value
             this.forceUpdate()
@@ -1003,19 +1017,21 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.days
      * @returns {number|number}
      */
-    get days(){
-        let days = (new Date(this.date_end).getTime() - new Date(this.date_start).getTime()) /MS_IN_DAY
+    get days() {
+        let days = (new Date(this.date_end).getTime() - new Date(this.date_start).getTime()) / MS_IN_DAY
         days = Math.ceil(days)
         return days ? days : this.routeBuilder.days
 
 
     }
+
     /**
      * @method
      * @name BaseTravel.forceUpdate
      * @abstract
      */
-    forceUpdate(){}
+    forceUpdate() {
+    }
 
     /**
      * метод реализует создание / обновление заприси о путешествии в бд

@@ -45,7 +45,7 @@ export default function LocationCard({
                                          selected,
                                          item,
                                          onPhotoAdd
-}) {
+                                     }) {
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
@@ -77,16 +77,20 @@ export default function LocationCard({
                     }
                     {/*<PhotoCarousel urls={imgURLs} />*/}
                     <div className='location-buttons'>
-                        <button
-                            className='rounded-button location-btn'
-                            onClick={() => onPhotoAdd && onPhotoAdd(item)}
-                        >
-                            <PhotoIcon/></button>
-                        <button
-                            className='rounded-button location-btn'
-                            onClick={() => onEdite && onEdite(item)}
-                        >
-                            <EditePencil/></button>
+                        {
+                            !!onPhotoAdd && <button
+                                className='rounded-button location-btn'
+                                onClick={() => onPhotoAdd(item)}
+                            >
+                                <PhotoIcon/></button>
+                        }
+                        {
+                            !!onEdite && <button
+                                className='rounded-button location-btn'
+                                onClick={() => onEdite(item)}
+                            >
+                                <EditePencil/></button>
+                        }
                     </div>
                 </div>
                 <div className='location-title'>{title}</div>
