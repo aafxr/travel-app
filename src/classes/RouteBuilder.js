@@ -3,8 +3,8 @@ import bfTravellingSalesman from "../utils/sort/bfTravellingSalesman";
 import GraphVertex from "../utils/data-structures/GraphVertex";
 import GraphEdge from "../utils/data-structures/GraphEdge";
 import Graph from "../utils/data-structures/Graph";
-import {MS_IN_DAY} from "../static/constants";
 import randomNumber from "../utils/randomNumber";
+import {MS_IN_DAY} from "../static/constants";
 import PlaceActivity from "./PlaceActivity";
 import RoadActivity from "./RoadActivity";
 
@@ -69,8 +69,8 @@ export default class RouteBuilder {
      * возвращает
      * @return {Activity}
      */
-    getActivities(){
-        if(!this._travel.places.length) return null
+    getActivities() {
+        if (!this._travel.places.length) return null
 
         const activities = this._travel.places.map(p => new PlaceActivity({
             place: p,
@@ -78,9 +78,9 @@ export default class RouteBuilder {
             travel_start_time: new Date(this._travel.date_start)
         }))
 
-        for (let i = 0; i < activities.length -1 ; i++) {
+        for (let i = 0; i < activities.length - 1; i++) {
             new RoadActivity({
-                to:activities[i+1],
+                to: activities[i + 1],
                 from: activities[i],
                 travel_start_time: new Date(this._travel.date_start),
                 defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
@@ -423,10 +423,10 @@ export default class RouteBuilder {
      * @returns {PlaceType[]}
      */
     getRouteByDay(i) {
-        if(!this.activity)
+        if (!this.activity)
             this.getActivities()
 
-        if(!this.activity) return []
+        if (!this.activity) return []
 
         return this.activity
             .getActivitiesAtDay(i)
@@ -441,10 +441,10 @@ export default class RouteBuilder {
      * @returns {number[]}
      */
     getActivityDays() {
-        if(!this.activity)
+        if (!this.activity)
             this.getActivities()
 
-        if(!this.activity) return []
+        if (!this.activity) return []
 
         return this.activity.getUniqDaysList()
     }

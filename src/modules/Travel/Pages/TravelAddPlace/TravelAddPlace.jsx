@@ -57,17 +57,6 @@ export default function TravelAddPlace() {
                 }
             )
 
-            const extractPlaceDataCB =
-                /**@param {PlaceType} p */
-                    (p) => {
-                    const {id, location: {lat, lng}} = p
-                    return {id, coords: [+lat, +lng]}
-                }
-            const sortedPlaces = travel.routeBuilder
-                    .sortPlacesByDistance(travel.places, extractPlaceDataCB, YMap.getDistance)
-
-            travel.setPlaces(sortedPlaces)
-
             travel
                 .save(user.id)
                 .then(() => navigate(-1))
@@ -106,7 +95,7 @@ export default function TravelAddPlace() {
                     Array.isArray(places) && places.map(p => (
 
                         <LocationCard
-                            key={p.id}
+                            key={p._id || p.id}
                             id={p.id}
                             title={p.name}
                             imgURLs={p.photos || [DEFAULT_IMG_URL]}

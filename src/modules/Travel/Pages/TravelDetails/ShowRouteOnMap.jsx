@@ -56,14 +56,14 @@ export default function ShowRouteOnMap() {
 
     useEffect(() => {
         if (map && dayNumber) {
-            const route = travel.routeBuilder
-                .getRouteByDay(+dayNumber)
+            const route = travel.places
 
             /**@type{MapPointType[]}*/
             const routePointForMap = route
                 .map(({id, location: {lat, lng}}) => ({id, coords: [lat, lng]}))
             map
-                .showRoute(route, travel.routeBuilder.getRouteByDay(+dayNumber)[0]?.name || '')
+                .showRoute(route, {})
+                .autoZoom()
 
             route.forEach(r => {
                 /**@type{BalloonOptionsType}*/
@@ -108,16 +108,16 @@ export default function ShowRouteOnMap() {
 
     return (
         <>
-            {
-                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                    {
-                        travel.routeBuilder.getActivityDays()
-                            .map((i) => (
-                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
-                            ))
-                    }
-                </div>
-            }
+            {/*{*/}
+            {/*    <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>*/}
+            {/*        {*/}
+            {/*            travel.routeBuilder.getActivityDays()*/}
+            {/*                .map((i) => (*/}
+            {/*                    <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>*/}
+            {/*                ))*/}
+            {/*        }*/}
+            {/*    </div>*/}
+            {/*}*/}
             <div
                 ref={ref}
                 id='on-map'

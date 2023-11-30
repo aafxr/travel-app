@@ -76,6 +76,8 @@ export default class BaseTravel extends Entity {
             waypoints: this.waypoints
         })
 
+        this._checkTravelFields(item)
+
         this
             .setID(item.id)
             .setCode(item.code)
@@ -102,6 +104,20 @@ export default class BaseTravel extends Entity {
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
         this.change = this._new
+    }
+
+    /**
+     * @param {TravelType} travel
+     * @return {TravelType}
+     * @private
+     */
+    _checkTravelFields(travel){
+        // travel.places.forEach((t, i, arr) => {
+        //
+        // })
+
+        // [54.2311, 54.3665]
+        return travel
     }
 
 
@@ -699,12 +715,12 @@ export default class BaseTravel extends Entity {
      */
     addPlace(item) {
         if (item) {
-            const idx = this.places.findIndex(p => p.id === item.id)
-            if (~idx) {
-                this.places.splice(idx, 1, item)
-            } else {
+            // const idx = this.places.findIndex(p => p.id === item.id)
+            // if (~idx) {
+            //     this.places.splice(idx, 1, item)
+            // } else {
+            // }
                 this._modified.places.push(item)
-            }
             this.change = true
             this.routeBuilder.updateRoute()
         }
@@ -720,7 +736,7 @@ export default class BaseTravel extends Entity {
      */
     removePlace(item) {
         if (item) {
-            this._modified.places = this._modified.places.filter(i => item.id !== i.id)
+            this._modified.places = this._modified.places.filter(i => item._id !== i._id)
             this.change = true
             this.routeBuilder.updateRoute()
             this.routeBuilder.updateRoute()
@@ -753,14 +769,7 @@ export default class BaseTravel extends Entity {
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} distanceCB callback, возвращает число, которое будет использоваться как вес ребра
      */
     sortPlaces(distanceCB){
-        this.routeBuilder.sortPlacesByDistance(this.places,
-            /**@param {PlaceType} p */
-            ( p ) => {
-            const {id, location: {lat, lng}} = p
-                return {id, coords: [lat,lng]}
-            },
-            distanceCB
-        )
+        this.routeBuilder.sortByGeneticAlgorithm(this.places)
     }
 
     _updateDirection() {

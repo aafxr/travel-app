@@ -10,6 +10,7 @@ import PlaceActivity from "../../../../classes/PlaceActivity";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import RoadActivity from "../../../../classes/RoadActivity";
 import {Tab} from "../../../../components/ui";
+import {type} from "@testing-library/user-event/dist/type";
 
 export default function ShowRouteByDays() {
     // const {user} = useUserSelector()
@@ -33,7 +34,11 @@ export default function ShowRouteByDays() {
     })
 
 
+    useEffect(() => {
     if (activity)
+        activity.log()
+
+    }, [activity])
 
         return (
             <>
@@ -52,7 +57,7 @@ export default function ShowRouteByDays() {
                         activity
                             ? activity.getActivitiesAtDay(+dayNumber).map((a, idx) => (
                                 <React.Fragment key={idx}>
-                                    {showActivity(a)}
+                                    {showActivity(travel, a)}
                                 </React.Fragment>))
                             : <div>Loading...</div>
                     }
@@ -64,14 +69,16 @@ export default function ShowRouteByDays() {
 
 
 /**
+ * @param {Travel} travel
  * @param {Activity} a
  * @return {JSX.Element}
  */
-function showActivity(a) {
+function showActivity(travel, a) {
     if (a instanceof RoadActivity) {
         return (
             <>
                 <RecommendLocation
+                    to={`/travel/${travel.id}/params/`}
                     items={[
                         {id: 1, entityType: 'hotel', entityName: '123'},
                         {id: 2, entityType: 'hotel', entityName: 'name'},

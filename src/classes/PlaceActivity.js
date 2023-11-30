@@ -42,7 +42,7 @@ export default class PlaceActivity extends Activity {
         Начало: ${dateToStringFormat(this.start.toISOString())}
         Закончится: ${dateToStringFormat(this.end.toISOString())}
         длительность: ${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}
-        Координаты: ${this.place.coords[0]}, ${this.place.coords[1]} 
+        Координаты: ${this.place.coords[0] || ''}, ${this.place.coords[1] || ''} 
         
         ==================
         `

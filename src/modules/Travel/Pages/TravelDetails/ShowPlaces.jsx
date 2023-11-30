@@ -16,7 +16,6 @@ export default function ShowPlaces() {
 
     /** @param {PlaceType} place */
     function handleRemovePLace(place) {
-        console.log(place)
         travel.removePlace(place)
         travel.save(user.id)
             .catch(defaultHandleError)
@@ -39,7 +38,7 @@ export default function ShowPlaces() {
                 {
                     travel.routeBuilder.getRouteByDay(+dayNumber || 1).map(p => (
                         <LocationCard
-                            key={p.id}
+                            key={p._id || p.id}
                             id={p.id}
                             title={p.name}
                             imgURLs={p.photos || [DEFAULT_IMG_URL]}

@@ -9,7 +9,6 @@ export default function userLocation() {
     return new Promise((resolve, reject) => {
         handleGeoPermission()
             .then(permission => {
-                console.log('permission', permission)
                 if (permission && navigator && navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(loc => {
                             const {coords} = loc

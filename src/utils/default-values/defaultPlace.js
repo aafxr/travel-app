@@ -1,7 +1,8 @@
 /**
+ * @param {string} travel_id
  * @return {PlaceType}
  */
-export default function defaultPlace() {
+export default function defaultPlace(travel_id) {
     const start = new Date()
     const end = new Date(start.getTime() + 1.5 * 60*60*1000)
     const coords =  [
