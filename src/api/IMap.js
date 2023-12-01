@@ -263,9 +263,10 @@ export default class IMap {
     /**
      * @method
      * @name IMap.showPolyline
-     * @param {MapPointType} polyline
+     * @param {MapPointType[]} polyline
      * @param {BalloonOptionsType} options
      * @return {IMap}
+     * @deprecated
      */
     showPolyline(polyline, options){}
 

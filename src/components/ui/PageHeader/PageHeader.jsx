@@ -17,7 +17,7 @@ import './PageHeader.css'
  * @param {boolean} arrowBack true добавляет стрелочку назад <=
  * @param {string} className css class
  * @param {string} title заголовок
- * @param {string} to url на который перенаправляется пользователь при клике либо назад
+ * @param {string | function} to url на который перенаправляется пользователь при клике либо назад
  * @param {JSX.Element} children child react elements child react elements
  * @param { JSX.Element} MenuEl react element, который будет отображаться при нажатии на иконку меню компонента
  * @param props other element props
@@ -51,14 +51,19 @@ export default function PageHeader({
 
 
     function backHandler() {
-        isString(to)
-            ? navigate(to)
-            : navigate(-1)
+        if (typeof to === 'function') {
+            to()
+        } else if (typeof to === 'string') {
+            navigate(to)
+        } else {
+            navigate(-1)
+        }
     }
 
     return (
         <div className={styles} {...props}>
-            <div className='page-header-icon' onClick={arrowBack ? backHandler : ()=>{}}>
+            <div className='page-header-icon' onClick={arrowBack ? backHandler : () => {
+            }}>
                 {!!arrowBack && <ArrowBackIcon/>}
             </div>
             {!!title &&

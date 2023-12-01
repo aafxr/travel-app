@@ -95,11 +95,17 @@ export default function TravelAddWaypoint() {
         }
     }
 
+    function handleBackClick(){
+        const newWaypoints = travel.waypoints.filter(wp => wp.id !== pointCode)
+        travel.setWaypoints(newWaypoints)
+        navigate(`/travel/${travel.id}/map/`)
+    }
+
 
     return (
         <div className='wrapper'>
             <Container className='waypoint-container'>
-                <PageHeader arrowBack title='Направление'/>
+                <PageHeader arrowBack to={handleBackClick} title='Направление'/>
                 <div className='column gap-0.5 pb-20'>
                     {/*<div className='link'>+ Указать точку отправления</div>*/}
                     <Input

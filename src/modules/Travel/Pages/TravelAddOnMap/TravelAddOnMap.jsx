@@ -10,7 +10,6 @@ import Button from "../../../../components/ui/Button/Button";
 import {PageHeader} from "../../../../components/ui";
 import useDragPoint from "../../hooks/useDragPoint";
 import StartPointInput from "./StartPointInput";
-import usePoints from "./usePoints";
 
 import './TravelAddOnMap.css'
 
@@ -29,16 +28,18 @@ export default function TravelAddOnMap() {
     const [map, setMap] = useState(/**@type{IMap}*/ null)
 
 
-
     // const {points, setPoints} = usePoints(map)
 
     const draggedPoint = useDragPoint()
 
     useEffect(() => {
-        if (map && travel.waypoints.length){
+        if (map && travel.waypoints.length) {
             const waypoints = travel.waypoints
             map.clearMap()
-            waypoints.forEach(/**@param{PointType} p*/ p => map.addPoint({id: p.id, coords: p.coords}, {markerType: "exist"}))
+            waypoints.forEach(/**@param{PointType} p*/p => map.addPoint({
+                id: p.id,
+                coords: p.coords
+            }, {markerType: "exist"}))
             map.showRoute(waypoints)
             map.autoZoom()
         }
@@ -55,8 +56,6 @@ export default function TravelAddOnMap() {
     // }, [draggedPoint])
 
 
-
-
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
@@ -65,7 +64,6 @@ export default function TravelAddOnMap() {
             .then(() => navigate(`/travel/${travel.id}/settings/`))
             .catch(console.error)
     }
-
 
 
     /**
@@ -77,8 +75,10 @@ export default function TravelAddOnMap() {
             ? travel.setWaypoints([travel.fromPoint, ...newPoints])
             : travel.setWaypoints(newPoints)
 
-        map.clearMap()
-        // travel.waypoints.forEach(({id, coords}) => map.addPoint())
+        map
+            .clearMap()
+            .showRoute(newPoints, {})
+            .showPolyRoute(newPoints.map(p => p.coords),{})
     }
 
 

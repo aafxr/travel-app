@@ -10,6 +10,8 @@ import Swipe from "../ui/Swipe/Swipe";
 import sleep from "../../utils/sleep";
 import {Input} from "../ui";
 import defaultPoint from "../../utils/default-values/defaultPoint";
+import PointInput from "./PointInput";
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 
 /**
  * @typedef {{address: string, id: string}} PointsListChangeType
@@ -29,10 +31,10 @@ import defaultPoint from "../../utils/default-values/defaultPoint";
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const navigate = useNavigate()
-    const {user} = useUserSelector()
+    // const {user} = useUserSelector()
     const {travel} = useTravelContext()
     // const travelState = useTravelStateSelector()
-    const [points, setPoints] = useState(/**@type{PointsListChangeType[]} */ [])
+    const [points, setPoints] = useState(/**@type{PointType[]} */ [])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
@@ -42,14 +44,9 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /*** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
     const offset = useRef(null)
-    /*** id активного input для добавления иконки поиска  */
-    const [focusInputId, setFocusInputId] = useState(/**@type{string | null} */null)
 
     useEffect(() => {
-        if (pointsList && pointsList.length) {
-            const list = pointsList.map(({address, id}) => ({address, id}))
-            setPoints(list)
-        }
+        if (pointsList && pointsList.length) setPoints(pointsList)
     }, [pointsList])
 
 
@@ -63,10 +60,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     async function handleKeyDown(e, item) {
         if (e.keyCode === 13) {
             updatePointData(item)
-                .catch(err => {
-                    ErrorReport.sendError(err).catch(console.error)
-                    console.error(err)
-                })
+                .catch(defaultHandleError)
         }
     }
 
@@ -96,8 +90,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                     }
                         : p
                 })
-                const list = newPoints.map(({id, address}) => ({id, address}))
-                setPoints(list)
+                setPoints(newPoints)
                 onListChange && onListChange(newPoints)
             } else {
                 pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
@@ -126,7 +119,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     }
 
     /**
-     * @param item - точка, которую перетаскивали
+     * @param {PointType} item - точка, которую перетаскивали
      */
     function handleDragEnd(item) {
         /**
@@ -141,8 +134,8 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
-            /**@type{PointsListChangeType[]}*/
-            const list = points.map((p, i, arr) => {
+            /**@type{PointType[]}*/
+            const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
                 if (i === overIDX) return arr[draggingIDX]
                 return p
@@ -151,9 +144,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
              * логика по устаноке нового порядка точек на карте ...
              */
             drag.current = {}
-            /**@type{PointType[]}*/
-            const newPoints = list.map(l => pointsList.find(i => i.id === l.id))
-            setPoints(list)
+            setPoints(newPoints)
             onListChange && onListChange(newPoints)
         }
     }
@@ -218,7 +209,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      * удаление точки с карты
-     * @param {PointsListChangeType} item
+     * @param {PointType} item
      */
     function handleRemovePoint(item) {
         if (map) {
@@ -232,7 +223,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 /*** удаляемая точка с карты */
                 const point = pointsList[pointIdx]
                 /*** point может не существовать (если не нажата кнопка Enter) */
-                point && map.removeMarker({id: point.id})
+                point && map.removeMarker(point.id)
                 /*** обновленный массив точек */
                 const list = points.filter((p) => p.id !== point.id)
                 /*** обновляем зум карты */
@@ -249,81 +240,46 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     function handleFocus(e) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
-        setFocusInputId(e.target.dataset.id)
+        document.activeElement.classList.add('input-highlight')
     }
 
     function handleSearchClick(item) {
         updatePointData(item)
-            .catch(err => {
-                ErrorReport.sendError(err).catch(console.error)
-                console.error(err)
-            })
+            .catch(defaultHandleError)
     }
 
     // добавление новой точки ==========================================================================================
     function handleSubmitNewPoint() {
-        const newPoint = map.newPoint(travel.id)
+        const newPoint = defaultPoint(travel.id)
         travel.addWaypoint(newPoint)
-        console.log(travel.waypoints)
         navigate(`/travel/${travel.id}/add/waypoint/${newPoint.id}/`)
+    }
+
+    function handleBlur(point){
+        document.getElementById(point.id)?.classList.remove('input-highlight')
     }
 
     return (
         <>
             {
                 points.map((p) => (
-                    <Swipe
+                    <PointInput
                         key={p.id}
-                        onRemove={() => handleRemovePoint(p)}
-                        rightButton
-                    >
-                        <div
-                            onClick={() => {
-                            }}
-                            className='travel-map-input-container relative'
-                            onDragOver={() => handleDragOver(p)}
-                            onDragLeave={() => handleDragLeave(p)}
-                            data-id={p.id}
-                        >
-                            <Input
-                                id={p.id}
-                                className='travel-map-input'
-                                placeholder={"Найдите регион или город"}
-                                value={p.address}
-                                onKeyDown={(e) => handleKeyDown(e, p)}
-                                onChange={(e) => handleInputChange(e, p)}
-                                autoComplete='off'
-                                data-id={p.id}
-                                onFocus={handleFocus}
-                                onBlur={() => sleep(200).then(() => setFocusInputId(null))}
-                                // onBlur={(e) => handleBlur(e, p)}
-                            />
-                            {
-                                focusInputId
-                                    ? <img
-                                        className='travel-map-search'
-                                        onClick={() => handleSearchClick(p)}
-                                        src={process.env.PUBLIC_URL + '/icons/search.svg'}
-                                        alt="search"
-                                    />
-                                    : (
-                                        <div
-                                            className='travel-map-drag-icon'
-                                            onClick={() => {
-                                            }}
-                                            onTouchStart={(e) => handleTouchStart(e, p)}
-                                            onTouchEnd={(e) => handleTouchEnd(e, p)}
-                                            onTouchMove={handleTouchMove}
-                                            onDragStart={() => handleDragStart(p)}
-                                            onDragEnd={() => handleDragEnd(p)}
-                                            draggable
-                                        >
-                                            <DragIcon/>
-                                        </div>
-                                    )
-                            }
-                        </div>
-                    </Swipe>
+                        point={p}
+                        onRemovePoint={handleRemovePoint}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onSearchClick={handleSearchClick}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                        onTouchMove={handleTouchMove}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onKeyDown={handleKeyDown}
+                        onInputChange={handleInputChange}
+                    />
                 ))
             }
             {
