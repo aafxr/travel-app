@@ -20,6 +20,7 @@ const constants = {
         TRAVEL_ACTIONS: 'travelActions',
         CHECKLIST: 'checklist',
         TRAVEL_WAYPOINTS: 'travel_waypoints',
+        ROUTE: 'route',
 
         STORE: 'store',
         CURRENCY: 'currency',

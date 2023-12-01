@@ -1,7 +1,7 @@
 /**
  * @typedef {IMapOptionsType} YMapOptionsType
 
-/**
+ /**
  * @typedef {IMapPointOptionsType} YMapPointOptionsType
  */
 
@@ -10,6 +10,7 @@ import defaultPoint from "../utils/default-values/defaultPoint";
 import userLocation from "../utils/userLocation";
 import IMap from "../api/IMap";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 
 /**
  * #### Данный класс предполагается использовать когда скрипт карты уже загружен и готов к работе
@@ -22,7 +23,7 @@ import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
  * @constructor
  * @param {YMapOptionsType} options
  */
-export default class YMap extends IMap{
+export default class YMap extends IMap {
     /**@type{MapPointType[]}*/
     points = []
     _map
@@ -66,11 +67,11 @@ export default class YMap extends IMap{
      * @private
      */
     _initializeMap() {
-        if(this._map){
-            for(const placeMark  of this._pointsMap.entries()){
+        if (this._map) {
+            for (const placeMark of this._pointsMap.entries()) {
                 this._map.geoObjects.add(placeMark)
             }
-            if(this._polyLine){
+            if (this._polyLine) {
                 this._map.geoObjects.add(this._polyLine)
             }
         }
@@ -287,9 +288,9 @@ export default class YMap extends IMap{
      * @param {BalloonOptionsType} [options]
      * @return {YMap}
      */
-    showPolyRoute(polylineDots, options = {}){
-        if(!Array.isArray(polylineDots)) return this
-        if(this._polyLine) this._map.geoObjects.remove(this._polyLine)
+    showPolyRoute(polylineDots, options = {}) {
+        if (!Array.isArray(polylineDots)) return this
+        if (this._polyLine) this._map.geoObjects.remove(this._polyLine)
 
         let polyline = new window.ymaps.Polyline(polylineDots, {
             ...options
@@ -328,7 +329,7 @@ export default class YMap extends IMap{
     }
 
     autoZoom() {
-        if(!this._map) return this
+        if (!this._map) return this
         const bounds = this._map.geoObjects.getBounds()
         this._map.setBounds(bounds)
         const zoom = Math.min(this._map.getZoom(), 15)
@@ -339,7 +340,7 @@ export default class YMap extends IMap{
 
     showPoint(coords, zoomLevel) {
         this._map.setCenter(coords, zoomLevel)
-        if(zoomLevel){
+        if (zoomLevel) {
             this._zoom = zoomLevel
         }
         return this
@@ -347,10 +348,10 @@ export default class YMap extends IMap{
 
     getClosestAddressTo(coords) {
         return new Promise((resolve, reject) => {
-            if(!(Array.isArray(coords) && coords.length === 2))
+            if (!(Array.isArray(coords) && coords.length === 2))
                 reject(new Error(`Bad coordinates, method expect receive [number, number] but receive ${coords}`))
 
-            if('ymaps' in window){
+            if ('ymaps' in window) {
                 window.ymaps.geocode(coords, {results: 5})
                     .then(res => {
                         /**@type{GeoObjectPropertiesType[]}*/
@@ -359,15 +360,15 @@ export default class YMap extends IMap{
 
                         let closest = pointsProperties[0]
                         let dist = getDistanceFromTwoPoints(coords, closest.boundedBy[0])
-                        for (let i = 1; i < pointsProperties.length; i+=1){
+                        for (let i = 1; i < pointsProperties.length; i += 1) {
                             const d = getDistanceFromTwoPoints(pointsProperties[i].boundedBy[0], closest.boundedBy[0])
-                            if(d < dist)
+                            if (d < dist)
                                 closest = pointsProperties[i]
                         }
                         /**@type{PointType}*/
                         const point = {
                             address: closest.metaDataProperty.GeocoderMetaData.Address.formatted,
-                            coords:closest.boundedBy[0],
+                            coords: closest.boundedBy[0],
                             kind: closest.metaDataProperty.GeocoderMetaData.kind,
                             locality: closest.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality
                         }
@@ -384,33 +385,56 @@ export default class YMap extends IMap{
 
     /**
      * @methos
-     * @name YMap.buildRoute
+     * @name YMap.buildDetailRoute
      * @param {MapPointType[]} points
-     * @returns {Promise<Array<[number, number]>>}
+     * @returns {Promise<RouteDetailType>}
      */
-    buildsRoute(points){
+    buildDetailRoute(points) {
         return new Promise(res => {
-            window.ymaps.route(points.map(p => (
-                { type: 'viaPoint', point: p.coords })), {
-                mapStateAutoApply: true
-            }).then(function (route) {
-                const routePoints = []
-                for (let i = 0; i < route.getPaths().getLength(); i++) {
-                    const way = route.getPaths().get(i);
-                    const segments = way.getSegments();
-                    for (let j = 0; j < segments.length; j++) {
-                        /**@type{Array<[number,number]>}*/
-                        const  c = segments[j].getCoordinates();
-                        c.forEach(_c => routePoints.push(_c))
-                    }
-                }
-                res(routePoints)
-            });
+            if ('ymaps' in window) {
+
+                window.ymaps.route(points.map(p => (
+                    {type: 'viaPoint', point: p.coords})), {
+                    mapStateAutoApply: true
+                })
+                    .then((route) => {
+                        /**@type{RouteDetailType}*/
+                        const fullRoute = {
+                            travel_id: this._travel.id,
+                            routes: []
+                        }
+                        const length = route.getPaths().getLength()
+                        for (let i = 0; i < route.getPaths().getLength(); i++) {
+                            /**@type{RouteDetailSliceType}*/
+                            const slice = {
+                                from_id: points[i].id,
+                                to_id: points[i + 1].id,
+                                route: []
+                            }
+                            fullRoute.routes.push(slice)
+                            const way = route.getPaths().get(i);
+                            const segments = way.getSegments();
+                            for (let j = 0; j < segments.length; j++) {
+                                /**@type{Array<[number,number]>}*/
+                                const c = segments[j].getCoordinates();
+                                c.forEach(_c => fullRoute.routes[i].route.push(_c))
+                            }
+                        }
+                        res(fullRoute)
+                    })
+                    .catch((err) => {
+                        defaultHandleError(err)
+                        res({travel_id: this._travel.id, routes: []})
+                    })
+            } else {
+                res({travel_id: this._travel.id, routes: []})
+            }
+
         })
     }
 
     removePoint(point_id) {
-        if(this._pointsMap.has(point_id)){
+        if (this._pointsMap.has(point_id)) {
             this._map.geoObjects.remove(this._pointsMap.get(point_id))
             this._pointsMap.delete(point_id)
         }
@@ -424,32 +448,32 @@ export default class YMap extends IMap{
         return this._travel.waypoints || []
     }
 
-    /**
-     * @returns {Promise<[number, number][]>}
-     */
-    _getDetailRoute(){
-        return new Promise((resolve, reject) => {
-            if('ymaps' in window){
-                window.ymaps.route(this._travel.places.map(p => ({type: 'viaPoint', point: p.coords})))
-                    .then(route =>{
-                        const track = []
-                        for (let i = 0; i < route.getPaths().getLength(); i++) {
-                            const way = route.getPaths().get(i);
-                            const segments = way.getSegments();
-                            for (let j = 0; j < segments.length; j++) {
-                                track.push(...segments[j].getCoordinates())
-                            }
-                        }
-                        resolve(track)
-                    })
-                    .catch((err) => {
-                        console.error(err)
-                        resolve(this._travel.places.map(p => p.coords))
-                    })
-            } else
-                resolve(this._travel.places.map(p => p.coords))
-        })
-    }
+    // /**
+    //  * @returns {Promise<[number, number][]>}
+    //  */
+    // _getDetailRoute(){
+    //     return new Promise((resolve, reject) => {
+    //         if('ymaps' in window){
+    //             window.ymaps.route(this._travel.places.map(p => ({type: 'viaPoint', point: p.coords})))
+    //                 .then(route =>{
+    //                     const track = []
+    //                     for (let i = 0; i < route.getPaths().getLength(); i++) {
+    //                         const way = route.getPaths().get(i);
+    //                         const segments = way.getSegments();
+    //                         for (let j = 0; j < segments.length; j++) {
+    //                             track.push(...segments[j].getCoordinates())
+    //                         }
+    //                     }
+    //                     resolve(track)
+    //                 })
+    //                 .catch((err) => {
+    //                     console.error(err)
+    //                     resolve(this._travel.places.map(p => p.coords))
+    //                 })
+    //         } else
+    //             resolve(this._travel.places.map(p => p.coords))
+    //     })
+    // }
 }
 
 window.distance = YMap.getDistance

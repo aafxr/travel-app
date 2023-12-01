@@ -1071,4 +1071,6 @@ export default class BaseTravel extends Entity {
         }
         return this
     }
+
+
 }

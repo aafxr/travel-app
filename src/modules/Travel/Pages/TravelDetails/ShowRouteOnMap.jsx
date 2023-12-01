@@ -1,14 +1,18 @@
-import {useParams} from "react-router-dom";
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import dateRange from "../../../../utils/dateRange";
-import defaultPlace from "../../../../utils/default-values/defaultPlace";
-import {Tab} from "../../../../components/ui";
+import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {MapIcon} from "../../../../components/svg";
+import BaseService from "../../../../classes/BaseService";
+import constants from "../../../../static/constants";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
+    const {user} = useUserSelector()
     // const {dayNumber} = useParams()
     // const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const ref = useRef(/** @type{HTMLDivElement}*/null)
@@ -67,6 +71,78 @@ export default function ShowRouteOnMap() {
         }
     })
 
+    // детальный маршрут ===============================================================================================
+
+    useEffect(() => {
+        const initDetailRout = async () => {
+            const service = new BaseService(constants.store.ROUTE)
+            /**@type{RouteDetailType}*/
+            let route = await service.read(travel.id)
+            if(route && !routNeedUpdateNeed(route)){
+                let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
+                map
+                    .showPolyRoute(points)
+                    .autoZoom()
+            }
+        }
+        if(travel && map && user)
+            initDetailRout().catch(defaultHandleError)
+    }, [travel, map, user])
+
+
+    async function buildDetailRoute() {
+        try {
+            const service = new BaseService(constants.store.ROUTE)
+            /**@type{RouteDetailType}*/
+            let route = await service.read(travel.id)
+
+            if(route){
+                if(routNeedUpdateNeed(route)){
+                    route = await updateRoute(service)
+                }
+                let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
+                map.showPolyRoute(points)
+            } else{
+                const newDetailRoute = await updateRoute(service)
+                let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
+                map.showPolyRoute(points)
+            }
+        } catch (err) {
+            defaultHandleError(err)
+        }
+
+    }
+
+    /**
+     * @param {RouteDetailType} track
+     * @returns {boolean}
+     */
+    function routNeedUpdateNeed(track){
+        const places = travel.places
+        let updateNeed = false
+
+        for(let i =0 ; i < places.length - 1; i += 1){
+            if(updateNeed) break
+            const route = track.routes[i]
+            if (!route){
+                updateNeed = true
+                break
+            }
+            if(places[i].id !== route.from_id || places[i + 1].id !== route.to_id) updateNeed = true
+        }
+        return updateNeed
+    }
+
+    /**
+     * @param {BaseService} service
+     * @returns {Promise<RouteDetailType>}
+     */
+    async function updateRoute(service){
+        const updatedRout =  await map.buildDetailRoute(travel.places.map(({id, coords}) => ({id, coords})))
+        await service.update(updatedRout, user.id)
+        return updatedRout
+    }
+
     return (
         <>
             {/*{*/}
@@ -85,6 +161,12 @@ export default function ShowRouteOnMap() {
                 className='flex-1 relative'
                 style={{height: '100%'}}
             >
+                <IconButton
+                    icon={<MapIcon/>}
+                    title={'Детальный маршрут'}
+                    className="map-detail-route-button" small
+                    onClick={buildDetailRoute}
+                />
                 <YandexMapContainer onMapReadyCB={setMap}/>
             </div>
         </>

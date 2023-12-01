@@ -286,5 +286,13 @@ export default class IMap {
      * @return {Promise<Omit<PointType, 'id'>>}
      */
     getClosestAddressTo(coords){}
+
+    /**
+     * @methos
+     * @name IMap.buildDetailRoute
+     * @param {MapPointType[]} points
+     * @returns {Promise<RouteDetailSliceType>}
+     */
+    buildDetailRoute(points){}
 }
 

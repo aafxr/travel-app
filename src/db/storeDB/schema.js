@@ -6,7 +6,7 @@ import constants from "../../static/constants";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 22,
+    version: 23,
     stores: [
         {
             name: constants.store.STORE,
@@ -86,6 +86,11 @@ const schema = {
         {
             name: constants.store.UPDATE,
             key: 'primary_id',
+            indexes: []
+        },
+        {
+            name: constants.store.ROUTE,
+            key: 'travel_id',
             indexes: []
         },
         //================ errors ===================================================================================
