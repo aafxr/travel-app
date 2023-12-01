@@ -285,8 +285,6 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
             {
                 points.length === 0 && (
                     <PointInput
-                        key={p.id}
-                        point={p}
                         onRemovePoint={handleRemovePoint}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
