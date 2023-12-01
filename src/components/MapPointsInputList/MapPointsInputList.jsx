@@ -82,12 +82,12 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
                     return p.id === item.id
                         ? {
-                        ...p,
+                            ...p,
                             address: marker.name,
                             coords: marker.boundedBy[0],
                             kind: marker.metaDataProperty.GeocoderMetaData.kind,
                             locality: marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.LocalityName
-                    }
+                        }
                         : p
                 })
                 setPoints(newPoints)
@@ -255,7 +255,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         navigate(`/travel/${travel.id}/add/waypoint/${newPoint.id}/`)
     }
 
-    function handleBlur(point){
+    function handleBlur(point) {
         document.getElementById(point.id)?.classList.remove('input-highlight')
     }
 
@@ -283,15 +283,32 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 ))
             }
             {
-                points.length > 0 && (
-                    <div
-                        className='link'
-                        onClick={handleSubmitNewPoint}
-                    >
-                        + Добавить точку маршрута
-                    </div>
+                points.length === 0 && (
+                    <PointInput
+                        key={p.id}
+                        point={p}
+                        onRemovePoint={handleRemovePoint}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onSearchClick={handleSearchClick}
+                        onTouchStart={handleTouchStart}
+                        onTouchEnd={handleTouchEnd}
+                        onTouchMove={handleTouchMove}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onKeyDown={handleKeyDown}
+                        onInputChange={handleInputChange}
+                    />
                 )
             }
+            <div
+                className='link'
+                onClick={handleSubmitNewPoint}
+            >
+                + Добавить точку маршрута
+            </div>
         </>
     )
 }

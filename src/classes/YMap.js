@@ -331,7 +331,7 @@ export default class YMap extends IMap {
     autoZoom() {
         if (!this._map) return this
         const bounds = this._map.geoObjects.getBounds()
-        this._map.setBounds(bounds)
+        bounds && this._map.setBounds(bounds)
         const zoom = Math.min(this._map.getZoom(), 15)
         this._zoom = zoom - 1
         this._map.setZoom(this._zoom)
