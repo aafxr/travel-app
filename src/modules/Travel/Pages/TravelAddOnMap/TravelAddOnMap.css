@@ -19,6 +19,7 @@
     position: relative;
 }
 
+
 .travel-map-input{
     padding-right: 40px;
     background-color: white;
@@ -28,8 +29,9 @@
     position: absolute;
     top: 50%;
     right: 4px;
-    width: var(--icon-size);
-    height: var(--icon-size);
+    width: calc(var(--icon-size) / 1.7);
+    height: calc(var(--icon-size) / 1.7);
+    margin-right: calc(var(--icon-size) / 2.5);
     transform: translateY(-50%);
     cursor: pointer;
 }

@@ -7,8 +7,6 @@ import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Section from "../../components/Section/Section";
-import {defaultFilterValue} from "../../static/vars";
-import constants from "../../../../static/constants";
 
 import '../../css/Expenses.css'
 

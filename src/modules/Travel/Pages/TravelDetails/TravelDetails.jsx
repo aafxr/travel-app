@@ -38,7 +38,7 @@ export default function TravelDetails() {
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
-    const [curtainOpen, setCurtainOpen] = useState(true)
+    const [curtainOpen, setCurtainOpen] = useState(false)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
 
     const menu = (
@@ -162,7 +162,7 @@ export default function TravelDetails() {
                         travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
                     }
                     {
-                        // travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
+                        travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
                     }
                 </div>
             </Curtain>

@@ -74,7 +74,6 @@ export default function TravelRoutes() {
         }
     }
 
-    console.log(travels)
     return (
         <div className='wrapper'>
             <Container>

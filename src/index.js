@@ -4,27 +4,14 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-import constants, {CACHE_VERSION, MS_IN_DAY, THEME} from "./static/constants";
+import {CACHE_VERSION, MS_IN_DAY, THEME} from "./static/constants";
 import errorReport from "./controllers/ErrorReport";
 import setFixedVH from "./utils/setFixedVH";
 
+import {pushAlertMessage} from "./components/Alerts/Alerts";
+import storeDB from "./db/storeDB/storeDB";
 import App from './App';
 import './css/index.css';
-import range from "./utils/range";
-import storeDB from "./db/storeDB/storeDB";
-import Expense from "./classes/Expense";
-import createId from "./utils/createId";
-import sleep from "./utils/sleep";
-import Travel from "./classes/Travel";
-import {pushAlertMessage} from "./components/Alerts/Alerts";
-import hamiltonianCycle from "./utils/sort/hamiltonCycle";
-import Graph from "./utils/data-structures/Graph";
-import GraphEdge from "./utils/data-structures/GraphEdge";
-import GraphVertex from "./utils/data-structures/GraphVertex";
-import bfTravellingSalesman from "./utils/sort/bfTravellingSalesman";
-import PriorityQueue from "./utils/data-structures/PriorityQueue";
-import LinkedList from "./utils/data-structures/LinkedList";
-import getDistanceFromTwoPoints from "./utils/getDistanceFromTwoPoints";
 
 
 let theme = localStorage.getItem(THEME)
@@ -149,4 +136,3 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
-

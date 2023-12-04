@@ -1,7 +1,6 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
 import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, MS_IN_DAY} from "../static/constants";
-import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 import createId from "../utils/createId";
@@ -120,6 +119,7 @@ export default class BaseTravel extends Entity {
             return p
         })
     }
+
 
     /**
      * @param {TravelType} travel

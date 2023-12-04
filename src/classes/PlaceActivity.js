@@ -22,7 +22,6 @@ export default class PlaceActivity extends Activity {
         if (this.place.time_start && this.place.time_end)
             duration = new Date(this.place.time_end) - new Date(this.place.time_start)
         this.duration = duration || options.defaultActivitySpentTime || 0
-        console.log(this.place)
     }
 
     isPlace() {
@@ -58,20 +57,20 @@ export default class PlaceActivity extends Activity {
      * @private
      */
     _isStartAtDayTime() {
-        const startAt = this.start.getHours() * 60*60*1000
+        const startAt = this.start.getHours() * 60 * 60 * 1000
         return startAt >= Activity.MORNING_TIME && startAt <= Activity.EVENING_TIME;
     }
 
     shiftTimeBy(ms) {
         super.shiftTimeBy(ms)
-        if (this.prev && this.next){
+        if (this.prev && this.next) {
             if (!this._isStartAtDayTime()) {
                 const d = Math.ceil(this.start.getTime() / MS_IN_DAY)
                 this.start = new Date(d * MS_IN_DAY + Activity.MORNING_TIME)
                 this.end = new Date(this.start.getTime() + this.duration)
 
                 const restActivity = new RestTimeActivity({
-                    prev:this.prev,
+                    prev: this.prev,
                     next: this,
                     prevActivity: this.prev,
                     defaultActivitySpentTime: 0,
@@ -80,9 +79,9 @@ export default class PlaceActivity extends Activity {
                 this.prev.next = restActivity
                 this.prev = restActivity
                 // this.prev.prev.shiftTimeBy()
-            } else if(this.prev && this.prev.end.getDay() !== this.start.getDay()){
+            } else if (this.prev && this.prev.end.getDay() !== this.start.getDay()) {
                 const restActivity = new RestTimeActivity({
-                    prev:this.prev,
+                    prev: this.prev,
                     next: this,
                     prevActivity: this.prev,
                     defaultActivitySpentTime: 0,
