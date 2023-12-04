@@ -40,9 +40,11 @@ export const userSlice = createSlice({
         reducers: {
             changeTheme(state, action) {
                 const themeName = action.payload === 'default' ? defaultThemeClass() : action.payload
+                // debugger
                 localStorage.setItem(THEME, action.payload.toString())
 
-                state.theme && document.body.classList.remove(state.theme)
+                document.body.classList.remove('dark-theme')
+                document.body.classList.remove('light-theme')
                 document.body.classList.add(themeName)
 
                 state.theme = action.payload

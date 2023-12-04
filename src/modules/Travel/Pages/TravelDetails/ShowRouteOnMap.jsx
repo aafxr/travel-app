@@ -76,7 +76,7 @@ export default function ShowRouteOnMap() {
     useEffect(() => {
         const initDetailRout = async () => {
             const service = new BaseService(constants.store.ROUTE)
-            /**@type{RouteDetailType}*/
+            /**@type{RouteDetailType | null}*/
             let route = await service.read(travel.id)
             if(route && !routNeedUpdateNeed(route)){
                 let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
@@ -93,7 +93,7 @@ export default function ShowRouteOnMap() {
     async function buildDetailRoute() {
         try {
             const service = new BaseService(constants.store.ROUTE)
-            /**@type{RouteDetailType}*/
+            /**@type{RouteDetailType | null}*/
             let route = await service.read(travel.id)
 
             if(route){
@@ -104,7 +104,7 @@ export default function ShowRouteOnMap() {
                 map.showPolyRoute(points)
             } else{
                 const newDetailRoute = await updateRoute(service)
-                let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
+                let points = newDetailRoute.routes.reduce((acc, segment) => acc.concat(segment.route), [])
                 map.showPolyRoute(points)
             }
         } catch (err) {
@@ -119,18 +119,10 @@ export default function ShowRouteOnMap() {
      */
     function routNeedUpdateNeed(track){
         const places = travel.places
-        let updateNeed = false
 
-        for(let i =0 ; i < places.length - 1; i += 1){
-            if(updateNeed) break
-            const route = track.routes[i]
-            if (!route){
-                updateNeed = true
-                break
-            }
-            if(places[i].id !== route.from_id || places[i + 1].id !== route.to_id) updateNeed = true
-        }
-        return updateNeed
+        if(track.viaPoints?.length !== places.length) return true
+
+        return !places.every(p => track.viaPoints.includes(p.id))
     }
 
     /**

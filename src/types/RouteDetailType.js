@@ -8,5 +8,6 @@
 /**
  * @typedef RouteDetailType
  * @property {string} travel_id
+ * @property {string[]} viaPoints
  * @property {RouteDetailSliceType[]} routes
  */

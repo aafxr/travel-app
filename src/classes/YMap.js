@@ -392,15 +392,16 @@ export default class YMap extends IMap {
     buildDetailRoute(points) {
         return new Promise(res => {
             if ('ymaps' in window) {
-
-                window.ymaps.route(points.map(p => (
-                    {type: 'viaPoint', point: p.coords})), {
+                const yPoints = points.map(p => ({type: 'viaPoint', point: p.coords}))
+                window.ymaps.route(yPoints, {
                     mapStateAutoApply: true
                 })
                     .then((route) => {
+                        window.yroute = route
                         /**@type{RouteDetailType}*/
                         const fullRoute = {
                             travel_id: this._travel.id,
+                            viaPoints: points.map(p => p.id),
                             routes: []
                         }
                         const length = route.getPaths().getLength()
