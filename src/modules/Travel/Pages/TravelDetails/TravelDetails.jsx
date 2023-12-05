@@ -19,11 +19,11 @@ import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
+import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
 
 import './TravelDetails.css'
-import ShowRouteByDays from "./ShowRouteByDays";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -38,7 +38,7 @@ export default function TravelDetails() {
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
-    const [curtainOpen, setCurtainOpen] = useState(false)
+    const [curtainOpen, setCurtainOpen] = useState(true)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
 
     const menu = (

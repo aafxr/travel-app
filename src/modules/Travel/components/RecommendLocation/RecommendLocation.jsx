@@ -46,13 +46,13 @@ export default function RecommendLocation({
         <div className='recommend-location'>
             {/*{time_start && <Chip className='location-date-start'>{activity.start.toLocaleTimeString().slice(0, -3)}</Chip>}*/}
             {activity.isEndAtNight() && <Chip className='recommend-activity-end'>{activity.end.toLocaleTimeString().slice(0, -3)}</Chip>}
-            <IconButton
-                className='recommend-location-add'
-                icon={<PlusIcon/>}
-                bgVariant='bg-default'
-                border={false}
-                shadow
-            />
+            {/*<IconButton*/}
+            {/*    className='recommend-location-add'*/}
+            {/*    icon={<PlusIcon/>}*/}
+            {/*    bgVariant='bg-default'*/}
+            {/*    border={false}*/}
+            {/*    shadow*/}
+            {/*/>*/}
             <div className='column gap-0.5'>
                 <div className='recommend-movement-time row gap-1'>
                     {icon}
@@ -62,13 +62,13 @@ export default function RecommendLocation({
                         {activity.toTimeStingFormat()}
                     </span>
                 </div>
-                <Link className='travel-link' to={`/travel/${travel.id}/map/`}>
-                    <div className='icon'>
-                        <MapIcon/>
-                    </div>
-                    Указать на карте <ChevronRightIcon/>
-                </Link>
-                <RecommendationCard to={to} items={items}/>
+                {/*<Link className='travel-link' to={`/travel/${travel.id}/map/`}>*/}
+                {/*    <div className='icon'>*/}
+                {/*        <MapIcon/>*/}
+                {/*    </div>*/}
+                {/*    Указать на карте <ChevronRightIcon/>*/}
+                {/*</Link>*/}
+                {/*<RecommendationCard to={to} items={items}/>*/}
             </div>
         </div>
     )

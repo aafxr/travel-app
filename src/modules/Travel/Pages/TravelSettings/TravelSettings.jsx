@@ -89,7 +89,8 @@ export default function TravelSettings() {
     }
 
     function hasChanges() {
-        return travel.change
+        // return travel.change
+        return true
     }
 
     //==================================================================================================================
@@ -137,7 +138,7 @@ export default function TravelSettings() {
             .setDateEnd(range.end)
             .save(user.id)
             .then(() => update())
-            .then(() => navigate(`/travel/${travel.id}/`))
+            .then(() => navigate(`/travel/${travel.id}/1/`))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
                 pushAlertMessage({type: 'danger', message: 'Произовла ошибка во время записи путешествия в бд'})

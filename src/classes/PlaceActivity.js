@@ -8,6 +8,9 @@ import {MS_IN_DAY} from "../static/constants";
 import RestTimeActivity from "./RestTimeActivity";
 
 export default class PlaceActivity extends Activity {
+    /**@type{PlaceType}*/
+    place
+
     /**
      * @param {PlaceActivityOptionsType} options
      */

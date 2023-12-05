@@ -34,7 +34,10 @@ export const defaultTravel = {
     adults_count: () =>  0,
     childs_count: () =>  0,
     direction: () => '',
-    isPublic: () => true
+    isPublic: () => true,
+    places: () => [],
+    isFromPoint: () => 0,
+    description: () => ''
 }
 
 /**

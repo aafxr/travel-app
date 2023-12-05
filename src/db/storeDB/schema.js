@@ -1,4 +1,5 @@
 import constants from "../../static/constants";
+import {defaultTravel} from "../../redux/travelStore/travelSlice";
 
 /***
  * @description - описание структуры бд store
@@ -6,7 +7,7 @@ import constants from "../../static/constants";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 23,
+    version: 28,
     stores: [
         {
             name: constants.store.STORE,
@@ -67,6 +68,28 @@ const schema = {
             name: constants.store.TRAVEL,
             key: 'id',
             indexes: [],
+            upgrade: [
+                {
+                    version: 28,
+                    transformCallback: (noModifiedTravel) => {
+                        const def = {}
+                        Object.keys(defaultTravel).forEach(key => def[key] = defaultTravel[key]())
+                        /**@type{TravelType}*/
+                        const travel = {...def, ...noModifiedTravel}
+                        console.log('before ' ,travel)
+                        travel.places.map((p, idx) => {
+                            if (p.date_start) p.time_start = p.date_start
+                            if (p.date_end) p.time_end = p.date_end
+                            delete p.date_start
+                            delete p.date_end
+
+                            return p
+                        })
+                        console.log(travel)
+                        return travel
+                    }
+                }
+            ]
         },
         {
             name: constants.store.TRAVEL_ACTIONS,

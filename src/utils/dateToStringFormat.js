@@ -3,7 +3,7 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
 
 /**
  * Функция возвращает отформатированное время
- * @param {string} dateTime
+ * @param {string | Date} dateTime
  * @param {boolean} withMonth
  * @function
  * @name dateToStringFormat

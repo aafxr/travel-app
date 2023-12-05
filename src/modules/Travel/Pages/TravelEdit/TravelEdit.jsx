@@ -82,7 +82,7 @@ export default function TravelEdit() {
                 .setMovementTypes(newTags)
                 .setIsPublic(isPublic ? 1 : 0)
                 .save(user.id)
-                .then(() => navigate(`/travel/${travel.id}/`))
+                .then(() => navigate(`/travel/${travel.id}/1/`))
         }
     }
 

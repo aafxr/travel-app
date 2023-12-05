@@ -42,6 +42,7 @@ export default function TravelContextProvider() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
+
     useEffect(() => {
         if (user && travelCode && (!state.travel || state.travel.id !== travelCode)) {
             setLoading(true)

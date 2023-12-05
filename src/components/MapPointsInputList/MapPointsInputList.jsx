@@ -66,35 +66,35 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      *
-     * @param {PointsListChangeType} item
+     * @param {PointType} item
      * @returns {Promise<void>}
      */
     async function updatePointData(item) {
         const idx = points.findIndex(p => p.id === item.id)
-        if (~idx) {
-            const {address, id} = points[idx]
-            /**@type{GeoObjectPropertiesType[]}*/
-            const markers = await map.getPointByAddress(address)
-            if (markers.length > 0) {
-                /*** обновляем адресс в массиве points по полученным данным от api карты */
-                const newPoints = pointsList.map(p => {
-                    const marker = markers[0]
+        const {address, id} = item
+        /**@type{GeoObjectPropertiesType[]}*/
+        const pointsProperty = await map.getPointByAddress(address)
+        if (pointsProperty.length > 0) {
+            const marker = pointsProperty[0]
+            console.log(marker)
+            /*** обновляем адресс в массиве points по полученным данным от api карты */
+            item.address = marker.name
+            item.coords = marker.boundedBy[0]
+            item.kind = marker.metaDataProperty.GeocoderMetaData.kind
+            item.locality = marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea?.Locality?.LocalityName
+            || marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.AdministrativeAreaName
 
-                    return p.id === item.id
-                        ? {
-                            ...p,
-                            address: marker.name,
-                            coords: marker.boundedBy[0],
-                            kind: marker.metaDataProperty.GeocoderMetaData.kind,
-                            locality: marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality.LocalityName
-                        }
-                        : p
-                })
-                setPoints(newPoints)
-                onListChange && onListChange(newPoints)
+            let newPointsArray
+            if (~idx) {
+                newPointsArray = [...points]
             } else {
-                pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
+                newPointsArray = [...points, {...item}]
             }
+
+            setPoints(newPointsArray)
+            onListChange && onListChange(newPointsArray)
+        } else {
+            pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
         }
     }
 
@@ -104,12 +104,8 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      * @param item - элемент из массива points
      */
     function handleInputChange(e, item) {
-        const newPoints = points.map(p => {
-            return p === item
-                ? {id: item.id, address: e.target.value}
-                : p
-        })
-        setPoints(newPoints)
+        item.address = e.target.value
+        setPoints([...points])
     }
 
 

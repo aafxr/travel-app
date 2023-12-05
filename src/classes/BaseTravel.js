@@ -115,7 +115,11 @@ export default class BaseTravel extends Entity {
                 p.location = [lat, lng]
             }
             if (p.location ) p.coords = p.location
-            if (p.visited === undefined) p.visited = 0
+            if (!p.visited) p.visited = 0
+            if (p.date_start) p.time_start = p.date_start
+            if (p.date_end) p.time_end = p.date_end
+            delete p.date_start
+            delete p.date_end
             return p
         })
     }
@@ -737,6 +741,22 @@ export default class BaseTravel extends Entity {
             this._modified.places.push(item)
             this.change = true
             this.routeBuilder.updateRoute()
+        }
+        return this
+    }
+
+    /**
+     * обновление точки маршрута
+     * @method
+     * @name BaseTravel.updatePlace
+     * @param {PlaceType} item посещаемое место
+     * @returns {BaseTravel}
+     */
+    updatePlace(item){
+        const idx = this.places.findIndex(p => p._id === item._id)
+        if(~idx) {
+            this._modified.places[idx] = item
+            this.forceUpdate()
         }
         return this
     }

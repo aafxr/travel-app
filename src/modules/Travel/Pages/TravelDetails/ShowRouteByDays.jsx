@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
@@ -11,6 +11,7 @@ import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import RoadActivity from "../../../../classes/RoadActivity";
 import {Tab} from "../../../../components/ui";
 import {type} from "@testing-library/user-event/dist/type";
+import PlaceCard from "../../components/PlaceCard/PlaceCard";
 
 export default function ShowRouteByDays() {
     // const {user} = useUserSelector()
@@ -19,12 +20,13 @@ export default function ShowRouteByDays() {
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
 
-    const [activity, setActivity] = useState(/**@type{Activity}*/ null)
+    const activity= travel.routeBuilder.getActivities()
 
-    useEffect(() => {
-        const act = travel.routeBuilder.getActivities()
-        setActivity(act)
-    }, [])
+    // useEffect(() => {
+    //     console.log('update actions')
+    //     const act =
+    //     setActivity(act)
+    // }, [travel])
 
     useLayoutEffect(() => {
         if (tabs_ref.current && container_ref) {
@@ -34,37 +36,42 @@ export default function ShowRouteByDays() {
     })
 
 
-    useEffect(() => {
-    if (activity)
-        activity.log()
-
-    }, [activity])
-
-        return (
-            <>
-                {
-                    <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
-                        {
-                            activity?.getUniqDaysList()
-                                .map((i) => (
-                                    <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
-                                ))
-                        }
-                    </div>
-                }
-                <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+    // useEffect(() => {
+    //     if (activity)
+    //         activity.log()
+    //
+    // }, [activity])
+    return (
+        <>
+            {
+                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
                     {
-                        activity
-                            ? activity.getActivitiesAtDay(+dayNumber).map((a, idx) => (
-                                <React.Fragment key={idx}>
-                                    {showActivity(travel, a)}
-                                </React.Fragment>))
-                            : <div>Loading...</div>
+                        activity?.getUniqDaysList()
+                            .map((i) => (
+                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
+                            ))
                     }
+                </div>
+            }
+            <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+                {
+                    activity
+                        ? activity.getActivitiesAtDay(+dayNumber).map((a, idx) => (
+                            <React.Fragment key={idx}>
+                                {showActivity(travel, a)}
+                            </React.Fragment>))
+                        : travel.places.length === 0
+                            ? (
+                                <div>
+                                    <Link className='link' to={`/travel/${travel.id}/add/place/`} >Добавить место</Link>
+                                </div>
+                            )
+                            : <div>Loading...</div>
+                }
 
-                </Container>
-            </>
-        )
+            </Container>
+        </>
+    )
 }
 
 
@@ -88,18 +95,7 @@ function showActivity(travel, a) {
             </>
         )
     } else if (a instanceof PlaceActivity)
-        return (
-            <LocationCard
-                id={a.place.id}
-                title={a.place.name}
-                imgURLs={a.place.photos || [DEFAULT_IMG_URL]}
-                entityType={a.place.formatted_address}
-                item={a.place}
-                dateStart={a.start.toISOString()}
-                dateEnd={a.end.toISOString()}
-
-            />
-        )
+        return <PlaceCard placeActivity={a} />
     else if (a instanceof RestTimeActivity)
         return (
             <div>

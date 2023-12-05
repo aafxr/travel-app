@@ -13,10 +13,10 @@ import './FlatButton.css'
 const icon_size = +getComputedStyle(document.documentElement).getPropertyValue('--control-button-size') || 40;
 
 const buttons = [
-    {id: 'appointment', description: "Добавить встречу", icon: <AppointmentIcon/>},
-    {id: 'hotel', description: "Добавить отель", icon: <HotelIcon/>},
+    // {id: 'appointment', description: "Добавить встречу", icon: <AppointmentIcon/>},
+    // {id: 'hotel', description: "Добавить отель", icon: <HotelIcon/>},
     {id: 'place', description: "Добавить место", icon: <TerrainIcon/>},
-    {id: 'invite', description: "Пригласить пользователя", icon: <ShareLinkIcon/>}
+    // {id: 'invite', description: "Пригласить пользователя", icon: <ShareLinkIcon/>}
 ]
 
 /**

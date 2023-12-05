@@ -1,8 +1,6 @@
 import {openDB} from 'idb';
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import sleep from "../utils/sleep";
-import ErrorReport from "../controllers/ErrorReport";
-import TransactionObjectStore from "./TransactionObjectStore";
 
 
 /**
@@ -16,6 +14,7 @@ import TransactionObjectStore from "./TransactionObjectStore";
 async function openDataBase(dbname, version, stores) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
+            console.log('upgrade db')
             const existedStores = Array.from(db.objectStoreNames)
             const storeNameList = stores.map(store => store.name)
             /*** удаление существующих store из indexeddb если их нет в списке storeInfo (т.е. нет в схеме бд) */
@@ -23,14 +22,14 @@ async function openDataBase(dbname, version, stores) {
                 .filter(store => !storeNameList.includes(store))
                 .forEach(store => db.deleteObjectStore(store))
 
-            stores.forEach(function (storeInfo) {
+            stores.forEach( (storeInfo) => {
                 /*** проверяем существует ли в бд таблица с именем storeInfo.name */
                 if (!db.objectStoreNames.contains(storeInfo.name)) {
                     const store = db.createObjectStore(storeInfo.name, {
                         keyPath: storeInfo.key,
                     });
 
-                    storeInfo.indexes.forEach(function (indexName) {
+                    storeInfo.indexes.forEach( (indexName) => {
                         store.createIndex(indexName, indexName, {});
                     });
                     /*** если store существует обновляем индексы для этого store */
@@ -51,9 +50,10 @@ async function openDataBase(dbname, version, stores) {
             stores
                 .filter(store => Array.isArray(store.upgrade))
                 .forEach(store => {
+                    console.log('upgrade store ' + store.name)
                     const idbStore = transaction.objectStore(store.name)
                     idbStore.openCursor()
-                        .then(cursor => transformStoreData(idbStore, cursor, store, oldVersion))
+                        .then((cursor) => transformStoreData(idbStore, cursor, store, oldVersion))
                 })
 
         },
@@ -92,7 +92,9 @@ function transformStoreData(store, cursor, storeInfo, oldVersion) {
             const idx = storeInfo.upgrade.findIndex(i => i.version >= oldVersion)
             if (~idx) {
                 for (const cb of storeInfo.upgrade.slice(idx)) {
+                    console.log(value)
                     value = cb.transformCallback(value)
+                    console.log(value)
                 }
                 store.put(value)
                 cursor.continue().then(cur => transformStoreData(store, cur, storeInfo, oldVersion))
@@ -152,8 +154,8 @@ export class LocalDB {
         this.version = version;
         this.stores = stores;
         this.ready = false
-        this.onReady = onReady || (() => {
-        })
+        this.onReady = onReady || (() => {})
+
         openDataBase(dbname, version, stores)
             .then(function () {
                 this.ready = true

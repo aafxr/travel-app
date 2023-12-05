@@ -52,8 +52,8 @@ export default function TravelAddPlace() {
             console.log(place)
             travel.addPlace({
                     ...place,
-                    date_start: dateRange.start,
-                    date_end: dateRange.end
+                    time_start: dateRange.start,
+                    time_end: dateRange.end
                 }
             )
 

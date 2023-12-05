@@ -53,8 +53,8 @@ const constants = {
         INIT: 'init',
         FETCH: 'fetch',
         UPDATE: 'update',
-        UPDATE_EXP_ACTUAL:'update-expenses-actual',
-        UPDATE_EXP_PLANNED:'update-expenses-planned'
+        UPDATE_EXP_ACTUAL: 'update-expenses-actual',
+        UPDATE_EXP_PLANNED: 'update-expenses-planned'
     },
     TOTAL_EXPENSES: 'totalExpenses',
 
@@ -96,7 +96,7 @@ export const THEME = 'THEME'
 export const MS_IN_DAY = 1000 * 60 * 60 * 24 //число милисекунд в в сутках
 
 export const defaultMovementTags = [
-    {id: 1, icon: <WalkIcon className='img-abs' />, title: 'пешком'},
+    {id: 1, icon: <WalkIcon className='img-abs'/>, title: 'пешком'},
     {id: 2, icon: <CarIcon className='img-abs'/>, title: 'авто'},
     {id: 3, icon: <BusIcon className='img-abs'/>, title: 'общественный транспорт'},
 ]
@@ -104,3 +104,28 @@ export const defaultMovementTags = [
 export const DEFAULT_PLACEMARK_ICON = new URL('../../public/icons/Navigation.png', import.meta.url).toString()
 
 export const DEFAULT_TRAVEL_DETAILS_FILTER = 'defaultTravelDetailsFilter'
+
+const month = {
+    'январь' : 0,
+    'февраль' : 1,
+    'март' : 2,
+    'апрель' : 3,
+    'май' : 4,
+    'июнь' : 5,
+    'июль' : 6,
+    'август' : 7,
+    'сентябрь' : 8,
+    'октябрь' : 9,
+    'ноябрь' : 10,
+    'декабрь' : 11
+}
+
+/**
+ *
+ * @type {Proxy<typeof month>}
+ */
+export const MONTH = new Proxy(month, {
+    get(target, prop){
+        return prop.toLowerCase() in target ? target[prop] : -1
+    }
+})

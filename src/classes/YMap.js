@@ -328,12 +328,17 @@ export default class YMap extends IMap {
         return false
     }
 
-    autoZoom() {
+    autoZoom(defaultZoomLevel) {
         if (!this._map) return this
         const bounds = this._map.geoObjects.getBounds()
         bounds && this._map.setBounds(bounds)
-        const zoom = Math.min(this._map.getZoom(), 15)
-        this._zoom = zoom - 1
+        let zoom = Math.min(this._map.getZoom(), 15)
+        if(defaultZoomLevel && zoom > defaultZoomLevel) {
+            zoom = defaultZoomLevel
+            this._zoom = zoom
+        }else {
+            this._zoom = zoom - 1
+        }
         this._map.setZoom(this._zoom)
         return this
     }

@@ -161,9 +161,10 @@ export default class IMap {
      * установка зума карты так, чтобы все точки на карте попадали в область блока-контейнера карты
      * @abstract
      * @name IMap.autoZoom
+     * @param {number} [defaultZoomLevel]
      * @return {IMap}
      */
-    autoZoom(){
+    autoZoom(defaultZoomLevel){
         console.warn('[IMap] autoZoom not override')
     }
 

@@ -1,0 +1,52 @@
+.chip-input{
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 9px;
+
+
+    color: var(--color-secondary);
+    stroke: white;
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 700;
+    white-space: nowrap;
+
+    border-radius: 9px;
+    transition: opasity .3s;
+    cursor: default;
+    border: none;
+    outline: none;
+    z-index: 100;
+}
+
+
+.chip-input-rounded{
+    border-radius: 30.5rem;
+}
+.chip-input-orange {
+    color: white;
+    background-color: var(--color-primary);
+}
+.chip-input-green {
+    background-color: var(--color-green);
+}
+
+.chip-input-grey{
+    color: var(--color-black);
+    background-color: var(--color-grey-light);
+}
+
+.chip-input-light-orange{
+    color: var(--color-text);
+    background-color: var(--color-primary-light);
+}
+.chip-input-light-orange img{
+    /*stroke: var(--color-text);*/
+}
+
+.chip-input-pointer{
+    cursor: pointer;
+}
