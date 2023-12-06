@@ -4,4 +4,5 @@
  * @property {string} [balloonContentBody]
  * @property {string} [balloonContentFooter]
  * @property {string} [hintContent]
+ * @property {string} [iconContent]
  */

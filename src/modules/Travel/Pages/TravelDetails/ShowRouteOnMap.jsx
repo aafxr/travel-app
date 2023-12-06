@@ -30,7 +30,7 @@ export default function ShowRouteOnMap() {
                 .showRoute(route, {})
                 .autoZoom()
 
-            route.forEach(r => {
+            route.forEach((r, index) => {
                 /**@type{BalloonOptionsType}*/
                 const balloonOptions = {
                     hintContent: r.name,
@@ -54,6 +54,7 @@ export default function ShowRouteOnMap() {
                     </div>
                     `,
                     balloonContentFooter: `<div class="balloon-footer">${r.formatted_address}</div>`,
+                    iconContent: index + 1
                 }
                 map.setBalloonToPoint(r.id, balloonOptions, {maxWidth: window.innerWidth * 0.6})
             })
@@ -78,14 +79,14 @@ export default function ShowRouteOnMap() {
             const service = new BaseService(constants.store.ROUTE)
             /**@type{RouteDetailType | null}*/
             let route = await service.read(travel.id)
-            if(route && !routNeedUpdateNeed(route)){
+            if (route && !routNeedUpdateNeed(route)) {
                 let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
                 map
                     .showPolyRoute(points)
                     .autoZoom()
             }
         }
-        if(travel && map && user)
+        if (travel && map && user)
             initDetailRout().catch(defaultHandleError)
     }, [travel, map, user])
 
@@ -96,13 +97,13 @@ export default function ShowRouteOnMap() {
             /**@type{RouteDetailType | null}*/
             let route = await service.read(travel.id)
 
-            if(route){
-                if(routNeedUpdateNeed(route)){
+            if (route) {
+                if (routNeedUpdateNeed(route)) {
                     route = await updateRoute(service)
                 }
                 let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
                 map.showPolyRoute(points)
-            } else{
+            } else {
                 const newDetailRoute = await updateRoute(service)
                 let points = newDetailRoute.routes.reduce((acc, segment) => acc.concat(segment.route), [])
                 map.showPolyRoute(points)
@@ -117,10 +118,10 @@ export default function ShowRouteOnMap() {
      * @param {RouteDetailType} track
      * @returns {boolean}
      */
-    function routNeedUpdateNeed(track){
+    function routNeedUpdateNeed(track) {
         const places = travel.places
 
-        if(track.viaPoints?.length !== places.length) return true
+        if (track.viaPoints?.length !== places.length) return true
 
         return !places.every(p => track.viaPoints.includes(p.id))
     }
@@ -129,8 +130,8 @@ export default function ShowRouteOnMap() {
      * @param {BaseService} service
      * @returns {Promise<RouteDetailType>}
      */
-    async function updateRoute(service){
-        const updatedRout =  await map.buildDetailRoute(travel.places.map(({id, coords}) => ({id, coords})))
+    async function updateRoute(service) {
+        const updatedRout = await map.buildDetailRoute(travel.places.map(({id, coords}) => ({id, coords})))
         await service.update(updatedRout, user.id)
         return updatedRout
     }

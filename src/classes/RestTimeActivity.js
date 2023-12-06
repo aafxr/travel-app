@@ -17,7 +17,9 @@ export default class RestTimeActivity extends Activity {
         this.status = Activity.REST_TIME
         this.prev = options.prev
         this.next = options.next
-        debugger
+        this.start = new Date(this.prev.end?.getTime() ?? 0)
+        this.end = new Date(this.next.start?.getTime() ?? 0)
+
         this.deltaHourse = this.end.getTimezoneOffset() / 60
         this.delta_ms = this.deltaHourse * 1000 * 60 * 60
         this.start = new Date(this.prev.end.getTime())
@@ -30,6 +32,7 @@ export default class RestTimeActivity extends Activity {
         // const delta =
         // const end =
         this.end = new Date(this.next.start.getTime())
+        this._init()
     }
 
     _init() {
@@ -79,15 +82,15 @@ export default class RestTimeActivity extends Activity {
 
         return `
         ==================
-        
+
           ____  ____   ___   ___
          /___  /___/  /__   /__
         /     /  \\   /__   /__
-        
+
         Начало: ${dateToStringFormat(this.start.toISOString())}
         Закончится: ${dateToStringFormat(this.end.toISOString())}
         длительность: ${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}
-        
+
         ==================
         `
     }

@@ -1,5 +1,6 @@
 /**
  * @typedef {IMapOptionsType} YMapOptionsType
+ */
 
  /**
  * @typedef {IMapPointOptionsType} YMapPointOptionsType
@@ -8,7 +9,7 @@
 
 import defaultPoint from "../utils/default-values/defaultPoint";
 import userLocation from "../utils/userLocation";
-import IMap from "../api/IMap";
+import IMap from "./IMap";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 
@@ -163,10 +164,16 @@ export default class YMap extends IMap {
      */
     getUserLocation() {
         return new Promise(async (resolve, reject) => {
+            let coords
             try {
-                const coords = await userLocation()
-                resolve(coords)
+                coords = await userLocation()
             } catch (err) {
+                defaultHandleError(err)
+            }
+
+            if (Array.isArray(coords)){
+                resolve(coords)
+            } else{
                 window.ymaps.geolocation.get({
                     provider: 'yandex',
                     autoReverseGeocode: true
@@ -194,13 +201,16 @@ export default class YMap extends IMap {
             const placemark = new window.ymaps.Placemark(point.coords, {
                 hintContent: options.hintContent || '',
                 balloonContent: options.balloonContent || '',
+                iconContent: options.iconText
             }, {
-                iconLayout: 'default#image',
+                iconLayout: 'default#imageWithContent',
                 iconImageHref: options.markerType === 'exist' ? this._location_icon : this._add_location_icon,
                 iconImageSize: this._icon_size,
-                iconImageOffset: [-this._icon_size[0] / 2, -this._icon_size[1]],
+                iconImageOffset: [-this._icon_size[0] * 0.5, -this._icon_size[1]],
+                iconContentOffset: [this._icon_size[0] * 0.5, this._icon_size[1] * 0.375],
                 draggable: options.draggable ?? true,
                 cursor: 'pointer',
+                iconContentLayout: this._createIconContentLayout()
             })
 
             this._map.geoObjects.add(placemark)
@@ -229,6 +239,12 @@ export default class YMap extends IMap {
             })
     }
 
+    _createIconContentLayout(){
+        return window.ymaps.templateLayoutFactory.createClass(
+            '<div style="color: #FFFFFF; background-color: #FF8E09; font-size: 9px;transform: translate(-50%, -50%)">$[properties.iconContent]</div>'
+        )
+    }
+
     /** @typedef {MapPointType & Partial<BalloonOptionsType>} MapPointWithOptionsType*/
     /**
      * @method
@@ -240,21 +256,24 @@ export default class YMap extends IMap {
     showRoute(points, routeName) {
         this.clearMap()
 
-        for (const point of points) {
+        for (let idx = 0; idx < points.length; idx += 1) {
+            const point = points[idx]
             try {
-
                 const placemark = new window.ymaps.Placemark(point.coords ? point.coords : point.location, {
                     hintContent: point.hintContent || '',
                     balloonContentHeader: point.balloonContentHeader || '',
                     balloonContentBody: point.balloonContentBody || '',
                     balloonContentFooter: point.balloonContentFooter || '',
+                    iconContent: idx + 1
                 }, {
-                    iconLayout: 'default#image',
-                    iconImageHref: this._location_icon,
+                    iconLayout: 'default#imageWithContent',
+                    iconImageHref:  this._location_icon,
                     iconImageSize: this._icon_size,
-                    iconImageOffset: [-this._icon_size[0] / 2, -this._icon_size[1]],
+                    iconImageOffset: [-this._icon_size[0] * 0.5 , -this._icon_size[1]],
+                    iconContentOffset: [this._icon_size[0] * 0.5, this._icon_size[1] * 0.375],
                     draggable: false,
                     cursor: 'pointer',
+                    iconContentLayout: this._createIconContentLayout()
                 })
 
                 this._pointsMap.set(point.id, placemark)
@@ -441,7 +460,8 @@ export default class YMap extends IMap {
 
     removePoint(point_id) {
         if (this._pointsMap.has(point_id)) {
-            this._map.geoObjects.remove(this._pointsMap.get(point_id))
+            const placemark = this._pointsMap.get(point_id)
+            this._map.geoObjects.remove(placemark)
             this._pointsMap.delete(point_id)
         }
         return this
@@ -452,6 +472,10 @@ export default class YMap extends IMap {
      */
     getMarkers() {
         return this._travel.waypoints || []
+    }
+
+    getDistance(point_1, point_2) {
+        return 0;
     }
 
     // /**

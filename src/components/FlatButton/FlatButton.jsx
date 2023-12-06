@@ -74,7 +74,6 @@ export default function FlatButton({
 
     function handleButtonClick(btn, e) {
         e.stopPropagation()
-        console.log(e)
         switch (btn.id) {
             case 'invite' :
                 onInvite && onInvite()

@@ -36,8 +36,12 @@ export default class RoadActivity extends Activity {
             this.status = Activity.CAR
             this.speed = RoadActivity.CAR_SPEED
         }
-        this.end = new Date(this.prev.end.getTime() + this.distance / this.speed * 1000)
-        this.duration = this.end - this.start
+    }
+
+    _init() {
+        this.start = new Date(this.prev.end.getTime())
+        this.duration = (this.distance / this.speed) * 1000
+        this.end = new Date(this.start.getTime() + this.duration)
         this.next.shiftTimeBy()
     }
 
@@ -47,10 +51,6 @@ export default class RoadActivity extends Activity {
 
     isPlace() {
         return true
-    }
-
-    _init() {
-        super._init()
     }
 
     toString() {
@@ -83,5 +83,15 @@ export default class RoadActivity extends Activity {
     shiftTimeBy(ms) {
         super.shiftTimeBy(ms)
         if (this.next) this.next.shiftTimeBy(ms)
+    }
+
+    setEnd(time) {
+        const date = new Date(time)
+        if (!Number.isNaN(date.getTime()))
+            return this;
+    }
+
+    setStart(time) {
+        return this;
     }
 }

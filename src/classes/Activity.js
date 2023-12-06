@@ -25,23 +25,17 @@ export default class Activity {
 
     static REST_TIME = 300
 
-    duration = 0
-    distance = 0
-
-
+    /**  @type{Date} */
+    travel_start_time
     /**  @type{Date} */
     start
     /** @type{Date} */
     end
 
-    /**@type{PlaceType}*/
-    place
-    /**@type{Activity}*/
-    next = null
-    /**@type{Activity}*/
-    prev
-    /**@type{number}*/
-    status
+    duration = 0
+
+    status = -1
+
     /**@type{number}*/
     _day
 
@@ -50,24 +44,22 @@ export default class Activity {
     constructor(options) {
         this.travel_start_time = options.travel_start_time
 
-        if (!options.prevActivity) {
-            this.prev = null
-            this.start = new Date(this.travel_start_time.getTime())
-        } else {
-            this.prev = options.prevActivity
-            this.start = new Date(this.prev.end.getTime())
-        }
-        this.end = new Date(this.start.getTime() + options.defaultActivitySpentTime)
-        this._init()
+        if (new.target === Activity)
+            throw new Error('Activity is abstract class')
     }
 
     /**
      * @abstract
      */
     _init() {
-
     }
 
+    /**
+     * возвращает массив дней в которые данная активность происходит
+     * @get
+     * @name Activity.days
+     * @return {number[]}
+     */
     get days() {
         let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
         time_start = Math.floor(time_start) + 1
@@ -78,22 +70,27 @@ export default class Activity {
     }
 
     /**
-     * @return {boolean}
+     * возвращает день начала активности
+     * @get
+     * @name Activity.startDay
+     * @return {number}
      */
+    get startDay() {
+        const activityStartDay = (this.start - this.travel_start_time) / MS_IN_DAY
+        return Math.floor(activityStartDay) + 1
+    }
+
+    /** @return {boolean} */
     isPlace() {
         return false
     }
 
-    /**
-     * @return {boolean}
-     */
-    isGoingToNextActivity() {
+    /** @return {boolean} */
+    isRoad() {
         return false
     }
 
-    /**
-     * @return {boolean}
-     */
+    /** @return {boolean} */
     isRest() {
         return false
     }
@@ -103,51 +100,8 @@ export default class Activity {
      * @param {number} ms
      */
     shiftTimeBy(ms = 0) {
-        if (!this.prev)
-            this.start.setTime(this.start.getTime() + ms)
-        else
-            this.start.setTime(this.startAt)
-
+        this.start = new Date(this.start.getTime() + ms)
         this.end = new Date(this.start.getTime() + this.duration)
-    }
-
-    /**
-     * @param {Activity} activity
-     */
-    setPrev(activity) {
-        if (!activity) return
-
-        if (this.prev) {
-            let temp = this.prev
-            temp.next = activity
-            activity.prev = temp
-            activity.next = this
-            this.prev = activity
-        } else {
-            activity.prev = null
-            activity.next = this
-            this.prev = activity
-        }
-        activity.shiftTimeBy()
-    }
-
-    /**
-     * @param {Activity} activity
-     */
-    setNext(activity) {
-        if (!activity) return
-
-        if (this.next) {
-            const temp = this.next
-            this.next = activity
-            activity.prev = this
-            activity.next = temp
-            temp.prev = activity
-        } else {
-            this.next = activity
-            activity.prev = this
-        }
-        this.shiftTimeBy()
     }
 
     /**
@@ -156,9 +110,9 @@ export default class Activity {
      */
     get startAt() {
         if (this.prev)
-            return this.prev.end.getTime()
+            return this.prev.end?.getTime() ?? 0
         else
-            return this.start.getTime()
+            return this.start?.getTime() ?? 0
     }
 
     /**
@@ -171,36 +125,6 @@ export default class Activity {
         return time > Activity.MORNING_TIME && time < Activity.EVNING_TIME
     }
 
-    log() {
-        console.log(this.toString())
-        if (this.next)
-            this.next.log()
-    }
-
-    /**
-     * @param {Activity} activity
-     */
-    append(activity) {
-        if (!activity) return
-
-        if (this.next) this.next.append(activity)
-        else {
-            this.next = activity
-            activity.prev = this
-            activity.shiftTimeBy()
-        }
-    }
-
-    /**
-     * @param {[]} [array]
-     * @return {Activity[]}
-     */
-    toArray(array = []) {
-        array.push(this)
-        if (this.next) this.next.toArray(array)
-        return array
-    }
-
     toString() {
         return 'abstract activity'
     }
@@ -211,27 +135,7 @@ export default class Activity {
      */
     getDaysList(days = []) {
         days.push(...this.days)
-        if (this.next) return this.next.getDaysList(days)
-        else return days
-    }
-
-    /**
-     * @param {number} day
-     * @param {Activity[]} [activities]
-     * @returns {Activity[]}
-     */
-    getActivitiesAtDay(day, activities = []) {
-        if (this.days.includes(day)) activities.push(this)
-        if (this.next) return this.next.getActivitiesAtDay(day, activities)
-        else return activities
-    }
-
-    /**
-     * возвращает список уникальных дней
-     * @returns {number[]}
-     */
-    getUniqDaysList() {
-        return [...new Set(this.getDaysList())]
+        return days
     }
 
     /**
@@ -254,6 +158,49 @@ export default class Activity {
         const [hh, mm, ss] = this.end.toLocaleTimeString().split(':').map(el => +el)
         const time_ms = hh * 60 * 60 * 1000 + mm * 60 * 1000 + ss * 1000
         return (time_ms > Activity.EVENING_TIME || time_ms < Activity.MORNING_TIME);
+    }
+
+    /**
+     * время начало активности
+     * @method
+     * @name Activity.setStart
+     * @param {string | Date} time
+     * @return {Activity}
+     */
+    setStart(time) {
+        const date = new Date(time)
+        if (!Number.isNaN(date.getTime())) {
+            this.start = date
+            this.duration = this.end - this.start
+        }
+        return this
+    }
+
+    /**
+     * время завершения активности
+     * @method
+     * @name Activity.setEnd
+     * @param {string | Date} time
+     * @return {Activity}
+     */
+    setEnd(time) {
+        const date = new Date(time)
+        if (!Number.isNaN(date.getTime()) && date > this.start) {
+            this.end = date
+            this.duration = this.end - this.start
+        }
+        return this
+    }
+
+    /**
+     * установка длительности активности
+     * @param {number} time время в __миллисекундач (мс)__
+     * @return {Activity}
+     */
+    setDuration(time = 0) {
+        this.duration = time
+        this.end = new Date(this.start.getTime() + time)
+        return this
     }
 
 }

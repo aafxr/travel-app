@@ -34,12 +34,13 @@ export default function TravelAddOnMap() {
 
     useEffect(() => {
         if (map && travel.waypoints.length) {
+            window.map = map
             const waypoints = travel.waypoints
             map.clearMap()
-            waypoints.forEach(/**@param{PointType} p*/p => map.addPoint({
+            waypoints.forEach(/**@param{PointType} p*/(p, idx) => map.addPoint({
                 id: p.id,
                 coords: p.coords
-            }, {markerType: "exist"}))
+            }, {markerType: "exist", iconText: idx + 1}))
             map.showRoute(waypoints)
             map.autoZoom()
         }

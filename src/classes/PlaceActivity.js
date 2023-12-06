@@ -11,20 +11,30 @@ export default class PlaceActivity extends Activity {
     /**@type{PlaceType}*/
     place
 
-    /**
-     * @param {PlaceActivityOptionsType} options
-     */
+    /** @param {PlaceActivityOptionsType} options */
     constructor(options) {
         super(options)
         if (!options.place)
             throw new Error('PlaceActivity options prop should have "place" prop')
 
-        this.status = Activity.PLACE
         this.place = options.place
-        let duration
+        this.status = Activity.PLACE
+
+        if (options.defaultActivitySpentTime) this.duration = options.defaultActivitySpentTime
+        if (options.prevActivity) this.prev = options.prevActivity
+
+        this._init()
+    }
+
+    _init() {
         if (this.place.time_start && this.place.time_end)
-            duration = new Date(this.place.time_end) - new Date(this.place.time_start)
-        this.duration = duration || options.defaultActivitySpentTime || 0
+            this.duration = new Date(this.place.time_end) - new Date(this.place.time_start)
+        this.start = new Date(this.place.time_start || this.travel_start_time)
+        if (this.prev?.start > this.start)
+            this.start = this.prev.start
+
+        this.end = new Date(this.start.getTime() + this.duration)
+
     }
 
     isPlace() {
@@ -40,19 +50,15 @@ export default class PlaceActivity extends Activity {
         return `
         ==================
         День ${this.days}
-        
+
         Осмотр местности 👀,
         Начало: ${dateToStringFormat(this.start.toISOString())}
         Закончится: ${dateToStringFormat(this.end.toISOString())}
         длительность: ${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}
-        Координаты: ${this.place.coords[0] || ''}, ${this.place.coords[1] || ''} 
-        
+        Координаты: ${this.place.coords[0] || ''}, ${this.place.coords[1] || ''}
+
         ==================
         `
-    }
-
-    _init() {
-        super._init()
     }
 
     /**
@@ -99,4 +105,15 @@ export default class PlaceActivity extends Activity {
     }
 
 
+    setEnd(time) {
+        super.setEnd(time)
+        this.shiftTimeBy()
+        return this;
+    }
+
+    setStart(time) {
+        super.setStart(time)
+        this.prev?.shiftTimeBy()
+        return this;
+    }
 }

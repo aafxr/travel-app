@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from "react";
 import PageContainer from "../components/Loading/PageContainer";
 import Loader from "../components/Loader/Loader";
-import YMap from "../classes/YMap";
+import YMap from "../api/YMap";
 
 
 /**

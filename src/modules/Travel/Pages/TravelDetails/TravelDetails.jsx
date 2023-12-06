@@ -162,7 +162,7 @@ export default function TravelDetails() {
                         travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
                     }
                     {
-                        travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
+                        // travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
                     }
                 </div>
             </Curtain>

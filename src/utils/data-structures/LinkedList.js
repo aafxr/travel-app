@@ -2,16 +2,16 @@ import LinkedListNode from './LinkedListNode';
 import Comparator from "./Comparator";
 
 export default class LinkedList {
+    /** @type {LinkedListNode} */
+    head = null;
+
+    /** @type {LinkedListNode} */
+    tail = null;
+
     /**
      * @param {Function} [comparatorFunction]
      */
     constructor(comparatorFunction) {
-        /** @var LinkedListNode */
-        this.head = null;
-
-        /** @var LinkedListNode */
-        this.tail = null;
-
         this.compare = new Comparator(comparatorFunction);
     }
 
@@ -134,7 +134,7 @@ export default class LinkedList {
      * @param {function} [findParams.callback]
      * @return {LinkedListNode}
      */
-    find({ value = undefined, callback = undefined }) {
+    find({value = undefined, callback = undefined}) {
         if (!this.head) {
             return null;
         }

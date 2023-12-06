@@ -46,7 +46,7 @@ function MapControls({map, className, onPlusClick, onMinusClick, onUserLocationC
             const userCoords = await map.getUserLocation()
             if (userCoords) {
                 /*** установить центр карты на текущие координаты пользователя */
-                map.focusOnPoint(userCoords)
+                map.showPoint(userCoords)
                 /*** передача геолокации пользователя в родительский компонент */
                 onUserLocationClick && onUserLocationClick(userCoords)
             } else {

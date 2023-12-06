@@ -19,6 +19,7 @@
  * @property {string} [balloonContent]
  * @property {'add' | 'exist'} markerType
  * @property {boolean} [draggable]
+ * @property {string} [iconText]
  */
 
 

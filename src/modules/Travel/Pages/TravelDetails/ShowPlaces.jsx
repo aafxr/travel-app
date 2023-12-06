@@ -42,7 +42,7 @@ export default function ShowPlaces() {
                             .map((i) => (
                                 <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
-                            :  <Tab to={`/travel/${travel.id}/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
+                            :  <Tab to={`/travel/${travel.id}/1/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
                     }
                 </div>
             }

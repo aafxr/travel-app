@@ -9,6 +9,7 @@ import Subscription from "./Subscription";
 import Expense from "./Expense";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import Section from "./Section";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 
 
 /**
@@ -297,8 +298,7 @@ export default class Travel extends BaseTravel {
             list = list.map(l => new BaseTravel(l).object)
             return list
         } catch (err) {
-            console.error(err)
-            ErrorReport.sendError(err).catch(console.error)
+            defaultHandleError(err)
             return []
         }
     }

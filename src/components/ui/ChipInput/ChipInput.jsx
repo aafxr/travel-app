@@ -63,9 +63,14 @@ export default function ChipInput({
     /** @param {InputEvent | KeyboardEvent<HTMLInputElement>} e */
     function handleChange(e) {
         const {type} = e
-        if(type === 'keydown' && e.code === 'Backspace'){
-            setInputValue(inputValue.slice(0, -1))
-            preparede.current = true
+        if(type === 'keydown'){
+            if(e.code === 'Backspace') {
+                setInputValue(inputValue.slice(0, -1))
+                preparede.current = true
+            }else if(e.code === 'Enter'){
+                ref.current.blur()
+                preparede.current = true
+            }
         } else if(!preparede.current && type === 'change') {
             const result = e.target.value.length < 2 && /^[3-9]|[0-2][0-9]/.test(e.target.value)
                 ? e.target.value + ':'
@@ -105,3 +110,13 @@ export default function ChipInput({
         onBlur={handleBlur}
     />
 }
+
+
+/**
+ * activity -> setStart
+ * activity -> setEnd
+ */
+
+
+
+

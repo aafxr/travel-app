@@ -10,7 +10,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
-import YMap from "../../../../classes/YMap";
+import YMap from "../../../../api/YMap";
 
 /**
  * Страница отображения компонент добавления места путешествия
@@ -49,7 +49,6 @@ export default function TravelAddPlace() {
 
     function handleSave() {
         if (place) {
-            console.log(place)
             travel.addPlace({
                     ...place,
                     time_start: dateRange.start,
@@ -83,12 +82,12 @@ export default function TravelAddPlace() {
                         onChange={setDateRange}
                     />
                 </div>
-                <ul className='row gap-1'>
-                    <li><Chip rounded color='grey'>Архитектура</Chip></li>
-                    <li><Chip rounded color='grey'>Парки</Chip></li>
-                    <li><Chip rounded color='grey'>Экскурсии</Chip></li>
-                    <li><Chip rounded color='grey'>Прокат</Chip></li>
-                </ul>
+                {/*<ul className='row gap-1'>*/}
+                {/*    <li><Chip rounded color='grey'>Архитектура</Chip></li>*/}
+                {/*    <li><Chip rounded color='grey'>Парки</Chip></li>*/}
+                {/*    <li><Chip rounded color='grey'>Экскурсии</Chip></li>*/}
+                {/*    <li><Chip rounded color='grey'>Прокат</Chip></li>*/}
+                {/*</ul>*/}
             </Container>
             <Container className='content column gap-1 overflow-x-hidden'>
                 {
