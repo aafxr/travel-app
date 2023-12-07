@@ -204,3 +204,4 @@ export default class Activity {
     }
 
 }
+
