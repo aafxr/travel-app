@@ -38,7 +38,7 @@ export default class Activity {
     end
 
     defaultDuration = 1000 * 60 * 45
-    movementAtNight = false
+    moveAtNight = false
     duration = 0
 
     status = -1
@@ -58,7 +58,7 @@ export default class Activity {
         const preferences = options.preference
 
         if (preferences.defaultSpentTime) this.defaultDuration = preferences.defaultSpentTime
-        if (typeof preferences.moveAtNight === 'boolean') this.movementAtNight = preferences.moveAtNight
+        if (typeof preferences.moveAtNight === 'boolean') this.moveAtNight = preferences.moveAtNight
     }
 
     /**
@@ -234,6 +234,20 @@ export default class Activity {
         const hh = Math.floor((time - ss - mm * 60) / (60 * 60))
 
         return {hh, mm, ss}
+    }
+
+    /**
+     * возвращает свободное время
+     * @method
+     * @name Activity.getRestTime
+     * @returns {{start: Date, end: Date}[]}
+     */
+    getRestTime(){
+        return []
+    }
+
+    hasRestTime(){
+        return false
     }
 
 }

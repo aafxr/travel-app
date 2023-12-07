@@ -6,6 +6,7 @@
 import Activity from "./Activity";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 import dateToStringFormat from "../utils/dateToStringFormat";
+import {MS_IN_DAY} from "../static/constants";
 
 export default class RoadActivity extends Activity {
     static WALK_SPEED = 5 * 1000 / 3600
@@ -18,6 +19,8 @@ export default class RoadActivity extends Activity {
     /** @type{PlaceType}*/
     to
 
+    /**@type {{start: Date, end: Date}[]}*/
+    restTimeList = []
 
     /** @param {RoadActivityOptionsType} options */
     constructor(options) {
@@ -28,7 +31,7 @@ export default class RoadActivity extends Activity {
         this.from = options.from
         this.to = options.to
 
-        this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000
+        this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000 // м/с
 
         if (this.distance < 5_000) {
             this.status = Activity.WALK
@@ -46,6 +49,29 @@ export default class RoadActivity extends Activity {
         this.start = new Date(this.from.time_end || this.travel_start_time)
         this.duration = (this.distance / this.speed) * 1000
         this.end = new Date(this.start.getTime() + this.duration)
+        if (!this.moveAtNight && this.isStartAtNight()) this.shiftTimeToNextDay()
+        this._calcDuration()
+    }
+
+    _calcDuration(){
+        if(this.moveAtNight){
+            this.duration = (this.distance / this.speed) * 1000
+            this.end = new Date(this.start.getTime() + this.duration)
+        }else{
+            const parseTime = /**@param {Date} time */(time) => time.toLocaleTimeString().split(':')
+            let timeLeft_ms = (this.distance / this.speed) * 1000
+
+            const velocity = this.speed / 1000   // м/мс
+
+            const drivingTime = Activity.EVENING_TIME - Activity.MORNING_TIME
+
+            let currentTime = new Date(this.start)
+
+            while(timeLeft_ms > 0){
+                currentTime.getTime()
+
+            }
+        }
     }
 
     isRoad() {
@@ -74,5 +100,34 @@ export default class RoadActivity extends Activity {
         
         ==================
         `
+    }
+
+
+}
+
+
+/**
+ *
+ * @param {Date} start
+ * @param {number} morning
+ * @param {number} evening
+ * @param {number} speed
+ * @param {number} distance
+ */
+function calcArrivingTime (start, morning, evening, speed, distance){
+    let tempDistanse = distance
+    const finalTime = new Date(start)
+    const velosity_ms = speed / 1000
+    const evening_ms = evening * 60 *60 *1000
+    const morning_ms = morning * 60 *60 *1000
+
+    const timeZoneOffset = start.getTimezoneOffset()* 60 *1000
+
+    const start_ms = start.getTime() % MS_IN_DAY - timeZoneOffset
+
+    let s = evening_ms - start_ms
+
+    while (tempDistanse > 0){
+        const s =
     }
 }

@@ -7,6 +7,7 @@ import randomNumber from "../utils/randomNumber";
 import {MS_IN_DAY} from "../static/constants";
 import PlaceActivity from "./PlaceActivity";
 import RoadActivity from "./RoadActivity";
+import LinkedList from "../utils/data-structures/LinkedList";
 
 
 /**
@@ -93,6 +94,73 @@ export default class RouteBuilder {
         this.activity = activity
 
         return activity
+    }
+
+    getActivitiesList() {
+        function compareActivities(a, b) {
+            if (a.end <= b.start)
+                return -1
+            else if (b.end <= a.start)
+                return 1
+            else
+                return 0
+        }
+
+
+        const activitiesList = new LinkedList(compareActivities)
+        const travelStartDate = new Date(this._travel.date_start)
+        const places = this._travel.places
+
+        function placeActivityOptions(idx) {
+            return {
+                place: this._travel.places[idx],
+                travel_start_time: travelStartDate,
+                preference: {
+                    moveAtNight: false,
+                    defaultSpentTime: 45 * 60 * 1000
+                }
+            }
+        }
+
+        function roadActivityOptions(idx) {
+            return {
+                place: this._travel.places[idx],
+                from: this._travel.places[idx],
+                to: this._travel.places[idx + 1],
+                travel_start_time: travelStartDate,
+                preference: {
+                    moveAtNight: false,
+                    defaultSpentTime: 45 * 60 * 1000
+                }
+            }
+        }
+
+        /**@type{Date}*/
+        let nextActivityStartTime
+        for (let i = 0; i < places.length; i += 1) {
+            let placeActivity
+            if (!nextActivityStartTime) {
+                placeActivity = new PlaceActivity(placeActivityOptions(i))
+                nextActivityStartTime = placeActivity.end
+            } else {
+                placeActivity = new PlaceActivity(placeActivityOptions(i))
+                placeActivity.setStart(nextActivityStartTime)
+                nextActivityStartTime = placeActivity.end
+            }
+            activitiesList.append(placeActivity)
+
+
+            if (places[i + 1]) {
+                const roadActivity = new RoadActivity(roadActivityOptions(i))
+                roadActivity.setStart(nextActivityStartTime)
+                nextActivityStartTime = roadActivity.end
+            }
+            let roadActivity
+
+        }
+
+
+        this.activitiesList = activitiesList
     }
 
 
