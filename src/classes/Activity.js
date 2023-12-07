@@ -1,8 +1,13 @@
 /**
+ * @typedef PreferenceType
+ * @property {number} defaultSpentTime время в мс на активность по умочанию
+ * @property {boolean} moveAtNight
+ */
+
+/**
  * @typedef ActivityOptionsType
  * @property {Date} travel_start_time
- * @property {number} [start_place_index]
- * @property {Activity} [prevActivity]
+ * @property {PreferenceType} preference
  * @property {number} defaultActivitySpentTime время в мс на активность по умочанию
  */
 import {MS_IN_DAY} from "../static/constants";
@@ -32,6 +37,8 @@ export default class Activity {
     /** @type{Date} */
     end
 
+    defaultDuration = 1000 * 60 * 45
+    movementAtNight = false
     duration = 0
 
     status = -1
@@ -42,16 +49,16 @@ export default class Activity {
 
     /**  @param {ActivityOptionsType} options */
     constructor(options) {
-        this.travel_start_time = options.travel_start_time
-
         if (new.target === Activity)
             throw new Error('Activity is abstract class')
-    }
 
-    /**
-     * @abstract
-     */
-    _init() {
+        this.travel_start_time = options.travel_start_time
+
+        if (!options.preference) options.preference = {}
+        const preferences = options.preference
+
+        if (preferences.defaultSpentTime) this.defaultDuration = preferences.defaultSpentTime
+        if (typeof preferences.moveAtNight === 'boolean') this.movementAtNight = preferences.moveAtNight
     }
 
     /**
@@ -80,6 +87,17 @@ export default class Activity {
         return Math.floor(activityStartDay) + 1
     }
 
+    /**
+     * возвращает день окончания активности
+     * @get
+     * @name Activity.endDay
+     * @return {number}
+     */
+    get endDay() {
+        const activityEndDay = (this.end - this.travel_start_time) / MS_IN_DAY
+        return Math.floor(activityEndDay) + 1
+    }
+
     /** @return {boolean} */
     isPlace() {
         return false
@@ -96,11 +114,18 @@ export default class Activity {
     }
 
     /**
-     * @abstract
+     * @method
+     * @name Activity.shiftTimeBy
      * @param {number} ms
      */
     shiftTimeBy(ms = 0) {
         this.start = new Date(this.start.getTime() + ms)
+        this.end = new Date(this.start.getTime() + this.duration)
+    }
+
+    shiftTimeToNextDay(){
+        this.start = new Date(this.start.getTime() + MS_IN_DAY)
+        this.start.setHours(9)
         this.end = new Date(this.start.getTime() + this.duration)
     }
 
@@ -109,20 +134,27 @@ export default class Activity {
      * @returns {number}
      */
     get startAt() {
-        if (this.prev)
-            return this.prev.end?.getTime() ?? 0
-        else
-            return this.start?.getTime() ?? 0
+        return this.start?.getTime() ?? 0
     }
 
     /**
-     * @param {number} activityStartTime время начала активности
+     * время в интервале между 9:00 - 18:00
+     * @param {Date} time время начала активности
      * @return{boolean}
      */
-    _isInTimeRange(activityStartTime) {
-        const time = activityStartTime % MS_IN_DAY
+    isAtDayTime(time) {
+        const hh = time.getHours()
+        return hh > 8 && hh < 18
+    }
 
-        return time > Activity.MORNING_TIME && time < Activity.EVNING_TIME
+    /** @returns {boolean} */
+    isStartAtNight(){
+        return !this.isAtDayTime(this.start)
+    }
+
+    /** @returns {boolean} */
+    isEndAtNight() {
+        return !this.isAtDayTime(this.end)
     }
 
     toString() {
@@ -151,14 +183,6 @@ export default class Activity {
         return `${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
     }
 
-    /**
-     * @returns {boolean}
-     */
-    isEndAtNight() {
-        const [hh, mm, ss] = this.end.toLocaleTimeString().split(':').map(el => +el)
-        const time_ms = hh * 60 * 60 * 1000 + mm * 60 * 1000 + ss * 1000
-        return (time_ms > Activity.EVENING_TIME || time_ms < Activity.MORNING_TIME);
-    }
 
     /**
      * время начало активности
@@ -201,6 +225,15 @@ export default class Activity {
         this.duration = time
         this.end = new Date(this.start.getTime() + time)
         return this
+    }
+
+    getDuration(){
+        const time = Math.round(this.duration / 1000)
+        const ss = time % 60
+        const mm = (time - ss) / 60 % 60
+        const hh = Math.floor((time - ss - mm * 60) / (60 * 60))
+
+        return {hh, mm, ss}
     }
 
 }

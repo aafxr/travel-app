@@ -1,7 +1,7 @@
 /**
  * @typedef {ActivityOptionsType} RoadActivityOptionsType
- * @property {PlaceActivity} from
- * @property {PlaceActivity} to
+ * @property {PlaceType} from
+ * @property {PlaceType} to
  */
 import Activity from "./Activity";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
@@ -13,16 +13,20 @@ export default class RoadActivity extends Activity {
     static PUBLIC_TRANSPORT__SPEED = 25 * 1000 / 3600
     static PLANE_SPEED = 900 * 1000 / 3600
 
-    /**
-     * @param {RoadActivityOptionsType} options
-     */
+    /** @type{PlaceType}*/
+    from
+    /** @type{PlaceType}*/
+    to
+
+
+    /** @param {RoadActivityOptionsType} options */
     constructor(options) {
         super(options)
         if (!options.from || !options.to)
             throw  new Error('RoadActivity options prop should contain "from" & "to" props')
 
-        this.setPrev(options.from)
-        this.setNext(options.to)
+        this.from = options.from
+        this.to = options.to
 
         this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000
 
@@ -39,25 +43,17 @@ export default class RoadActivity extends Activity {
     }
 
     _init() {
-        this.start = new Date(this.prev.end.getTime())
+        this.start = new Date(this.from.time_end || this.travel_start_time)
         this.duration = (this.distance / this.speed) * 1000
         this.end = new Date(this.start.getTime() + this.duration)
-        this.next.shiftTimeBy()
     }
 
-    isGoingToNextActivity() {
-        return true
-    }
-
-    isPlace() {
+    isRoad() {
         return true
     }
 
     toString() {
-
-
         let emoji
-
         if (this.speed === RoadActivity.WALK_SPEED)
             emoji = '🚶🏻‍♂️'
         else if (this.speed === RoadActivity.CAR_SPEED)
@@ -78,20 +74,5 @@ export default class RoadActivity extends Activity {
         
         ==================
         `
-    }
-
-    shiftTimeBy(ms) {
-        super.shiftTimeBy(ms)
-        if (this.next) this.next.shiftTimeBy(ms)
-    }
-
-    setEnd(time) {
-        const date = new Date(time)
-        if (!Number.isNaN(date.getTime()))
-            return this;
-    }
-
-    setStart(time) {
-        return this;
     }
 }
