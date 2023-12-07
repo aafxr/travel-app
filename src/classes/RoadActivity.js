@@ -53,11 +53,11 @@ export default class RoadActivity extends Activity {
         this._calcDuration()
     }
 
-    _calcDuration(){
-        if(this.moveAtNight){
+    _calcDuration() {
+        if (this.moveAtNight) {
             this.duration = (this.distance / this.speed) * 1000
             this.end = new Date(this.start.getTime() + this.duration)
-        }else{
+        } else {
             const parseTime = /**@param {Date} time */(time) => time.toLocaleTimeString().split(':')
             let timeLeft_ms = (this.distance / this.speed) * 1000
 
@@ -67,7 +67,7 @@ export default class RoadActivity extends Activity {
 
             let currentTime = new Date(this.start)
 
-            while(timeLeft_ms > 0){
+            while (timeLeft_ms > 0) {
                 currentTime.getTime()
 
             }
@@ -113,21 +113,50 @@ export default class RoadActivity extends Activity {
  * @param {number} evening
  * @param {number} speed
  * @param {number} distance
+ * @return {Date}
  */
-function calcArrivingTime (start, morning, evening, speed, distance){
-    let tempDistanse = distance
+export function calcArrivingTime(start, morning, evening, speed, distance) {
+    let tempDistance = distance
     const finalTime = new Date(start)
-    const velosity_ms = speed / 1000
-    const evening_ms = evening * 60 *60 *1000
-    const morning_ms = morning * 60 *60 *1000
+    const velocity_ms = speed / 1000
+    const evening_ms = evening * 60 * 60 * 1000
+    const morning_ms = morning * 60 * 60 * 1000
+    const night_ms = MS_IN_DAY - evening_ms + morning_ms
 
-    const timeZoneOffset = start.getTimezoneOffset()* 60 *1000
+    const timeZoneOffset = start.getTimezoneOffset() * 60 * 1000
 
-    const start_ms = start.getTime() % MS_IN_DAY - timeZoneOffset
+    let start_ms = Math.abs((finalTime.getTime()- timeZoneOffset) % MS_IN_DAY)
+    if(start_ms >= evening_ms)
+        incriseTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
 
-    let s = evening_ms - start_ms
+    let count = 0
+    while (tempDistance > 0) {
+        count += 1
+        start_ms = Math.abs((finalTime.getTime()- timeZoneOffset) % MS_IN_DAY)
+        let s = (evening_ms - start_ms) * velocity_ms
 
-    while (tempDistanse > 0){
-        const s =
+        if (s >= tempDistance) {
+            const dt = tempDistance / velocity_ms
+            incriseTime(finalTime, dt)
+            return finalTime
+        }
+
+        tempDistance -= s
+        if (count === 1)
+            incriseTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
+        else
+            incriseTime(finalTime, MS_IN_DAY - evening_ms + morning_ms)
     }
+        console.log('count ', count)
+    return finalTime
+}
+
+/**
+ * @param {Date} time
+ * @param {number} ms
+ * @returns {Date}
+ */
+function incriseTime(time, ms = 0) {
+    time.setTime(time.getTime() + ms)
+    return time
 }

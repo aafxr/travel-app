@@ -2,6 +2,8 @@ import {Navigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import constants from "../static/constants";
 import Loader from "../components/Loader/Loader";
+import PageContainer from "../components/Loading/PageContainer";
+import React from "react";
 
 /**
  * hoc component обертка, если пользователь не авторизован перенаправляет пользователя на страницу авторизации
@@ -11,13 +13,9 @@ export default function AuthRequired({children}) {
 
     if (loading) {
         return (
-            <div className='wrapper'>
-                <div className='content center'>
-                    <div className='loader'>
-                        <Loader/>
-                    </div>
-                </div>
-            </div>
+            <PageContainer center>
+                <Loader className='loader'/>
+            </PageContainer>
         )
     }
 

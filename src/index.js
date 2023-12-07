@@ -13,6 +13,7 @@ import storeDB from "./db/storeDB/storeDB";
 import App from './App';
 import './css/index.css';
 import LinkedList from "./utils/data-structures/LinkedList";
+import {calcArrivingTime} from "./classes/RoadActivity";
 
 
 let theme = localStorage.getItem(THEME)
@@ -152,4 +153,6 @@ function compareActivities(a,b){
 }
 
 const list = new LinkedList(compareActivities)
+
+console.log(calcArrivingTime(new Date(), 9 ,21, 1, 3000 * 1000))
 

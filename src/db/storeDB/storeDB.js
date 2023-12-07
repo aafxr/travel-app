@@ -6,4 +6,5 @@ const storeDB = new LocalDB(schema, {
     onError: (err) => ErrorReport.sendError(err)
 });
 
+
 export default storeDB

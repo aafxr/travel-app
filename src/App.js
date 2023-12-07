@@ -71,7 +71,7 @@ function App() {
                 }
                 : JSON.parse(localStorage.getItem(USER_AUTH))
 
-            store.dispatch(initUser(user))
+            store.dispatch(initUser({user}))
             // store.dispatch(initTravelsThunk())
         }
     }, [ready])
@@ -84,6 +84,7 @@ function App() {
             </PageContainer>
         )
     }
+
 
     // useEffect(() => {
     //     const prefetch = [
