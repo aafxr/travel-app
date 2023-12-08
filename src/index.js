@@ -14,6 +14,7 @@ import App from './App';
 import './css/index.css';
 import LinkedList from "./utils/data-structures/LinkedList";
 import {calcArrivingTime} from "./classes/RoadActivity";
+import UserContextProvider from "./contexts/UserContextProvider";
 
 
 let theme = localStorage.getItem(THEME)
@@ -22,9 +23,11 @@ document.body.classList.add(theme)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <BrowserRouter>
-        <App/>
-    </BrowserRouter>
+    <UserContextProvider>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </UserContextProvider>
 );
 
 window.store = storeDB
@@ -143,10 +146,10 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
  * @param {Activity} a
  * @param {Activity} b
  */
-function compareActivities(a,b){
-    if(a.end <= b.start)
+function compareActivities(a, b) {
+    if (a.end <= b.start)
         return -1
-    else if ( b.end <=a.start )
+    else if (b.end <= a.start)
         return 1
     else
         return 0
@@ -154,5 +157,5 @@ function compareActivities(a,b){
 
 const list = new LinkedList(compareActivities)
 
-console.log(calcArrivingTime(new Date(), 9 ,21, 1, 3000 * 1000))
+console.log(calcArrivingTime(new Date(), 9, 21, 1, 3000 * 1000))
 

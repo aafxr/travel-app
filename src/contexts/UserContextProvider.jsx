@@ -1,7 +1,7 @@
 /**
  * объект которы предоставляет telegram auth widget
- * @name UserAuthType
- * @typedef {Object} UserAuthType
+ * @name UserTelegramAuthPayloadType
+ * @typedef {Object} UserTelegramAuthPayloadType
  * @property {number} id
  * @property {string} first_name
  * @property {string} last_name
@@ -12,8 +12,8 @@
 
 /**
  * Тип, описывающий данные пользователя
- * @name UserAppType
- * @typedef {Object} UserAppType
+ * @name UserType
+ * @typedef {Object} UserType
  * @property {string} id id пользователя
  * @property {string} first_name имя пользователя
  * @property {string} last_name фамилия пользователя
@@ -28,12 +28,92 @@
  * Handler , который вызывается telegram auth widget  для дальнейшей обработки данных пользователя
  * @name TelegramAuthHandler
  * @function TelegramAuthHandler
- * @param {UserAuthType} user полученные данные пользователя из telegram
+ * @param {UserTelegramAuthPayloadType} user полученные данные пользователя из telegram
  * @category Utils
  */
 
 /**
  * @typedef {Object} UserContextType
- * @property {UserAppType | null} user
- * @property {TelegramAuthHandler} setUser
+ * @property {UserType | null} user
+ * @property {CoordinatesType} userLoc
+ * @property {boolean} loading
+ * @property {(user: UserType) => unknown } setUser
+ * @property {(newState: UserContextType) => unknown } setUserContext
+ * @property {({id:string}) => unknown} initUser
  */
+
+
+import React, {createContext, useCallback, useEffect, useState} from "react";
+import {Outlet} from "react-router-dom";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import defaultThemeClass from "../utils/defaultThemeClass";
+import constants, {THEME} from "../static/constants";
+import userLocation from "../utils/userLocation";
+import storeDB from "../db/storeDB/storeDB";
+
+/**@type {UserContextType}*/
+const defaultUserContext = {
+    user: null,
+    userLoc: null,
+    loading: false,
+    setUser: () => {
+    },
+    initUser: () => {
+    },
+    setUserContext: () => {
+    }
+}
+
+/**
+ * @type {React.Context<UserContextType>}
+ */
+export const UserContext = createContext(defaultUserContext)
+
+
+export default function UserContextProvider({children}) {
+    const [state, setState] = useState(defaultUserContext)
+
+    const initUser = useCallback(/** @param {{id:string}} userData */async (userData) => {
+        try {
+            if (!userData) return null
+
+            setState({...state, loading: true})
+            const user = await storeDB.getOne(constants.store.USERS, userData.id)
+            let newUserData = userData
+            if (user) {
+                newUserData = {...user, ...newUserData}
+            }
+            await storeDB.editElement(constants.store.USERS, newUserData)
+
+            //инициализация темы приложения (пибо выбранная пользователем, либо default)
+            let theme = localStorage.getItem(THEME)
+            if (!theme || theme === 'default') {
+                theme = defaultThemeClass()
+            }
+            const userLoc = await userLocation().catch(err => null)
+            setState({...state, user: newUserData, userLoc, loading: false})
+        } catch (err) {
+            defaultHandleError(err)
+            setState({...state, user: null, userLoc: null, loading: false})
+        }
+    }, [])
+
+    const setUser = useCallback(/**@param{UserType} newUser*/(newUser) => setState({...state, user: newUser}), [])
+
+    useEffect(() => {
+        setState({
+            initUser,
+            setUser,
+            setUserContext: setState
+        })
+    }, [])
+
+    return (
+        <UserContext.Provider value={state}>
+            <Outlet/>
+            {children}
+        </UserContext.Provider>
+    )
+
+
+}

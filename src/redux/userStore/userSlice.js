@@ -5,7 +5,7 @@ import {THEME} from "../../static/constants";
 import defaultThemeClass from "../../utils/defaultThemeClass";
 
 /**
- * @typedef {Object} UserAppType
+ * @typedef {Object} UserType
  * @property {string} id
  * @property {string} first_name
  * @property {string} last_name
@@ -17,7 +17,7 @@ import defaultThemeClass from "../../utils/defaultThemeClass";
 
 /**
  * @typedef {Object} UserState
- * @property {UserAppType | null} user
+ * @property {UserType | null} user
  * @property {boolean} loading
  * @property {ThemeType} theme
  * @property {[number, number] | null} userLoc

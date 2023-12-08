@@ -2,7 +2,7 @@ import {useEffect, useRef} from "react";
 
 /**
  * @typedef {Function} HandleTelegramAuthFunction
- * @param {UserAuthType} user
+ * @param {UserTelegramAuthPayloadType} user
  */
 
 /**

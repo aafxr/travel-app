@@ -26,7 +26,7 @@ export default function TravelPeople({
                                      }) {
     /**
      * поднятие юзер инфо в вышестоящий компонент
-     * @param {UserAppType} user
+     * @param {UserType} user
      */
     function handleUserClick(user) {
         if (user && onClick) onClick(user)

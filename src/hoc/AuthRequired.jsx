@@ -1,15 +1,14 @@
+import React, {useContext} from "react";
 import {Navigate} from "react-router-dom";
-import {useSelector} from "react-redux";
-import constants from "../static/constants";
 import Loader from "../components/Loader/Loader";
 import PageContainer from "../components/Loading/PageContainer";
-import React from "react";
+import {UserContext} from "../contexts/UserContextProvider";
 
 /**
  * hoc component обертка, если пользователь не авторизован перенаправляет пользователя на страницу авторизации
  */
 export default function AuthRequired({children}) {
-    const {user, loading} = useSelector(state => state[constants.redux.USER])
+    const {user, loading} = useContext(UserContext)
 
     if (loading) {
         return (

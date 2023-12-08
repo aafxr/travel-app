@@ -1,5 +1,5 @@
 import {Provider} from 'react-redux'
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
@@ -51,9 +51,11 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
+import {UserContext} from "./contexts/UserContextProvider";
 
 
 function App() {
+    const {initUser, loading: userLoading} = useContext(UserContext)
     const [state, setState] = useState()
     const ready = useDBReady()
 
@@ -71,13 +73,12 @@ function App() {
                 }
                 : JSON.parse(localStorage.getItem(USER_AUTH))
 
-            store.dispatch(initUser({user}))
-            // store.dispatch(initTravelsThunk())
+            initUser(user)
         }
     }, [ready])
 
 
-    if (!ready ) {
+    if (!ready || userLoading) {
         return (
             <PageContainer center>
                 <Loader className='loader'/>

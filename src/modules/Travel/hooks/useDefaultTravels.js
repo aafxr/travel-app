@@ -10,7 +10,8 @@ import aFetch from "../../../axios";
 /**
  *
  * @param travelController
- * @param user_id
+ * @param user_id.
+ * @deprecated
  */
 export default function useDefaultTravels(travelController, user_id) {
 const dispatch = useDispatch()

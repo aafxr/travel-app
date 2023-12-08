@@ -39,7 +39,7 @@ const defaultMember = {
 export default function TravelInviteMember() {
     const navigate = useNavigate()
 
-    const {/**@type{UserAppType} */user} = useSelector(state => state[constants.redux.USER])
+    const {/**@type{UserType} */user} = useSelector(state => state[constants.redux.USER])
     const [member, setMember] = useState(() => ({
         ...defaultMember,
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`

@@ -22,7 +22,6 @@ import "./TravelEdit.css"
  */
 export default function TravelEdit() {
     const navigate = useNavigate()
-    // const dispatch = useDispatch()
 
     const {user} = useUserSelector()
     const {travel, update} = useTravelContext()

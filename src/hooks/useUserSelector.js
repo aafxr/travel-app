@@ -1,12 +1,15 @@
 import {useSelector} from "react-redux";
 import constants from "../static/constants";
+import {useContext} from "react";
+import {UserContext} from "../contexts/UserContextProvider";
 
 /**
  * хук достает из стейта данные юзера
  * @name useUserSelector
- * @returns {UserState}
+ * @returns {UserType | null}
  * @category Hooks
  */
 export default function useUserSelector(){
-    return useSelector(state => state[constants.redux.USER])
+    const {user} = useContext(UserContext)
+    return user
 }

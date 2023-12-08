@@ -1,11 +1,11 @@
 import clsx from "clsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
 
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
-import {updateUser} from "../../redux/userStore/updateUser";
-import errorReport from "../../controllers/ErrorReport";
+import {UserContext} from "../../contexts/UserContextProvider";
+import useUserSelector from "../../hooks/useUserSelector";
 import MenuIconList from "../MenuIconList/MenuIconList";
 import useOutside from "../../hooks/useOutside";
 import storeDB from "../../db/storeDB/storeDB";
@@ -22,8 +22,8 @@ import './Menu.css'
  * @category Components
  */
 export default function Menu({children, className}) {
-    const dispatch = useDispatch()
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const {setUser} = useContext(UserContext)
+    const {user} = useUserSelector()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
@@ -38,13 +38,10 @@ export default function Menu({children, className}) {
                         })
                             .then(() => {
                                 localStorage.setItem(USER_AUTH, JSON.stringify(null))
-                                dispatch(updateUser(null))
+                                setUser(null)
                                 navigate('/')
                             })
-                            .catch(err => {
-                                console.error(err)
-                                errorReport.sendError(err).catch(console.error)
-                            })
+                            .catch(defaultHandleError)
                     }
                 )
 

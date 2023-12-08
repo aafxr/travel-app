@@ -49,7 +49,7 @@ export default function TravelSettings() {
 
     /**
      * обработка нажатия на карточку пользователя
-     * @param {UserAppType} user
+     * @param {UserType} user
      */
     function handleUserClick(user) {
         if (user) {

@@ -32,7 +32,7 @@ async function getTokensFromDB() {
 
 /**
  * Функция сохраняет токеныв indexedDB
- * @param {UserAppType} userAuth
+ * @param {UserType} userAuth
  * @return {Promise<Awaited<number|string|Date|ArrayBufferView|ArrayBuffer|IDBValidKey[]>[]>}
  */
 async function saveTokensToDB(userAuth) {
@@ -75,7 +75,8 @@ aFetch.interceptors.response.use(
                 saveTokensToDB(data).catch(console.error)
             }
         }
-        if (response.data.message === "Unauthorized") {
+        if (response.data.message === "Unauthorized" && !response.config._retry) {
+            response.config._retry = true
             console.log("Пользователь не авторизован (token expired). Попытка отправить повторный запрос...")
             try {
                 await refreshAuth()
