@@ -10,7 +10,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL
 
 const aFetch = axios.create({
     baseURL,
-    timeout: 2000,
+    timeout: 120000,
 });
 
 const urlWithAuth = [

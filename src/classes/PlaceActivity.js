@@ -1,6 +1,7 @@
 /**
  * @typedef {ActivityOptionsType} PlaceActivityOptionsType
  * @property {PlaceType} place
+ * @property {Date} start
  */
 import Activity from "./Activity";
 import dateToStringFormat from "../utils/dateToStringFormat";
@@ -19,17 +20,23 @@ export default class PlaceActivity extends Activity {
 
         this.place = options.place
         this.status = Activity.PLACE
+        if(options.start)
+            this.start = new Date(options.start)
+        if(options.defaultActivitySpentTime)
+            this.duration = options.preference.defaultSpentTime
 
         this._init()
     }
 
     _init() {
-        if (this.place.time_start && this.place.time_end)
+        if (this.place.time_start && this.place.time_end && false)
             this.duration = new Date(this.place.time_end) - new Date(this.place.time_start)
         else
             this.duration = this.defaultDuration
 
-        this.start = new Date(this.place.time_start || this.travel_start_time)
+        if(!this.start)
+            this.start = new Date(this.place.time_start || this.travel_start_time)
+
         this.end = new Date(this.start.getTime() + this.duration)
     }
 
@@ -44,6 +51,7 @@ export default class PlaceActivity extends Activity {
         ==================
         День ${this.days}
 
+        id: ${this.place._id}
         Осмотр местности 👀,
         Начало: ${dateToStringFormat(this.start.toISOString())}
         Закончится: ${dateToStringFormat(this.end.toISOString())}

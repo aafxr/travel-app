@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
 import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
@@ -62,6 +62,16 @@ export default function TravelDetails() {
                 .catch(console.error)
         }
     }
+
+    useEffect(() => {
+        travel
+            .routeBuilder
+            .createActivitiesList()
+            .toArray()
+            .map(l => l.value)
+            .forEach(a => console.log(a.toString()))
+    }, [travel])
+
 
 
     return (
@@ -131,7 +141,7 @@ export default function TravelDetails() {
             </Container>
 
             <Curtain
-                direction={travel.routeBuilder.getRouteByDay(+dayNumber)[0]?.name}
+                direction={travel.routeBuilder.getPlacesAtDay(+dayNumber)[0]?.name}
                 onChange={setCurtainOpen}
                 defaultOffsetPercents={0}
 
@@ -162,7 +172,7 @@ export default function TravelDetails() {
                         travel.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
                     }
                     {
-                        // travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
+                        travel.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
                     }
                 </div>
             </Curtain>

@@ -48,7 +48,7 @@ export default function ShowPlaces() {
             }
             <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
                 {
-                    travel.routeBuilder.getRouteByDay(+dayNumber || 1).map(p => (
+                    travel.routeBuilder.getPlacesAtDay(+dayNumber || 1).map(p => (
                         <LocationCard
                             key={p._id || p.id}
                             id={p.id}

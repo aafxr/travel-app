@@ -145,20 +145,3 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
 
-/**
- * @param {Activity} a
- * @param {Activity} b
- */
-function compareActivities(a, b) {
-    if (a.end <= b.start)
-        return -1
-    else if (b.end <= a.start)
-        return 1
-    else
-        return 0
-}
-
-const list = new LinkedList(compareActivities)
-
-console.log(calcArrivingTime(new Date(), 9, 21, 1, 3000 * 1000))
-

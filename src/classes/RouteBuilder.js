@@ -8,6 +8,7 @@ import {MS_IN_DAY} from "../static/constants";
 import PlaceActivity from "./PlaceActivity";
 import RoadActivity from "./RoadActivity";
 import LinkedList from "../utils/data-structures/LinkedList";
+import RestTimeActivity from "./RestTimeActivity";
 
 
 /**
@@ -38,11 +39,13 @@ export default class RouteBuilder {
     /** @type{Activity}*/
     activity = null
 
+    /**@type{LinkedList}*/
+    activitiesList
+
 
     /**@param {RouteBuilderOptionsType} options*/
     constructor(options) {
         const {hotels, places, waypoints, appointments, travel} = options
-
         this._travel = travel
         this.hotels = hotels
         this.appoinments = appointments
@@ -96,7 +99,14 @@ export default class RouteBuilder {
         return activity
     }
 
-    getActivitiesList() {
+//=====================================================================
+    /**
+     * создает маршрут активностей
+     * @method
+     * @name RouteBuilder.createActivitiesList
+     * @return {LinkedList}
+     */
+    createActivitiesList() {
         function compareActivities(a, b) {
             if (a.end <= b.start)
                 return -1
@@ -111,18 +121,19 @@ export default class RouteBuilder {
         const travelStartDate = new Date(this._travel.date_start)
         const places = this._travel.places
 
-        function placeActivityOptions(idx) {
+        const placeActivityOptions = (idx, startTime) =>  {
             return {
                 place: this._travel.places[idx],
                 travel_start_time: travelStartDate,
+                start: startTime? startTime : travelStartDate,
                 preference: {
                     moveAtNight: false,
                     defaultSpentTime: 45 * 60 * 1000
-                }
+                },
             }
         }
 
-        function roadActivityOptions(idx) {
+        const roadActivityOptions = (idx) =>  {
             return {
                 place: this._travel.places[idx],
                 from: this._travel.places[idx],
@@ -140,10 +151,10 @@ export default class RouteBuilder {
         for (let i = 0; i < places.length; i += 1) {
             let placeActivity
             if (!nextActivityStartTime) {
-                placeActivity = new PlaceActivity(placeActivityOptions(i))
+                placeActivity = new PlaceActivity(placeActivityOptions(i, nextActivityStartTime))
                 nextActivityStartTime = placeActivity.end
             } else {
-                placeActivity = new PlaceActivity(placeActivityOptions(i))
+                placeActivity = new PlaceActivity(placeActivityOptions(i, nextActivityStartTime))
                 placeActivity.setStart(nextActivityStartTime)
                 nextActivityStartTime = placeActivity.end
             }
@@ -151,16 +162,43 @@ export default class RouteBuilder {
 
 
             if (places[i + 1]) {
-                const roadActivity = new RoadActivity(roadActivityOptions(i))
-                roadActivity.setStart(nextActivityStartTime)
-                nextActivityStartTime = roadActivity.end
-            }
-            let roadActivity
+                const dist = getDistanceFromTwoPoints(places[i].coords, places[i + 1].coords)
+                const roadActivities = RoadActivity.drivingIntervals(nextActivityStartTime, 9, 19, RoadActivity.CAR_SPEED, dist)
+                    .map(rs =>
+                        new RoadActivity({
+                            from: places[i],
+                            to: places[i + 1],
+                            start: rs.start,
+                            end: rs.end,
+                            distance: rs.distance,
+                            preference: {
+                                moveAtNight: false,
+                            },
+                            travel_start_time: travelStartDate
+                        })
+                    )
 
+                nextActivityStartTime = roadActivities[roadActivities.length -1].end
+
+                roadActivities.forEach((ra, idx, arr) => {
+                    activitiesList.append(ra)
+                    if (arr[i + 1]) {
+                        activitiesList.append(
+                            new RestTimeActivity({
+                                startTime: activitiesList.tail.value.end,
+                                endTime: arr[i + 1].start,
+                                travel_start_time: travelStartDate,
+                                preference: {moveAtNight: false}
+                            })
+                        )
+                    }
+                })
+            }
         }
 
-
+        console.log(activitiesList)
         this.activitiesList = activitiesList
+        return activitiesList
     }
 
 
@@ -479,20 +517,32 @@ export default class RouteBuilder {
     /**
      * Метод возвращает сгруппированный спиок мест по дням
      * @method
-     * @name RouteBuilder.getRouteByDay
+     * @name RouteBuilder.getPlacesAtDay
      * @param {number} i
      * @returns {PlaceType[]}
      */
-    getRouteByDay(i) {
-        if (!this.activity)
-            this.getActivities()
+    getPlacesAtDay(i) {
+        if (!this.activitiesList)
+            this.createActivitiesList()
 
-        if (!this.activity) return []
+        return this.activitiesList.toArray()
+            .filter(ln=> ln.value instanceof PlaceActivity && ln.value.startDay === i)
+            .map(ln => ln.value.place)
+    }
 
-        return this.activity
-            .getActivitiesAtDay(i)
-            .filter(a => a instanceof PlaceActivity)
-            .map(a => a.place)
+    /**
+     * Метод возвращает спиок активностейй  в указанный день
+     * @method
+     * @name RouteBuilder.getActivitiesAtDay
+     * @param {number} i
+     * @returns {PlaceType[]}
+     */
+    getActivitiesAtDay(i) {
+        if (!this.activitiesList)
+            this.createActivitiesList()
+
+        return this.activitiesList.toArray()
+            .map(ln => ln.value)
     }
 
     /**
@@ -502,12 +552,14 @@ export default class RouteBuilder {
      * @returns {number[]}
      */
     getActivityDays() {
-        if (!this.activity)
-            this.getActivities()
+        if (!this.activitiesList)
+            this.createActivitiesList()
 
-        if (!this.activity) return []
+        const days = this.activitiesList.toArray()
+            .filter(ln=> ln.value instanceof PlaceActivity)
+            .map(ln => ln.value.startDay)
 
-        return this.activity.getUniqDaysList()
+        return[...( new Set(days))]
     }
 
     /**

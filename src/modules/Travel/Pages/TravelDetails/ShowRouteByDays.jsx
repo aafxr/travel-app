@@ -9,7 +9,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
 import PlaceActivity from "../../../../classes/PlaceActivity";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import RoadActivity from "../../../../classes/RoadActivity";
-import {Tab} from "../../../../components/ui";
+import {Chip, Tab} from "../../../../components/ui";
 import {type} from "@testing-library/user-event/dist/type";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 
@@ -20,7 +20,7 @@ export default function ShowRouteByDays() {
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
 
-    const activity= travel.routeBuilder.getActivities()
+    const activitiesList = travel.routeBuilder.createActivitiesList().toArray().map(a => a.value)
 
     // useEffect(() => {
     //     console.log('update actions')
@@ -46,7 +46,7 @@ export default function ShowRouteByDays() {
             {
                 <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
                     {
-                        activity?.getUniqDaysList()
+                        travel.routeBuilder.getActivityDays()
                             .map((i) => (
                                 <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
@@ -55,15 +55,15 @@ export default function ShowRouteByDays() {
             }
             <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
                 {
-                    activity
-                        ? activity.getActivitiesAtDay(+dayNumber).map((a, idx) => (
+                    activitiesList
+                        ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
                             <React.Fragment key={idx}>
                                 {showActivity(travel, a)}
                             </React.Fragment>))
                         : travel.places.length === 0
                             ? (
                                 <div>
-                                    <Link className='link' to={`/travel/${travel.id}/add/place/`} >Добавить место</Link>
+                                    <Link className='link' to={`/travel/${travel.id}/add/place/`}>Добавить место</Link>
                                 </div>
                             )
                             : <div>Loading...</div>
@@ -95,13 +95,17 @@ function showActivity(travel, a) {
             </>
         )
     } else if (a instanceof PlaceActivity)
-        return <PlaceCard placeActivity={a} />
+        return <PlaceCard placeActivity={a}/>
     else if (a instanceof RestTimeActivity)
         return (
             <div>
+                {/*<div className='row mt-20 gap-1'>*/}
+                {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
+                {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
+                {/*</div>*/}
                 <div className='title-semi-bold'>Свободное время</div>
                 <dl>
-                    <dt>Время до месьа</dt>
+                    <dt>Время до места</dt>
                     <dd>{a.toTimeStingFormat()}</dd>
                 </dl>
             </div>

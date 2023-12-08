@@ -180,7 +180,7 @@ export default class Activity {
         const min = (time - sec) / 60 % 60
         const hour = Math.floor((time - sec - min * 60) / (60 * 60))
 
-        return `${hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
+        return `${hour > 9 ? hour : '0' + hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
     }
 
 

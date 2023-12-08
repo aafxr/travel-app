@@ -2,6 +2,10 @@
  * @typedef {ActivityOptionsType} RoadActivityOptionsType
  * @property {PlaceType} from
  * @property {PlaceType} to
+ * @property {Date} start
+ * @property {Date} end
+ * @property {number} distance
+ * @property {number} status
  */
 import Activity from "./Activity";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
@@ -31,9 +35,32 @@ export default class RoadActivity extends Activity {
         this.from = options.from
         this.to = options.to
 
-        this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000 // м/с
+        this.start = options.start ? new Date(options.start) : null
+        this.end = options.end ? new Date(options.end) : null
 
-        if (this.distance < 5_000) {
+        if (options.distance)
+            this.distance = options.distance
+        else if (this.from && this.end)
+            this.distance = getDistanceFromTwoPoints(options.from.place.coords, options.to.place.coords) * 1000 // м/с
+        else console.warn('Необходимо указать "from" & "to"  либо "distance" в опциях RoadActivity')
+
+        if (options.status) {
+            this.status = options.status
+            switch (this.status) {
+                case Activity.WALK:
+                    this.speed = RoadActivity.WALK_SPEED
+                    break
+                case Activity.PUBLIC_TRANSPORT:
+                    this.speed = RoadActivity.PUBLIC_TRANSPCAR__SPEED
+                    break
+                case Activity.CAR:
+                    this.speed = RoadActivity.CAR__SPEED
+                    break
+                default:
+                    this.speed = RoadActivity.CAR__SPEED
+            }
+
+        } else if (this.distance < 5_000) {
             this.status = Activity.WALK
             this.speed = RoadActivity.WALK_SPEED
         } else if (this.distance < 50_000) {
@@ -42,6 +69,8 @@ export default class RoadActivity extends Activity {
         } else if (this.distance > 50_000) {
             this.status = Activity.CAR
             this.speed = RoadActivity.CAR_SPEED
+        } else {
+            console.warn('RoadActivity')
         }
     }
 
@@ -103,60 +132,86 @@ export default class RoadActivity extends Activity {
     }
 
 
-}
+    /**
+     * мнтод позваляет расчитывать расчитывать интервалы времени если ехать с останвками
+     * @static
+     * @name RoadActivity.drivingIntervals
+     * @param {Date} start время начала движения
+     * @param {number} morning время начала движения
+     * @param {number} evening время заврешения движения
+     * @param {number} speed скорость (м/с)
+     * @param {number} distance растояние (м)
+     * @return {{distance: number, start: Date, end:Date}[]}
+     */
+    static drivingIntervals(start, morning, evening, speed, distance) {
+        /**@type{{distance: number, start: Date, end:Date}[]}*/
+        const pathSlices = []
 
+        let tempDistance = distance
+        const finalTime = new Date(start)
+        const velocity_ms = speed / 1000
+        const evening_ms = evening * 60 * 60 * 1000
+        const morning_ms = morning * 60 * 60 * 1000
+        const night_ms = MS_IN_DAY - evening_ms + morning_ms
 
-/**
- *
- * @param {Date} start
- * @param {number} morning
- * @param {number} evening
- * @param {number} speed
- * @param {number} distance
- * @return {Date}
- */
-export function calcArrivingTime(start, morning, evening, speed, distance) {
-    let tempDistance = distance
-    const finalTime = new Date(start)
-    const velocity_ms = speed / 1000
-    const evening_ms = evening * 60 * 60 * 1000
-    const morning_ms = morning * 60 * 60 * 1000
-    const night_ms = MS_IN_DAY - evening_ms + morning_ms
+        const timeZoneOffset = start.getTimezoneOffset() * 60 * 1000
 
-    const timeZoneOffset = start.getTimezoneOffset() * 60 * 1000
+        let start_ms = Math.abs((finalTime.getTime() - timeZoneOffset) % MS_IN_DAY)
+        if (start_ms >= evening_ms)
+            incriceTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
 
-    let start_ms = Math.abs((finalTime.getTime()- timeZoneOffset) % MS_IN_DAY)
-    if(start_ms >= evening_ms)
-        incriseTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
+        let count = 0
 
-    let count = 0
-    while (tempDistance > 0) {
-        count += 1
-        start_ms = Math.abs((finalTime.getTime()- timeZoneOffset) % MS_IN_DAY)
-        let s = (evening_ms - start_ms) * velocity_ms
+        /**@type{{distance: number, start: Date, end:Date}}*/
+        let pathSlice
+        while (tempDistance > 0) {
+            count += 1
+            start_ms = Math.abs((finalTime.getTime() - timeZoneOffset) % MS_IN_DAY)
+            console.log(finalTime.toLocaleDateString() + ' ' + finalTime.toLocaleTimeString(), start_ms, (finalTime.getTime() - timeZoneOffset) % MS_IN_DAY / (60 * 60 * 1000))
+            let s = (evening_ms - start_ms) * velocity_ms
 
-        if (s >= tempDistance) {
-            const dt = tempDistance / velocity_ms
-            incriseTime(finalTime, dt)
-            return finalTime
+            if (s >= tempDistance) {
+                pathSlice = {
+                    distance: tempDistance,
+                    start: new Date(finalTime)
+                }
+                const dt = tempDistance / velocity_ms
+                incriceTime(finalTime, dt)
+                pathSlice.end = new Date(finalTime)
+                pathSlices.push(pathSlice)
+                break
+            }
+
+            pathSlice = {
+                distance: s,
+                start: new Date(finalTime),
+            }
+
+            tempDistance -= s
+            if (count === 1)
+                incriceTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
+            else
+                incriceTime(finalTime, MS_IN_DAY)
+
+            pathSlice.end =  new Date((finalTime.getTime() - (evening_ms - start_ms)))
+            pathSlices.push(pathSlice)
         }
 
-        tempDistance -= s
-        if (count === 1)
-            incriseTime(finalTime, MS_IN_DAY - start_ms + morning_ms)
-        else
-            incriseTime(finalTime, MS_IN_DAY - evening_ms + morning_ms)
-    }
+
         console.log('count ', count)
-    return finalTime
+        console.log(pathSlices)
+        return pathSlices
+    }
+
 }
+
 
 /**
  * @param {Date} time
  * @param {number} ms
  * @returns {Date}
  */
-function incriseTime(time, ms = 0) {
+function incriceTime(time, ms = 0) {
     time.setTime(time.getTime() + ms)
     return time
 }
