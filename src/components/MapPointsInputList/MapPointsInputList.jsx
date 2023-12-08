@@ -31,7 +31,7 @@ import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
  */
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const navigate = useNavigate()
-    // const {user} = useUserSelector()
+    // const user = useUserSelector()
     const {travel} = useTravelContext()
     // const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{PointType[]} */ [])

@@ -24,7 +24,7 @@ import {DEFAULT_IMG_URL} from "../../../../static/constants";
  */
 export default function TravelAddHotel() {
     const navigate = useNavigate()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     // const dispatch = useDispatch()
     const {hotelCode} = useParams()
 

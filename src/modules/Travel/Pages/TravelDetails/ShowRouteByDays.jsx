@@ -14,7 +14,7 @@ import {type} from "@testing-library/user-event/dist/type";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 
 export default function ShowRouteByDays() {
-    // const {user} = useUserSelector()
+    // const user = useUserSelector()
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)

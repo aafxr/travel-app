@@ -21,14 +21,18 @@ export default function Main({
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
 
     function handleNewTravel() {
-        Travel
-            .newTravel(user.id)
-            .save(user.id)
-            .then((t) => navigate(`/travel/${t.id}/map/`))
-            .catch(console.error)
+        if (user) {
+            Travel
+                .newTravel(user.id)
+                .save(user.id)
+                .then((t) => navigate(`/travel/${t.id}/map/`))
+                .catch(console.error)
+        } else{
+            navigate('/login/')
+        }
     }
 
     return (
@@ -41,7 +45,7 @@ export default function Main({
                         className='banner-button'
                         onClick={handleNewTravel}
                     >
-                        Новая поездка
+                        {user ? 'Новая поездка' : 'Авторизоваться'}
                     </button>
                 </div>
                 {/*<IconButton*/}

@@ -39,7 +39,7 @@ export default function ExpensesAdd({
     const {expenseCode} = useParams()
     const {travel} = useTravelContext()
     // const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const navigate = useNavigate()
 
     const [expName, setExpName] = useState('')

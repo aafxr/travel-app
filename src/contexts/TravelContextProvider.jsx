@@ -37,7 +37,7 @@ export const TravelContext = createContext(defaultTravel)
 export default function TravelContextProvider() {
     const [loading, setLoading] = useState(true)
     const [state, setState] = useState(defaultTravel)
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const update = useUpdate()
     const {travelCode} = useParams()
     const navigate = useNavigate()

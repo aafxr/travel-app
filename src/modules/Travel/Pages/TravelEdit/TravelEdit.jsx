@@ -23,7 +23,7 @@ import "./TravelEdit.css"
 export default function TravelEdit() {
     const navigate = useNavigate()
 
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {travel, update} = useTravelContext()
     /*** название путешествия */
     const [title, setTitle] = useState('')

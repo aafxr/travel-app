@@ -20,7 +20,7 @@ import YMap from "../../../../api/YMap";
  * @category Pages
  */
 export default function TravelAddPlace() {
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {travel} = useTravelContext()
     const navigate = useNavigate()
     const [title, setTitle] = useState('')

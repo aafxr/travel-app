@@ -12,7 +12,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 
 export default function ShowRouteOnMap() {
     const {travel} = useTravelContext()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     // const {dayNumber} = useParams()
     // const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const ref = useRef(/** @type{HTMLDivElement}*/null)

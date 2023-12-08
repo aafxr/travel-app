@@ -19,7 +19,7 @@ import '../../css/Expenses.css'
  * @category Pages
  */
 export default function ExpensesPlan() {
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {travel} = useTravelContext()
     const [sectionComponentData, setSectionComponentData] = useState(/**@type{SectionComponentDataType[]} */[])
 

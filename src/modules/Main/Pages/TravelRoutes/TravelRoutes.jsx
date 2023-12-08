@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
 
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Navigation from "../../../../components/Navigation/Navigation";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 import Container from "../../../../components/Container/Container";
-import constants, {MS_IN_DAY, USER_AUTH} from "../../../../static/constants";
-import {updateUser} from "../../../../redux/userStore/updateUser";
+import {MS_IN_DAY, USER_AUTH} from "../../../../static/constants";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import {PageHeader, Tab} from "../../../../components/ui";
 import removeTravel from "../../../../utils/removeTravel";
@@ -27,10 +26,9 @@ import Travel from "../../../../classes/Travel";
  */
 export default function TravelRoutes() {
     const navigate = useNavigate()
-    const dispatch = useDispatch()
     const {travelsType} = useParams()
     const [travels, setTravels] = useState(/**@type{TravelType[]} */[])
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const {user, setUser} = useContext(UserContext)
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
     const [actualTravels, setActualTravels] = useState(/**@type{TravelType[]} */[])
 
@@ -51,7 +49,7 @@ export default function TravelRoutes() {
     useEffect(() => {
         if (!user) {
             const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (us) dispatch(updateUser(us))
+            if (us) setUser(us)
         }
     }, [user])
 

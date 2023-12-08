@@ -40,7 +40,6 @@ export const userSlice = createSlice({
         reducers: {
             changeTheme(state, action) {
                 const themeName = action.payload === 'default' ? defaultThemeClass() : action.payload
-                // debugger
                 localStorage.setItem(THEME, action.payload.toString())
 
                 document.body.classList.remove('dark-theme')

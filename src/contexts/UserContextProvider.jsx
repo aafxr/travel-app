@@ -44,9 +44,7 @@
 
 
 import React, {createContext, useCallback, useEffect, useState} from "react";
-import {Outlet} from "react-router-dom";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
-import defaultThemeClass from "../utils/defaultThemeClass";
 import constants, {THEME} from "../static/constants";
 import userLocation from "../utils/userLocation";
 import storeDB from "../db/storeDB/storeDB";
@@ -76,7 +74,7 @@ export default function UserContextProvider({children}) {
     const initUser = useCallback(/** @param {{id:string}} userData */async (userData) => {
         try {
             if (!userData) return null
-
+            console.log('initUser')
             setState({...state, loading: true})
             const user = await storeDB.getOne(constants.store.USERS, userData.id)
             let newUserData = userData
@@ -84,13 +82,7 @@ export default function UserContextProvider({children}) {
                 newUserData = {...user, ...newUserData}
             }
             await storeDB.editElement(constants.store.USERS, newUserData)
-
-            //инициализация темы приложения (пибо выбранная пользователем, либо default)
-            let theme = localStorage.getItem(THEME)
-            if (!theme || theme === 'default') {
-                theme = defaultThemeClass()
-            }
-            const userLoc = await userLocation().catch(err => null)
+            const userLoc = null// await userLocation().catch(defaultHandleError)
             setState({...state, user: newUserData, userLoc, loading: false})
         } catch (err) {
             defaultHandleError(err)
@@ -102,15 +94,16 @@ export default function UserContextProvider({children}) {
 
     useEffect(() => {
         setState({
+            ...state,
             initUser,
             setUser,
             setUserContext: setState
         })
     }, [])
 
+
     return (
         <UserContext.Provider value={state}>
-            <Outlet/>
             {children}
         </UserContext.Provider>
     )

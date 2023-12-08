@@ -26,7 +26,7 @@ import './TravelSettings.css'
  */
 export default function TravelSettings() {
     const navigate = useNavigate()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {travel, update} = useTravelContext()
 
     const [adultCount, setAdultCount] = useState(1)

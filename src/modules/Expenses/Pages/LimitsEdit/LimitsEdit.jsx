@@ -1,26 +1,26 @@
 import React, { useEffect, useMemo, useState} from 'react'
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import currencyToFixedFormat from "../../../../utils/currencyToFixedFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
 import updateExpenses from "../../helpers/updateExpenses";
-import createAction from "../../../../utils/createAction";
 import {updateLimits} from "../../helpers/updateLimits";
 import {defaultFilterValue} from "../../static/vars";
-import {useDispatch, useSelector} from "react-redux";
-import storeDB from "../../../../db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
-import {actions} from "../../../../redux/store";
+import constants from "../../../../static/constants";
 
 
-import constants, {reducerConstants} from "../../../../static/constants";
+import {useSelector} from "react-redux";
 
 import '../../css/Expenses.css'
+import BaseService from "../../../../classes/BaseService";
 
 /**
  * страница редактиррования лимитов
@@ -33,7 +33,6 @@ import '../../css/Expenses.css'
 export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
-    const dispatch = useDispatch()
     const {currency} = useSelector(state => state[constants.redux.EXPENSES])
     const {travelCode: primary_entity_id, sectionId} = useParams()
     const {pathname} = useLocation()
@@ -41,7 +40,7 @@ export default function LimitsEdit({
     const isPlan = pathname.includes('plan')
 
     const {defaultSection, sections, limits} = useSelector(state => state[constants.redux.EXPENSES])
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
     const navigate = useNavigate()
 
     const user_id = user.id
@@ -120,6 +119,7 @@ export default function LimitsEdit({
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
     function handler(_) {
+        const limitService = new BaseService(constants.store.LIMIT)
         const value = currencyToFixedFormat(limitValue)
         if (!value) {
             pushAlertMessage({
@@ -144,16 +144,11 @@ export default function LimitsEdit({
 
         if (user_id) {
             if (limitObj) {
-                const data = {...limitObj, value: value}
-                Promise.all([
-                    storeDB.editElement(constants.store.LIMIT, data),
-                    storeDB.addElement(
-                        constants.store.EXPENSES_ACTIONS,
-                        createAction(constants.store.LIMIT, user_id, 'update', data)
-                    )
-                ]).then(() => dispatch(actions.expensesActions.updateLimit(data)))
+                const limit = {...limitObj, value: value}
+                limitService.update(limit, user_id)
+                    .catch(defaultHandleError)
             } else {
-                const data = {
+                const limit = {
                     section_id,
                     personal: personal ? 1 : 0,
                     value: value,
@@ -162,18 +157,11 @@ export default function LimitsEdit({
                     primary_entity_type,
                     id: createId(user_id)
                 }
-                Promise.all([
-                    storeDB.editElement(constants.store.LIMIT, data),
-                    storeDB.addElement(
-                        constants.store.EXPENSES_ACTIONS,
-                        createAction(constants.store.LIMIT, user_id, 'add', data)
-                    )
-                ])
-                    .then(() => dispatch(actions.expensesActions.addLimit(data)))
-                    .catch(console.error)
+                limitService.create(limit, user_id)
+                    .catch(defaultHandleError)
             }
-            updateLimits(primary_entity_id, user_id, currency)()
-                .then(items => dispatch({type: reducerConstants.UPDATE_EXPENSES_LIMIT, payload: items}))
+            updateLimits(primary_entity_id, user_id)()
+                .catch(defaultHandleError)
         } else {
             console.warn('need add user_id')
         }

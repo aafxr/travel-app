@@ -1,12 +1,10 @@
-import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useContext} from "react";
 
 import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
+import {ThemeContext} from "../../../../contexts/ThemeContextProvider";
 import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
-import constants from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
 
 const variants = [
     {id: 1,title:'По умолчанию'},
@@ -31,13 +29,12 @@ const themeConvertor = {
  * @category Pages
  */
 export default function ChangeUserPreferences() {
-    const {theme} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    const {theme, setTheme} = useContext(ThemeContext)
 
     /** обработка изменения темы приложения */
     function handleThemeChange(newTheme) {
         if (variants.includes(newTheme)) {
-            dispatch(actions.userActions.changeTheme(themeConvertor[newTheme.title]))
+            setTheme(themeConvertor[newTheme.title])
         }
     }
 

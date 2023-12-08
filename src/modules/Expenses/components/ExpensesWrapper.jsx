@@ -15,6 +15,7 @@ import {actions} from "../../../redux/store";
 import '../css/Expenses.css'
 import updateCurrency from "../helpers/updateCurrency";
 import storeDB from "../../../db/storeDB/storeDB";
+import useUserSelector from "../../../hooks/useUserSelector";
 
 /**
  * @typedef {Object} DispatchType
@@ -30,11 +31,10 @@ import storeDB from "../../../db/storeDB/storeDB";
  * @constructor
  */
 export default function ExpensesWrapper() {
-    const {sections} = useSelector(state => state[constants.redux.EXPENSES])
     const dispatch = useDispatch()
     const {travelCode: primary_entity_id} = useParams()
     const {worker} = useContext(WorkerContext)
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
     const user_id = user.id
 
     // useDefaultSection(primary_entity_id, user_id)

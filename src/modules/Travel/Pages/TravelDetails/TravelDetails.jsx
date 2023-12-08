@@ -35,7 +35,7 @@ import './TravelDetails.css'
 export default function TravelDetails() {
     const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {travel, update} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)

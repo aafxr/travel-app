@@ -20,7 +20,7 @@ import {Input, PageHeader} from "../../../../components/ui";
  */
 export default function TravelAddAppointment() {
     const { appointmentCode} = useParams()
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     // const dispatch = useDispatch()
     const navigate = useNavigate()
     // const dateHandlers = useChangeInputType('date')

@@ -11,7 +11,7 @@ import {Tab} from "../../../../components/ui";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 
 export default function ShowPlaces() {
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)

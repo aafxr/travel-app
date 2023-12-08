@@ -15,6 +15,7 @@ import './css/index.css';
 import LinkedList from "./utils/data-structures/LinkedList";
 import {calcArrivingTime} from "./classes/RoadActivity";
 import UserContextProvider from "./contexts/UserContextProvider";
+import ThemeContextProvider from "./contexts/ThemeContextProvider";
 
 
 let theme = localStorage.getItem(THEME)
@@ -23,11 +24,13 @@ document.body.classList.add(theme)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <UserContextProvider>
-        <BrowserRouter>
-            <App/>
-        </BrowserRouter>
-    </UserContextProvider>
+    <ThemeContextProvider>
+        <UserContextProvider>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </UserContextProvider>
+    </ThemeContextProvider>
 );
 
 window.store = storeDB

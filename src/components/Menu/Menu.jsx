@@ -23,7 +23,7 @@ import './Menu.css'
  */
 export default function Menu({children, className}) {
     const {setUser} = useContext(UserContext)
-    const {user} = useUserSelector()
+    const user = useUserSelector()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
