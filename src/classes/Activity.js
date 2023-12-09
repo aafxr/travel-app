@@ -59,6 +59,8 @@ export default class Activity {
 
         if (preferences.defaultSpentTime) this.defaultDuration = preferences.defaultSpentTime
         if (typeof preferences.moveAtNight === 'boolean') this.moveAtNight = preferences.moveAtNight
+
+        this.timezoneOffset = this.travel_start_time.getTimezoneOffset() * 60 * 1000
     }
 
     /**
@@ -83,7 +85,7 @@ export default class Activity {
      * @return {number}
      */
     get startDay() {
-        const activityStartDay = (this.start - this.travel_start_time) / MS_IN_DAY
+        const activityStartDay = (this.start - this.travel_start_time - this.timezoneOffset) / MS_IN_DAY
         return Math.floor(activityStartDay) + 1
     }
 
