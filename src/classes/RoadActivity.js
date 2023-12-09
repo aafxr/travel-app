@@ -125,7 +125,7 @@ export default class RoadActivity extends Activity {
         Заккончится: ${dateToStringFormat(this.end.toISOString())}
         Дистанция: ${Math.round(this.distance)} м
         Сккорость: ${this.speed.toFixed(2)} м/с
-        Время в пути: ${this.toTimeStingFormat()}
+        Время в пути: ${this.durationToSting()}
         
         ==================
         `
@@ -203,8 +203,6 @@ export default class RoadActivity extends Activity {
             pathSlices.push(pathSlice);
         }
 
-        console.log('count ', count);
-        console.log(pathSlices);
         return pathSlices;
     }
 

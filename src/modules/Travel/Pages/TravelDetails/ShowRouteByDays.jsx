@@ -106,7 +106,7 @@ function showActivity(travel, a) {
                 <div className='title-semi-bold'>Свободное время</div>
                 <dl>
                     <dt>Время до места</dt>
-                    <dd>{a.toTimeStingFormat()}</dd>
+                    <dd>{a.durationToSting()}</dd>
                 </dl>
             </div>
         )

@@ -12,6 +12,7 @@ import Menu from "../../../../components/Menu/Menu";
 import constants from "../../../../static/constants";
 
 import './Profile.css'
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 
 /**
@@ -22,7 +23,7 @@ import './Profile.css'
  * @category Pages
  */
 export default function Profile() {
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
 
     /**@function {PhotoChangeFunction} */
     function handlePhotoChange(photo){

@@ -37,7 +37,7 @@
  * @property {UserType | null} user
  * @property {CoordinatesType} userLoc
  * @property {boolean} loading
- * @property {(user: UserType) => unknown } setUser
+ * @property {(user: UserType | null) => unknown } setUser
  * @property {(newState: UserContextType) => unknown } setUserContext
  * @property {({id:string}) => unknown} initUser
  */
@@ -45,8 +45,7 @@
 
 import React, {createContext, useCallback, useEffect, useState} from "react";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
-import constants, {THEME} from "../static/constants";
-import userLocation from "../utils/userLocation";
+import constants, {THEME, USER_AUTH} from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 
 /**@type {UserContextType}*/
@@ -90,9 +89,32 @@ export default function UserContextProvider({children}) {
         }
     }, [])
 
-    const setUser = useCallback(/**@param{UserType} newUser*/(newUser) => setState({...state, user: newUser}), [])
+    const setUser = useCallback(/**@param{UserType | null} newUser*/(newUser) => {
+        if (newUser) {
+            localStorage.setItem(USER_AUTH, JSON.stringify(newUser))
+            setState({...state, user: newUser})
+        } else {
+            localStorage.setItem(USER_AUTH, JSON.stringify(null))
+            setState({...state, user: null})
+
+        }
+    }, [])
 
     useEffect(() => {
+        if (process.env.NODE_ENV === 'production'){
+            try {
+                const user = localStorage.getItem(USER_AUTH)
+                if (user) {
+                    storeDB.getOne(constants.store.USERS, user.id)
+                        .then(_user => {
+                            if (_user) setUser(_user)
+                        })
+                }
+
+            } catch (err) {
+            }
+        }
+
         setState({
             ...state,
             initUser,

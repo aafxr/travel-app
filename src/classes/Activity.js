@@ -85,7 +85,8 @@ export default class Activity {
      * @return {number}
      */
     get startDay() {
-        const activityStartDay = (this.start - this.travel_start_time - this.timezoneOffset) / MS_IN_DAY
+        const travelStartOffset = this.travel_start_time % MS_IN_DAY
+        const activityStartDay = (this.start - (this.travel_start_time - travelStartOffset)) / MS_IN_DAY
         return Math.floor(activityStartDay) + 1
     }
 
@@ -96,7 +97,7 @@ export default class Activity {
      * @return {number}
      */
     get endDay() {
-        const activityEndDay = (this.end - this.travel_start_time) / MS_IN_DAY
+        const activityEndDay = (this.end - this.travel_start_time - this.timezoneOffset) / MS_IN_DAY
         return Math.floor(activityEndDay) + 1
     }
 
@@ -176,7 +177,7 @@ export default class Activity {
      *
      * @returns {string}
      */
-    toTimeStingFormat() {
+    durationToSting() {
         const time = Math.round((this.end - this.start) / 1000)
         const sec = time % 60
         const min = (time - sec) / 60 % 60

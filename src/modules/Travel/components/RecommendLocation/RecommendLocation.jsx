@@ -59,7 +59,7 @@ export default function RecommendLocation({
                     <span className='title-semi-bold'>
                         {(activity.distance / 1000).toFixed(2)} км
                         &nbsp;/&nbsp;
-                        {activity.toTimeStingFormat()}
+                        {activity.durationToSting()}
                     </span>
                 </div>
                 {/*<Link className='travel-link' to={`/travel/${travel.id}/map/`}>*/}

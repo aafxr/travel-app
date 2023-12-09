@@ -37,7 +37,6 @@ export default function Menu({children, className}) {
                             [REFRESH_TOKEN]: refresh_token?.value
                         })
                             .then(() => {
-                                localStorage.setItem(USER_AUTH, JSON.stringify(null))
                                 setUser(null)
                                 navigate('/')
                             })

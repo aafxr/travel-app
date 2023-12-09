@@ -543,6 +543,7 @@ export default class RouteBuilder {
 
         return this.activitiesList.toArray()
             .map(ln => ln.value)
+            .filter(/**@param{Activity} a*/a => a.startDay === i)
     }
 
     /**
