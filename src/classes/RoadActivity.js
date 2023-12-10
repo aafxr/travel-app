@@ -37,6 +37,7 @@ export default class RoadActivity extends Activity {
 
         this.start = options.start ? new Date(options.start) : null
         this.end = options.end ? new Date(options.end) : null
+        this.duration = this.end - this.start
 
         if (options.distance)
             this.distance = options.distance
@@ -74,34 +75,34 @@ export default class RoadActivity extends Activity {
         }
     }
 
-    _init() {
-        this.start = new Date(this.from.time_end || this.travel_start_time)
-        this.duration = (this.distance / this.speed) * 1000
-        this.end = new Date(this.start.getTime() + this.duration)
-        if (!this.moveAtNight && this.isStartAtNight()) this.shiftTimeToNextDay()
-        this._calcDuration()
-    }
+    // _init() {
+    //     this.start = new Date(this.from.time_end || this.travel_start_time)
+    //     this.duration = (this.distance / this.speed) * 1000
+    //     this.end = new Date(this.start.getTime() + this.duration)
+    //     if (!this.moveAtNight && this.isStartAtNight()) this.shiftTimeToNextDay()
+    //     // this._calcDuration()
+    // }
 
-    _calcDuration() {
-        if (this.moveAtNight) {
-            this.duration = (this.distance / this.speed) * 1000
-            this.end = new Date(this.start.getTime() + this.duration)
-        } else {
-            const parseTime = /**@param {Date} time */(time) => time.toLocaleTimeString().split(':')
-            let timeLeft_ms = (this.distance / this.speed) * 1000
-
-            const velocity = this.speed / 1000   // м/мс
-
-            const drivingTime = Activity.EVENING_TIME - Activity.MORNING_TIME
-
-            let currentTime = new Date(this.start)
-
-            while (timeLeft_ms > 0) {
-                currentTime.getTime()
-
-            }
-        }
-    }
+    // _calcDuration() {
+    //     if (this.moveAtNight) {
+    //         this.duration = (this.distance / this.speed) * 1000
+    //         this.end = new Date(this.start.getTime() + this.duration)
+    //     } else {
+    //         const parseTime = /**@param {Date} time */(time) => time.toLocaleTimeString().split(':')
+    //         let timeLeft_ms = (this.distance / this.speed) * 1000
+    //
+    //         const velocity = this.speed / 1000   // м/мс
+    //
+    //         const drivingTime = Activity.EVENING_TIME - Activity.MORNING_TIME
+    //
+    //         let currentTime = new Date(this.start)
+    //
+    //         while (timeLeft_ms > 0) {
+    //             currentTime.getTime()
+    //
+    //         }
+    //     }
+    // }
 
     isRoad() {
         return true

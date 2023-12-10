@@ -67,9 +67,6 @@ export default function TravelDetails() {
         travel
             .routeBuilder
             .createActivitiesList()
-            .toArray()
-            .map(l => l.value)
-            .forEach(a => console.log(a.toString()))
     }, [travel])
 
 

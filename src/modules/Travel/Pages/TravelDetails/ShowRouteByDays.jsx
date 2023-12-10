@@ -12,6 +12,7 @@ import RoadActivity from "../../../../classes/RoadActivity";
 import {Chip, Tab} from "../../../../components/ui";
 import {type} from "@testing-library/user-event/dist/type";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
+import RestTimeComponent from "../../components/RestTimeComponent/RestTimeComponent";
 
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
@@ -97,17 +98,18 @@ function showActivity(travel, a) {
     } else if (a instanceof PlaceActivity)
         return <PlaceCard placeActivity={a}/>
     else if (a instanceof RestTimeActivity)
-        return (
-            <div>
-                {/*<div className='row mt-20 gap-1'>*/}
-                {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
-                {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
-                {/*</div>*/}
-                <div className='title-semi-bold'>Свободное время</div>
-                <dl>
-                    <dt>Время до места</dt>
-                    <dd>{a.durationToSting()}</dd>
-                </dl>
-            </div>
-        )
+        return <RestTimeComponent activity={a} />
+        // return (
+        //     <div>
+        //         {/*<div className='row mt-20 gap-1'>*/}
+        //         {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
+        //         {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
+        //         {/*</div>*/}
+        //         <div className='title-semi-bold'>Свободное время</div>
+        //         <dl>
+        //             <dt>Время до места</dt>
+        //             <dd>{a.durationToSting()}</dd>
+        //         </dl>
+        //     </div>
+        // )
 }

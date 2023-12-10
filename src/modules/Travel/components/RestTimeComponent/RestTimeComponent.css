@@ -1,0 +1,93 @@
+.rest{
+    color: var(--color-text);
+}
+
+.rest-container{
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    padding-bottom: 1.25rem;
+    border-radius: var(--br-20);
+    box-shadow: var(--box-shadow);
+    background-color: var(--color-background);
+}
+
+.rest-date-start,
+.rest-date-end{
+    position: absolute;
+    left: 1rem;
+    min-width: 60px;
+    font-size: 1rem;
+    z-index: 2;
+}
+
+.rest-date-start{
+    top: 0;
+    transform: translateY(-50%);
+}
+
+.rest-date-end{
+    bottom: 0;
+    transform: translateY(50%);
+}
+
+.rest-img{
+    position: relative;
+    margin-top: -0.5rem;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+    aspect-ratio: 2.0875;
+    border-radius: var(--br-20);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    overflow: hidden;
+}
+
+.rest-buttons{
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+
+    display: flex;
+    gap: 0.5rem;
+}
+.rest-btn{
+    background-color: var(--color-background)!important;
+}
+
+.rest-img img{
+    object-fit: cover;
+}
+
+.rest-title{
+    margin-top: .5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.rest-entity-type{
+    color: var(--color-grey);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.rest-add-button{
+    padding: 4px!important;
+    width: 40px!important;
+    height: 40px!important;
+    position: absolute;
+    right: 0.5rem;
+    bottom: .5rem;
+}
+
+.rest-add-button-icon{
+    width: 14px!important;
+    height: 14px!important;
+}
+
+.rest-swipe-right{
+    background-color: var(--color-primary-light);
+}
+.rest-swipe-left{
+    background-color: var(--color-primary-light);
+}

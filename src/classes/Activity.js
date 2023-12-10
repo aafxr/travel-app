@@ -126,7 +126,7 @@ export default class Activity {
         this.end = new Date(this.start.getTime() + this.duration)
     }
 
-    shiftTimeToNextDay(){
+    shiftTimeToNextDay() {
         this.start = new Date(this.start.getTime() + MS_IN_DAY)
         this.start.setHours(9)
         this.end = new Date(this.start.getTime() + this.duration)
@@ -151,13 +151,18 @@ export default class Activity {
     }
 
     /** @returns {boolean} */
-    isStartAtNight(){
+    isStartAtNight() {
         return !this.isAtDayTime(this.start)
     }
 
     /** @returns {boolean} */
     isEndAtNight() {
         return !this.isAtDayTime(this.end)
+    }
+
+    /** @returns {boolean} */
+    isStartAtMorning() {
+        return (this.start - this.timezoneOffset) % MS_IN_DAY === Activity.MORNING_TIME
     }
 
     toString() {
@@ -178,12 +183,12 @@ export default class Activity {
      * @returns {string}
      */
     durationToSting() {
-        const time = Math.round((this.end - this.start) / 1000)
+        const time = Math.round(this.duration / 1000)
         const sec = time % 60
         const min = (time - sec) / 60 % 60
         const hour = Math.floor((time - sec - min * 60) / (60 * 60))
 
-        return `${hour > 9 ? hour : '0' + hour}:${min > 9 ? min : '0' + min}:${sec > 9 ? sec : '0' + sec}`
+        return `${hour > 9 ? hour : ('0' + hour)}:${min > 9 ? min : ('0' + min)}:${sec > 9 ? sec : ('0' + sec)}`
     }
 
 
@@ -230,7 +235,7 @@ export default class Activity {
         return this
     }
 
-    getDuration(){
+    getDuration() {
         const time = Math.round(this.duration / 1000)
         const ss = time % 60
         const mm = (time - ss) / 60 % 60
@@ -245,11 +250,11 @@ export default class Activity {
      * @name Activity.getRestTime
      * @returns {{start: Date, end: Date}[]}
      */
-    getRestTime(){
+    getRestTime() {
         return []
     }
 
-    hasRestTime(){
+    hasRestTime() {
         return false
     }
 

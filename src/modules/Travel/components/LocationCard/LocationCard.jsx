@@ -49,7 +49,6 @@ export default function LocationCard({
     const start = dateStart ? dateToStringFormat(dateStart, false) : null
     const end = dateEnd ? dateToStringFormat(dateEnd, false) : null
 
-    console.log(item)
     const rightElement = (
         <div className='column gap-0.5'>
             {/*<PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd(id)}/>*/}

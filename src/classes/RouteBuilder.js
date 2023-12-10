@@ -182,11 +182,11 @@ export default class RouteBuilder {
 
                 roadActivities.forEach((ra, idx, arr) => {
                     activitiesList.append(ra)
-                    if (arr[i + 1]) {
+                    if (arr[idx + 1]) {
                         activitiesList.append(
                             new RestTimeActivity({
-                                startTime: activitiesList.tail.value.end,
-                                endTime: arr[i + 1].start,
+                                startTime: ra.end,
+                                endTime: arr[idx + 1].start,
                                 travel_start_time: travelStartDate,
                                 preference: {moveAtNight: false}
                             })
@@ -196,7 +196,6 @@ export default class RouteBuilder {
             }
         }
 
-        console.log(activitiesList)
         this.activitiesList = activitiesList
         return activitiesList
     }

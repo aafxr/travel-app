@@ -44,7 +44,7 @@ export default function RecommendLocation({
 
     return (
         <div className='recommend-location'>
-            {/*{time_start && <Chip className='location-date-start'>{activity.start.toLocaleTimeString().slice(0, -3)}</Chip>}*/}
+            {activity.isStartAtMorning() && <Chip className='recommend-activity-start'>{activity.start.toLocaleTimeString().slice(0, -3)}</Chip>}
             {activity.isEndAtNight() && <Chip className='recommend-activity-end'>{activity.end.toLocaleTimeString().slice(0, -3)}</Chip>}
             {/*<IconButton*/}
             {/*    className='recommend-location-add'*/}

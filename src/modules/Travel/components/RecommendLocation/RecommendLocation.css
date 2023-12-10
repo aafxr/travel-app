@@ -22,10 +22,19 @@
     height: var(--icon-size);
 }
 
+.recommend-activity-start,
 .recommend-activity-end{
     position: absolute;
     left: 0;
+    font-size: 1.005rem;
+}
+
+.recommend-activity-start{
+    top: 0;
+    transform: translate(-43%, -50%);
+}
+
+.recommend-activity-end{
     bottom: 0;
     transform: translate(-43%, 100%);
-    font-size: 1.005rem;
 }

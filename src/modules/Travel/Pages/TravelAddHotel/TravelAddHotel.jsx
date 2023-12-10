@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect, useRef, useState} from "react";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 
 import InputWithPlaces from "../../../../components/ui/InputWithSuggests/InputWithPlaces";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -23,6 +23,7 @@ import {DEFAULT_IMG_URL} from "../../../../static/constants";
  * @category Pages
  */
 export default function TravelAddHotel() {
+    const [searchParams, _] = useSearchParams()
     const navigate = useNavigate()
     const user = useUserSelector()
     // const dispatch = useDispatch()
@@ -32,6 +33,8 @@ export default function TravelAddHotel() {
     const [hotel, setHotel] = useState(/**@type{HotelType | null} */null)
 
     const [places, setPlaces] = useState(/***@type{PlaceType[]}*/[]);
+
+    const paramsPrepared = useRef(false)
 
     //==================================================================================================================
     /** инициализация переменн hotel */
@@ -49,6 +52,21 @@ export default function TravelAddHotel() {
         }
     }, [hotelCode, travel, hotel])
 
+
+    useEffect(() => {
+        if(hotel && searchParams && !paramsPrepared.current){
+            const start = new Date(+searchParams.get('start'))
+            const end = new Date(+searchParams.get('end'))
+            paramsPrepared.current = true
+
+            setHotel({
+                ...hotel,
+                check_in: start.toISOString(),
+                check_out: end.toISOString()
+            })
+        }
+    }, [searchParams, hotel])
+
     // handler hotel details ===========================================================================================
     /**
      * обработчик, обновляет данные hotel по ключу key
@@ -63,6 +81,7 @@ export default function TravelAddHotel() {
         }
     }
 
+    console.log(searchParams)
     //==================================================================================================================
     /** сохранение информации об отеле и перенаправление пользователя */
     function handleHotelSave() {
@@ -89,7 +108,6 @@ export default function TravelAddHotel() {
         }
     }
 
-    console.log(hotel)
     return (
         <div className='wrapper'>
             <Container className='column gap-1 pb-20'>
@@ -118,6 +136,7 @@ export default function TravelAddHotel() {
                                                 {travel.waypoints.map(w => (
                                                     !!w.locality && (
                                                         <Chip
+                                                            key={w.id}
                                                             color={hotel.location === w.locality ? "orange" : "grey"}
                                                             onClick={() => handleHotelDetailsChange({target: {value: w.locality || ''}}, 'location')}
                                                             rounded
@@ -132,7 +151,7 @@ export default function TravelAddHotel() {
                                     )
                                 }
                                 <DateRange
-                                    init={{start: travel.date_start, end: travel.date_end}}
+                                    init={{start: hotel.check_in || travel.date_start, end: hotel.check_out || travel.date_end}}
                                     minDateValue={travel.date_start}
                                     // maxDateValue={travel.date_end}
                                     startValue={hotel.check_in}
