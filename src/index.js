@@ -145,13 +145,3 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
-
-const service = new BaseService(constants.store.EXPENSES_ACTUAL)
-service.getCursor()
-    .then(async (cursor) => {
-        let cursorPointer = cursor
-        while (cursorPointer) {
-            if(cursorPointer.value.id.endsWith('1701742789225'))console.log(cursorPointer.value)
-            cursorPointer = await cursorPointer.continue()
-        }
-    })

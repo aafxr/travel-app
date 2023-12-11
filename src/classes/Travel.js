@@ -81,10 +81,6 @@ export default class Travel extends BaseTravel {
 
         this._updateManager = new Subscription()
 
-        this._loadExpensesActual()
-        this._loadExpensesPlaned()
-
-
         this.expensesService = {
             actual: new BaseService(constants.store.EXPENSES_ACTUAL, {
                 onCreate: this._onChangeExpense.bind(this, 'actual'),
@@ -99,11 +95,14 @@ export default class Travel extends BaseTravel {
         }
 
 
+
         this.limitService = new BaseService(constants.store.LIMIT, {})
         this.sectionService = new BaseService(constants.store.SECTION, {})
         this.hotelService = new BaseService(constants.store.HOTELS, {})
         this.appointmentService = new BaseService(constants.store.APPOINTMENTS, {})
 
+        this._loadExpensesActual()
+        this._loadExpensesPlaned()
 
         this._expenseFilter = defaultFilterValue()
         Section.defaultSections()
@@ -145,7 +144,7 @@ export default class Travel extends BaseTravel {
             .then(/** @param{ExpenseType[]} e*/e => e.map(pe => new Expense(this, pe, this.user_id, 'planned')))
             .then(pe => {
                 pe.forEach(e => {
-                    e.isPersonal()
+                    e.isPersonal(this.user_id)
                         ? this._expenses.planned.Personal.set(e.id, e)
                         : this._expenses.planned.Common.set(e.id, e)
                 })

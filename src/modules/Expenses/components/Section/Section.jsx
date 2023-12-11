@@ -130,9 +130,14 @@ function SectionItem({expense, user_id}) {
 
     async function handleRemove() {
         if (expense) {
-            isPlan
-                ? await travel.expensesService.planned.delete(expense.object, user_id).catch(defaultHandleError)
-                : await travel.expensesService.actual.delete(expense.object, user_id).catch(defaultHandleError)
+            if (isPlan) {
+                console.log(travel.expensesService.planned.delete)
+                await travel.expensesService.planned.delete(expense.object, user_id).catch(defaultHandleError)
+            }
+            else {
+                console.log(travel.expensesService.actual.delete)
+                await travel.expensesService.actual.delete(expense.object, user_id).catch(defaultHandleError)
+            }
             travel.removeExpense(expense)
             pushAlertMessage({type: 'success', message: `Успешно удалено`})
         }

@@ -69,7 +69,13 @@ export default function TravelDetails() {
         travel
             .routeBuilder
             .createActivitiesList()
+        setCurtainOpen(travel.isCurtainOpen)
     }, [travel])
+
+    function handleCurtain(val = true) {
+        travel.setCurtainOpen(val)
+        setCurtainOpen(val)
+    }
 
 
     return (
@@ -133,15 +139,15 @@ export default function TravelDetails() {
                             title='Чек-лист'
                             onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
                         />
-                        <IconButton icon={<ChatIcon badge/>}/>
+                        {/*<IconButton icon={<ChatIcon badge/>}/>*/}
                     </div>
                 </div>
             </Container>
 
             <Curtain
                 direction={travel.routeBuilder.getPlacesAtDay(+dayNumber)[0]?.name}
-                onChange={setCurtainOpen}
-                defaultOffsetPercents={0}
+                onChange={handleCurtain}
+                defaultOffsetPercents={curtainOpen ? 0 : 1}
 
             >
                 <div className='h-full relative'>

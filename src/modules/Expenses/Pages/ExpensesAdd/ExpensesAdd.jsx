@@ -143,6 +143,7 @@ export default function ExpensesAdd({
             .setCurrency(expCurr)
             .setCreatedAt(new Date().toISOString())
             .setSectionId(section_id)
+            .setPrimaryEntityID(travel.id)
             .save()
             .then(e => travel.addExpense(e, isPlan ? 'planned' : 'actual'))
             .catch(defaultHandleError)

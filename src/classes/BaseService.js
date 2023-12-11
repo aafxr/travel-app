@@ -45,7 +45,7 @@ export default class BaseService{
         this.create = this.create.bind(this)
         this.read = this.read.bind(this)
         this.update = this.update.bind(this)
-        this.delete = this.create.bind(this)
+        this.delete = this.delete.bind(this)
     }
 
     /**

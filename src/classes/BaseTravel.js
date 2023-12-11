@@ -51,6 +51,7 @@ export default class BaseTravel extends Entity {
     /**@type{TravelDetailsFilterType}*/
     _travelDetailsFilter
 
+    _isCurtainOpen = true
 
     /**
      * @param {TravelType} item
@@ -122,6 +123,25 @@ export default class BaseTravel extends Entity {
             delete p.date_end
             return p
         })
+    }
+
+    /**
+     * @method
+     * @name BaseTravel.setCurtainOpen
+     * @param {boolean} isOpen
+     */
+    setCurtainOpen(isOpen){
+        this._isCurtainOpen = isOpen
+
+    }
+
+    /**
+     * @get
+     * @name BaseTravel.isCurtainOpen
+     * @return {boolean}
+     */
+    get isCurtainOpen(){
+        return this._isCurtainOpen
     }
 
 
