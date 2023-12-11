@@ -117,29 +117,35 @@ export default function Curtain({
 
     //================= drag handlers ============================================================================
     function handleTouchStart(e) {
+        e.stopPropagation()
         document.documentElement.classList.add('disable-reload')
         startPosition(e.touches[0].pageY)
     }
 
     function handleTouchEnd(e) {
+        e.stopPropagation()
         document.documentElement.classList.remove('disable-reload')
         endPosition(e.touches[0]?.pageY)
     }
 
     function handleTouchMove(e) {
+        e.stopPropagation()
         movePosition(e.touches[0].pageY)
     }
 
     //====================================
     function handleDragStart(e) {
+        e.stopPropagation()
         startPosition(e.pageY)
     }
 
     function handleDragEnd(e) {
+        e.stopPropagation()
         endPosition(e.pageY)
     }
 
     function handleDrag(e) {
+        e.stopPropagation()
         movePosition(e.pageY)
     }
 
