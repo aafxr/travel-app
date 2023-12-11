@@ -2,21 +2,21 @@ import clsx from "clsx";
 import React, {useMemo} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import useTravelContext from "../../../../hooks/useTravelContext";
 import {formatter} from "../../../../utils/currencyFormat";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Line from "../Line/Line";
 
 import './Section.css'
-import useTravelContext from "../../../../hooks/useTravelContext";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * @function
  * @name Section
  * @param {string} title - имя секции расходов
- * @param {ExpenseType[]} expenses
+ * @param {Expense[]} expenses
  * @param {number} limit
  * @param {number} total
  * @param {string} section_id
@@ -43,7 +43,7 @@ function Section({
     const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
 
     let balance = limit - total
-
+    console.log(expenses)
     const sortedExpenses = useMemo(() => {
         return expenses
             .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
@@ -91,7 +91,6 @@ function Section({
                                             <SectionItem
                                                 key={item.id}
                                                 expense={item}
-                                                isPlan={planed}
                                                 user_id={user_id}
                                             />
                                         )
@@ -113,18 +112,17 @@ function Section({
 /**
  * @function
  * @param {Expense} expense
- * @param isPlan
  * @param user_id
  * @returns {JSX.Element}
  * @category Expenses-Component
  */
-function SectionItem({expense, isPlan, user_id}) {
+function SectionItem({expense, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
     const {travel} = useTravelContext()
     const navigate = useNavigate();
 
     let time = dateToStringFormat(datetime)
-
+    const isPlan = expense.type === 'planned'
     const editRoute = isPlan
         ? `/travel/${primary_entity_id}/expenses/plan/edit/${id}/`
         : `/travel/${primary_entity_id}/expenses/edit/${id}/`
@@ -135,6 +133,7 @@ function SectionItem({expense, isPlan, user_id}) {
             isPlan
                 ? await travel.expensesService.planned.delete(expense.object, user_id).catch(defaultHandleError)
                 : await travel.expensesService.actual.delete(expense.object, user_id).catch(defaultHandleError)
+            travel.removeExpense(expense)
             pushAlertMessage({type: 'success', message: `Успешно удалено`})
         }
     }

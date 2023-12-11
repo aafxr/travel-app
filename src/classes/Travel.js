@@ -111,18 +111,17 @@ export default class Travel extends BaseTravel {
     }
 
     async _filterExpensesFromCursorFunc(cursor) {
-    const expActual = []
-    let pointer = cursor
-    while (pointer) {
-        console.log(pointer.value.primary_entity_id,  this.id, pointer.value.primary_entity_id === this.id)
-        if (pointer.value.primary_entity_id === this.id)
-            expActual.push(pointer.value)
-        pointer = await pointer.continue()
+        const expActual = []
+        let pointer = cursor
+        while (pointer) {
+            if (pointer.value.primary_entity_id === this.id)
+                expActual.push(pointer.value)
+            pointer = await pointer.continue()
+        }
+        return expActual
     }
-    return expActual
-}
 
-    _loadExpensesActual(){
+    _loadExpensesActual() {
         this._expensesLoaded = false
         new BaseService(constants.store.EXPENSES_ACTUAL)
             .getCursor()
@@ -138,7 +137,7 @@ export default class Travel extends BaseTravel {
             .then(() => this._expensesLoaded = true)
     }
 
-    _loadExpensesPlaned(){
+    _loadExpensesPlaned() {
         this._expensesLoaded = false
         new BaseService(constants.store.EXPENSES_PLAN)
             .getCursor()
@@ -459,23 +458,22 @@ export default class Travel extends BaseTravel {
      * @method
      * @name Travel.removeExpense
      * @param {Expense} expense
-     * @param {'actual' | 'planned'} type
      * @returns {Travel}
      */
-    removeExpense(expense, type) {
+    removeExpense(expense) {
         const personal = expense.isPersonal(this.user_id)
-        if (expense && type) {
-            if (type === 'actual') {
+        if (expense ) {
+            if (expense.type === 'actual') {
                 personal
                     ? this._expenses.actual.Personal.delete(expense.id)
                     : this._expenses.actual.Common.delete(expense.id)
-            } else if (type === 'planned') {
+            } else if (expense.type === 'planned') {
                 personal
                     ? this._expenses.planned.Personal.delete(expense.id)
                     : this._expenses.planned.Common.delete(expense.id)
             }
         }
-
+        this._onChangeExpense(expense.type, expense.object)
         this._update()
         return this
     }
