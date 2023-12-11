@@ -94,16 +94,18 @@ export default function Curtain({
 
     function curtainHandler(e) {
         e.stopPropagation()
-        if (topOffset > minOffset * (1 + scrollDiff)) {
-            setTopOffset(minOffset)
-            onChange && onChange(false)
-            animateTop(curtainRef.current, minOffset, duration)()
-        } else {
-            const t = calcTopOffset()
-            setTopOffset(t)
-            onChange && onChange(true)
-            animateTop(curtainRef.current, t, duration)()
+        if(e.type === 'mouseup') {
+            if (topOffset > minOffset * (1 + scrollDiff)) {
+                setTopOffset(minOffset)
+                onChange && onChange(false)
+                animateTop(curtainRef.current, minOffset, duration)()
+            } else {
+                const t = calcTopOffset()
+                setTopOffset(t)
+                onChange && onChange(true)
+                animateTop(curtainRef.current, t, duration)()
 
+            }
         }
     }
 
@@ -197,7 +199,10 @@ export default function Curtain({
                     <div
                         ref={cTopRef}
                         className='curtain-header'
+                        onMouseUp={(e) => curtainHandler(e)}
+                        onMouseDown={(e) => curtainHandler(e)}
                         onClick={(e) => curtainHandler(e)}
+                        onDoubleClick={(e) => curtainHandler(e)}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onDrag={handleDrag}

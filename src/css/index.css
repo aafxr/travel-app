@@ -387,8 +387,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: transparent!important;
 }
 
-[class*='copyrights'],[class*='ymaps-2-1-79-controls']{
+/*[class*='copyrights'],*/
+[class*='ymaps-2-1-79-controls']{
     visibility: hidden;
+    pointer-events: none;
 }
 
 .control-button{
