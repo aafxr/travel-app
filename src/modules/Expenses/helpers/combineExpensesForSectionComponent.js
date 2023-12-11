@@ -9,6 +9,7 @@
 
 import storeDB from "../../../db/storeDB/storeDB";
 import constants from "../../../static/constants";
+import BaseService from "../../../classes/BaseService";
 
 /**
  * @param {Travel} travel
@@ -26,6 +27,16 @@ export default async function combineExpensesForSectionComponent(travel, type, f
 
     /**@type{LimitType[]}*/
     const limits = await storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travel.id)
+    // await new BaseService(constants.store.LIMIT)
+    //     .getCursor()
+    //     .then(async (cursor) => {
+    //         while (cursor){
+    //             if (cursor.value.id.endsWith(travel.id))
+    //                 limits.push(cursor.value)
+    //             cursor = await cursor.continue()
+    //         }
+    //     })
+
 
     /**@type{Map<string, LimitType[]>}*/
     const limitsMap = new Map()

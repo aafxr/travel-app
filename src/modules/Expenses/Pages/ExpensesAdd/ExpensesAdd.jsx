@@ -133,7 +133,7 @@ export default function ExpensesAdd({
         /**@type{Expense}*/
         let _ex
         if (expense) _ex = expense
-        else _ex = new Expense(undefined, undefined, user.id, expensesType)
+        else _ex = new Expense(travel, undefined, user.id, expensesType)
 
 
         _ex

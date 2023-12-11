@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState} from 'react'
+import {useSelector} from "react-redux";
+import React, {useEffect, useMemo, useState} from 'react'
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
@@ -7,20 +8,19 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
+import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
 import updateExpenses from "../../helpers/updateExpenses";
+import BaseService from "../../../../classes/BaseService";
 import {updateLimits} from "../../helpers/updateLimits";
 import {defaultFilterValue} from "../../static/vars";
-import createId from "../../../../utils/createId";
 import constants from "../../../../static/constants";
-
-
-import {useSelector} from "react-redux";
+import storeDB from "../../../../db/storeDB/storeDB";
+import createId from "../../../../utils/createId";
 
 import '../../css/Expenses.css'
-import BaseService from "../../../../classes/BaseService";
 
 /**
  * страница редактиррования лимитов
@@ -34,12 +34,13 @@ export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
     const {currency} = useSelector(state => state[constants.redux.EXPENSES])
+    const {travel} = useTravelContext()
     const {travelCode: primary_entity_id, sectionId} = useParams()
     const {pathname} = useLocation()
 
     const isPlan = pathname.includes('plan')
 
-    const {defaultSection, sections, limits} = useSelector(state => state[constants.redux.EXPENSES])
+    // const {defaultSection, sections, limits} = useSelector(state => state[constants.redux.EXPENSES])
     const user = useUserSelector()
     const navigate = useNavigate()
 
@@ -50,7 +51,7 @@ export default function LimitsEdit({
         : `/travel/${primary_entity_id}/expenses/`
 
 
-    const [expenses, setExpenses] = useState([])
+    const [expenses, setExpenses] = useState(/**@type{ExpenseType[]}*/[])
 
     const [limitObj, setLimitObj] = useState(null)
     const [personal, setPersonal] = useState(() => defaultFilterValue() === 'personal')
@@ -60,8 +61,7 @@ export default function LimitsEdit({
 
     const [message, setMessage] = useState('')
 
-    //
-    //
+    /**@type{number}*/
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
             const date = new Date().toLocaleDateString()
@@ -70,7 +70,7 @@ export default function LimitsEdit({
                 return a
             }, {}) || {}
 
-            const result = expenses
+            return expenses
                 .filter(e => (
                     e.section_id === section_id
                     && (personal
@@ -81,35 +81,40 @@ export default function LimitsEdit({
                     const coef = curr[e.currency]?.value || 1
                     return e.value * coef + acc
                 }, 0)
-
-            return result
         }
         return 0
     }, [expenses, section_id, personal, user_id, currency])
+    console.log(minLimit)
+    console.log(expenses)
 
 
     //получаем все расходы (планы) за текущую поездку
     useEffect(() => {
-        updateExpenses(primary_entity_id, 'plan').then(setExpenses)
-    }, [])
+        const exp = travel.expenses('planned', personal ? 'Personal' : 'Common')
+        setExpenses(exp)
+    }, [travel])
 
     useEffect(() => {
-        defaultSection && setSectionId(sectionId || defaultSection.id)
-    }, [defaultSection])
+        sectionId && setSectionId(sectionId || 'misc')
+    }, [sectionId])
 
 
     // если в бд уже был записан лимит записываем его в limitObj (либо null)
     useEffect(() => {
-        if (section_id && limits.length) {
-            const limit = limits
-                .filter(l => l.section_id === section_id)
-                .find(l => personal
-                    ? l.personal === 1 && l.user_id === user_id
-                    : l.personal === 0
-                )
-            limit ? setLimitObj(limit) : setLimitObj(null)
+        if (section_id) {
+            storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travel.id)
+                .then(/**@param{LimitType[]} limits*/(limits) => {
+                    const limit = limits
+                        .filter(l => l.section_id === section_id)
+                        .find(l => personal
+                            ? l.personal === 1 && l.id.startsWith(user_id)
+                            : l.personal === 0
+                        )
+                    limit ? setLimitObj(limit) : setLimitObj(null)
+                })
+
         }
-    }, [section_id, limits, personal])
+    }, [section_id, personal])
 
 
     useEffect(() => {
@@ -178,7 +183,7 @@ export default function LimitsEdit({
                         <div className='column gap-1'>
                             <div className='row flex-wrap gap-0.75'>
                                 {
-                                    sections && !!sections.length && sections.map(
+                                    !!travel.defaultSections.length && travel.defaultSections.map(
                                         ({id, title}) => (
                                             <Link key={id} to={`/travel/${primary_entity_id}/expenses/limit/${id}`}>
                                                 <Chip

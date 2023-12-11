@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-import {CACHE_VERSION, MS_IN_DAY, THEME} from "./static/constants";
+import constants, {CACHE_VERSION, MS_IN_DAY, THEME} from "./static/constants";
 import errorReport from "./controllers/ErrorReport";
 import setFixedVH from "./utils/setFixedVH";
 
@@ -16,6 +16,7 @@ import LinkedList from "./utils/data-structures/LinkedList";
 import {calcArrivingTime} from "./classes/RoadActivity";
 import UserContextProvider from "./contexts/UserContextProvider";
 import ThemeContextProvider from "./contexts/ThemeContextProvider";
+import BaseService from "./classes/BaseService";
 
 
 let theme = localStorage.getItem(THEME)
@@ -145,3 +146,12 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
 
+const service = new BaseService(constants.store.EXPENSES_ACTUAL)
+service.getCursor()
+    .then(async (cursor) => {
+        let cursorPointer = cursor
+        while (cursorPointer) {
+            if(cursorPointer.value.id.endsWith('1701742789225'))console.log(cursorPointer.value)
+            cursorPointer = await cursorPointer.continue()
+        }
+    })

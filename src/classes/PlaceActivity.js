@@ -20,9 +20,15 @@ export default class PlaceActivity extends Activity {
 
         this.place = options.place
         this.status = Activity.PLACE
-        if(options.start)
-            this.start = new Date(options.start)
-        if(options.defaultActivitySpentTime)
+        const placeStart = new Date(this.place.time_start)
+        placeStart.setHours(Activity.MORNING_TIME / (60 * 60 * 1000))
+        if (options.start)
+            //если событие заплланированно позднее времени прибытия
+            if (!Number.isNaN(placeStart.getTime()) && placeStart > options.start)
+                this.start = placeStart
+            else
+                this.start = new Date(options.start)
+        if (options.defaultActivitySpentTime)
             this.duration = options.preference.defaultSpentTime
 
         this._init()
@@ -34,7 +40,7 @@ export default class PlaceActivity extends Activity {
         else
             this.duration = this.defaultDuration
 
-        if(!this.start)
+        if (!this.start)
             this.start = new Date(this.place.time_start || this.travel_start_time)
 
         this.end = new Date(this.start.getTime() + this.duration)

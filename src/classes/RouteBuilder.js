@@ -155,7 +155,7 @@ export default class RouteBuilder {
                 nextActivityStartTime = placeActivity.end
             } else {
                 placeActivity = new PlaceActivity(placeActivityOptions(i, nextActivityStartTime))
-                placeActivity.setStart(nextActivityStartTime)
+                if (placeActivity.start < nextActivityStartTime) placeActivity.setStart(nextActivityStartTime)
                 nextActivityStartTime = placeActivity.end
             }
             activitiesList.append(placeActivity)
@@ -195,6 +195,23 @@ export default class RouteBuilder {
                 })
             }
         }
+
+        activitiesList
+            .toArray()
+            .forEach((a, idx) => {
+                // debugger
+                // const delta = a.next?.value.start - a.value.end
+                if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000){
+                    const restOptions = {
+                        startTime: a.value.end,
+                        endTime: a.next.value.start,
+                        travel_start_time: travelStartDate,
+                        preference: {moveAtNight: false}
+                    }
+
+                    activitiesList.insert(new RestTimeActivity(restOptions), idx)
+                }
+            })
 
         this.activitiesList = activitiesList
         return activitiesList
@@ -542,7 +559,7 @@ export default class RouteBuilder {
 
         return this.activitiesList.toArray()
             .map(ln => ln.value)
-            .filter(/**@param{Activity} a*/a => a.startDay === i)
+            .filter(/**@param{Activity} a*/a => a.days.includes(i))
     }
 
     /**
@@ -556,8 +573,8 @@ export default class RouteBuilder {
             this.createActivitiesList()
 
         const days = this.activitiesList.toArray()
-            .filter(ln=> ln.value instanceof PlaceActivity)
-            .map(ln => ln.value.startDay)
+            .map(ln => ln.value.days)
+            .reduce((acc, dl) => acc.concat(dl) , [])
 
         return[...( new Set(days))]
     }

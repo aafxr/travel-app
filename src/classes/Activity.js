@@ -70,12 +70,12 @@ export default class Activity {
      * @return {number[]}
      */
     get days() {
-        let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
-        time_start = Math.floor(time_start) + 1
-        let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
-        time_end = Math.floor(time_end) + 1
+        // let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
+        // time_start = Math.floor(time_start) + 1
+        // let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
+        // time_end = Math.floor(time_end) + 1
 
-        return range(time_start, time_end)
+        return range(this.startDay, this.endDay)
     }
 
     /**

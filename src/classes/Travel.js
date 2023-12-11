@@ -41,6 +41,7 @@ export default class Travel extends BaseTravel {
     /**@type{SectionType[]}*/
     _defaultSections = []
 
+    _expensesLoaded = false
 
 
     /**
@@ -74,30 +75,14 @@ export default class Travel extends BaseTravel {
     constructor(item) {
         super(item);
         this._errorHandle = this._errorHandle.bind(this)
+        this._filterExpensesFromCursorFunc = this._filterExpensesFromCursorFunc.bind(this)
+        this._loadExpensesActual = this._loadExpensesActual.bind(this)
+        this._loadExpensesPlaned = this._loadExpensesPlaned.bind(this)
 
         this._updateManager = new Subscription()
 
-        storeDB
-            .getAllFromIndex(constants.store.EXPENSES_ACTUAL, constants.indexes.PRIMARY_ENTITY_ID, this.id)
-            .then(/** @param{ExpenseType[]} e*/e => e.map(ae => new Expense(this, ae, this.user_id, 'actual')))
-            .then(ae => {
-                ae.forEach(e => {
-                    e.isPersonal()
-                        ? this._expenses.actual.Personal.set(e.id, e)
-                        : this._expenses.actual.Common.set(e.id, e)
-                })
-            })
-
-        storeDB
-            .getAllFromIndex(constants.store.EXPENSES_PLAN, constants.indexes.PRIMARY_ENTITY_ID, this.id)
-            .then(/** @param{ExpenseType[]} e*/e => e.map(pe => new Expense(this, pe, this.user_id, 'plan')))
-            .then(pe => {
-                pe.forEach(e => {
-                    e.isPersonal()
-                        ? this._expenses.planned.Personal.set(e.id, e)
-                        : this._expenses.planned.Common.set(e.id, e)
-                })
-            })
+        this._loadExpensesActual()
+        this._loadExpensesPlaned()
 
 
         this.expensesService = {
@@ -125,6 +110,59 @@ export default class Travel extends BaseTravel {
             .then(sl => this._defaultSections = sl)
     }
 
+    async _filterExpensesFromCursorFunc(cursor) {
+    const expActual = []
+    let pointer = cursor
+    while (pointer) {
+        console.log(pointer.value.primary_entity_id,  this.id, pointer.value.primary_entity_id === this.id)
+        if (pointer.value.primary_entity_id === this.id)
+            expActual.push(pointer.value)
+        pointer = await pointer.continue()
+    }
+    return expActual
+}
+
+    _loadExpensesActual(){
+        this._expensesLoaded = false
+        new BaseService(constants.store.EXPENSES_ACTUAL)
+            .getCursor()
+            .then(this._filterExpensesFromCursorFunc)
+            .then(/** @param{ExpenseType[]} e*/e => e.map(ae => new Expense(this, ae, this.user_id, 'actual')))
+            .then(ae => {
+                ae.forEach(e => {
+                    e.isPersonal(this.user_id)
+                        ? this._expenses.actual.Personal.set(e.id, e)
+                        : this._expenses.actual.Common.set(e.id, e)
+                })
+            })
+            .then(() => this._expensesLoaded = true)
+    }
+
+    _loadExpensesPlaned(){
+        this._expensesLoaded = false
+        new BaseService(constants.store.EXPENSES_PLAN)
+            .getCursor()
+            .then(this._filterExpensesFromCursorFunc)
+            .then(/** @param{ExpenseType[]} e*/e => e.map(pe => new Expense(this, pe, this.user_id, 'planned')))
+            .then(pe => {
+                pe.forEach(e => {
+                    e.isPersonal()
+                        ? this._expenses.planned.Personal.set(e.id, e)
+                        : this._expenses.planned.Common.set(e.id, e)
+                })
+            })
+            .then(() => this._expensesLoaded = true)
+    }
+
+    /**
+     * @get
+     * @name Travel.expensesLoaded
+     * @return {boolean}
+     */
+    get expensesLoaded() {
+        return this._expensesLoaded
+    }
+
     /**
      * получение типа фильтра расходов
      * @get
@@ -132,7 +170,7 @@ export default class Travel extends BaseTravel {
      * @returns {ExpenseFilterType}
      */
     get expenseFilter() {
-        if(this.adults_count === 1) {
+        if (this.adults_count === 1) {
             return 'Personal'
         }
 
@@ -392,20 +430,21 @@ export default class Travel extends BaseTravel {
      * @param {'actual' | 'planned'} type
      * @returns {Travel}
      */
+
     addExpense(expense, type) {
         const personal = expense.isPersonal(this.user_id)
 
         if (expense && type) {
-            this._expenses.actual.Personal.delete(expense.id)
-            this._expenses.actual.Common.delete(expense.id)
-            this._expenses.planned.Personal.delete(expense.id)
-            this._expenses.planned.Common.delete(expense.id)
 
             if (type === 'actual') {
+                this._expenses.actual.Personal.delete(expense.id)
+                this._expenses.actual.Common.delete(expense.id)
                 personal
                     ? this._expenses.actual.Personal.set(expense.id, expense)
                     : this._expenses.actual.Common.set(expense.id, expense)
             } else if (type === 'planned') {
+                this._expenses.planned.Personal.delete(expense.id)
+                this._expenses.planned.Common.delete(expense.id)
                 personal
                     ? this._expenses.planned.Personal.set(expense.id, expense)
                     : this._expenses.planned.Common.set(expense.id, expense)

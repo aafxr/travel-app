@@ -68,9 +68,9 @@ export default function ExpensesWrapper() {
     // },[])
 
     // console.log(state)
-    useEffect(() => {
-        updateCurrency(dispatch)
-    }, [])
+    // useEffect(() => {
+    //     updateCurrency(dispatch)
+    // }, [])
 
     // useEffect(() => {
     //     dispatch(initExpensesThunk(primary_entity_id))

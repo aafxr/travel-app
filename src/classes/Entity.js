@@ -7,12 +7,12 @@ import ErrorReport from "../controllers/ErrorReport";
  * @abstract
  * @category Classes
  */
-export default class Entity{
+export default class Entity {
     _new = false
     _change = false
     _modified = {}
 
-    toString(){
+    toString() {
         const res = JSON.stringify(this._modified)
         console.log(res)
         return res
@@ -29,8 +29,8 @@ export default class Entity{
      * return plain travel object
      * @returns {TravelType}
      */
-    get object(){
-        return this._modified
+    get object() {
+        return {...this._modified}
     }
 
     /**
@@ -39,7 +39,7 @@ export default class Entity{
      * @abstract
      * @throws Error
      */
-    async save(){
+    async save() {
         throw new Error('Method "save" should be implemented')
     }
 

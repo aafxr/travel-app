@@ -49,23 +49,25 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
      */
     function handleTime(time, type) {
         const duration = placeActivity.end - placeActivity.start
-        if (type === 'start') {
-            const [hh, mm] = time.split(':')
-            const date = setDateTime(placeActivity.start, {hh, mm})
-            place.time_start = date.toISOString()
-            place.time_end = new Date(date.getTime() + duration).toISOString()
-            travel.updatePlace(place)
-            setStartChange(false)
-            setStart(time)
-            setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
-        } else if (type === 'end') {
-            const [hh, mm] = time.split(':')
-            const date = setDateTime(place.time_end, {hh, mm})
-            travel.updatePlace({...place, time_end: date.toISOString()})
-            setEndChange(false)
-            setEnd(time)
+        const _time = time.match(/\d{2}:\d{2}$/)[0]?.split(':')
+        if (_time) {
+            const [hh, mm] = _time
+            if (type === 'start') {
+                const date = setDateTime(placeActivity.start, {hh, mm})
+                place.time_start = date.toISOString()
+                place.time_end = new Date(date.getTime() + duration).toISOString()
+                travel.updatePlace(place)
+                setStartChange(false)
+                setStart(time)
+                setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
+            } else if (type === 'end') {
+                const date = setDateTime(place.time_end, {hh, mm})
+                travel.updatePlace({...place, time_end: date.toISOString()})
+                setEndChange(false)
+                setEnd(time)
+            }
+            placeActivity.shiftTimeBy()
         }
-        placeActivity.shiftTimeBy()
     }
 
     return (

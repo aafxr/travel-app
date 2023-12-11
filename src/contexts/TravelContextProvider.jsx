@@ -13,17 +13,19 @@ import useUserSelector from "../hooks/useUserSelector";
  * @name TravelContextType
  * @typedef {Object} TravelContextType
  * @property {Travel | null} travel instance класса Travel
+ * @property {TravelType | null}  travelObj
  * @category Types
  */
 
 
 /**@type {TravelContextType}*/
 const defaultTravel = {
-    travel: null
+    travel: null,
+    travelObj: null
 }
 
 /**
- * @type {React.Context<{travel: (Travel|null)}>}
+ * @type {React.Context<TravelContextType>}
  */
 export const TravelContext = createContext(defaultTravel)
 
@@ -36,7 +38,7 @@ export const TravelContext = createContext(defaultTravel)
  */
 export default function TravelContextProvider() {
     const [loading, setLoading] = useState(true)
-    const [state, setState] = useState(defaultTravel)
+    const [state, setState] = useState(/**@type{TravelContextType}*/defaultTravel)
     const user = useUserSelector()
     const update = useUpdate()
     const {travelCode} = useParams()
@@ -55,8 +57,8 @@ export default function TravelContextProvider() {
                             ?  new Travel(item)
                             :  null
                         t?.setUser(user.id)
-                        if (t) t.onUpdate(() => setState(prev => ({...prev})))
-                        setState({travel: t})
+                        if (t) t.onUpdate(() => setState(prev => ({...prev, travelObj: Object.freeze(t.object)})))
+                        setState({travel: t, travelObj: Object.freeze(t.object)})
                     })
             })
         }

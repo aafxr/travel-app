@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
@@ -13,10 +13,19 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
 export default function ShowPlaces() {
     const user = useUserSelector()
     const {dayNumber} = useParams()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
+    const [placesAtDay,setPlacesAtDay] = useState(/**@type{PlaceType[]}*/ [])
+
     const activeDays = travel.routeBuilder.getActivityDays()
+
+    useEffect(() => {
+        if (dayNumber) {
+            const places = travel.routeBuilder.getPlacesAtDay(+dayNumber || 1)
+            setPlacesAtDay(places)
+        }
+    }, [travelObj.places])
 
     /** @param {PlaceType} place */
     function handleRemovePLace(place) {
@@ -48,7 +57,7 @@ export default function ShowPlaces() {
             }
             <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
                 {
-                    travel.routeBuilder.getPlacesAtDay(+dayNumber || 1).map(p => (
+                    placesAtDay.map(p => (
                         <LocationCard
                             key={p._id || p.id}
                             id={p.id}

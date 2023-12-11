@@ -64,11 +64,12 @@ export default function TravelDetails() {
     }
 
     useEffect(() => {
+        if (!dayNumber) navigate(`/travel/${travel.id}/1/`)
+
         travel
             .routeBuilder
             .createActivitiesList()
     }, [travel])
-
 
 
     return (

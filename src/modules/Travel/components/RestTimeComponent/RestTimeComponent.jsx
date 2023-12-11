@@ -16,8 +16,8 @@ import './RestTimeComponent.css'
  */
 export default function RestTimeComponent({children, activity}) {
     const {travel} = useTravelContext()
-    const start = activity.start.toLocaleTimeString().slice(0, -3)
-    const end = activity.end.toLocaleTimeString().slice(0, -3)
+    const start = activity.start.toLocaleDateString() + ' ' + activity.start.toLocaleTimeString().slice(0, -3)
+    const end = activity.end.toLocaleDateString() + ' ' + activity.end.toLocaleTimeString().slice(0, -3)
 
     const params = new URLSearchParams()
     params.set('start', activity.start.getTime())
@@ -26,10 +26,20 @@ export default function RestTimeComponent({children, activity}) {
     return (
         <Link to={`/travel/${travel.id}/add/hotel/?${params.toString()}`}>
             <div className='rest-container relative'>
-                <Chip className='rest-date-start'> {start} </Chip>
-                <Chip className='rest-date-end'> {end} </Chip>
+                {/*<Chip className='rest-date-start'> {start} </Chip>*/}
+                {/*<Chip className='rest-date-end'> {end} </Chip>*/}
                 <div className='rest-img'>
-                    <PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs'/>
+                    <div className="collumn h-full">
+                        <div className="row center title-semi-bold flex-0">
+                            <span>{start}</span>
+                            &nbsp;|&nbsp;
+                            <span>{end}</span>
+                        </div>
+                        <div className="flex-1">
+                            <div className='rest-title'>Добавить отель</div>
+                        </div>
+                    </div>
+                    {/*<PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs'/>*/}
                     {/*<div className='rest-buttons'>*/}
                     {/*    {*/}
                     {/*        !!onPhotoAdd && <button*/}
@@ -47,8 +57,6 @@ export default function RestTimeComponent({children, activity}) {
                     {/*    }*/}
                     {/*</div>*/}
                 </div>
-                <div className='rest-title'>Добавить отель</div>
-                <div className='rest-entity-type'>отель</div>
                 {children}
                 {/*{*/}
                 {/*    !!onAdd && (*/}
