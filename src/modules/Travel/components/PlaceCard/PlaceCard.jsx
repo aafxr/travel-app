@@ -45,23 +45,24 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
 
     /**
      * @param {string} time
+     * @param {Date} date
      * @param {'start' | 'end'} type
      */
-    function handleTime(time, type) {
+    function handleTime(time, date, type) {
         const duration = placeActivity.end - placeActivity.start
         const _time = time.match(/\d{2}:\d{2}$/)[0]?.split(':')
         if (_time) {
             const [hh, mm] = _time
             if (type === 'start') {
-                const date = setDateTime(placeActivity.start, {hh, mm})
+                // const date = setDateTime(placeActivity.start, {hh, mm})
                 place.time_start = date.toISOString()
                 place.time_end = new Date(date.getTime() + duration).toISOString()
-                travel.updatePlace(place)
+                travel.updatePlace({...place})
                 setStartChange(false)
                 setStart(time)
                 setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             } else if (type === 'end') {
-                const date = setDateTime(place.time_end, {hh, mm})
+                // const date = setDateTime(place.time_end, {hh, mm})
                 travel.updatePlace({...place, time_end: date.toISOString()})
                 setEndChange(false)
                 setEnd(time)
@@ -88,8 +89,9 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
                         > {start} </Chip>
                         : <ChipInput
                             className='place-date-start'
-                            value={start}
-                            onBlur={(time) => handleTime(time, 'start')}
+                            template='hh:mm'
+                            value={placeActivity.start}
+                            onBlur={(time, date) => handleTime(time, date, 'start')}
                         />
                 }
                 {
@@ -100,8 +102,9 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
                         > {end} </Chip>
                         : <ChipInput
                             className='place-date-end'
-                            value={end}
-                            onBlur={(time) => handleTime(time, 'end')}
+                            templates='hh:mm'
+                            value={placeActivity.end}
+                            onBlur={(time, date) => handleTime(time, date, 'end')}
                         />
                 }
                 <div className='place-img'>

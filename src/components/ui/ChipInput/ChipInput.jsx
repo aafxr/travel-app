@@ -1,15 +1,18 @@
 import clsx from 'clsx'
 import React, {useEffect, useRef, useState} from 'react'
 
+import formatTime from "../../../utils/date-utils/formatTime";
+
 import './ChipInput.css'
 
 
 /**
  * компонент для отображения тегов / пометок
  * @function
- * @param {string} value
+ * @param {Date} value
+ * @param {string} template DD - day, MM - month, YYYY - year, hh - hour, mm - minutes, ss - seconds
  * @param {(e: InputEvent<HTMLInputElement>) => unknown} onChange
- * @param {(str: string) => unknown} onBlur
+ * @param {(str: string, date: Date) => unknown} onBlur
  * @param {'orange' | 'green' | 'grey' | 'light-orange' } color цвет фона компонента
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
  * @param {boolean} pointer default = false
@@ -21,6 +24,7 @@ import './ChipInput.css'
  */
 export default function ChipInput({
                                       value,
+                                      template = 'hh:mm',
                                       onChange,
                                       onBlur,
                                       color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
@@ -30,9 +34,13 @@ export default function ChipInput({
                                       ...props
 
                                   }) {
-    const [inputValue, setInputValue] = useState('')
+    const [inputValue, setInputValue] = useState(/**@type {Date}*/null)
     const ref = useRef(/**@type{HTMLInputElement} */null)
-    const preparede = useRef(false)
+    const prepared = useRef(false)
+
+    useEffect(() => {
+        if (value instanceof Date) setInputValue(value)
+    }, [])
 
     useEffect(() => {
         if (ref.current) {
@@ -41,7 +49,6 @@ export default function ChipInput({
                 document.removeEventListener('touchend', setFocus)
             }
 
-            if (value) setInputValue(value)
             document.addEventListener('touchend', setFocus)
         }
     }, [ref.current])
@@ -60,63 +67,30 @@ export default function ChipInput({
         className
     )
 
-    /** @param {InputEvent | KeyboardEvent<HTMLInputElement>} e */
+    /** @param {ChangeEvent<HTMLInputElement> | KeyboardEvent<HTMLInputElement>} e */
     function handleChange(e) {
-        const {type} = e
-        if(type === 'keydown'){
-            if(e.code === 'Backspace') {
-                setInputValue(inputValue.slice(0, -1))
-                preparede.current = true
-            }else if(e.code === 'Enter'){
-                ref.current.blur()
-                preparede.current = true
-            }
-        } else if(!preparede.current && type === 'change') {
-            const result = e.target.value.length < 2 && /^[3-9]|[0-2][0-9]/.test(e.target.value)
-                ? e.target.value + ':'
-                : e.target.value
-            setInputValue(result)
-        } else{
-            preparede.current = false
-        }
+        setInputValue(e.target.valueAsDate)
     }
 
     function handleBlur() {
-        const cb = onBlur ? onBlur : () => {
-        }
-        let result = inputValue
-            .trim()
-            .replace(/(?<=[0-9]|[0-2][0-9])[- :]+/, ':')
-            .split(':')
-            .map(s => s.length === 1 ? '0' + s : s)
-            .join(':')
+        const cb = onBlur ? onBlur : () => {}
 
-        const reg = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-        if (reg.test(result))
-            cb(result)
-        else
-            cb(value)
+        let result = formatTime(template, inputValue)
+        cb(result, inputValue)
     }
+
+    if(!inputValue) return null
 
     return <input
         ref={ref}
-        type='text'
-        inputMode='numeric'
+        type='time'
+        // inputMode='numeric'
         size={1}
         className={classes} {...props}
-        value={inputValue}
+        value={formatTime('hh:mm', inputValue)}
         onChange={handleChange}
         onKeyDown={handleChange}
         onBlur={handleBlur}
+        step={60}
     />
 }
-
-
-/**
- * activity -> setStart
- * activity -> setEnd
- */
-
-
-
-
