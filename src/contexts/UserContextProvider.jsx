@@ -52,7 +52,7 @@ import storeDB from "../db/storeDB/storeDB";
 const defaultUserContext = {
     user: null,
     userLoc: null,
-    loading: false,
+    loading: true,
     setUser: () => {
     },
     initUser: () => {

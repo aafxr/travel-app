@@ -1,5 +1,8 @@
+import {useState} from "react";
+
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
+import ChipInput from "../../../../components/ui/ChipInput/ChipInput";
+import useTravelContext from "../../../../hooks/useTravelContext";
 import EditePencil from "../../../../components/svg/EditePencil";
 import {PhotoIcon, TrashIcon} from "../../../../components/svg";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
@@ -7,10 +10,6 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Chip} from "../../../../components/ui";
 
 import './PlaceCard.css'
-import {useMemo, useState} from "react";
-import ChipInput from "../../../../components/ui/ChipInput/ChipInput";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import setDateTime from "../../../../utils/setDateTime";
 
 /**
  * Компонент - карточка с описанием места
@@ -90,7 +89,7 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
                         : <ChipInput
                             className='place-date-start'
                             template='hh:mm'
-                            value={placeActivity.start}
+                            value={new Date(placeActivity.start)}
                             onBlur={(time, date) => handleTime(time, date, 'start')}
                         />
                 }
@@ -103,7 +102,7 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
                         : <ChipInput
                             className='place-date-end'
                             templates='hh:mm'
-                            value={placeActivity.end}
+                            value={new Date(placeActivity.end)}
                             onBlur={(time, date) => handleTime(time, date, 'end')}
                         />
                 }
