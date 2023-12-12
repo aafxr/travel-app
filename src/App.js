@@ -36,12 +36,12 @@ import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
 import PageContainer from "./components/Loading/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
+import {UserContext} from "./contexts/UserContextProvider";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 import CheckList from "./components/CheckList/CheckList";
 import Events from "./modules/Main/Pages/Events/Events";
 import TelegramAuth from "./modules/Main/TelegramAuth";
 import Login from "./modules/Main/Pages/Login/Login";
-import {initUser} from "./redux/userStore/initUser";
 import Main from "./modules/Main/Pages/Main/Main";
 import ErrorPage from "./modules/Error/ErrorPage";
 import Loader from "./components/Loader/Loader";
@@ -51,7 +51,6 @@ import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
 import {store} from './redux/store'
 import Dev from "./modules/Dev";
-import {UserContext} from "./contexts/UserContextProvider";
 
 
 function App() {

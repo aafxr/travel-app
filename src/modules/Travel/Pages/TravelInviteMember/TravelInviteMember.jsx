@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {v4} from 'uuid'
 
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import ShareLinkIcon from "../../../../components/svg/ShareLinkIcon";
@@ -16,6 +15,7 @@ import createId from "../../../../utils/createId";
 import './TravelInviteMember.css'
 import {useSelector} from "react-redux";
 import constants from "../../../../static/constants";
+import {nanoid} from "nanoid";
 
 /**@type{MemberType} */
 const defaultMember = {
@@ -42,7 +42,7 @@ export default function TravelInviteMember() {
     const {/**@type{UserType} */user} = useSelector(state => state[constants.redux.USER])
     const [member, setMember] = useState(() => ({
         ...defaultMember,
-            inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${v4()}/`
+            inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`
     }))
 
     const message = `${user.first_name} ${user.last_name} приглашает присоедениться к поездке`

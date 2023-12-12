@@ -73,7 +73,6 @@ export default function UserContextProvider({children}) {
     const initUser = useCallback(/** @param {{id:string}} userData */async (userData) => {
         try {
             if (!userData) return null
-            console.log('initUser')
             setState({...state, loading: true})
             const user = await storeDB.getOne(constants.store.USERS, userData.id)
             let newUserData = userData

@@ -1,4 +1,5 @@
 import isString from "./validation/isString";
+import {nanoid} from "nanoid";
 
 /**
  * возвращает новый id вида "prefix:id" если указан prefix либо id
@@ -10,8 +11,8 @@ import isString from "./validation/isString";
  */
 export default function createId(prefix){
     if(prefix && isString(prefix)){
-        return prefix + ':' + Date.now()
+        return prefix + ':' + nanoid(16)
     } else {
-        return Date.now().toString()
+        return nanoid(16)
     }
 }

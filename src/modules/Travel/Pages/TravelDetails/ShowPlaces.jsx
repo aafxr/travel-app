@@ -25,7 +25,7 @@ export default function ShowPlaces() {
             const places = travel.routeBuilder.getPlacesAtDay(+dayNumber || 1)
             setPlacesAtDay(places)
         }
-    }, [dayNumber])
+    }, [dayNumber, travel.places])
 
     /** @param {PlaceType} place */
     function handleRemovePLace(place) {

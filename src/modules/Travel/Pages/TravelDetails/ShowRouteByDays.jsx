@@ -2,17 +2,16 @@ import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
-import LocationCard from "../../components/LocationCard/LocationCard";
+import RestTimeComponent from "../../components/RestTimeComponent/RestTimeComponent";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import PlaceActivity from "../../../../classes/PlaceActivity";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
-import RoadActivity from "../../../../classes/RoadActivity";
-import {Chip, Tab} from "../../../../components/ui";
-import {type} from "@testing-library/user-event/dist/type";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
-import RestTimeComponent from "../../components/RestTimeComponent/RestTimeComponent";
+import RoadActivity from "../../../../classes/RoadActivity";
+import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
@@ -21,13 +20,12 @@ export default function ShowRouteByDays() {
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
 
-    const activitiesList = travel.routeBuilder.createActivitiesList().toArray().map(a => a.value)
+    const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
 
-    // useEffect(() => {
-    //     console.log('update actions')
-    //     const act =
-    //     setActivity(act)
-    // }, [travel])
+    useEffect(() => {
+        if (dayNumber)
+            setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber))
+    }, [dayNumber, travel])
 
     useLayoutEffect(() => {
         if (tabs_ref.current && container_ref) {
@@ -59,7 +57,7 @@ export default function ShowRouteByDays() {
                     activitiesList
                         ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
                             <React.Fragment key={idx}>
-                                {showActivity(travel, a)}
+                                {<ShowActivity activity={a}/>}
                             </React.Fragment>))
                         : travel.places.length === 0
                             ? (
@@ -77,12 +75,21 @@ export default function ShowRouteByDays() {
 
 
 /**
- * @param {Travel} travel
- * @param {Activity} a
+ * @param {Activity} activity
  * @return {JSX.Element}
  */
-function showActivity(travel, a) {
-    if (a instanceof RoadActivity) {
+function ShowActivity({activity}) {
+    const {travel} = useTravelContext()
+    const user = useUserSelector()
+
+    /** @param {PlaceType} place */
+    function handleRemovePLace(place) {
+        travel.removePlace(place)
+        travel.save(user.id)
+            .catch(defaultHandleError)
+    }
+
+    if (activity instanceof RoadActivity) {
         return (
             <>
                 <RecommendLocation
@@ -91,25 +98,28 @@ function showActivity(travel, a) {
                         {id: 1, entityType: 'hotel', entityName: '123'},
                         {id: 2, entityType: 'hotel', entityName: 'name'},
                     ]}
-                    activity={a}
+                    activity={activity}
                 />
             </>
         )
-    } else if (a instanceof PlaceActivity)
-        return <PlaceCard placeActivity={a}/>
-    else if (a instanceof RestTimeActivity)
-        return <RestTimeComponent activity={a} />
-        // return (
-        //     <div>
-        //         {/*<div className='row mt-20 gap-1'>*/}
-        //         {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
-        //         {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
-        //         {/*</div>*/}
-        //         <div className='title-semi-bold'>Свободное время</div>
-        //         <dl>
-        //             <dt>Время до места</dt>
-        //             <dd>{a.durationToSting()}</dd>
-        //         </dl>
-        //     </div>
-        // )
+    } else if (activity instanceof PlaceActivity)
+        return <PlaceCard
+            placeActivity={activity}
+            onDelete={handleRemovePLace}
+        />
+    else if (activity instanceof RestTimeActivity)
+        return <RestTimeComponent activity={activity}/>
+    // return (
+    //     <div>
+    //         {/*<div className='row mt-20 gap-1'>*/}
+    //         {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
+    //         {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
+    //         {/*</div>*/}
+    //         <div className='title-semi-bold'>Свободное время</div>
+    //         <dl>
+    //             <dt>Время до места</dt>
+    //             <dd>{a.durationToSting()}</dd>
+    //         </dl>
+    //     </div>
+    // )
 }

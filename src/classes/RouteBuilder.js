@@ -66,6 +66,7 @@ export default class RouteBuilder {
     updateRoute(places) {
         // this.placesMap.clear()
         this._travel._places = this.sortByGeneticAlgorithm(places)
+        this.createActivitiesList()
         // this.getActivities()
     }
 
@@ -177,8 +178,7 @@ export default class RouteBuilder {
                             travel_start_time: travelStartDate
                         })
                     )
-
-                nextActivityStartTime = roadActivities[roadActivities.length -1].end
+                if(roadActivities.length) nextActivityStartTime = roadActivities[roadActivities.length -1].end
 
                 roadActivities.forEach((ra, idx, arr) => {
                     activitiesList.append(ra)
@@ -198,7 +198,7 @@ export default class RouteBuilder {
 
         activitiesList
             .toArray()
-            .forEach((a, idx) => {
+            .forEach((a, idx, arr) => {
                 // debugger
                 // const delta = a.next?.value.start - a.value.end
                 if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000){
@@ -210,6 +210,12 @@ export default class RouteBuilder {
                     }
 
                     activitiesList.insert(new RestTimeActivity(restOptions), idx)
+                }
+
+                if (a.value.start > a.value.end){
+                    if(idx === 0 ) activitiesList.delete(activitiesList.head)
+                    else if(idx === arr.length -1) activitiesList.delete(activitiesList.tail)
+                    else activitiesList.delete(a)
                 }
             })
 
@@ -298,7 +304,7 @@ export default class RouteBuilder {
      * @param {number} cycles количество циклов
      * @returns {*[]}
      */
-    sortByGeneticAlgorithm(points, mutation = 100, cycles = 500) {
+    sortByGeneticAlgorithm(points, mutation = 100, cycles = 700) {
         // const start = new Date()
         if (!points || !points.length) return []
 
@@ -551,7 +557,7 @@ export default class RouteBuilder {
      * @method
      * @name RouteBuilder.getActivitiesAtDay
      * @param {number} i
-     * @returns {PlaceType[]}
+     * @returns {Activity[]}
      */
     getActivitiesAtDay(i) {
         if (!this.activitiesList)

@@ -793,7 +793,6 @@ export default class BaseTravel extends Entity {
             this._modified.places = this._modified.places.filter(i => item._id !== i._id)
             this.change = true
             this.routeBuilder.updateRoute()
-            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
         return this

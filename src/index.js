@@ -17,6 +17,7 @@ import {calcArrivingTime} from "./classes/RoadActivity";
 import UserContextProvider from "./contexts/UserContextProvider";
 import ThemeContextProvider from "./contexts/ThemeContextProvider";
 import BaseService from "./classes/BaseService";
+import {nanoid} from "nanoid";
 
 
 let theme = localStorage.getItem(THEME)

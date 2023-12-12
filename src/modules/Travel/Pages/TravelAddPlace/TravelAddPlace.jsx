@@ -11,6 +11,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import YMap from "../../../../api/YMap";
+import createId from "../../../../utils/createId";
 
 /**
  * Страница отображения компонент добавления места путешествия
@@ -39,7 +40,7 @@ export default function TravelAddPlace() {
         if (p) {
             setPlace({
                 ...p,
-                _id: p.id + ':' + travel.id,
+                _id: createId() + ':' + travel.id,
                 coords: p.location,
                 visited: 0
             })

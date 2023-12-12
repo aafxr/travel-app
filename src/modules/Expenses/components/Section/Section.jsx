@@ -43,7 +43,6 @@ function Section({
     const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
 
     let balance = limit - total
-    console.log(expenses)
     const sortedExpenses = useMemo(() => {
         return expenses
             .sort((a, b) => new Date(b.datetime) - new Date(a.datetime))
