@@ -10,7 +10,6 @@ import './ChipInput.css'
  * компонент для отображения тегов / пометок
  * @function
  * @param {Date} value
- * @param {string} template DD - day, MM - month, YYYY - year, hh - hour, mm - minutes, ss - seconds
  * @param {(e: InputEvent<HTMLInputElement>) => unknown} onChange
  * @param {(str: string, date: Date) => unknown} onBlur
  * @param {'orange' | 'green' | 'grey' | 'light-orange' } color цвет фона компонента
@@ -24,7 +23,6 @@ import './ChipInput.css'
  */
 export default function ChipInput({
                                       value,
-                                      template = 'hh:mm',
                                       onChange,
                                       onBlur,
                                       color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
@@ -40,12 +38,13 @@ export default function ChipInput({
 
     useEffect(() => {
         if (value instanceof Date) setInputValue(value)
-    }, [])
+    }, [value])
 
     useEffect(() => {
         if (ref.current) {
             function setFocus() {
-                if (ref.current && document.activeElement !== ref.current) ref.current.focus()
+                if (ref.current && document.activeElement !== ref.current)
+                    ref.current.focus()
                 document.removeEventListener('touchend', setFocus)
             }
 
@@ -67,19 +66,23 @@ export default function ChipInput({
         className
     )
 
-    /** @param {ChangeEvent<HTMLInputElement> | KeyboardEvent<HTMLInputElement>} e */
+    /** @param {ChangeEvent<HTMLInputElement>} e */
     function handleChange(e) {
-        setInputValue(e.target.valueAsDate)
+        const [hh, mm] = e.target.value.split(':')
+        if (hh) inputValue.setHours(+hh)
+        if (mm) inputValue.setMinutes(+mm)
+        setInputValue(new Date(inputValue))
     }
 
     function handleBlur() {
-        const cb = onBlur ? onBlur : () => {}
+        const cb = onBlur ? onBlur : () => {
+        }
 
-        let result = formatTime(template, inputValue)
+        let result = formatTime('hh:mm', inputValue)
         cb(result, inputValue)
     }
 
-    if(!inputValue) return null
+    if (!inputValue) return null
 
     return <input
         ref={ref}
@@ -94,3 +97,4 @@ export default function ChipInput({
         step={60}
     />
 }
+
