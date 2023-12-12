@@ -10,6 +10,7 @@ import Loader from "../../../../components/Loader/Loader";
 import aFetch from "../../../../axios";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants, {REFRESH_TOKEN} from "../../../../static/constants";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 
 /**
@@ -34,7 +35,7 @@ import constants, {REFRESH_TOKEN} from "../../../../static/constants";
  * @category Pages
  */
 export default function Sessions() {
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
 
     const [currentSession, setCurrentSession] = useState(null)
     const [authList, setAuthList] = useState([])

@@ -20,8 +20,10 @@ export default function ListItem({className, topDescription = '', time = '', chi
                 <div className='list-item-description'>{topDescription}</div>
                 <div className='list-item-title'>{children}</div>
             </div>
-            <div className='list-item-time'>{time}</div>
-            {!!icon && <span className='list-item-icon'>{icon}</span>}
+            <div className='column'>
+                <div className='list-item-time'>{time}</div>
+                {!!icon && <span className='list-item-icon'>{icon}</span>}
+            </div>
         </div>
     )
 }

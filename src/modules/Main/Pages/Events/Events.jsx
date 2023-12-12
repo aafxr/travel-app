@@ -1,12 +1,11 @@
 import React from 'react'
-import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import constants from "../../../../static/constants";
 import {PageHeader} from "../../../../components/ui";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * Страница отображения ближайших рекомендуемых событий
@@ -22,7 +21,7 @@ export default function Events({
                                  primary_entity_id
                              }) {
     const navigate = useNavigate()
-    const {user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
 
     return (
         <div className='wrapper'>

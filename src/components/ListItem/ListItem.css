@@ -43,9 +43,7 @@
 }
 
 .list-item-icon{
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
+    align-self: flex-end;
     width: var(--icon-size);
     height: var(--icon-size);
 }
