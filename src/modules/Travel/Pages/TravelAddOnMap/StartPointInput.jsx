@@ -44,19 +44,23 @@ export default function StartPointInput({  map}) {
      */
     function handleKeyDownEvent(e){
         if(e.keyCode === 13){
-            map.getPointByAddress(point.address)
-                .then(/**@param{GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
-                    if (markerInfo) {
-                        const {text: address,boundedBy : coords } = markerInfo[0]
-                        const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
-                        const newPoint = {...point, address, coords: coords[0], kind }
-
-                        travel.setFromPoint(newPoint)
-                        setPoint(newPoint)
-                        update()
-                    }
-                })
+            findByAddres()
         }
+    }
+
+    function findByAddres(){
+        map.getPointByAddress(point.address)
+            .then(/**@param{GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
+                if (markerInfo) {
+                    const {text: address,boundedBy : coords } = markerInfo[0]
+                    const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
+                    const newPoint = {...point, address, coords: coords[0], kind }
+
+                    travel.setFromPoint(newPoint)
+                    setPoint(newPoint)
+                    update()
+                }
+            })
     }
 
     // обработка фокуса на input =======================================================================================
