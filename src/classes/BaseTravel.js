@@ -77,29 +77,32 @@ export default class BaseTravel extends Entity {
         })
 
         this._checkTravelFields(item)
-
-        this
-            .setID(item.id)
-            .setCode(item.code)
-            .setTitle(item.title)
-            .setDirection(item.direction)
-            .setDescription(item.description)
-            .setOwnerID(item.owner_id)
-            .setCreatedAt(item.created_at)
-            .setUpdatedAt(item.updated_at)
-            .setAppointments(item.appointments)
-            .setMembers(item.members)
-            .setHotels(item.hotels)
-            .setMovementTypes(item.movementTypes?.length > 0 && item.movementTypes)
-            .setWaypoints(item.waypoints)
-            .setPlaces(item.places)
-            .setAdultsCount(item.adults_count)
-            .setChildsCount(item.childs_count)
-            .setDateStart(item.date_start)
-            .setDateEnd(item.date_end)
-            .setIsPublic(item.isPublic)
-            ._setIsFromPoint(item.isFromPoint)
-            .setPhoto(item.photo)
+        this._modified = {
+            ...this._modified,
+            ...item
+        }
+        // this
+        //     .setID(item.id)
+        //     .setCode(item.code)
+        //     .setTitle(item.title)
+        //     .setDirection(item.direction)
+        //     .setDescription(item.description)
+        //     .setOwnerID(item.owner_id)
+        //     .setCreatedAt(item.created_at)
+        //     .setUpdatedAt(item.updated_at)
+        //     .setAppointments(item.appointments)
+        //     .setMembers(item.members)
+        //     .setHotels(item.hotels)
+        //     .setMovementTypes(item.movementTypes?.length > 0 && item.movementTypes)
+        //     .setWaypoints(item.waypoints)
+        //     .setPlaces(item.places)
+        //     .setAdultsCount(item.adults_count)
+        //     .setChildsCount(item.childs_count)
+        //     .setDateStart(item.date_start)
+        //     .setDateEnd(item.date_end)
+        //     .setIsPublic(item.isPublic)
+        //     ._setIsFromPoint(item.isFromPoint)
+        //     .setPhoto(item.photo)
 
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 

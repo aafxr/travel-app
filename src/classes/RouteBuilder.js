@@ -42,6 +42,13 @@ export default class RouteBuilder {
     /**@type{LinkedList}*/
     activitiesList
 
+    /**@type{Map<string, SortPointType>}*/
+    placeMap  = new Map()
+    /**@type{Map<string, GraphVertex>}*/
+    vertexMap = new Map()
+    /**@type{GraphEdge[]}*/
+    edges = []
+
 
     /**@param {RouteBuilderOptionsType} options*/
     constructor(options) {
@@ -63,9 +70,11 @@ export default class RouteBuilder {
      * @name RouteBuilder.updateRoute
      * @apram {PlaceType} places
      */
-    updateRoute(places) {
+    updateRoute() {
         // this.placesMap.clear()
-        this._travel._places = this.sortByGeneticAlgorithm(places)
+        this._travel._modified.places = this._travel.places.length > 6
+            ? this.sortByGeneticAlgorithm(this._travel.places)
+            : this.sortPlacesByDistance(this._travel.places)
         this.createActivitiesList()
         // this.getActivities()
     }
@@ -255,7 +264,8 @@ export default class RouteBuilder {
      * @returns {SortPointType[]}
      */
     sortPlacesByDistance(points, maxDist, distanceCB = getDistanceFromTwoPoints) {
-        if (points.length === 0) return points
+        console.log("комивояжер")
+        if (points.length < 2) return points
 
         const pointGroupes = this._groupPoints(points, maxDist)
         /**@type{Map<string, SortPointType[]>}*/
@@ -307,6 +317,8 @@ export default class RouteBuilder {
     sortByGeneticAlgorithm(points, mutation = 100, cycles = 700) {
         // const start = new Date()
         if (!points || !points.length) return []
+
+        if(points.length === 1) return [...points]
 
         const graph = this._prepareData(points)
         const verteces = graph.getAllVertices()
@@ -432,9 +444,9 @@ export default class RouteBuilder {
         }
 
 
-        console.log('Shortest route length: ', this._pathLength(graph, shortest))
+        // console.log('Shortest route length: ', this._pathLength(graph, shortest))
 
-        shortest = shortest.map(vp => this.placeMap.get(vp.getKey()))
+        shortest = shortest.map(vp => this.placeMap.get(vp.value))
 
         shortest.forEach(p => p.location = p.coords)
 
@@ -466,12 +478,10 @@ export default class RouteBuilder {
      */
     _prepareData(points, distanceCB = getDistanceFromTwoPoints) {
         this.id_list = []
-        /**@type{Map<string, SortPointType>}*/
-        this.placeMap = new Map()
-        /**@type{Map<string, GraphVertex>}*/
-        this.vertexMap = new Map()
-        /**@type{GraphEdge[]}*/
+        this.placeMap.clear()
+        this.vertexMap.clear()
         this.edges = []
+
         /**@type{Graph}*/
         const graph = new Graph(true)
 
@@ -498,7 +508,14 @@ export default class RouteBuilder {
             }
         }
 
-        this.edges.forEach(e => graph.addEdge(e))
+        this.edges.forEach(e => {
+            try{
+                graph.addEdge(e)
+            }catch (err){
+                if(!err.message.includes("Edge has already been added before"))
+                    throw err
+            }
+        })
         return graph
     }
 

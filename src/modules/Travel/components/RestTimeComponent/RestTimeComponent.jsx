@@ -25,11 +25,11 @@ export default function RestTimeComponent({children, activity}) {
 
     return (
         <Link to={`/travel/${travel.id}/add/hotel/?${params.toString()}`}>
-            <div className='rest-container relative'>
+            <div className='rest-container relative pt-20'>
                 {/*<Chip className='rest-date-start'> {start} </Chip>*/}
                 {/*<Chip className='rest-date-end'> {end} </Chip>*/}
                 <div className='rest-img'>
-                    <div className="collumn h-full">
+                    <div className="collumn">
                         <div className="row center title-semi-bold flex-0">
                             <span>{start}</span>
                             &nbsp;|&nbsp;

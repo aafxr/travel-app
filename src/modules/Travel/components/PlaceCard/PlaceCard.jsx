@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import ChipInput from "../../../../components/ui/ChipInput/ChipInput";
@@ -27,11 +27,17 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
     const {travel} = useTravelContext()
     const [startChange, setStartChange] = useState(false)
     const [endChange, setEndChange] = useState(false)
-
-    const place = placeActivity.place
-
     const [start, setStart] = useState(() => placeActivity.start.toLocaleTimeString().split(':').slice(0, 2).join(':'))
     const [end, setEnd] = useState(placeActivity.end.toLocaleTimeString().split(':').slice(0, 2).join(':'))
+    const [place, setPlace] = useState(/**@type{PlaceType}*/ null)
+
+
+    useEffect(() => {
+        if(placeActivity.place)
+            setPlace(placeActivity.place)
+    }, [placeActivity.place, travel])
+
+
 
 
     const rightElement = (
@@ -70,6 +76,7 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
         }
     }
 
+
     return (
         <Swipe
             className={'place'}
@@ -81,71 +88,78 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
         >
             <div className='place-container relative'>
                 {
-                    !!start && !startChange
-                        ? <Chip
-                            onTouchStart={(e) => setStartChange(true)}
-                            className='place-date-start'
-                        > {start} </Chip>
-                        : <ChipInput
-                            className='place-date-start'
-                            template='hh:mm'
-                            value={new Date(placeActivity.start)}
-                            onBlur={(time, date) => handleTime(time, date, 'start')}
-                        />
+                    !!place && (
+                        <>
+
+                            {
+                                !!start && !startChange
+                                    ? <Chip
+                                        onTouchStart={(e) => setStartChange(true)}
+                                        className='place-date-start'
+                                    > {start} </Chip>
+                                    : <ChipInput
+                                        className='place-date-start'
+                                        template='hh:mm'
+                                        value={new Date(placeActivity.start)}
+                                        onBlur={(time, date) => handleTime(time, date, 'start')}
+                                    />
+                            }
+                            {
+                                !!end && !endChange
+                                    ? <Chip
+                                        onTouchStart={(e) => setEndChange(true)}
+                                        className='place-date-end'
+                                    > {end} </Chip>
+                                    : <ChipInput
+                                        className='place-date-end'
+                                        templates='hh:mm'
+                                        value={new Date(placeActivity.end)}
+                                        onBlur={(time, date) => handleTime(time, date, 'end')}
+                                    />
+                            }
+                            <div className='place-img'>
+                                {
+                                    (place.photos && place.photos.length)
+                                        ? <PhotoCarousel urls={place.photos} className='img-abs'/>
+                                        : <PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs'/>
+                                }
+                                {/*<PhotoCarousel urls={imgURLs} />*/}
+                                <div className='place-buttons'>
+                                    {
+                                        !!onPhotoAdd && <button
+                                            className='rounded-button place-btn'
+                                            onClick={() => onPhotoAdd(place)}
+                                        >
+                                            <PhotoIcon/></button>
+                                    }
+                                    {
+                                        !!onEdite && <button
+                                            className='rounded-button place-btn'
+                                            onClick={() => onEdite(place)}
+                                        >
+                                            <EditePencil/></button>
+                                    }
+                                </div>
+                            </div>
+                            <div className='place-title'>{place.name}</div>
+                            <div className='place-entity-type'>{place.formatted_address}</div>
+                            {children}
+                            {/*{*/}
+                            {/*    !!onAdd && (*/}
+                            {/*        <IconButton*/}
+                            {/*            className='location-add-button'*/}
+                            {/*            iconClass='location-add-button-icon'*/}
+                            {/*            icon={selected ? <CheckIcon/> : <PlusIcon/>}*/}
+                            {/*            border={true}*/}
+                            {/*            shadow={false}*/}
+                            {/*            onClick={() => onAdd && onAdd(item)}*/}
+                            {/*            small*/}
+                            {/*        />*/}
+                            {/*    )*/}
+                            {/*}*/}
+                        </>
+                    )
                 }
-                {
-                    !!end && !endChange
-                        ? <Chip
-                            onTouchStart={(e) => setEndChange(true)}
-                            className='place-date-end'
-                        > {end} </Chip>
-                        : <ChipInput
-                            className='place-date-end'
-                            templates='hh:mm'
-                            value={new Date(placeActivity.end)}
-                            onBlur={(time, date) => handleTime(time, date, 'end')}
-                        />
-                }
-                <div className='place-img'>
-                    {
-                        (place.photos && place.photos.length)
-                            ? <PhotoCarousel urls={place.photos} className='img-abs'/>
-                            : <PhotoCarousel urls={[DEFAULT_IMG_URL]} className='img-abs'/>
-                    }
-                    {/*<PhotoCarousel urls={imgURLs} />*/}
-                    <div className='place-buttons'>
-                        {
-                            !!onPhotoAdd && <button
-                                className='rounded-button place-btn'
-                                onClick={() => onPhotoAdd(place)}
-                            >
-                                <PhotoIcon/></button>
-                        }
-                        {
-                            !!onEdite && <button
-                                className='rounded-button place-btn'
-                                onClick={() => onEdite(place)}
-                            >
-                                <EditePencil/></button>
-                        }
-                    </div>
-                </div>
-                <div className='place-title'>{place.name}</div>
-                <div className='place-entity-type'>{place.formatted_address}</div>
-                {children}
-                {/*{*/}
-                {/*    !!onAdd && (*/}
-                {/*        <IconButton*/}
-                {/*            className='location-add-button'*/}
-                {/*            iconClass='location-add-button-icon'*/}
-                {/*            icon={selected ? <CheckIcon/> : <PlusIcon/>}*/}
-                {/*            border={true}*/}
-                {/*            shadow={false}*/}
-                {/*            onClick={() => onAdd && onAdd(item)}*/}
-                {/*            small*/}
-                {/*        />*/}
-                {/*    )*/}
-                {/*}*/}
             </div>
         </Swipe>
     )

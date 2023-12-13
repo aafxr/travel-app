@@ -1,8 +1,9 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import Button from "../../../../components/ui/Button/Button";
@@ -10,7 +11,6 @@ import {Input, PageHeader} from "../../../../components/ui";
 import useDragPoint from "../../hooks/useDragPoint";
 
 import './TravelAddWaypoint.css'
-import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * @function
@@ -23,7 +23,7 @@ export default function TravelAddWaypoint() {
     const navigate = useNavigate()
     // const dispatch = useDispatch()
 
-    const {user, userLoc} = useUserSelector()
+    const {user, userLoc} = useContext(UserContext)
     const {travel, errorMessage} = useTravelContext()
 
     /** интерфейс для взаимодействия с картой */
@@ -57,22 +57,30 @@ export default function TravelAddWaypoint() {
     //==================================================================================================================
     function handleKeyDown(e) {
         if (e.keyCode === 13) {
-            map.getPointByAddress(point.address)
-                .then(/**@param {GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
-                    if (markerInfo) {
-                        const {text: address,boundedBy : coords } = markerInfo[0]
-                        const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
-                        const newPoint = {...point, address, coords: coords[0], kind }
-
-                        map
-                            .clearMap()
-                            .addPoint(newPoint,{markerType: "exist"})
-                            .showPoint(newPoint.coords)
-
-                        setPoint(newPoint)
-                    }
-                })
+            handleFindLocation()
         }
+    }
+
+    function handleBlur(){
+        handleFindLocation()
+    }
+
+    function handleFindLocation(){
+        map.getPointByAddress(point.address)
+            .then(/**@param {GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
+                if (markerInfo) {
+                    const {text: address,boundedBy : coords } = markerInfo[0]
+                    const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
+                    const newPoint = {...point, address, coords: coords[0], kind }
+
+                    map
+                        .clearMap()
+                        .addPoint(newPoint,{markerType: "exist"})
+                        .showPoint(newPoint.coords)
+
+                    setPoint(newPoint)
+                }
+            })
     }
 
     function handleChange(e) {
@@ -81,10 +89,10 @@ export default function TravelAddWaypoint() {
 
     //==================================================================================================================
     /** обновляем store (добавление) */
-    function handleSubmit() {
+    function handleSave() {
         if (point.address.length) {
-            console.log('point', point)
             /** обновление информации о путешествии в бд */
+            travel.change = true
             travel
                 .addWaypoint(point)
                 .save(user.id)
@@ -114,6 +122,7 @@ export default function TravelAddWaypoint() {
                         value={point?.address || ''}
                         onKeyDown={handleKeyDown}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         autoComplete='off'
                     />
                 </div>
@@ -123,7 +132,7 @@ export default function TravelAddWaypoint() {
             </div>
             <div className='fixed-bottom-button'>
                 <Button
-                    onClick={handleSubmit}
+                    onClick={handleSave}
                     disabled={!map || !map.getMarkers().length}
                 >
                     Продолжить

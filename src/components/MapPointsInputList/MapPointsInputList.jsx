@@ -219,7 +219,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                 /*** удаляемая точка с карты */
                 const point = pointsList[pointIdx]
                 /*** point может не существовать (если не нажата кнопка Enter) */
-                point && map.removeMarker(point.id)
+                point && map.removePoint(point.id)
                 /*** обновленный массив точек */
                 const list = points.filter((p) => p.id !== point.id)
                 /*** обновляем зум карты */

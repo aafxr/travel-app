@@ -10,6 +10,7 @@ import Expense from "./Expense";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import Section from "./Section";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import aFetch from "../axios";
 
 
 /**
@@ -330,7 +331,10 @@ export default class Travel extends BaseTravel {
      */
     static async travelList() {
         try {
-            let list = await storeDB.getAll(constants.store.TRAVEL)
+            let list = (await aFetch.get('/travel/getList/')).data
+            if(!Array.isArray(list))
+                list = await storeDB.getAll(constants.store.TRAVEL)
+
             list = list.map(l => new BaseTravel(l).object)
             return list
         } catch (err) {

@@ -12,6 +12,7 @@ import ErrorReport from "../../../../controllers/ErrorReport";
 import {PageHeader, Tab} from "../../../../components/ui";
 import removeTravel from "../../../../utils/removeTravel";
 import Travel from "../../../../classes/Travel";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -28,15 +29,17 @@ export default function TravelRoutes() {
     const navigate = useNavigate()
     const {travelsType} = useParams()
     const [travels, setTravels] = useState(/**@type{TravelType[]} */[])
-    const {user, setUser} = useContext(UserContext)
+    const user = useUserSelector()
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
     const [actualTravels, setActualTravels] = useState(/**@type{TravelType[]} */[])
 
     useEffect(() => {
-        Travel
-            .travelList()
-            .then(setTravels)
-    }, [])
+        if(user) {
+            Travel
+                .travelList()
+                .then(setTravels)
+        }
+    }, [user])
 
     /** обновление списка актуальных путешествий */
     useEffect(() => {
@@ -45,13 +48,6 @@ export default function TravelRoutes() {
             setActualTravels(filteredTravels)
         }
     }, [travels, travelsType])
-
-    useEffect(() => {
-        if (!user) {
-            const us = JSON.parse(localStorage.getItem(USER_AUTH))
-            if (us) setUser(us)
-        }
-    }, [user])
 
     /**
      * обработка удаления путешествия

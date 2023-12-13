@@ -39,7 +39,7 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
             const list = urls.map((url, idx) => ({idx, url}))
             setUrlsList(list)
         }
-    }, [])
+    }, [urls])
 
     return (
         <div className='photo-container'>

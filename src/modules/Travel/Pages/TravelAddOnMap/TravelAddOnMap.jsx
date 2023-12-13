@@ -24,7 +24,7 @@ import './TravelAddOnMap.css'
 export default function TravelAddOnMap() {
     const navigate = useNavigate()
     const {travel} = useTravelContext()
-    const {user, userLoc} = useUserSelector()
+    const user = useUserSelector()
     const [map, setMap] = useState(/**@type{IMap}*/ null)
 
 
@@ -60,6 +60,7 @@ export default function TravelAddOnMap() {
     //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
+        travel.change = true
         travel
             .save(user.id)
             .then(() => navigate(`/travel/${travel.id}/settings/`))
