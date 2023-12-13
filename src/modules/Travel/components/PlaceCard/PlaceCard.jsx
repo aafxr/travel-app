@@ -10,6 +10,8 @@ import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Chip} from "../../../../components/ui";
 
 import './PlaceCard.css'
+import useUserSelector from "../../../../hooks/useUserSelector";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * Компонент - карточка с описанием места
@@ -24,17 +26,21 @@ import './PlaceCard.css'
  * @returns {JSX.Element}
  */
 export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDelete, onPhotoAdd}) {
+    const user = useUserSelector()
     const {travel} = useTravelContext()
     const [startChange, setStartChange] = useState(false)
     const [endChange, setEndChange] = useState(false)
     const [start, setStart] = useState(() => placeActivity.start.toLocaleTimeString().split(':').slice(0, 2).join(':'))
-    const [end, setEnd] = useState(placeActivity.end.toLocaleTimeString().split(':').slice(0, 2).join(':'))
+    const [end, setEnd] = useState(() => placeActivity.end.toLocaleTimeString().split(':').slice(0, 2).join(':'))
     const [place, setPlace] = useState(/**@type{PlaceType}*/ null)
 
 
     useEffect(() => {
         if(placeActivity.place)
             setPlace(placeActivity.place)
+
+        setStart(placeActivity.start.toLocaleTimeString().split(':').slice(0, 2).join(':'))
+        setEnd(placeActivity.end.toLocaleTimeString().split(':').slice(0, 2).join(':'))
     }, [placeActivity.place, travel])
 
 
@@ -55,20 +61,26 @@ export default function PlaceCard({children, placeActivity, onAdd, onEdite, onDe
      */
     function handleTime(time, date, type) {
         const duration = placeActivity.end - placeActivity.start
-        const _time = time.match(/\d{2}:\d{2}$/)[0]?.split(':')
-        if (_time) {
-            const [hh, mm] = _time
+        // const _time = time.match(/\d{2}:\d{2}$/)[0]?.split(':')
+        if (time) {
+            // const [hh, mm] = _time
             if (type === 'start') {
                 // const date = setDateTime(placeActivity.start, {hh, mm})
+                // date.setHours(+hh)
+                // date.setMinutes(+mm)
                 place.time_start = date.toISOString()
                 place.time_end = new Date(date.getTime() + duration).toISOString()
                 travel.updatePlace({...place})
+                    .save(user.id)
+                    .catch(defaultHandleError)
                 setStartChange(false)
                 setStart(time)
                 setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             } else if (type === 'end') {
                 // const date = setDateTime(place.time_end, {hh, mm})
                 travel.updatePlace({...place, time_end: date.toISOString()})
+                    .save(user.id)
+                    .catch(defaultHandleError)
                 setEndChange(false)
                 setEnd(time)
             }

@@ -778,8 +778,11 @@ export default class BaseTravel extends Entity {
     updatePlace(item){
         const idx = this.places.findIndex(p => p._id === item._id)
         if(~idx) {
-            this._modified.places[idx] = item
-            this.forceUpdate()
+            this.change = true
+            const newArray = [...this._modified.places]
+            newArray[idx] = item
+            this._modified.places = newArray
+            this.routeBuilder.updateRoute()
         }
         return this
     }
@@ -1086,9 +1089,6 @@ export default class BaseTravel extends Entity {
         const userOK = typeof user_id === 'string' && user_id.length > 0
         /**@type{TravelType}*/
         const travelDTO = {...this._modified}
-        travelDTO.waypoints = travelDTO.waypoints.map(({address, id, locality, coords, kind}) => ({
-            address, id, locality, coords, kind, placemark: null
-        }))
         if (this.change) {
             this._new
                 ? await travel_service.create(travelDTO, userOK ? user_id : this.user_id)

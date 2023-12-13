@@ -164,6 +164,7 @@ export default class YMap extends IMap {
      */
     getUserLocation() {
         return new Promise(async (resolve, reject) => {
+
             let coords
             try {
                 coords = await userLocation()

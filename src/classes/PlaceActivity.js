@@ -18,16 +18,23 @@ export default class PlaceActivity extends Activity {
         if (!options.place)
             throw new Error('PlaceActivity options prop should have "place" prop')
 
-        this.place = options.place
         this.status = Activity.PLACE
+        this.place = options.place
+        // if (this.place.time_start)
+        //     this.start = new Date(this.place.time_start)
+        // if(this.place.time_end && this.place.time_start !== this.place.time_end)
+        //     this.end = new Date(this.place.time_start)
+        //
+        // if(this.start && this.end)
+        //     this.duration = this.end - this.start
+
         const placeStart = new Date(this.place.time_start)
         placeStart.setHours(Activity.MORNING_TIME / (60 * 60 * 1000))
-        if (options.start)
             //если событие заплланированно позднее времени прибытия
-            if (!Number.isNaN(placeStart.getTime()) && placeStart > options.start)
-                this.start = placeStart
-            else
-                this.start = new Date(options.start)
+        if (!Number.isNaN(placeStart.getTime()) && placeStart > options.start)
+            this.start = placeStart
+        if (options.start && !this.start)
+            this.start = new Date(options.start)
         if (options.defaultActivitySpentTime)
             this.duration = options.preference.defaultSpentTime
 

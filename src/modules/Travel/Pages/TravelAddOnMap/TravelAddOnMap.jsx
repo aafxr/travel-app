@@ -104,7 +104,7 @@ export default function TravelAddOnMap() {
             <div className='fixed-bottom-button'>
                 <Button
                     onClick={handleRouteSubmit}
-                    disabled={!map ||travel.waypoints.length === 0}
+                    // disabled={!map ||travel.waypoints.length === 0}
                 >
                     Продолжить
                 </Button>

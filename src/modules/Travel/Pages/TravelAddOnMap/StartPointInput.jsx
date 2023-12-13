@@ -7,6 +7,7 @@ import ErrorReport from "../../../../controllers/ErrorReport";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import defaultPoint from "../../../../utils/default-values/defaultPoint";
 import createId from "../../../../utils/createId";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 
 /**
@@ -43,11 +44,15 @@ export default function StartPointInput({  map}) {
      */
     function handleKeyDownEvent(e){
         if(e.keyCode === 13){
-            map.addMarkerByAddress(point.address, point.id)
-                .then(p => {
-                    if(p){
-                        travel.setFromPoint(p)
-                        setPoint(p)
+            map.getPointByAddress(point.address)
+                .then(/**@param{GeoObjectPropertiesType[]} markerInfo*/markerInfo => {
+                    if (markerInfo) {
+                        const {text: address,boundedBy : coords } = markerInfo[0]
+                        const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
+                        const newPoint = {...point, address, coords: coords[0], kind }
+
+                        travel.setFromPoint(newPoint)
+                        setPoint(newPoint)
                         update()
                     }
                 })
@@ -56,13 +61,14 @@ export default function StartPointInput({  map}) {
 
     // обработка фокуса на input =======================================================================================
     async function handleUserLocationPoint() {
+
         if (!map) return
         /** попытка получить координаты пользователя */
         const coords = await map.getUserLocation().catch((err) => {
-            ErrorReport.sendError(err).catch(console.error)
+            defaultHandleError(err)
             pushAlertMessage({type: "warning", message: 'Не удалось определить геолокацию'})
-            return null
         })
+
 
         if (coords) {
             const newPoint = defaultPoint(travel.id, {coords})
@@ -82,7 +88,6 @@ export default function StartPointInput({  map}) {
                 .catch(console.error)
         }
     }
-
 
 
     return travel.isFromPoint

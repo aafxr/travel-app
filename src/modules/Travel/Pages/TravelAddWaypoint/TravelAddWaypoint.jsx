@@ -92,7 +92,6 @@ export default function TravelAddWaypoint() {
     function handleSave() {
         if (point.address.length) {
             /** обновление информации о путешествии в бд */
-            travel.change = true
             travel
                 .addWaypoint(point)
                 .save(user.id)

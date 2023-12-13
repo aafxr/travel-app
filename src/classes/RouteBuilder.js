@@ -76,6 +76,7 @@ export default class RouteBuilder {
             ? this.sortByGeneticAlgorithm(this._travel.places)
             : this.sortPlacesByDistance(this._travel.places)
         this.createActivitiesList()
+        this._travel.forceUpdate()
         // this.getActivities()
     }
 
@@ -264,7 +265,6 @@ export default class RouteBuilder {
      * @returns {SortPointType[]}
      */
     sortPlacesByDistance(points, maxDist, distanceCB = getDistanceFromTwoPoints) {
-        console.log("комивояжер")
         if (points.length < 2) return points
 
         const pointGroupes = this._groupPoints(points, maxDist)
