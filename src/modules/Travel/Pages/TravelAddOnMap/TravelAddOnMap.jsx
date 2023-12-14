@@ -79,9 +79,9 @@ export default function TravelAddOnMap() {
 
         map
             .clearMap()
-            .showRoute(newPoints, {})
-            .showPolyRoute(newPoints.map(p => p.coords),{})
-            .autoZoom(newPoints.length > 1 ? undefined : 12)
+            .showRoute(travel.waypoints, {})
+            .showPolyRoute(travel.waypoints.map(p => p.coords),{})
+            .autoZoom(travel.waypoints.length > 1 ? undefined : 12)
     }
 
 

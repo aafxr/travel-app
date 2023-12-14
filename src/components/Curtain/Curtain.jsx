@@ -18,7 +18,7 @@ import './Curtain.css'
  * @param {number} defaultOffsetPercents 0 - 1 , начальное состояние шторки (на сколько она открыта)
  * @param {number} duration default 300ms
  * @param {number} scrollDiff default 0.1 минимальное смещение (drag events), на которое реагирует шторка
- * @param {function} onChange callback (шторка открыта / закрыта)
+ * @param {function} onChange callback (шторка открыта (true - в верхнем положении) / закрыта (false - в нижнем положении))
  * @return {JSX.Element}
  * @category Components
  */
@@ -164,27 +164,33 @@ export default function Curtain({
                 setTopOffset(calcTopOffset())
                 const t = calcTopOffset()
                 animateTop(curtainRef.current, t, duration)()
-                onChange && onChange(false)
             } else {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
-                onChange && onChange(true)
             }
         } else {
             if (Math.abs(minOffset - dragEnd) < scrollDiffHeight) {
                 setTopOffset(minOffset || 0)
                 const t = minOffset || 0
                 animateTop(curtainRef.current, t, duration)()
-                onChange && onChange(true)
             } else {
                 setTopOffset(calcTopOffset())
                 const t = calcTopOffset()
                 animateTop(curtainRef.current, t, duration)()
-                onChange && onChange(false)
             }
         }
     }
+
+    useEffect(() => {
+        if (onChange) {
+            if (topOffset <= minOffset)
+                onChange(true)
+            else
+                onChange(false)
+        }
+    }, [topOffset])
+
 
     function movePosition(y) {
         setDragEnd(y)

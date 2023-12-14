@@ -12,6 +12,7 @@ import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import YMap from "../../../../api/YMap";
 import createId from "../../../../utils/createId";
+import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 
 /**
  * Страница отображения компонент добавления места путешествия
@@ -24,11 +25,11 @@ export default function TravelAddPlace() {
     const user = useUserSelector()
     const {travel} = useTravelContext()
     const navigate = useNavigate()
-    const [title, setTitle] = useState('')
-    const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
-        start: travel.date_start,
-        end: travel.date_start
-    })
+    const [placeName, setPlaceName] = useState('')
+    // const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
+    //     start: travel.date_start,
+    //     end: travel.date_start
+    // })
 
     const [place, setPlace] = useState(/**@type{PlaceType}*/null)
 
@@ -44,7 +45,7 @@ export default function TravelAddPlace() {
                 coords: p.location,
                 visited: 0
             })
-            setTitle(p.name)
+            setPlaceName(p.name)
         }
     }
 
@@ -52,16 +53,36 @@ export default function TravelAddPlace() {
         if (place) {
             travel.addPlace({
                     ...place,
-                    time_start: dateRange.start,
-                    time_end: dateRange.end
+                    time_start: '', //dateRange.start,
+                    time_end: '', //dateRange.end
                 }
             )
 
             travel
                 .save(user.id)
-                .then(() => navigate(-1))
+                .then(() => pushAlertMessage({
+                    type: 'success',
+                    message: `
+                    <div class="column">
+                        <div class="title-semi-bold center">${place.name}</div>
+                        <div>Добавлен</div>
+                    </div>
+                    `
+                }))
+                .then(() => {
+                    setPlaceName('')
+                    setPlace(null)
+                    setPlaces([])
+                })
                 .catch(defaultHandleError)
         }
+    }
+
+
+    /** @param {PlaceType[]} placesList */
+    function handleSelectedPlaces(placesList){
+        const filtered = placesList.filter(p => !travel.places.find(tp => tp.id === p.id))
+        setPlaces(filtered)
     }
 
     return (
@@ -71,17 +92,17 @@ export default function TravelAddPlace() {
                 <div className='column gap-0.25'>
                     <InputWithSuggests
                         type='text'
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={placeName}
+                        onChange={(e) => setPlaceName(e.target.value)}
                         placeholder='Выберите место'
-                        onPlaces={setPlaces}
+                        onPlaces={handleSelectedPlaces}
                     />
-                    <DateRange
-                        init={dateRange}
-                        minDateValue={travel.date_start}
-                        maxDateValue={travel.date_end}
-                        onChange={setDateRange}
-                    />
+                    {/*<DateRange*/}
+                    {/*    init={dateRange}*/}
+                    {/*    minDateValue={travel.date_start}*/}
+                    {/*    maxDateValue={travel.date_end}*/}
+                    {/*    onChange={setDateRange}*/}
+                    {/*/>*/}
                 </div>
                 {/*<ul className='row gap-1'>*/}
                 {/*    <li><Chip rounded color='grey'>Архитектура</Chip></li>*/}

@@ -9,6 +9,7 @@ import PlaceActivity from "./PlaceActivity";
 import RoadActivity from "./RoadActivity";
 import LinkedList from "../utils/data-structures/LinkedList";
 import RestTimeActivity from "./RestTimeActivity";
+import TimeHelper from "./TimeHelper";
 
 
 /**
@@ -43,7 +44,7 @@ export default class RouteBuilder {
     activitiesList
 
     /**@type{Map<string, SortPointType>}*/
-    placeMap  = new Map()
+    placeMap = new Map()
     /**@type{Map<string, GraphVertex>}*/
     vertexMap = new Map()
     /**@type{GraphEdge[]}*/
@@ -75,9 +76,80 @@ export default class RouteBuilder {
         this._travel._modified.places = this._travel.places.length > 6
             ? this.sortByGeneticAlgorithm(this._travel.places)
             : this.sortPlacesByDistance(this._travel.places)
-        this.createActivitiesList()
+        // this.createActivitiesList()
+        this.updatePlacesTime()
         this._travel.forceUpdate()
         // this.getActivities()
+    }
+
+    updatePlacesTime() {
+        const v = 50 / 3.6 / 1000
+        const travelingTime = 1.5 * 60 * 60 * 1000
+        const travelTimeStart = new Date(this._travel.date_start)
+
+        const timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 15 * 60 * 60 * 1000, travelTimeStart.getTimezoneOffset() * 60 * 1000)
+
+        const places = this._travel.places.map(p => {
+            const time_start = p.time_start ? new Date(p.time_start) : new Date(travelTimeStart)
+            const time_end = p.time_end ? new Date(p.time_end) : new Date(time_start.getTime() + travelingTime)
+
+            const newPlace = { ...p,  time_start,  time_end }
+
+            if (newPlace.time_start.getTime() >= newPlace.time_end.getTime())
+                newPlace.time_end.setTime(newPlace.time_start.getTime() + travelingTime)
+
+            newPlace.duration = newPlace.time_end - newPlace.time_start
+            return newPlace
+        })
+
+
+        let idx = 0
+        /**@type{Date}*/
+        let lastPlaceEndTime
+        /**@type{number}*/
+        let distanceTime
+        while (idx < places.length){
+            if(distanceTime){
+                const place = places[idx]
+                place.time_start = new Date(lastPlaceEndTime.getTime() + distanceTime)
+                place.time_end = new Date(place.time_start.getTime() + place.duration)
+                lastPlaceEndTime = new Date(place.time_end)
+            }else{
+                const place = places[idx]
+                if(timeHelper.isAtNightTime(place.time_start)){
+                    timeHelper.shiftToMorning(place.time_start)
+                    place.time_end = new Date(place.time_start.getTime() + place.duration)
+                }
+                lastPlaceEndTime = new Date(place.time_end)
+            }
+
+            if(places[idx + 1]) {
+                distanceTime = getDistanceFromTwoPoints(places[idx].coords, places[idx+1].coords) / v
+                distanceTime = Math.round(distanceTime)
+            }
+            idx++
+        }
+
+        idx = 0
+        while (idx < places.length){
+            if(timeHelper.isAtNightTime(places[idx].time_start)){
+                const shifted = timeHelper.shiftToMorning(places[idx].time_start)
+                timeHelper.shift(places[idx].time_end, shifted)
+                const tmpTimes = []
+                places.slice(idx + 1).forEach(p => tmpTimes.push(p.time_start, p.time_end))
+                timeHelper.shiftAll(tmpTimes, shifted)
+            }
+            idx++
+        }
+
+        places.forEach(p => {
+            p.time_start = p.time_start.toISOString()
+            p.time_end = p.time_end.toISOString()
+            delete p.duration
+        })
+
+        this._travel
+            .setPlaces(places)
     }
 
     /**
@@ -132,11 +204,11 @@ export default class RouteBuilder {
         const travelStartDate = new Date(this._travel.date_start)
         const places = this._travel.places
 
-        const placeActivityOptions = (idx, startTime) =>  {
+        const placeActivityOptions = (idx, startTime) => {
             return {
                 place: this._travel.places[idx],
                 travel_start_time: travelStartDate,
-                start: startTime? startTime : travelStartDate,
+                start: startTime ? startTime : travelStartDate,
                 preference: {
                     moveAtNight: false,
                     defaultSpentTime: 45 * 60 * 1000
@@ -144,7 +216,7 @@ export default class RouteBuilder {
             }
         }
 
-        const roadActivityOptions = (idx) =>  {
+        const roadActivityOptions = (idx) => {
             return {
                 place: this._travel.places[idx],
                 from: this._travel.places[idx],
@@ -188,7 +260,7 @@ export default class RouteBuilder {
                             travel_start_time: travelStartDate
                         })
                     )
-                if(roadActivities.length) nextActivityStartTime = roadActivities[roadActivities.length -1].end
+                if (roadActivities.length) nextActivityStartTime = roadActivities[roadActivities.length - 1].end
 
                 roadActivities.forEach((ra, idx, arr) => {
                     activitiesList.append(ra)
@@ -211,7 +283,7 @@ export default class RouteBuilder {
             .forEach((a, idx, arr) => {
                 // debugger
                 // const delta = a.next?.value.start - a.value.end
-                if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000){
+                if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000) {
                     const restOptions = {
                         startTime: a.value.end,
                         endTime: a.next.value.start,
@@ -222,9 +294,9 @@ export default class RouteBuilder {
                     activitiesList.insert(new RestTimeActivity(restOptions), idx)
                 }
 
-                if (a.value.start > a.value.end){
-                    if(idx === 0 ) activitiesList.delete(activitiesList.head)
-                    else if(idx === arr.length -1) activitiesList.delete(activitiesList.tail)
+                if (a.value.start > a.value.end) {
+                    if (idx === 0) activitiesList.delete(activitiesList.head)
+                    else if (idx === arr.length - 1) activitiesList.delete(activitiesList.tail)
                     else activitiesList.delete(a)
                 }
             })
@@ -318,7 +390,7 @@ export default class RouteBuilder {
         // const start = new Date()
         if (!points || !points.length) return []
 
-        if(points.length === 1) return [...points]
+        if (points.length === 1) return [...points]
 
         const graph = this._prepareData(points)
         const verteces = graph.getAllVertices()
@@ -509,10 +581,10 @@ export default class RouteBuilder {
         }
 
         this.edges.forEach(e => {
-            try{
+            try {
                 graph.addEdge(e)
-            }catch (err){
-                if(!err.message.includes("Edge has already been added before"))
+            } catch (err) {
+                if (!err.message.includes("Edge has already been added before"))
                     throw err
             }
         })
@@ -565,7 +637,7 @@ export default class RouteBuilder {
             this.createActivitiesList()
 
         return this.activitiesList.toArray()
-            .filter(ln=> ln.value instanceof PlaceActivity && ln.value.startDay === i)
+            .filter(ln => ln.value instanceof PlaceActivity && ln.value.startDay === i)
             .map(ln => ln.value.place)
     }
 
@@ -597,9 +669,9 @@ export default class RouteBuilder {
 
         const days = this.activitiesList.toArray()
             .map(ln => ln.value.days)
-            .reduce((acc, dl) => acc.concat(dl) , [])
+            .reduce((acc, dl) => acc.concat(dl), [])
 
-        return[...( new Set(days))]
+        return [...(new Set(days))]
     }
 
     /**
