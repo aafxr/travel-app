@@ -12,6 +12,7 @@ import PlaceActivity from "../../../../classes/PlaceActivity";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import RoadActivity from "../../../../classes/RoadActivity";
 import {Tab} from "../../../../components/ui";
+import {MIN_NO_ADVICE_TIME} from "../../../../static/constants";
 
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
@@ -57,7 +58,8 @@ export default function ShowRouteByDays() {
                     activitiesList
                         ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
                             <React.Fragment key={idx}>
-                                {<ShowActivity activity={a}/>}
+                                {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
+                                {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
                             </React.Fragment>))
                         : travel.places.length === 0
                             ? (
@@ -122,4 +124,24 @@ function ShowActivity({activity}) {
     //         </dl>
     //     </div>
     // )
+}
+
+
+/**
+ *
+ * @param {Activity} prevActivity
+ * @param {Activity} nextActivity
+ * @constructor
+ */
+function ShowAdvice({prevActivity, nextActivity}){
+    if (!prevActivity || !nextActivity) return null
+
+
+    if(nextActivity.start - prevActivity.end > MIN_NO_ADVICE_TIME){
+        return (
+            <div>advice block</div>
+        )
+    }
+
+    return null
 }

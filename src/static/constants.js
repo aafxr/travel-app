@@ -94,6 +94,7 @@ export const UNAUTHORIZED = 'unauthorized'
 export const THEME = 'THEME'
 
 export const MS_IN_DAY = 1000 * 60 * 60 * 24 //число милисекунд в в сутках
+export const MIN_NO_ADVICE_TIME = 10*60*1000 //время когда нет смыла советовать место
 
 export const defaultMovementTags = [
     {id: 1, icon: <WalkIcon className='img-abs'/>, title: 'пешком'},
