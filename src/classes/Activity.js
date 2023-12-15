@@ -12,6 +12,7 @@
  */
 import {MS_IN_DAY} from "../static/constants";
 import range from "../utils/range";
+import TimeHelper from "./TimeHelper";
 
 export default class Activity {
     static EVENING_TIME = 21 * 60 * 60 * 1000
@@ -52,7 +53,10 @@ export default class Activity {
         if (new.target === Activity)
             throw new Error('Activity is abstract class')
 
-        this.travel_start_time = options.travel_start_time
+        this.travel_start_time = new Date(options.travel_start_time)
+
+        if((this.travel_start_time.getTime() + this.travel_start_time.getTimezoneOffset()* 60 * 1000) % MS_IN_DAY)
+            this.travel_start_time.setTime(this.travel_start_time.getTime() - this.travel_start_time.getTime() % MS_IN_DAY + this.travel_start_time.getTimezoneOffset() * 60 * 1000)
 
         if (!options.preference) options.preference = {}
         const preferences = options.preference
@@ -70,11 +74,6 @@ export default class Activity {
      * @return {number[]}
      */
     get days() {
-        // let time_start = (this.start - this.travel_start_time) / MS_IN_DAY
-        // time_start = Math.floor(time_start) + 1
-        // let time_end = (this.end - this.travel_start_time) / MS_IN_DAY
-        // time_end = Math.floor(time_end) + 1
-
         return range(this.startDay, this.endDay)
     }
 
@@ -85,8 +84,7 @@ export default class Activity {
      * @return {number}
      */
     get startDay() {
-        const travelStartOffset = this.travel_start_time % MS_IN_DAY
-        const activityStartDay = (this.start - (this.travel_start_time - travelStartOffset)) / MS_IN_DAY
+        const activityStartDay = (this.start - this.travel_start_time) / MS_IN_DAY
         return Math.floor(activityStartDay) + 1
     }
 
@@ -97,7 +95,7 @@ export default class Activity {
      * @return {number}
      */
     get endDay() {
-        const activityEndDay = (this.end - this.travel_start_time - this.timezoneOffset) / MS_IN_DAY
+        const activityEndDay = (this.end - this.travel_start_time) / MS_IN_DAY
         return Math.floor(activityEndDay) + 1
     }
 
@@ -146,8 +144,7 @@ export default class Activity {
      * @return{boolean}
      */
     isAtDayTime(time) {
-        const hh = time.getHours()
-        return hh > 8 && hh < 18
+        return new TimeHelper(Activity.MORNING_TIME, Activity.EVENING_TIME).isAtDayTime(time)
     }
 
     /** @returns {boolean} */

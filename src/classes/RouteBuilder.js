@@ -62,7 +62,6 @@ export default class RouteBuilder {
 
         // this.placesMap = new Map()
 
-        this.updateRoute()
     }
 
     /**
@@ -76,9 +75,8 @@ export default class RouteBuilder {
         this._travel._modified.places = this._travel.places.length > 6
             ? this.sortByGeneticAlgorithm(this._travel.places)
             : this.sortPlacesByDistance(this._travel.places)
-        // this.createActivitiesList()
-        this.updatePlacesTime()
-        this._travel.forceUpdate()
+        this.createActivitiesList()
+        // this.updatePlacesTime()
         // this.getActivities()
     }
 
@@ -87,7 +85,7 @@ export default class RouteBuilder {
         const travelingTime = 1.5 * 60 * 60 * 1000
         const travelTimeStart = new Date(this._travel.date_start)
 
-        const timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 15 * 60 * 60 * 1000, travelTimeStart.getTimezoneOffset() * 60 * 1000)
+        const timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 15 * 60 * 60 * 1000)
 
         const places = this._travel.places.map(p => {
             const time_start = p.time_start ? new Date(p.time_start) : new Date(travelTimeStart)
@@ -143,13 +141,13 @@ export default class RouteBuilder {
         }
 
         places.forEach(p => {
+            console.log(p.time_start.toLocaleTimeString(), '  ', p.time_end.toLocaleTimeString())
             p.time_start = p.time_start.toISOString()
             p.time_end = p.time_end.toISOString()
             delete p.duration
         })
 
-        this._travel
-            .setPlaces(places)
+        this._travel._modified.places = places
     }
 
     /**
@@ -283,16 +281,16 @@ export default class RouteBuilder {
             .forEach((a, idx, arr) => {
                 // debugger
                 // const delta = a.next?.value.start - a.value.end
-                if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000) {
-                    const restOptions = {
-                        startTime: a.value.end,
-                        endTime: a.next.value.start,
-                        travel_start_time: travelStartDate,
-                        preference: {moveAtNight: false}
-                    }
-
-                    activitiesList.insert(new RestTimeActivity(restOptions), idx)
-                }
+                // if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000) {
+                //     const restOptions = {
+                //         startTime: a.value.end,
+                //         endTime: a.next.value.start,
+                //         travel_start_time: travelStartDate,
+                //         preference: {moveAtNight: false}
+                //     }
+                //
+                //     activitiesList.insert(new RestTimeActivity(restOptions), idx)
+                // }
 
                 if (a.value.start > a.value.end) {
                     if (idx === 0) activitiesList.delete(activitiesList.head)
@@ -300,6 +298,12 @@ export default class RouteBuilder {
                     else activitiesList.delete(a)
                 }
             })
+
+
+        this._travel._modified.places = activitiesList
+            .toArray()
+            .filter(ln => ln.value.isPlace())
+            .map(ln => ln.value.place)
 
         this.activitiesList = activitiesList
         return activitiesList

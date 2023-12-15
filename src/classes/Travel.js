@@ -108,6 +108,9 @@ export default class Travel extends BaseTravel {
         this._expenseFilter = defaultFilterValue()
         Section.defaultSections()
             .then(sl => this._defaultSections = sl)
+
+        this.routeBuilder.updateRoute()
+        this.forceUpdate()
     }
 
     async _filterExpensesFromCursorFunc(cursor) {

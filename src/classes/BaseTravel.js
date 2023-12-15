@@ -783,6 +783,7 @@ export default class BaseTravel extends Entity {
             newArray[idx] = item
             this._modified.places = newArray
             this.routeBuilder.updateRoute()
+            this.forceUpdate()
         }
         return this
     }

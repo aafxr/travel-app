@@ -14,13 +14,11 @@ export default class TimeHelper{
     /**
      * @param {number} morning время в __мс__ - локальное время утра
      * @param {number} evening время в __мс__ - локальное время вечера
-     * @param {number} timezoneOffset время в __мс__ - смещение относительно часового пояса
      * @constructor
      */
-    constructor(morning, evening, timezoneOffset) {
+    constructor(morning, evening) {
         this.morning = morning
         this.evening = evening
-        this.timezoneOffset = timezoneOffset
     }
 
     /**
@@ -61,7 +59,7 @@ export default class TimeHelper{
      * @returns {boolean}
      */
     isEqualToMorning(time) {
-        return (time - this.timezoneOffset) % MS_IN_DAY === this.morning
+        return (time + time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY === this.morning
     }
 
     /**
@@ -69,7 +67,7 @@ export default class TimeHelper{
      * @returns {boolean}
      */
     isEqualToEvening(time) {
-        return (time - this.timezoneOffset) % MS_IN_DAY === this.evening
+        return (time + time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY === this.evening
     }
 
     /**
@@ -99,7 +97,7 @@ export default class TimeHelper{
      * @returns {number}
      */
     getLocaleTime_ms(time){
-        const day_ms = (time.getTime()- this.timezoneOffset) % MS_IN_DAY
+        const day_ms = (time.getTime() - time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY
         return Math.abs(day_ms)
     }
 
@@ -116,6 +114,26 @@ export default class TimeHelper{
      * @param {number} ms
      */
     shiftAll(times, ms){
+        if(!ms) return
         times.forEach(time => time.setTime(time.getTime() + ms))
     }
+
+    /**
+     * @param {Date} time
+     * @return {Date}
+     */
+    toNoon(time){
+        time.setTime(time.getTime() - time.getTime() % MS_IN_DAY  + time.getTimezoneOffset() * 60 * 1000)
+        return time
+    }
+
+    /**
+     * @param {Date} time
+     * @return {Date}
+     */
+    toNextDayNoon(time){
+        time.setTime(time.getTime() - time.getTime() % MS_IN_DAY  + time.getTimezoneOffset() * 60 * 1000 + MS_IN_DAY)
+        return time
+    }
+
 }

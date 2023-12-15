@@ -108,7 +108,7 @@ function ShowActivity({activity}) {
             onDelete={handleRemovePLace}
         />
     else if (activity instanceof RestTimeActivity)
-        return <RestTimeComponent activity={activity}/>
+        return null//<RestTimeComponent activity={activity}/>
     // return (
     //     <div>
     //         {/*<div className='row mt-20 gap-1'>*/}
