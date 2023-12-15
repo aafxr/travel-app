@@ -756,14 +756,10 @@ export default class BaseTravel extends Entity {
      */
     addPlace(item) {
         if (item) {
-            // const idx = this.places.findIndex(p => p.id === item.id)
-            // if (~idx) {
-            //     this.places.splice(idx, 1, item)
-            // } else {
-            // }
             this._modified.places.push(item)
             this.change = true
             this.routeBuilder.updateRoute()
+            this.forceUpdate()
         }
         return this
     }
@@ -818,6 +814,7 @@ export default class BaseTravel extends Entity {
             this.change = true
             this._updateDirection()
             this.routeBuilder.updateRoute()
+            this.forceUpdate()
         }
         return this
     }

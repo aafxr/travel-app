@@ -134,6 +134,12 @@ function ShowActivity({activity}) {
  * @constructor
  */
 function ShowAdvice({prevActivity, nextActivity}){
+    if(prevActivity.isEndEqualToEvening() || prevActivity.isEndAtNight()){
+        return (
+            <div>advice block</div>
+        )
+    }
+
     if (!prevActivity || !nextActivity) return null
 
 

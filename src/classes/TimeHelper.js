@@ -59,7 +59,7 @@ export default class TimeHelper{
      * @returns {boolean}
      */
     isEqualToMorning(time) {
-        return (time + time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY === this.morning
+        return this.getLocaleTime_ms(time) === this.morning
     }
 
     /**
@@ -67,7 +67,7 @@ export default class TimeHelper{
      * @returns {boolean}
      */
     isEqualToEvening(time) {
-        return (time + time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY === this.evening
+        return this.getLocaleTime_ms(time) === this.evening
     }
 
     /**

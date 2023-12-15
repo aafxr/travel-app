@@ -10,6 +10,7 @@ import RoadActivity from "./RoadActivity";
 import LinkedList from "../utils/data-structures/LinkedList";
 import RestTimeActivity from "./RestTimeActivity";
 import TimeHelper from "./TimeHelper";
+import Activity from "./Activity";
 
 
 /**
@@ -76,109 +77,118 @@ export default class RouteBuilder {
             ? this.sortByGeneticAlgorithm(this._travel.places)
             : this.sortPlacesByDistance(this._travel.places)
         this.createActivitiesList()
+        const updatedPlaces =  this.activitiesList
+            .toArray()
+            .filter(ln => ln.value.isPlace())
+            .map(ln => ln.value.place)
+
+        if(updatedPlaces.length) {
+            this._travel._modified.places = updatedPlaces
+            this._travel.change = true
+        }
         // this.updatePlacesTime()
         // this.getActivities()
     }
 
-    updatePlacesTime() {
-        const v = 50 / 3.6 / 1000
-        const travelingTime = 1.5 * 60 * 60 * 1000
-        const travelTimeStart = new Date(this._travel.date_start)
+    // updatePlacesTime() {
+    //     const v = 50 / 3.6 / 1000
+    //     const travelingTime = 1.5 * 60 * 60 * 1000
+    //     const travelTimeStart = new Date(this._travel.date_start)
+    //
+    //     const timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 15 * 60 * 60 * 1000)
+    //
+    //     const places = this._travel.places.map(p => {
+    //         const time_start = p.time_start ? new Date(p.time_start) : new Date(travelTimeStart)
+    //         const time_end = p.time_end ? new Date(p.time_end) : new Date(time_start.getTime() + travelingTime)
+    //
+    //         const newPlace = { ...p,  time_start,  time_end }
+    //
+    //         if (newPlace.time_start.getTime() >= newPlace.time_end.getTime())
+    //             newPlace.time_end.setTime(newPlace.time_start.getTime() + travelingTime)
+    //
+    //         newPlace.duration = newPlace.time_end - newPlace.time_start
+    //         return newPlace
+    //     })
+    //
+    //
+    //     let idx = 0
+    //     /**@type{Date}*/
+    //     let lastPlaceEndTime
+    //     /**@type{number}*/
+    //     let distanceTime
+    //     while (idx < places.length){
+    //         if(distanceTime){
+    //             const place = places[idx]
+    //             place.time_start = new Date(lastPlaceEndTime.getTime() + distanceTime)
+    //             place.time_end = new Date(place.time_start.getTime() + place.duration)
+    //             lastPlaceEndTime = new Date(place.time_end)
+    //         }else{
+    //             const place = places[idx]
+    //             if(timeHelper.isAtNightTime(place.time_start)){
+    //                 timeHelper.shiftToMorning(place.time_start)
+    //                 place.time_end = new Date(place.time_start.getTime() + place.duration)
+    //             }
+    //             lastPlaceEndTime = new Date(place.time_end)
+    //         }
+    //
+    //         if(places[idx + 1]) {
+    //             distanceTime = getDistanceFromTwoPoints(places[idx].coords, places[idx+1].coords) / v
+    //             distanceTime = Math.round(distanceTime)
+    //         }
+    //         idx++
+    //     }
+    //
+    //     idx = 0
+    //     while (idx < places.length){
+    //         if(timeHelper.isAtNightTime(places[idx].time_start)){
+    //             const shifted = timeHelper.shiftToMorning(places[idx].time_start)
+    //             timeHelper.shift(places[idx].time_end, shifted)
+    //             const tmpTimes = []
+    //             places.slice(idx + 1).forEach(p => tmpTimes.push(p.time_start, p.time_end))
+    //             timeHelper.shiftAll(tmpTimes, shifted)
+    //         }
+    //         idx++
+    //     }
+    //
+    //     places.forEach(p => {
+    //         console.log(p.time_start.toLocaleTimeString(), '  ', p.time_end.toLocaleTimeString())
+    //         p.time_start = p.time_start.toISOString()
+    //         p.time_end = p.time_end.toISOString()
+    //         delete p.duration
+    //     })
+    //
+    //     this._travel._modified.places = places
+    // }
 
-        const timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 15 * 60 * 60 * 1000)
-
-        const places = this._travel.places.map(p => {
-            const time_start = p.time_start ? new Date(p.time_start) : new Date(travelTimeStart)
-            const time_end = p.time_end ? new Date(p.time_end) : new Date(time_start.getTime() + travelingTime)
-
-            const newPlace = { ...p,  time_start,  time_end }
-
-            if (newPlace.time_start.getTime() >= newPlace.time_end.getTime())
-                newPlace.time_end.setTime(newPlace.time_start.getTime() + travelingTime)
-
-            newPlace.duration = newPlace.time_end - newPlace.time_start
-            return newPlace
-        })
-
-
-        let idx = 0
-        /**@type{Date}*/
-        let lastPlaceEndTime
-        /**@type{number}*/
-        let distanceTime
-        while (idx < places.length){
-            if(distanceTime){
-                const place = places[idx]
-                place.time_start = new Date(lastPlaceEndTime.getTime() + distanceTime)
-                place.time_end = new Date(place.time_start.getTime() + place.duration)
-                lastPlaceEndTime = new Date(place.time_end)
-            }else{
-                const place = places[idx]
-                if(timeHelper.isAtNightTime(place.time_start)){
-                    timeHelper.shiftToMorning(place.time_start)
-                    place.time_end = new Date(place.time_start.getTime() + place.duration)
-                }
-                lastPlaceEndTime = new Date(place.time_end)
-            }
-
-            if(places[idx + 1]) {
-                distanceTime = getDistanceFromTwoPoints(places[idx].coords, places[idx+1].coords) / v
-                distanceTime = Math.round(distanceTime)
-            }
-            idx++
-        }
-
-        idx = 0
-        while (idx < places.length){
-            if(timeHelper.isAtNightTime(places[idx].time_start)){
-                const shifted = timeHelper.shiftToMorning(places[idx].time_start)
-                timeHelper.shift(places[idx].time_end, shifted)
-                const tmpTimes = []
-                places.slice(idx + 1).forEach(p => tmpTimes.push(p.time_start, p.time_end))
-                timeHelper.shiftAll(tmpTimes, shifted)
-            }
-            idx++
-        }
-
-        places.forEach(p => {
-            console.log(p.time_start.toLocaleTimeString(), '  ', p.time_end.toLocaleTimeString())
-            p.time_start = p.time_start.toISOString()
-            p.time_end = p.time_end.toISOString()
-            delete p.duration
-        })
-
-        this._travel._modified.places = places
-    }
-
-    /**
-     * возвращает
-     * @return {Activity}
-     */
-    getActivities() {
-        if (!this._travel.places.length) return null
-        const activities = this._travel.places.map(p => new PlaceActivity({
-            place: p,
-            defaultActivitySpentTime: 1.5 * 60 * 60 * 1000,
-            travel_start_time: new Date(this._travel.date_start)
-        }))
-
-        for (let i = 0; i < activities.length - 1; i++) {
-            new RoadActivity({
-                to: activities[i + 1],
-                from: activities[i],
-                travel_start_time: new Date(this._travel.date_start),
-                defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
-            })
-        }
-        activities[0].shiftTimeBy()
-        /**@type{Activity}*/
-        const activity = activities[0]
-        activity.shiftTimeBy()
-
-        this.activity = activity
-
-        return activity
-    }
+    // /**
+    //  * возвращает
+    //  * @return {Activity}
+    //  */
+    // getActivities() {
+    //     if (!this._travel.places.length) return null
+    //     const activities = this._travel.places.map(p => new PlaceActivity({
+    //         place: p,
+    //         defaultActivitySpentTime: 1.5 * 60 * 60 * 1000,
+    //         travel_start_time: new Date(this._travel.date_start)
+    //     }))
+    //
+    //     for (let i = 0; i < activities.length - 1; i++) {
+    //         new RoadActivity({
+    //             to: activities[i + 1],
+    //             from: activities[i],
+    //             travel_start_time: new Date(this._travel.date_start),
+    //             defaultActivitySpentTime: 1.5 * 60 * 60 * 1000
+    //         })
+    //     }
+    //     activities[0].shiftTimeBy()
+    //     /**@type{Activity}*/
+    //     const activity = activities[0]
+    //     activity.shiftTimeBy()
+    //
+    //     this.activity = activity
+    //
+    //     return activity
+    // }
 
 //=====================================================================
     /**
@@ -197,7 +207,6 @@ export default class RouteBuilder {
                 return 0
         }
 
-
         const activitiesList = new LinkedList(compareActivities)
         const travelStartDate = new Date(this._travel.date_start)
         const places = this._travel.places
@@ -211,19 +220,6 @@ export default class RouteBuilder {
                     moveAtNight: false,
                     defaultSpentTime: 45 * 60 * 1000
                 },
-            }
-        }
-
-        const roadActivityOptions = (idx) => {
-            return {
-                place: this._travel.places[idx],
-                from: this._travel.places[idx],
-                to: this._travel.places[idx + 1],
-                travel_start_time: travelStartDate,
-                preference: {
-                    moveAtNight: false,
-                    defaultSpentTime: 45 * 60 * 1000
-                }
             }
         }
 
@@ -241,10 +237,9 @@ export default class RouteBuilder {
             }
             activitiesList.append(placeActivity)
 
-
             if (places[i + 1]) {
                 const dist = getDistanceFromTwoPoints(places[i].coords, places[i + 1].coords)
-                const roadActivities = RoadActivity.drivingIntervals(nextActivityStartTime, 9, 19, RoadActivity.CAR_SPEED, dist)
+                const roadActivities = RoadActivity.drivingIntervals(nextActivityStartTime, Activity.MORNING_TIME, Activity.EVENING_TIME, RoadActivity.CAR_SPEED, dist)
                     .map(rs =>
                         new RoadActivity({
                             from: places[i],
@@ -260,50 +255,9 @@ export default class RouteBuilder {
                     )
                 if (roadActivities.length) nextActivityStartTime = roadActivities[roadActivities.length - 1].end
 
-                roadActivities.forEach((ra, idx, arr) => {
-                    activitiesList.append(ra)
-                    if (arr[idx + 1]) {
-                        activitiesList.append(
-                            new RestTimeActivity({
-                                startTime: ra.end,
-                                endTime: arr[idx + 1].start,
-                                travel_start_time: travelStartDate,
-                                preference: {moveAtNight: false}
-                            })
-                        )
-                    }
-                })
+                roadActivities.forEach((ra) => activitiesList.append(ra))
             }
         }
-
-        activitiesList
-            .toArray()
-            .forEach((a, idx, arr) => {
-                // debugger
-                // const delta = a.next?.value.start - a.value.end
-                // if (a.next && a.next.value.start - a.value.end > 15 * 60 * 1000) {
-                //     const restOptions = {
-                //         startTime: a.value.end,
-                //         endTime: a.next.value.start,
-                //         travel_start_time: travelStartDate,
-                //         preference: {moveAtNight: false}
-                //     }
-                //
-                //     activitiesList.insert(new RestTimeActivity(restOptions), idx)
-                // }
-
-                if (a.value.start > a.value.end) {
-                    if (idx === 0) activitiesList.delete(activitiesList.head)
-                    else if (idx === arr.length - 1) activitiesList.delete(activitiesList.tail)
-                    else activitiesList.delete(a)
-                }
-            })
-
-
-        this._travel._modified.places = activitiesList
-            .toArray()
-            .filter(ln => ln.value.isPlace())
-            .map(ln => ln.value.place)
 
         this.activitiesList = activitiesList
         return activitiesList

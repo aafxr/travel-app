@@ -138,8 +138,8 @@ export default class RoadActivity extends Activity {
      * @static
      * @name RoadActivity.drivingIntervals
      * @param {Date} start время начала движения
-     * @param {number} morning время начала движения
-     * @param {number} evening время заврешения движения
+     * @param {number} morning время начала движения (мс)
+     * @param {number} evening время заврешения движения (мс)
      * @param {number} speed скорость (м/с)
      * @param {number} distance растояние (м)
      * @return {{distance: number, start: Date, end:Date}[]}
@@ -151,8 +151,8 @@ export default class RoadActivity extends Activity {
         let tempDistance = distance;
         const finalTime = new Date(start);
         const velocity_ms = speed / 1000;
-        const evening_ms = evening * 60 * 60 * 1000;
-        const morning_ms = morning * 60 * 60 * 1000;
+        const evening_ms = evening;
+        const morning_ms = morning;
         const night_ms = MS_IN_DAY - evening_ms + morning_ms;
 
         const timeZoneOffset = start.getTimezoneOffset() * 60 * 1000;

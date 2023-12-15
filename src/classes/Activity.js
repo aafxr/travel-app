@@ -158,6 +158,16 @@ export default class Activity {
     }
 
     /** @returns {boolean} */
+    isEndEqualToEvening() {
+        return new TimeHelper(Activity.MORNING_TIME, Activity.EVENING_TIME).isEqualToEvening(this.end)
+    }
+
+    /** @returns {boolean} */
+    isStartEqualToMorning() {
+        return new TimeHelper(Activity.MORNING_TIME, Activity.EVENING_TIME).isEqualToMorning(this.start)
+    }
+
+    /** @returns {boolean} */
     isStartAtMorning() {
         return (this.start - this.timezoneOffset) % MS_IN_DAY === Activity.MORNING_TIME
     }
