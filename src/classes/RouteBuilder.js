@@ -73,9 +73,10 @@ export default class RouteBuilder {
      */
     updateRoute() {
         // this.placesMap.clear()
-        this._travel._modified.places = this._travel.places.length > 6
-            ? this.sortByGeneticAlgorithm(this._travel.places)
-            : this.sortPlacesByDistance(this._travel.places)
+        this._travel._modified.places = this.sortByGeneticAlgorithm(this._travel.places)
+            // this._travel.places.length > 6
+            // ? this.sortByGeneticAlgorithm(this._travel.places)
+            // : this.sortPlacesByDistance(this._travel.places)
         this.createActivitiesList()
         const updatedPlaces =  this.activitiesList
             .toArray()
@@ -414,8 +415,8 @@ export default class RouteBuilder {
          */
         function mutateChild(child) {
             // меняются местами рандомные две точки кроме 1 и последней
-            const first_idx = randomNumber(1, child.length - 2, [0, child.length - 1])
-            const second_idx = randomNumber(1, child.length - 2, [0, first_idx, child.length - 1]);
+            const first_idx = randomNumber(0, child.length - 1, [0, child.length - 1])
+            const second_idx = randomNumber(0, child.length - 1, [0, first_idx, child.length - 1]);
             [child[first_idx], child[second_idx]] = [child[second_idx], child[first_idx]]
         }
 

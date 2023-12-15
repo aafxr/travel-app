@@ -13,38 +13,23 @@ import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import RoadActivity from "../../../../classes/RoadActivity";
 import {Tab} from "../../../../components/ui";
 import {MIN_NO_ADVICE_TIME} from "../../../../static/constants";
+import ShowAdvice from "../../components/ShowAdvice/ShowAdvice";
 
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
-    const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
-    const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
-
     const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
 
     useEffect(() => {
-        if (dayNumber)
-            setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber))
-    }, [dayNumber, travel])
+        const days = travel.routeBuilder.getActivityDays()
+        setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber || days[0] || 1))
+    }, [dayNumber, travel, travel.places])
 
-    useLayoutEffect(() => {
-        if (tabs_ref.current && container_ref) {
-            const rect = tabs_ref.current.getBoundingClientRect()
-            container_ref.current.style.height = window.screen.height - rect.bottom + 'px'
-        }
-    })
-
-
-    // useEffect(() => {
-    //     if (activity)
-    //         activity.log()
-    //
-    // }, [activity])
     return (
         <>
             {
-                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll flex-0'>
                     {
                         travel.routeBuilder.getActivityDays()
                             .map((i) => (
@@ -53,13 +38,15 @@ export default function ShowRouteByDays() {
                     }
                 </div>
             }
-            <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+            <Container className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     activitiesList
                         ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
                             <React.Fragment key={idx}>
-                                {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
-                                {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
+                                <div>
+                                    {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
+                                    {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
+                                </div>
                             </React.Fragment>))
                         : travel.places.length === 0
                             ? (
@@ -83,6 +70,12 @@ export default function ShowRouteByDays() {
 function ShowActivity({activity}) {
     const {travel} = useTravelContext()
     const user = useUserSelector()
+    const [_activity, setActivity] = useState(/**@type{Activity}*/null)
+
+    useEffect(() => {
+        setActivity(activity)
+    }, [activity])
+
 
     /** @param {PlaceType} place */
     function handleRemovePLace(place) {
@@ -127,27 +120,3 @@ function ShowActivity({activity}) {
 }
 
 
-/**
- *
- * @param {Activity} prevActivity
- * @param {Activity} nextActivity
- * @constructor
- */
-function ShowAdvice({prevActivity, nextActivity}){
-    if(prevActivity.isEndEqualToEvening() || prevActivity.isEndAtNight()){
-        return (
-            <div>advice block</div>
-        )
-    }
-
-    if (!prevActivity || !nextActivity) return null
-
-
-    if(nextActivity.start - prevActivity.end > MIN_NO_ADVICE_TIME){
-        return (
-            <div>advice block</div>
-        )
-    }
-
-    return null
-}

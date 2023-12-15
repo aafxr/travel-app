@@ -1,4 +1,5 @@
 import {MS_IN_DAY} from "../static/constants";
+import {de} from "date-fns/locale";
 
 /**
  * @class
@@ -76,9 +77,16 @@ export default class TimeHelper{
      * @returns {number}
      */
     shiftToMorning(time){
-        const delta =  MS_IN_DAY - this.getLocaleTime_ms(time) + this.morning
-        time.setTime(time.getTime() + delta)
-        return delta
+        const localeTime = this.getLocaleTime_ms(time)
+        if(localeTime < this.morning){
+        const delta =  this.morning - localeTime
+            time.setTime(time.getTime() + delta)
+            return delta
+        }else {
+            const delta = MS_IN_DAY - localeTime + this.morning
+            time.setTime(time.getTime() + delta)
+            return delta
+        }
     }
 
     /**

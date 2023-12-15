@@ -16,7 +16,7 @@ export default function ShowPlaces() {
     const {travel, travelObj} = useTravelContext()
     const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
     const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
-    const [placesAtDay,setPlacesAtDay] = useState(/**@type{PlaceType[]}*/ [])
+    const [placesAtDay, setPlacesAtDay] = useState(/**@type{PlaceType[]}*/ [])
 
     const activeDays = travel.routeBuilder.getActivityDays()
 
@@ -46,12 +46,11 @@ export default function ShowPlaces() {
             {
                 <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
                     {
-                        activeDays.length > 1
-                        ? activeDays
+                        activeDays
                             .map((i) => (
                                 <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
-                            :  <Tab to={`/travel/${travel.id}/1/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
+                        // :  <Tab to={`/travel/${travel.id}/1/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
                     }
                 </div>
             }

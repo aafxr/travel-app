@@ -15,7 +15,7 @@ import range from "../utils/range";
 import TimeHelper from "./TimeHelper";
 
 export default class Activity {
-    static EVENING_TIME = 21 * 60 * 60 * 1000
+    static EVENING_TIME = 19 * 60 * 60 * 1000
     static MORNING_TIME = 9 * 60 * 60 * 1000
 
     static WALK = 100
@@ -43,6 +43,8 @@ export default class Activity {
     duration = 0
 
     status = -1
+    /**@type{number}*/
+    distance
 
     /**@type{number}*/
     _day

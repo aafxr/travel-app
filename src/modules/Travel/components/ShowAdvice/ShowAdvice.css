@@ -1,0 +1,21 @@
+.advice-container{
+    margin-left: 40px;
+    padding-left: 40px;
+    border-left: 2px dashed var(--color-grey);
+}
+
+.advice-container--pt2{
+    padding-top: 2rem;
+}
+
+.advice-icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    border: 2px solid var(--color-primary)
+}

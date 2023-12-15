@@ -182,6 +182,14 @@ a{
     margin-bottom: 20px;
 }
 
+.ml-40{
+    margin-left: 40px;
+}
+
+.pl-40{
+    padding-left: 40px;
+}
+
 
 .footer-btn-container{
     position: relative;

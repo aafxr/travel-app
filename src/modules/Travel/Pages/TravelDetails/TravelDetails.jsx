@@ -64,7 +64,8 @@ export default function TravelDetails() {
     }
 
     useEffect(() => {
-        if (!dayNumber) navigate(`/travel/${travel.id}/1/`)
+        const days = travel.routeBuilder.getActivityDays()
+        if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travel.id}/${days[0]}/`)
 
         travel
             .routeBuilder
@@ -150,7 +151,7 @@ export default function TravelDetails() {
                 defaultOffsetPercents={curtainOpen ? 0 : 1}
 
             >
-                <div className='h-full relative'>
+                <div className='h-full relative column'>
 
                     <Container className='flex-0'>
                         <div className='flex-between gap-1 pt-20 pb-20'>

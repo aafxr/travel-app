@@ -24,7 +24,7 @@ export default function TravelEdit() {
     const navigate = useNavigate()
 
     const user = useUserSelector()
-    const {travel, update} = useTravelContext()
+    const {travel} = useTravelContext()
     /*** название путешествия */
     const [title, setTitle] = useState('')
     /*** диапазон дат путешествия */
@@ -80,6 +80,9 @@ export default function TravelEdit() {
                 .setDescription(description)
                 .setMovementTypes(newTags)
                 .setIsPublic(isPublic ? 1 : 0)
+                .routeBuilder.updateRoute()
+
+            travel
                 .save(user.id)
                 .then(() => navigate(`/travel/${travel.id}/1/`))
         }
