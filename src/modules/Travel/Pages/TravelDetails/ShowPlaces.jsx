@@ -25,7 +25,7 @@ export default function ShowPlaces() {
             const places = travel.routeBuilder.getPlacesAtDay(+dayNumber || 1)
             setPlacesAtDay(places)
         }
-    }, [dayNumber, travel.places])
+    }, [dayNumber, travelObj.places])
 
     /** @param {PlaceType} place */
     function handleRemovePLace(place) {
@@ -48,7 +48,7 @@ export default function ShowPlaces() {
                     {
                         activeDays
                             .map((i) => (
-                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
+                                <Tab to={`/travel/${travelObj.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
                         // :  <Tab to={`/travel/${travel.id}/1/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
                     }

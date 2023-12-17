@@ -210,7 +210,7 @@ export default class RouteBuilder {
 
         const activitiesList = new LinkedList(compareActivities)
         const travelStartDate = new Date(this._travel.date_start)
-        const places = this._travel.places
+        const places = this._travel.object.places
 
         const placeActivityOptions = (idx, startTime) => {
             return {

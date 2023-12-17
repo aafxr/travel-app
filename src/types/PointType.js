@@ -7,6 +7,5 @@
  * @property {string} kind тип точки (?)
  * @property {string} address аддрес
  * @property {string} locality улица / город / дом ...
- * @property {Object} [placemark] представление точки возвращаемое картой
  * @category Types
  */

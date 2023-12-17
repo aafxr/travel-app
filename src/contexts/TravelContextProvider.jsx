@@ -55,10 +55,12 @@ export default function TravelContextProvider() {
                         setLoading(false)
                         const t = item
                             ?  new Travel(item)
-                            :  null
+                            :  new Travel(undefined, travelCode)
                         t?.setUser(user.id)
-                        if (t) t.onUpdate(() => setState(prev => ({...prev, travelObj: Object.freeze(t.object)})))
-                        setState({travel: t, travelObj: Object.freeze(t.object)})
+                        if (t) {
+                            t.onUpdate(() => setState(prev => ({...prev, travelObj: Object.freeze(t.object)})))
+                            setState({travel: t, travelObj: Object.freeze(t.object)})
+                        }
                     })
             })
         }

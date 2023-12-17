@@ -23,7 +23,7 @@ import './TravelAddOnMap.css'
  */
 export default function TravelAddOnMap() {
     const navigate = useNavigate()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const user = useUserSelector()
     const [map, setMap] = useState(/**@type{IMap}*/ null)
 
@@ -33,9 +33,9 @@ export default function TravelAddOnMap() {
     const draggedPoint = useDragPoint()
 
     useEffect(() => {
-        if (map && travel.waypoints.length) {
+        if (map && travelObj && travelObj.waypoints.length) {
             window.map = map
-            const waypoints = travel.waypoints
+            const waypoints = travelObj.waypoints
             map.clearMap()
             waypoints.forEach(/**@param{PointType} p*/(p, idx) => map.addPoint({
                 id: p.id,
@@ -63,7 +63,7 @@ export default function TravelAddOnMap() {
         travel.change = true
         travel
             .save(user.id)
-            .then(() => navigate(`/travel/${travel.id}/settings/`))
+            .then(() => navigate(`/travel/${travelObj.id}/settings/`))
             .catch(console.error)
     }
 
@@ -74,14 +74,14 @@ export default function TravelAddOnMap() {
      */
     function handlePointListChange(newPoints) {
         travel.isFromPoint
-            ? travel.setWaypoints([travel.fromPoint, ...newPoints])
+            ? travel.setWaypoints([travelObj.waypoints[0], ...newPoints])
             : travel.setWaypoints(newPoints)
 
         map
             .clearMap()
-            .showRoute(travel.waypoints, {})
-            .showPolyRoute(travel.waypoints.map(p => p.coords),{})
-            .autoZoom(travel.waypoints.length > 1 ? undefined : 12)
+            .showRoute(travelObj.waypoints, {})
+            .showPolyRoute(travelObj.waypoints.map(p => p.coords),{})
+            .autoZoom(travelObj.waypoints.length > 1 ? undefined : 12)
     }
 
 
@@ -93,7 +93,7 @@ export default function TravelAddOnMap() {
                     <StartPointInput map={map}/>
                     <MapPointsInputList
                         map={map}
-                        pointsList={travel.isFromPoint ? travel.waypoints.slice(1) : travel.waypoints}
+                        pointsList={travelObj.isFromPoint ? travelObj.waypoints.slice(1) : travelObj.waypoints}
                         onListChange={handlePointListChange}
                     />
                 </div>

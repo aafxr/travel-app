@@ -22,7 +22,7 @@
 
 .travel-map-input{
     padding-right: 40px;
-    background-color: white;
+    background-color: var(--color-background-alt);
 }
 
 .travel-map-search{

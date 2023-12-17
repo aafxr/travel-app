@@ -2,3 +2,7 @@
     color: var(--color-black);
     background-color: var(--color-background-alt);
 }
+
+#direction{
+    background-color: #fff;
+}

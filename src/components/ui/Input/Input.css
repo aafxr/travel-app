@@ -1,19 +1,13 @@
 .input{
-    /*position: relative;*/
-    padding-top: 10px;
-    padding-right: 12px;
-    padding-bottom: 10px;
-    padding-left: 16px;
     width: 100%;
+    /*position: relative;*/
+    padding: 10px 40px 10px 16px;
+    border-radius: var(--br-10);
+    color: black;
+    text-overflow: ellipsis;
     caret-color: var(--color-primary);
-
-    border-top-left-radius: var(--br-10);
-    border-bottom-left-radius: var(--br-10);
-    border-top-right-radius: var(--br-10);
-    border-bottom-right-radius: var(--br-10);
-
     border: 2px solid var(--color-grey-light);
-    background-color: var(--color-background);
+    background-color: var(--color-background-input);
     outline: none;
 }
 

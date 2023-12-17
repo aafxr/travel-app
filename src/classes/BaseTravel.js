@@ -18,7 +18,7 @@ const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMove
  * @constructor
  */
 export default class BaseTravel extends Entity {
-    /**@type{TravelType} */
+    /**@type{TravelStoreType} */
     static initValue = {
         id: () => '',
         code: () => '',
@@ -54,10 +54,11 @@ export default class BaseTravel extends Entity {
     _isCurtainOpen = true
 
     /**
-     * @param {TravelType} item
+     * @param {TravelStoreType} item
+     * @param {string} travelCode
      * @constructor
      */
-    constructor(item) {
+    constructor(item, travelCode) {
         super()
         if (!item) {
             item = {}
@@ -68,6 +69,9 @@ export default class BaseTravel extends Entity {
             .keys(BaseTravel.initValue)
             .forEach(key => this._modified[key] = BaseTravel.initValue[key]())
 
+        if(travelCode)
+            this._modified.id = travelCode
+
         this.routeBuilder = new RouteBuilder({
             travel: this,
             places: this.places,
@@ -76,11 +80,28 @@ export default class BaseTravel extends Entity {
             waypoints: this.waypoints
         })
 
-        this._checkTravelFields(item)
+        // this._checkTravelFields(item)
         this._modified = {
             ...this._modified,
-            ...item
+            ...item,
+            appointments: item.appointments ? item.appointments.map(a => {
+                a.date = new Date(a.date)
+                return a
+            }) : [] ,
+            hotels: item.hotels ? item.appointments.map(h => {
+                h.check_in = new Date(h.check_in)
+                h.check_out = new Date(h.check_out)
+                return h
+            }) : [] ,
+            places: item.places ? item.appointments.map(p => {
+                p.time_start = new Date(p.time_start)
+                p.time_end = new Date(p.time_end)
+                return p
+            }) : [] ,
+            date_start : item.date_start ? new Date(item.date_start) : new Date(),
+            date_end : item.date_end ? new Date(item.date_end) : new Date(),
         }
+
         // this
         //     .setID(item.id)
         //     .setCode(item.code)
@@ -154,11 +175,6 @@ export default class BaseTravel extends Entity {
      * @private
      */
     _checkTravelFields(travel) {
-        // travel.places.forEach((t, i, arr) => {
-        //
-        // })
-
-        // [54.2311, 54.3665]
         return travel
     }
 
@@ -197,9 +213,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.id
      * @returns {string}
      */
-    get id() {
-        return this._modified.id
-    }
+    // get id() {
+    //     return this._modified.id
+    // }
 
     /**
      * метод устанавливает id путешествия
@@ -222,9 +238,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.title
      * @returns {string}
      */
-    get title() {
-        return this._modified.title
-    }
+    // get title() {
+    //     return this._modified.title
+    // }
 
     /**
      * метод устанавливает title путешествия
@@ -247,9 +263,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.direction
      * @returns {string}
      */
-    get direction() {
-        return this._modified.direction
-    }
+    // get direction() {
+    //     return this._modified.direction
+    // }
 
     /**
      * метод устанавливает direction путешествия
@@ -272,9 +288,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.description
      * @returns {string}
      */
-    get description() {
-        return this._modified.description
-    }
+    // get description() {
+    //     return this._modified.description
+    // }
 
     /**
      * метод устанавливает description путешествия
@@ -297,9 +313,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.owner_id
      * @returns {string}
      */
-    get owner_id() {
-        return this._modified.owner_id
-    }
+    // get owner_id() {
+    //     return this._modified.owner_id
+    // }
 
     /**
      * метод устанавливает owner_id путешествия
@@ -322,9 +338,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.code
      * @returns {string}
      */
-    get code() {
-        return this._modified.code
-    }
+    // get code() {
+    //     return this._modified.code
+    // }
 
     /**
      * метод устанавливает code путешествия
@@ -347,9 +363,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.photo
      * @returns {string}
      */
-    get photo() {
-        return this._modified.photo
-    }
+    // get photo() {
+    //     return this._modified.photo
+    // }
 
     /**
      * метод устанавливает photo путешествия
@@ -372,9 +388,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.date_start
      * @returns {string}
      */
-    get date_start() {
-        return this._modified.date_start
-    }
+    // get date_start() {
+    //     return this._modified.date_start
+    // }
 
     /**
      * установка поля date_start
@@ -386,7 +402,8 @@ export default class BaseTravel extends Entity {
     setDateStart(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
-            this._modified.date_start = d.toISOString()
+            this._modified.date_start = d
+            this.forceUpdate()
         }
         return this
     }
@@ -397,9 +414,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.date_end
      * @returns {string}
      */
-    get date_end() {
-        return this._modified.date_end
-    }
+    // get date_end() {
+    //     return this._modified.date_end
+    // }
 
     /**
      * установка поля date_end
@@ -411,7 +428,8 @@ export default class BaseTravel extends Entity {
     setDateEnd(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
-            this._modified.date_end = d.toISOString()
+            this._modified.date_end = d
+            this.forceUpdate()
         }
         return this
     }
@@ -422,9 +440,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.updated_at
      * @returns {string}
      */
-    get updated_at() {
-        return this._modified.updated_at
-    }
+    // get updated_at() {
+    //     return this._modified.updated_at
+    // }
 
     /**
      * установка поля updated_at
@@ -447,9 +465,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.created_at
      * @returns {string}
      */
-    get created_at() {
-        return this._modified.created_at
-    }
+    // get created_at() {
+    //     return this._modified.created_at
+    // }
 
     /**
      * установка поля created_at
@@ -472,9 +490,9 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.isPublic
      * @returns {DBFlagType}
      */
-    get isPublic() {
-        return this._modified.isPublic
-    }
+    // get isPublic() {
+    //     return this._modified.isPublic
+    // }
 
     /**
      * установка поля isPublic
@@ -505,15 +523,15 @@ export default class BaseTravel extends Entity {
         }
     }
 
-    /**
-     * геттер возврпщпет знасение поля isFromPoint
-     * @get
-     * @name BaseTravel.isFromPoint
-     * @returns {boolean}
-     */
-    get isFromPoint() {
-        return this._modified.isFromPoint === 1
-    }
+    // /**
+    //  * геттер возврпщпет знасение поля isFromPoint
+    //  * @get
+    //  * @name BaseTravel.isFromPoint
+    //  * @returns {boolean}
+    //  */
+    // get isFromPoint() {
+    //     return this._modified.isFromPoint === 1
+    // }
 
     /**
      * установка поля isFromPoint
@@ -540,9 +558,8 @@ export default class BaseTravel extends Entity {
      */
     setFromPoint(point) {
         if (typeof point === 'object' && point !== null) {
-            this.isFromPoint
-                ? this._modified.waypoints[0] = point
-                : this._modified.waypoints.unshift(point)
+            !this._modified.isFromPoint
+                && this._modified.waypoints.unshift(point)
             this._modified.isFromPoint = 1
             this.change = true
             this.forceUpdate()
@@ -565,15 +582,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер поля childs_count
-     * @method
-     * @name BaseTravel.childs_count
-     * @returns {number}
-     */
-    get childs_count() {
-        return this._modified.childs_count
-    }
+    // /**
+    //  * геттер поля childs_count
+    //  * @method
+    //  * @name BaseTravel.childs_count
+    //  * @returns {number}
+    //  */
+    // get childs_count() {
+    //     return this._modified.childs_count
+    // }
 
     /**
      * установка поля childs_count
@@ -590,15 +607,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер поля adults_count
-     * @method
-     * @name BaseTravel.adults_count
-     * @returns {number}
-     */
-    get adults_count() {
-        return this._modified.adults_count
-    }
+    // /**
+    //  * геттер поля adults_count
+    //  * @method
+    //  * @name BaseTravel.adults_count
+    //  * @returns {number}
+    //  */
+    // get adults_count() {
+    //     return this._modified.adults_count
+    // }
 
     /**
      * установка поля adults_count
@@ -616,15 +633,15 @@ export default class BaseTravel extends Entity {
     }
 
 
-    /**
-     * геттер возвращает список movementTypes
-     * @get
-     * @name BaseTravel.movementTypes
-     * @returns {MovementType[]}
-     */
-    get movementTypes() {
-        return [...this._modified.movementTypes]
-    }
+    // /**
+    //  * геттер возвращает список movementTypes
+    //  * @get
+    //  * @name BaseTravel.movementTypes
+    //  * @returns {MovementType[]}
+    //  */
+    // get movementTypes() {
+    //     return [...this._modified.movementTypes]
+    // }
 
     /**
      * добавление способа перемещения
@@ -674,15 +691,15 @@ export default class BaseTravel extends Entity {
         }
     }
 
-    /**
-     * геттер возвращает список waypoints
-     * @get
-     * @name BaseTravel.waypoints
-     * @returns {PointType[]}
-     */
-    get waypoints() {
-        return this._modified.waypoints
-    }
+    // /**
+    //  * геттер возвращает список waypoints
+    //  * @get
+    //  * @name BaseTravel.waypoints
+    //  * @returns {PointType[]}
+    //  */
+    // get waypoints() {
+    //     return this._modified.waypoints
+    // }
 
     /**
      * добавление (или обновление существующей) точки маршрута
@@ -693,9 +710,9 @@ export default class BaseTravel extends Entity {
      */
     addWaypoint(item) {
         if (item) {
-            const idx = this.waypoints.findIndex(p => p.id === item.id)
+            const idx = this._modified.waypoints.findIndex(p => p.id === item.id)
             if (~idx) {
-                this.waypoints.splice(idx, 1, item)
+                this._modified.waypoints.splice(idx, 1, item)
             } else {
                 this._modified.waypoints.push(item)
             }
@@ -737,15 +754,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает список places
-     * @get
-     * @name BaseTravel.places
-     * @returns {PlaceType[]}
-     */
-    get places() {
-        return this._modified.places
-    }
+    // /**
+    //  * геттер возвращает список places
+    //  * @get
+    //  * @name BaseTravel.places
+    //  * @returns {PlaceType[]}
+    //  */
+    // get places() {
+    //     return this._modified.places
+    // }
 
     /**
      * добавление (или обновление существующей) точки маршрута
@@ -772,7 +789,7 @@ export default class BaseTravel extends Entity {
      * @returns {BaseTravel}
      */
     updatePlace(item){
-        const idx = this.places.findIndex(p => p._id === item._id)
+        const idx = this._modified.places.findIndex(p => p._id === item._id)
         if(~idx) {
             this.change = true
             const newArray = [...this._modified.places]
@@ -830,7 +847,7 @@ export default class BaseTravel extends Entity {
     }
 
     _updateDirection() {
-        this._modified.direction = this.waypoints
+        this._modified.direction = this._modified.waypoints
             .reduce((acc, p) => {
                 let place = p.locality?.length > 0
                     ? p.locality
@@ -840,15 +857,15 @@ export default class BaseTravel extends Entity {
             }, '')
     }
 
-    /**
-     * геттер возвращает список members
-     * @get
-     * @name BaseTravel.members
-     * @returns {MemberType[]}
-     */
-    get members() {
-        return [...this._modified.members]
-    }
+    // /**
+    //  * геттер возвращает список members
+    //  * @get
+    //  * @name BaseTravel.members
+    //  * @returns {MemberType[]}
+    //  */
+    // get members() {
+    //     return [...this._modified.members]
+    // }
 
     /**
      * добавление участника путешествия
@@ -859,7 +876,7 @@ export default class BaseTravel extends Entity {
      */
     addMember(item) {
         if (item) {
-            const idx = this.members.findIndex(m => m.id === item.id)
+            const idx = this._modified.members.findIndex(m => m.id === item.id)
             ~idx
                 ? this._modified.members[idx] = item
                 : this._modified.members.push(item)
@@ -898,15 +915,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает список hotels
-     * @get
-     * @name BaseTravel.hotels
-     * @returns {HotelType[]}
-     */
-    get hotels() {
-        return [...this._modified.hotels]
-    }
+    // /**
+    //  * геттер возвращает список hotels
+    //  * @get
+    //  * @name BaseTravel.hotels
+    //  * @returns {HotelType[]}
+    //  */
+    // get hotels() {
+    //     return [...this._modified.hotels]
+    // }
 
     /**
      * добавление отеля
@@ -917,7 +934,7 @@ export default class BaseTravel extends Entity {
      */
     addHotel(item) {
         if (item) {
-            const idx = this.hotels.findIndex(h => h.id === item.id)
+            const idx = this._modified.hotels.findIndex(h => h.id === item.id)
             idx
                 ? this._modified.hotels[idx] = item
                 : this._modified.hotels.push(item)
@@ -956,15 +973,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает список appointments
-     * @get
-     * @name BaseTravel.appointments
-     * @returns {AppointmentType[]}
-     */
-    get appointments() {
-        return [...this._modified.appointments]
-    }
+    // /**
+    //  * геттер возвращает список appointments
+    //  * @get
+    //  * @name BaseTravel.appointments
+    //  * @returns {AppointmentType[]}
+    //  */
+    // get appointments() {
+    //     return [...this._modified.appointments]
+    // }
 
     /**
      * добавление встречи
@@ -975,7 +992,7 @@ export default class BaseTravel extends Entity {
      */
     addAppointment(item) {
         if (item) {
-            const idx = this.appointments.findIndex(a => a.id === item.id)
+            const idx = this._modified.appointments.findIndex(a => a.id === item.id)
             ~idx
                 ? this._modified.appointments[idx] = item
                 : this._modified.appointments.push(item)
@@ -1061,7 +1078,7 @@ export default class BaseTravel extends Entity {
      * @returns {number|number}
      */
     get days() {
-        let days = (new Date(this.date_end).getTime() - new Date(this.date_start).getTime()) / MS_IN_DAY
+        let days = (new Date(this._modified.date_end).getTime() - new Date(this._modified.date_start).getTime()) / MS_IN_DAY
         days = Math.ceil(days)
         return days ? days : this.routeBuilder.days
 
@@ -1085,8 +1102,36 @@ export default class BaseTravel extends Entity {
      */
     async save(user_id) {
         const userOK = typeof user_id === 'string' && user_id.length > 0
-        /**@type{TravelType}*/
+        // appointments: item.appointments ? item.appointments.map(a => {
+        //     a.date = new Date(a.date)
+        //     return a
+        // }) : [] ,
+        //     hotels: item.hotels ? item.appointments.map(h => {
+        //     h.check_in = new Date(h.check_in)
+        //     h.check_out = new Date(h.check_out)
+        //     return h
+        // }) : [] ,
+        //     places: item.places ? item.appointments.map(p => {
+        //     p.time_start = new Date(p.time_start)
+        //     p.time_end = new Date(p.time_end)
+        //     return p
+        // }) : [] ,
+        //     date_start : item.date_start ? new Date(item.date_start) : new Date(),
+        //     date_end : item.date_end ? new Date(item.date_end) : new Date(),
+        /**@type{TravelStoreType}*/
         const travelDTO = {...this._modified}
+        travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
+        travelDTO.hotels.forEach(h=> {
+            h.check_in = h.check_in.toISOString()
+            h.check_out = h.check_out.toISOString()
+        })
+        travelDTO.places.forEach(p => {
+            p.time_start = p.time_start.toISOString()
+            p.time_end = p.time_end.toISOString()
+        })
+        travelDTO.date_start = travelDTO.date_start.toISOString()
+        travelDTO.date_end = travelDTO.date_end.toISOString()
+
         if (this.change) {
             this._new
                 ? await travel_service.create(travelDTO, userOK ? user_id : this.user_id)

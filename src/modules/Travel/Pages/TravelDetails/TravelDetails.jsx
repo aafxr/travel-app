@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
-import {ChatIcon, ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
+import {ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -36,10 +36,10 @@ export default function TravelDetails() {
     const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
     const user = useUserSelector()
-    const {travel, update} = useTravelContext()
+    const {travel, update, travelObj} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
-    const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
+    const travelDurationLabel = dateRange(travelObj.date_start.toISO, travelObj.date_end)
 
     const menu = (
         <Menu>
@@ -93,22 +93,22 @@ export default function TravelDetails() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <Photo className='img-abs' id={travel.photo} onChange={handleTravelPhotoChange}/>
+                            <Photo className='img-abs' id={travelObj.photo} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'
-                                onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
+                                onClick={() => navigate(`/travel/${travelObj.id || travelCode}/edite/`)}>
                                 {
-                                    travel?.title || travel?.direction || (
+                                    travelObj?.title || travelObj?.direction || (
                                         <span className='travel-details-title--empty'>Добавить название</span>
                                     )
                                 }
                                 <div
-                                    className={`travel-details-icon icon center ${travel.isPublic ? 'public' : 'private'}`}>
-                                    {travel?.isPublic ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                                    className={`travel-details-icon icon center ${travelObj.isPublic ? 'public' : 'private'}`}>
+                                    {travelObj?.isPublic ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                                 </div>
                             </h2>
-                            <div className='travel-details-subtitle center'>{travel?.description}</div>
+                            <div className='travel-details-subtitle center'>{travelObj?.description}</div>
                         </div>
                         {
                             travelDurationLabel &&
@@ -120,7 +120,7 @@ export default function TravelDetails() {
                         }
                         <div>
 
-                            <TravelPeople peopleList={travel?.owner_id ? [travel?.owner_id] : []} compact={compact}/>
+                            <TravelPeople peopleList={travelObj?.owner_id ? [travelObj?.owner_id] : []} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
@@ -184,10 +184,10 @@ export default function TravelDetails() {
             {curtainOpen &&
                 <FlatButton
                     className={'travel-details-buttons'}
-                    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}
-                    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}
-                    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}
-                    onPlace={() => navigate(`/travel/${travel.id}/add/place/`)}
+                    onHotel={() => navigate(`/travel/${travelObj.id}/add/hotel/`)}
+                    onInvite={() => navigate(`/travel/${travelObj.id}/settings/invite/`)}
+                    onAppointment={() => navigate(`/travel/${travelObj.id}/add/appointment/`)}
+                    onPlace={() => navigate(`/travel/${travelObj.id}/add/place/`)}
                 />
             }
         </>

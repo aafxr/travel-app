@@ -24,7 +24,7 @@ export default function TravelAddWaypoint() {
     // const dispatch = useDispatch()
 
     const {user, userLoc} = useContext(UserContext)
-    const {travel, errorMessage} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
 
     /** интерфейс для взаимодействия с картой */
     const [map, setMap] = useState(/** @type {IMap | null} */null)
@@ -35,16 +35,16 @@ export default function TravelAddWaypoint() {
     const dragPoint = useDragPoint()
 
     //==================================================================================================================
-    useEffect(() => {
-        if (errorMessage) navigate('/travel/add/map/')
-    }, [errorMessage])
+    // useEffect(() => {
+    //     if (errorMessage) navigate('/travel/add/map/')
+    // }, [errorMessage])
 
 
     // начальное значение первой точки =================================================================================
     useEffect(() => {
         if (pointCode && travel && map) {
-            const p = travel.waypoints.find(p => p.id === pointCode)
-            setPoint(p ? p : map.newPoint(travel.id))
+            const p = travelObj.waypoints.find(p => p.id === pointCode)
+            setPoint(p ? p : map.newPoint(travelObj.id))
         }
     }, [pointCode, travel, map])
 
@@ -73,6 +73,7 @@ export default function TravelAddWaypoint() {
                     const kind = markerInfo[0].metaDataProperty.GeocoderMetaData.kind
                     const newPoint = {...point, address, coords: coords[0], kind }
 
+                    travel.addWaypoint(newPoint)
                     map
                         .clearMap()
                         .addPoint(newPoint,{markerType: "exist"})
@@ -95,7 +96,7 @@ export default function TravelAddWaypoint() {
             travel
                 .addWaypoint(point)
                 .save(user.id)
-                .then(() => navigate(`/travel/${travel.id}/map/`))
+                .then(() => navigate(`/travel/${travelObj.id}/map/`))
         } else {
             travel.removeWaypoint(point)
             pushAlertMessage({type: 'warning', message: 'Путешествие не созданно'})
@@ -103,9 +104,9 @@ export default function TravelAddWaypoint() {
     }
 
     function handleBackClick(){
-        const newWaypoints = travel.waypoints.filter(wp => wp.id !== pointCode)
+        const newWaypoints = travelObj.waypoints.filter(wp => wp.id !== pointCode)
         travel.setWaypoints(newWaypoints)
-        navigate(`/travel/${travel.id}/map/`)
+        navigate(`/travel/${travelObj.id}/map/`)
     }
 
 
@@ -116,7 +117,7 @@ export default function TravelAddWaypoint() {
                 <div className='column gap-0.5 pb-20'>
                     {/*<div className='link'>+ Указать точку отправления</div>*/}
                     <Input
-                        id='diraction'
+                        id='direction'
                         placeholder={'Куда едем?'}
                         value={point?.address || ''}
                         onKeyDown={handleKeyDown}

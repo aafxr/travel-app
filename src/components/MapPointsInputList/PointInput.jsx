@@ -43,7 +43,7 @@ export default function PointInput(
         onInputChange,
     }
 ) {
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const [p, setPoint] = useState(/**@type{PointType}*/ null)
     const isFocus = document.activeElement.dataset.id === p?.id
 
@@ -52,7 +52,7 @@ export default function PointInput(
         if (point)
             setPoint(point)
         else
-            setPoint(defaultPoint(travel.id))
+            setPoint(defaultPoint(travelObj.id))
     }, [travel, point])
 
     /**@type {(point: PointType) => unknown} */
@@ -113,7 +113,7 @@ export default function PointInput(
             >
                 <Input
                     id={p.id}
-                    className='travel-map-input'
+                    className='input'
                     placeholder={"Найдите регион или город"}
                     value={p.address}
                     onKeyDown={(e) => handleKeyDown(e, p)}

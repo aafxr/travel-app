@@ -4,7 +4,7 @@
     /*justify-content: center;*/
     padding: 8px 9px;
 
-    color: var(--color-secondary);
+    color: var(--color-text);
     stroke: white;
     font-size: .7rem;
     line-height: 1;
@@ -35,7 +35,7 @@
     border-radius: 30.5rem;
 }
 .chip-orange {
-    color: white;
+    color: var(--color-text-secondary);
     background-color: var(--color-primary);
 }
 .chip-green {
@@ -48,7 +48,7 @@
 }
 
 .chip-light-orange{
-    color: var(--color-text);
+    color: var(--color-text-secondary);
     background-color: var(--color-primary-light);
 }
 .chip-light-orange img{

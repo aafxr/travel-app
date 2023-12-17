@@ -3,6 +3,8 @@ import React, {useEffect, useState} from "react";
 import {Input} from "../ui";
 import {MS_IN_DAY} from "../../static/constants";
 
+import './DateRange.css'
+
 
 /***
  * @type {DateRangeType}
@@ -97,6 +99,7 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
     return (
         <div className='flex-stretch gap-0.25'>
             <Input
+                className='date-range-input'
                 type='date'
                 placeholder={'Начало'}
                 value={range.start ? range.start.split('T').shift() : ''}
@@ -105,6 +108,7 @@ export default function DateRange({init, daysCount, minDateValue = '', maxDateVa
                 onChange={handleStartDateChange}
             />
             <Input
+                className='date-range-input'
                 type='date'
                 placeholder={'Завершение'}
                 value={range.end ? range.end.split('T').shift() : ''}

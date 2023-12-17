@@ -27,7 +27,7 @@ import './TravelSettings.css'
 export default function TravelSettings() {
     const navigate = useNavigate()
     const user = useUserSelector()
-    const {travel, update} = useTravelContext()
+    const {travel, update,travelObj} = useTravelContext()
 
     const [adultCount, setAdultCount] = useState(1)
     const [childCount, setChildCount] = useState(0)
@@ -36,16 +36,16 @@ export default function TravelSettings() {
     const [range, setRange] = useState(/***@type{DateRangeType | null}*/null)
 
     useEffect(() => {
-        setAdultCount(travel.adults_count)
-        setChildCount(travel.childs_count)
+        setAdultCount(travelObj.adults_count)
+        setChildCount(travelObj.childs_count)
         const tags = defaultMovementTags
-            .filter(item => !!~travel.movementTypes.findIndex(m => m.id === item.id))
+            .filter(item => !!~travelObj.movementTypes.findIndex(m => m.id === item.id))
         setMovement(tags)
         setRange({
-            start: travel.date_start,
-            end: travel.date_end
+            start: travelObj.date_start.toISOString(),
+            end: travelObj.date_end.toISOString()
         })
-    }, [travel])
+    }, [travelObj])
 
     /**
      * обработка нажатия на карточку пользователя
@@ -53,7 +53,7 @@ export default function TravelSettings() {
      */
     function handleUserClick(user) {
         if (user) {
-            navigate(`/travel/${travel.id}/settings/${user.id}/`)
+            navigate(`/travel/${travelObj.id}/settings/${user.id}/`)
         }
     }
 
@@ -83,7 +83,6 @@ export default function TravelSettings() {
         const newTagList = ~movement.findIndex(mt => mt.id === movementType.id)
             ? movement.filter(t => t.id !== movementType.id)
             : [...movement, movementType]
-        console.log(newTagList)
         setMovement(newTagList)
         travel.setMovementTypes(newTagList)
     }
@@ -99,11 +98,11 @@ export default function TravelSettings() {
      * @param {string} start
      * @param {string} end
      */
-    // function handleDateRangeChange({start, end}) {
-    //     setRange({start, end})
-    //     if (start) travel.date_start = start
-    //     if (end) travel.date_end = end
-    // }
+    function handleDateRangeChange({start, end}) {
+        setRange({start, end})
+        if (start) travel.setDateStart(start)
+        if (end) travel.setDateEnd(end)
+    }
 
     //==================================================================================================================
     /** сохранение параметров путешествия */
@@ -111,19 +110,16 @@ export default function TravelSettings() {
         if (!travel) {
             pushAlertMessage({type: 'warning', message: 'Не удалость получить информацию о путешествии'})
             return
-        } else if (!travel.date_start) {
+        } else if (!travelObj.date_start) {
             pushAlertMessage({type: 'warning', message: 'Укажите дату начала путешествия'})
             return
-        } else if (!travel.date_end) {
+        } else if (!travelObj.date_end) {
             pushAlertMessage({type: 'warning', message: 'Укажите дату конца путешествия'})
             return
-        } else if (!travel.movementTypes.length) {
+        } else if (!travelObj.movementTypes.length) {
             pushAlertMessage({type: 'warning', message: 'Укажите способ перемещения'})
             return
-        } else if (!travel.date_end) {
-            pushAlertMessage({type: 'warning', message: 'Укажите дату конца путешествия'})
-            return
-        } else if (!travel.adults_count && !!travel.childs_count) {
+        } else if (!travelObj.adults_count && !!travelObj.childs_count) {
             pushAlertMessage({type: 'warning', message: 'Укажите количество участников путешествия'})
             return
         } else if (!user) {
@@ -134,11 +130,11 @@ export default function TravelSettings() {
         travel
             .setAdultsCount(adultCount)
             .setChildsCount(childCount)
-            .setDateStart(range.start)
-            .setDateEnd(range.end)
+            .setDateStart(new Date(range.start))
+            .setDateEnd(new Date(range.end))
             .save(user.id)
             .then(() => update())
-            .then(() => navigate(`/travel/${travel.id}/1/`))
+            .then(() => navigate(`/travel/${travelObj.id}/1/`))
             .catch(err => {
                 ErrorReport.sendError(err).catch(console.error)
                 pushAlertMessage({type: 'danger', message: 'Произовла ошибка во время записи путешествия в бд'})
@@ -149,38 +145,38 @@ export default function TravelSettings() {
         <>
             <div className='travel-settings wrapper'>
                 <Container>
-                    <PageHeader arrowBack to={`/travel/${travel.id}/`} title={'Параметры'}/>
+                    <PageHeader arrowBack to={`/travel/${travelObj.id}/`} title={'Параметры'}/>
                 </Container>
                 <Container className='content overflow-x-hidden'>
                     {
-                        travel
+                        travelObj
                             ? (
                                 <div className='content column'>
                                     {
-                                        travel.direction && (
+                                        travelObj.direction && (
                                             <section className='travel-settings-dirrection block'>
                                                 <h4 className='title-semi-bold'>Направление</h4>
                                                 <div className='travel-settings-dirrection-title row'>
                                                     <Chip color='light-orange' rounded>
-                                                        {travel.direction}
+                                                        {travelObj.direction}
                                                     </Chip>
                                                 </div>
                                             </section>
                                         )
                                     }
 
-                                    {/*<section className='travel-settings-date column gap-0.5 block'>*/}
-                                    {/*    <h4 className='title-semi-bold'>Дата поездки</h4>*/}
-                                    {/*    <DateRange*/}
-                                    {/*        init={{start: travel.date_start, end: travel.date_end}}*/}
-                                    {/*        minDateValue={travel.date_start || ''}*/}
-                                    {/*        onChange={handleDateRangeChange}*/}
-                                    {/*    />*/}
-                                    {/*</section>*/}
+                                    <section className='travel-settings-date column gap-0.5 block'>
+                                        <h4 className='title-semi-bold'>Дата поездки</h4>
+                                        <DateRange
+                                            init={{start: travelObj.date_start.toISOString(), end: travelObj.date_end.toISOString()}}
+                                            minDateValue={travel.date_start || ''}
+                                            onChange={handleDateRangeChange}
+                                        />
+                                    </section>
 
                                     <section className='travel-settings-members column gap-0.5 block'>
                                         <h4 className='title-semi-bold'>Участники</h4>
-                                        <TravelPeople peopleList={travel.members} onClick={handleUserClick}/>
+                                        <TravelPeople peopleList={travelObj.members} onClick={handleUserClick}/>
                                         <div className='center'>
                                             {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
                                             {/*    участника</AddButton>*/}
@@ -188,28 +184,28 @@ export default function TravelSettings() {
                                         <div className='flex-between'>
                                             <span>Взрослые</span>
                                             <Counter
-                                                initialValue={travel.adults_count}
-                                                min={travel.members.filter(m => !m.isChild).length || 1}
+                                                initialValue={travelObj.adults_count}
+                                                min={travelObj.members.filter(m => !m.isChild).length || 1}
                                                 onChange={handleAdultChange}
                                             />
                                         </div>
                                         <div className='flex-between'>
                                             <span>Дети</span>
                                             <Counter
-                                                initialValue={travel.childs_count}
-                                                min={travel.members.filter(m => m.isChild).length}
+                                                initialValue={travelObj.childs_count}
+                                                min={travelObj.members.filter(m => m.isChild).length}
                                                 onChange={handleTeenagerChange}
                                             />
                                         </div>
                                     </section>
 
                                     {
-                                        Array.isArray(travel.hotels) && travel.hotels.length > 0 && (
+                                        Array.isArray(travelObj.hotels) && travelObj.hotels.length > 0 && (
                                             <section className='travel-settings-hotels column gap-0.5 block'>
                                                 <h4 className='title-semi-bold'>Отель</h4>
                                                 {
-                                                    travel.hotels.map(h => (
-                                                        <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>
+                                                    travelObj.hotels.map(h => (
+                                                        <Link key={h.id} to={`/travel/${travelObj.id}/add/hotel/${h.id}/`}>
                                                             <div className='travel-settings-hotel'>
                                                                 <div
                                                                     className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
@@ -230,13 +226,13 @@ export default function TravelSettings() {
                                     }
 
                                     {
-                                        Array.isArray(travel.appointments) && travel.appointments.length > 0 && (
+                                        Array.isArray(travelObj.appointments) && travelObj.appointments.length > 0 && (
                                             <section className='travel-settings-appointments column gap-0.5 block'>
                                                 <h4 className='title-semi-bold'>Встреча</h4>
                                                 {
-                                                    !!travel.appointments && Array.isArray(travel.appointments) && (
-                                                        travel.appointments.map(a => (
-                                                            <Link key={a.id} to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
+                                                    !!travelObj.appointments && Array.isArray(travelObj.appointments) && (
+                                                        travelObj.appointments.map(a => (
+                                                            <Link key={a.id} to={`/travel/${travelObj.id}/add/appointment/${a.id}/`}>
                                                                 <div className='travel-settings-appointment'>
                                                                     <div
                                                                         className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>

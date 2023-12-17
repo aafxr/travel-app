@@ -2,8 +2,8 @@ const month = ['января', 'февраля', 'марта', 'апреля', '
 
 /**
  *
- * @param {string} start
- * @param {string} end
+ * @param {string | Date} start
+ * @param {string | Date} end
  * @returns {string}
  * @function
  * @name dateRange

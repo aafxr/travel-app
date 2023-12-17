@@ -28,7 +28,7 @@ export default function Main({
             Travel
                 .newTravel(user.id)
                 .save(user.id)
-                .then((t) => navigate(`/travel/${t.id}/map/`))
+                .then((t) => navigate(`/travel/${t.object.id}/map/`))
                 .catch(console.error)
         } else{
             navigate('/login/')

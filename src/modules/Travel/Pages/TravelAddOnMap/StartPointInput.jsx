@@ -18,12 +18,12 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  * @category Components
  */
 export default function StartPointInput({  map}) {
-    const {travel, update} = useTravelContext()
+    const {travel, update, travelObj} = useTravelContext()
     const [point, setPoint] = useState(/**@type{PointType} */null)
 
     useEffect(() => {
-        if (travel.isFromPoint) setPoint(travel.fromPoint)
-    }, [travel])
+        if (travelObj.isFromPoint) setPoint(travelObj.waypoints[0])
+    }, [travelObj])
 
     function handleRemoveFromPoint(){
         travel.removeFromPoint()
@@ -75,7 +75,7 @@ export default function StartPointInput({  map}) {
 
 
         if (coords) {
-            const newPoint = defaultPoint(travel.id, {coords})
+            const newPoint = defaultPoint(travelObj.id, {coords})
             const id = newPoint.id
             /** добавление места с координатами пользователя */
             map
@@ -93,8 +93,7 @@ export default function StartPointInput({  map}) {
         }
     }
 
-
-    return travel.isFromPoint
+    return travelObj.isFromPoint
         ? (
             <div
                 onClick={() => {
@@ -102,7 +101,7 @@ export default function StartPointInput({  map}) {
                 className='travel-map-input-container relative'
                 data-id={point?.id}
             >
-                <Input value={point?.address} onChange={handleChange} onKeyDown={handleKeyDownEvent} data-id={point?.id}/>
+                <Input className={'input'} value={point?.address} onChange={handleChange} onKeyDown={handleKeyDownEvent} data-id={point?.id}/>
                 <CloseIcon
                     className="travel-map-search"
                     onClick={handleRemoveFromPoint}

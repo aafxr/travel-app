@@ -119,7 +119,7 @@ export default class YMap extends IMap {
      * @returns {MapPointType}
      */
     newPoint() {
-        return defaultPoint(this._travel.id)
+        return defaultPoint(this._travel._modified.id)
     }
 
     /**
@@ -472,7 +472,7 @@ export default class YMap extends IMap {
      * @returns {PointType[]}
      */
     getMarkers() {
-        return this._travel.waypoints || []
+        return this._travel._modified.waypoints || []
     }
 
     getDistance(point_1, point_2) {

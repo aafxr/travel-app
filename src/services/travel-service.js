@@ -6,7 +6,7 @@ import constants from "../static/constants";
 import removeTravel from "../utils/removeTravel";
 
 /**
- * Сервис добавляет CRUD операци для работы с TravelType бд
+ * Сервис добавляет CRUD операци для работы с TravelStoreType бд
  * @name TravelService
  * @class
  * @category Services
@@ -16,9 +16,9 @@ export class TravelService {
      * Метод создания нового путешествия
      * @method
      * @name TravelService.create
-     * @param {TravelType} travel новое путешествие
+     * @param {TravelStoreType} travel новое путешествие
      * @param {string} user_id id пользователя, создавшего путешествие
-     * @returns {Promise<TravelType | null>}
+     * @returns {Promise<TravelStoreType | null>}
      */
     async create(travel, user_id){
         try {
@@ -37,7 +37,7 @@ export class TravelService {
      * @method
      * @name TravelService.read
      * @param {string} id id путешествия
-     * @returns {Promise<TravelType|null>}
+     * @returns {Promise<TravelStoreType|null>}
      */
     async read(id){
         try {
@@ -53,7 +53,7 @@ export class TravelService {
      * Метод возвращает записи о всех путешествии в бд
      * @method
      * @name TravelService.readAll
-     * @returns {Promise<TravelType[]>}
+     * @returns {Promise<TravelStoreType[]>}
      */
     async readAll(){
         try {
@@ -69,9 +69,9 @@ export class TravelService {
      * Метод обнлвляет данные о путешествии в бд
      * @method
      * @name TravelService.update
-     * @param {TravelType} travel
+     * @param {TravelStoreType} travel
      * @param {string} user_id id пользователя, создавшего путешествие
-     * @returns {Promise<TravelType | null>}
+     * @returns {Promise<TravelStoreType | null>}
      */
     async update(travel, user_id){
         try {
@@ -89,9 +89,9 @@ export class TravelService {
      * Метод удаляет путешествие
      * @method
      * @name TravelService.delete
-     * @param {TravelType} travel удаляемое путешествие
+     * @param {TravelStoreType} travel удаляемое путешествие
      * @param {string} user_id id пользователя, который удаляет путешествия
-     * @returns {Promise<TravelType | null>}
+     * @returns {Promise<TravelStoreType | null>}
      */
     async delete(travel, user_id){
         try {

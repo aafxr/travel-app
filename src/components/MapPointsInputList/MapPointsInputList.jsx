@@ -32,7 +32,7 @@ import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 export default function MapPointsInputList({map, pointsList, onListChange}) {
     const navigate = useNavigate()
     // const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     // const travelState = useTravelStateSelector()
     const [points, setPoints] = useState(/**@type{PointType[]} */ [])
 
@@ -246,14 +246,16 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     // добавление новой точки ==========================================================================================
     function handleSubmitNewPoint() {
-        const newPoint = defaultPoint(travel.id)
+        const newPoint = defaultPoint(travelObj.id)
         travel.addWaypoint(newPoint)
-        navigate(`/travel/${travel.id}/add/waypoint/${newPoint.id}/`)
+        navigate(`/travel/${travelObj.id}/add/waypoint/${newPoint.id}/`)
     }
 
     function handleBlur(point) {
         document.getElementById(point.id)?.classList.remove('input-highlight')
     }
+
+    console.log(travelObj)
 
     return (
         <>

@@ -70,11 +70,12 @@ export default class Travel extends BaseTravel {
     _expenseFilter
 
     /**
-     * @param {TravelType} item
+     * @param {TravelStoreType} item
+     * @param {string} travelCode
      * @constructor
      */
-    constructor(item) {
-        super(item);
+    constructor(item,travelCode) {
+        super(item, travelCode);
         this._errorHandle = this._errorHandle.bind(this)
         this._filterExpensesFromCursorFunc = this._filterExpensesFromCursorFunc.bind(this)
         this._loadExpensesActual = this._loadExpensesActual.bind(this)
@@ -234,7 +235,7 @@ export default class Travel extends BaseTravel {
             })
         temp.owner_id = owner
 
-        const travel = new Travel(temp)
+        const travel = new Travel(temp, temp.id)
         travel
             .setNew(true)
             .setChange(true)
