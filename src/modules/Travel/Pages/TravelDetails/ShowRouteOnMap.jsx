@@ -11,7 +11,7 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import useUserSelector from "../../../../hooks/useUserSelector";
 
 export default function ShowRouteOnMap() {
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const user = useUserSelector()
     // const {dayNumber} = useParams()
     // const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
@@ -21,7 +21,7 @@ export default function ShowRouteOnMap() {
 
     useEffect(() => {
         if (map) {
-            const route = travel.places
+            const route = travelObj.places
 
             // /**@type{MapPointType[]}*/
             // const routePointForMap = route
@@ -78,7 +78,7 @@ export default function ShowRouteOnMap() {
         const initDetailRout = async () => {
             const service = new BaseService(constants.store.ROUTE)
             /**@type{RouteDetailType | null}*/
-            let route = await service.read(travel.id)
+            let route = await service.read(travelObj.id)
             if (route && !routNeedUpdateNeed(route)) {
                 let points = route.routes.reduce((acc, segment) => acc.concat(segment.route), [])
                 map
@@ -86,16 +86,16 @@ export default function ShowRouteOnMap() {
                     .autoZoom()
             }
         }
-        if (travel && map && user)
+        if (travelObj && map && user)
             initDetailRout().catch(defaultHandleError)
-    }, [travel, map, user])
+    }, [travelObj, map, user])
 
 
     async function buildDetailRoute() {
         try {
             const service = new BaseService(constants.store.ROUTE)
             /**@type{RouteDetailType | null}*/
-            let route = await service.read(travel.id)
+            let route = await service.read(travelObj.id)
 
             if (route) {
                 if (routNeedUpdateNeed(route)) {
@@ -119,7 +119,7 @@ export default function ShowRouteOnMap() {
      * @returns {boolean}
      */
     function routNeedUpdateNeed(track) {
-        const places = travel.places
+        const places = travelObj.places
 
         if (track.viaPoints?.length !== places.length) return true
 
@@ -131,7 +131,7 @@ export default function ShowRouteOnMap() {
      * @returns {Promise<RouteDetailType>}
      */
     async function updateRoute(service) {
-        const updatedRout = await map.buildDetailRoute(travel.places.map(({id, coords}) => ({id, coords})))
+        const updatedRout = await map.buildDetailRoute(travelObj.places.map(({id, coords}) => ({id, coords})))
         await service.update(updatedRout, user.id)
         return updatedRout
     }
@@ -143,7 +143,7 @@ export default function ShowRouteOnMap() {
             {/*        {*/}
             {/*            travel.routeBuilder.getActivityDays()*/}
             {/*                .map((i) => (*/}
-            {/*                    <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>*/}
+            {/*                    <Tab to={`/travel/${travelObj.id}/${i}/`} key={i} name={`${i} день`}/>*/}
             {/*                ))*/}
             {/*        }*/}
             {/*    </div>*/}

@@ -24,7 +24,7 @@ export default function TravelEdit() {
     const navigate = useNavigate()
 
     const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const {travel,travelObj} = useTravelContext()
     /*** название путешествия */
     const [title, setTitle] = useState('')
     /*** диапазон дат путешествия */
@@ -45,19 +45,19 @@ export default function TravelEdit() {
 
     /*** обновление состояния компонента (заполнение уже существующих полей путешествия) */
     useEffect(() => {
-        setTitle(travel.title)
+        setTitle(travelObj.title)
         setRange({
-            start: travel.date_start,
-            end: travel.date_end || travel.date_start
+            start: travelObj.date_start.toISOString(),
+            end: travelObj.date_end.toISOString() || travelObj.date_start.toISOString()
         })
-        setDescription(travel.description)
+        setDescription(travelObj.description)
         /**@type{MovementType[]}*/
         const t = defaultMovementTags
-            .filter(mt => !!~travel.movementTypes.findIndex(item => item.id === mt.id))
+            .filter(mt => !!~travelObj.movementTypes.findIndex(item => item.id === mt.id))
         setTags(t)
 
-        const start = new Date(travel.date_start)
-        const end = new Date(travel.date_end)
+        const start = new Date(travelObj.date_start)
+        const end = new Date(travelObj.date_end)
         if (!Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
             const ms = end - start
             if (ms > MS_IN_DAY) {
@@ -65,7 +65,7 @@ export default function TravelEdit() {
                 setDaysCount(days || 1)
             }
         } else setDaysCount(undefined)
-        setIsPublic(travel.isPublic === 1)
+        setIsPublic(travelObj.isPublic === 1)
         //... доьавить остальные поля в будущем
     }, [])
 
@@ -84,7 +84,7 @@ export default function TravelEdit() {
 
             travel
                 .save(user.id)
-                .then(() => navigate(`/travel/${travel.id}/1/`))
+                .then(() => navigate(`/travel/${travelObj.id}/1/`))
         }
     }
 
@@ -135,7 +135,7 @@ export default function TravelEdit() {
             setDaysCount(undefined)
         }
         setDaysInputValue(e.target.value)
-        if(travel.days !== +e.target.value) setChanged(true)
+        if(travelObj.days !== +e.target.value) setChanged(true)
     }
 
     /***
@@ -169,7 +169,7 @@ export default function TravelEdit() {
                 <PageHeader arrowBack title={'Параметры'}/>
             </Container>
             {
-                travel && (
+                travelObj && (
                     <Container className='content'>
                         <div className='block column gap-0.5'>
                             <div className='title-bold'>Название</div>
@@ -229,7 +229,7 @@ export default function TravelEdit() {
                         </div>
                         <ToggleBox
                             className='block'
-                            init={travel.isPublic === 1}
+                            init={travelObj.isPublic === 1}
                             onChange={setIsPublic}
                             title={"Сделать видимым для всех"}
                         />
