@@ -6,18 +6,18 @@ import {de} from "date-fns/locale";
  * @name TimeHelper
  *
  *
- * @param {number} morning время в __мс__ - локальное время утра
- * @param {number} evening время в __мс__ - локальное время вечера
+ * @param {number} [morning] время в __мс__ - локальное время утра
+ * @param {number} [evening] время в __мс__ - локальное время вечера
  * @param {number} timezoneOffset время в __мс__ - смещение относительно часового пояса
  * @constructor
  */
 export default class TimeHelper{
     /**
-     * @param {number} morning время в __мс__ - локальное время утра
-     * @param {number} evening время в __мс__ - локальное время вечера
+     * @param {number} [morning] время в __мс__ - локальное время утра
+     * @param {number} [evening] время в __мс__ - локальное время вечера
      * @constructor
      */
-    constructor(morning, evening) {
+    constructor(morning = 0 , evening = MS_IN_DAY) {
         this.morning = morning
         this.evening = evening
     }

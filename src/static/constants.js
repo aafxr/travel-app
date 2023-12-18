@@ -65,6 +65,26 @@ const constants = {
     }
 }
 
+export const MOVEMENT = {
+    WALK: 1001,
+    CAR: 1002,
+    PUBLIC_TRANSPORT: 1003,
+    FLIGHT: 1004,
+}
+
+export const ENTITY = {
+    PLACE: 2001,
+    POINT: 2002,
+    HOTEL: 2003,
+    AIRPORT: 2004
+}
+
+export const SIGHTSEEING_DEPTH = {
+    FAST: 25 * 60 * 1000,
+    REGULAR: 45 * 60 * 1000,
+    LONG: 1.5 * 60 * 1000
+}
+
 
 export const reducerConstants = {
     UPDATE_CONTROLLER: 'UPDATE_CONTROLLER',
@@ -94,7 +114,7 @@ export const UNAUTHORIZED = 'unauthorized'
 export const THEME = 'THEME'
 
 export const MS_IN_DAY = 1000 * 60 * 60 * 24 //число милисекунд в в сутках
-export const MIN_NO_ADVICE_TIME = 10*60*1000 //время когда нет смыла советовать место
+export const MIN_NO_ADVICE_TIME = 10 * 60 * 1000 //время когда нет смыла советовать место
 
 export const defaultMovementTags = [
     {id: 1, icon: <WalkIcon className='img-abs'/>, title: 'пешком'},
@@ -107,18 +127,18 @@ export const DEFAULT_PLACEMARK_ICON = new URL('../../public/icons/Navigation.png
 export const DEFAULT_TRAVEL_DETAILS_FILTER = 'defaultTravelDetailsFilter'
 
 const month = {
-    'январь' : 0,
-    'февраль' : 1,
-    'март' : 2,
-    'апрель' : 3,
-    'май' : 4,
-    'июнь' : 5,
-    'июль' : 6,
-    'август' : 7,
-    'сентябрь' : 8,
-    'октябрь' : 9,
-    'ноябрь' : 10,
-    'декабрь' : 11
+    'январь': 0,
+    'февраль': 1,
+    'март': 2,
+    'апрель': 3,
+    'май': 4,
+    'июнь': 5,
+    'июль': 6,
+    'август': 7,
+    'сентябрь': 8,
+    'октябрь': 9,
+    'ноябрь': 10,
+    'декабрь': 11
 }
 
 /**
@@ -126,7 +146,7 @@ const month = {
  * @type {Proxy<typeof month>}
  */
 export const MONTH = new Proxy(month, {
-    get(target, prop){
+    get(target, prop) {
         return prop.toLowerCase() in target ? target[prop] : -1
     }
 })

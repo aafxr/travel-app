@@ -1,6 +1,6 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
-import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, MS_IN_DAY} from "../static/constants";
+import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, ENTITY, MS_IN_DAY} from "../static/constants";
 import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 import createId from "../utils/createId";
@@ -69,7 +69,7 @@ export default class BaseTravel extends Entity {
             .keys(BaseTravel.initValue)
             .forEach(key => this._modified[key] = BaseTravel.initValue[key]())
 
-        if(travelCode)
+        if (travelCode)
             this._modified.id = travelCode
 
         this.routeBuilder = new RouteBuilder({
@@ -87,19 +87,19 @@ export default class BaseTravel extends Entity {
             appointments: item.appointments ? item.appointments.map(a => {
                 a.date = new Date(a.date)
                 return a
-            }) : [] ,
+            }) : [],
             hotels: item.hotels ? item.appointments.map(h => {
                 h.check_in = new Date(h.check_in)
                 h.check_out = new Date(h.check_out)
                 return h
-            }) : [] ,
+            }) : [],
             places: item.places ? item.appointments.map(p => {
                 p.time_start = new Date(p.time_start)
                 p.time_end = new Date(p.time_end)
                 return p
-            }) : [] ,
-            date_start : item.date_start ? new Date(item.date_start) : new Date(),
-            date_end : item.date_end ? new Date(item.date_end) : new Date(),
+            }) : [],
+            date_start: item.date_start ? new Date(item.date_start) : new Date(),
+            date_end: item.date_end ? new Date(item.date_end) : new Date(),
         }
 
         // this
@@ -134,19 +134,23 @@ export default class BaseTravel extends Entity {
 
     _init() {
         this._modified.places = this._modified.places.map(p => {
-            if (!p._id) p._id = createId(this.id)
-            if (p.location.lat){
-                const{lat, lng} = p.location
+            if (!p._id) p._id = createId(this._modified.id)
+            if (p.location.lat) {
+                const {lat, lng} = p.location
                 p.location = [lat, lng]
             }
-            if (p.location ) p.coords = p.location
+            if (p.location) p.coords = p.location
             if (!p.visited) p.visited = 0
             if (p.date_start) p.time_start = p.date_start
             if (p.date_end) p.time_end = p.date_end
+            p.type = ENTITY.PLACE
             delete p.date_start
             delete p.date_end
             return p
         })
+
+        this._modified.waypoints.forEach(wp => wp.type = ENTITY.POINT)
+        this._modified.hotels.forEach(h => h.type = ENTITY.HOTEL)
     }
 
     /**
@@ -154,7 +158,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.setCurtainOpen
      * @param {boolean} isOpen
      */
-    setCurtainOpen(isOpen){
+    setCurtainOpen(isOpen) {
         this._isCurtainOpen = isOpen
 
     }
@@ -164,7 +168,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.isCurtainOpen
      * @return {boolean}
      */
-    get isCurtainOpen(){
+    get isCurtainOpen() {
         return this._isCurtainOpen
     }
 
@@ -559,7 +563,7 @@ export default class BaseTravel extends Entity {
     setFromPoint(point) {
         if (typeof point === 'object' && point !== null) {
             !this._modified.isFromPoint
-                && this._modified.waypoints.unshift(point)
+            && this._modified.waypoints.unshift(point)
             this._modified.isFromPoint = 1
             this.change = true
             this.forceUpdate()
@@ -788,9 +792,9 @@ export default class BaseTravel extends Entity {
      * @param {PlaceType} item посещаемое место
      * @returns {BaseTravel}
      */
-    updatePlace(item){
+    updatePlace(item) {
         const idx = this._modified.places.findIndex(p => p._id === item._id)
-        if(~idx) {
+        if (~idx) {
             this.change = true
             const newArray = [...this._modified.places]
             newArray[idx] = item
@@ -1121,14 +1125,33 @@ export default class BaseTravel extends Entity {
         /**@type{TravelStoreType}*/
         const travelDTO = {...this._modified}
         travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
-        travelDTO.hotels.forEach(h=> {
-            h.check_in = h.check_in.toISOString()
-            h.check_out = h.check_out.toISOString()
+        travelDTO.hotels = travelDTO.hotels.map(h => {
+            /**@type{HotelStoreType}*/
+            const nh = {
+                ...h,
+                check_in: h.check_in.toISOString(),
+                check_out: h.check_out.toISOString(),
+            }
+            delete nh.type
+            return nh
         })
-        travelDTO.places.forEach(p => {
-            p.time_start = p.time_start.toISOString()
-            p.time_end = p.time_end.toISOString()
+
+        travelDTO.places = travelDTO.places.map(p => {
+            const np = {
+                ...p,
+                time_start: p.time_start.toISOString(),
+                time_end: p.time_end.toISOString()
+            }
+            delete np.type
+            return np
         })
+
+        travelDTO.waypoints = travelDTO.waypoints.map(wp => {
+            const nwp = {...wp}
+            delete nwp.type
+            return nwp
+        })
+
         travelDTO.date_start = travelDTO.date_start.toISOString()
         travelDTO.date_end = travelDTO.date_end.toISOString()
 

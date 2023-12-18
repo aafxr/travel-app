@@ -281,7 +281,10 @@ export default class RouteBuilder {
             currentIndex--;
             [arr[currentIndex], arr[randomIndex]] = [arr[randomIndex], arr[currentIndex]];
         }
-        return [startFrom, ...arr];
+        if (startFrom)
+            return [startFrom, ...arr];
+        else
+            return arr
     }
 
     /**
@@ -360,7 +363,7 @@ export default class RouteBuilder {
             Array
                 .from({length: Math.min(500, points.length * 10)})
                 .fill(0)
-                .map(() => this._shuffle(startVertex, [...verteces]))
+                .map(() => this._shuffle(undefined, [...verteces])) //startVertex
         const MAX_POPULATION_SIZE = population.length
 
         population.forEach(p => {

@@ -1,6 +1,6 @@
 /**
  * @name PlaceStoreType
- * @typedef {Object} PlaceType
+ * @typedef {Object} PlaceStoreType
  * @property {string} _id
  * @property {string} id
  * @property {string} name
@@ -19,6 +19,7 @@
  * @typedef {Object} PlaceType
  * @property {string} _id
  * @property {string} id
+ * @property {2001} type
  * @property {string} name
  * @property {string[]} photos
  * @property {string} formatted_address

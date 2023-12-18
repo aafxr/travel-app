@@ -14,7 +14,7 @@
  * @property {MemberType[]} members список участников
  * @property {MovementType[]} movementTypes способ перемещения
  * @property {HotelStoreType[]} hotels список отелей
- * @property {PointType[]} waypoints список посещаемых мест
+ * @property {PointStoreType[]} waypoints список посещаемых мест
  * @property {PlaceStoreType[]} places список посещаемых мест
  * @property {string} date_start начало путешествия
  * @property {string} date_end конец путешествия
