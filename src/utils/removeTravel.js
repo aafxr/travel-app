@@ -7,7 +7,7 @@ import createAction from "./createAction";
  * метод удаляет информацию о путешествие из локальной БД и добавляет action
  * @function
  * @name removeTravel
- * @param {TravelType} travel удаляемое путешествие
+ * @param {TravelStoreType} travel удаляемое путешествие
  * @param {string} user_id  id пользователя, который удалил путешествие
  * @returns {Promise<void>}
  * @category Utils

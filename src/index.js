@@ -18,6 +18,8 @@ import UserContextProvider from "./contexts/UserContextProvider";
 import ThemeContextProvider from "./contexts/ThemeContextProvider";
 import BaseService from "./classes/BaseService";
 import {nanoid} from "nanoid";
+import Route from './classes/Route'
+import TimeHelper from "./classes/TimeHelper";
 
 
 let theme = localStorage.getItem(THEME)
@@ -146,3 +148,7 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
+
+
+window.Route = Route
+window.timeHelper = new TimeHelper(9 * 60*60*1000, 19*60*60*1000)

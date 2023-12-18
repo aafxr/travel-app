@@ -133,7 +133,7 @@ export default class BaseTravel extends Entity {
     }
 
     _init() {
-        this._modified.places = this._modified.places.map(p => {
+        this._modified.places.forEach(p => {
             if (!p._id) p._id = createId(this._modified.id)
             if (p.location.lat) {
                 const {lat, lng} = p.location
@@ -141,8 +141,8 @@ export default class BaseTravel extends Entity {
             }
             if (p.location) p.coords = p.location
             if (!p.visited) p.visited = 0
-            if (p.date_start) p.time_start = p.date_start
-            if (p.date_end) p.time_end = p.date_end
+            p.time_start = new Date(p.date_start || 0)
+            p.time_end = new Date(p.date_end || 0)
             p.type = ENTITY.PLACE
             delete p.date_start
             delete p.date_end
@@ -150,7 +150,11 @@ export default class BaseTravel extends Entity {
         })
 
         this._modified.waypoints.forEach(wp => wp.type = ENTITY.POINT)
-        this._modified.hotels.forEach(h => h.type = ENTITY.HOTEL)
+        this._modified.hotels.forEach(h => {
+            h.type = ENTITY.HOTEL
+            h.check_in = new Date(h.check_in || 0)
+            h.check_out = new Date(h.check_out || 0)
+        })
     }
 
     /**
@@ -779,7 +783,9 @@ export default class BaseTravel extends Entity {
         if (item) {
             this._modified.places.push(item)
             this.change = true
-            this.routeBuilder.updateRoute()
+            console.log(this._modified.places)
+            // this.routeBuilder.updateRoute()
+            console.log(this._modified.places)
             this.forceUpdate()
         }
         return this

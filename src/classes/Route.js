@@ -61,7 +61,7 @@ export default class Route {
         let node = this.list.head
         return {
             next(){
-                if (node.value) {
+                if (node && node.value) {
                     const value = node.value
                     node = node.next
                     return {value, done: false}

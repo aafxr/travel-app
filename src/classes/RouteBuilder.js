@@ -83,7 +83,7 @@ export default class RouteBuilder {
             .filter(ln => ln.value.isPlace())
             .map(ln => ln.value.place)
 
-        if(updatedPlaces.length) {
+        if(updatedPlaces.length === this._travel._modified.places.length) {
             this._travel._modified.places = updatedPlaces
             this._travel.change = true
         }
