@@ -47,6 +47,10 @@ export default function TravelCard({travel, onRemove}) {
         setTextScrolling(value)
     }
 
+    function handleClickCard(){
+        console.log(travel)
+        navigate(`/travel/${travel.id}/`)
+    }
 
     return (
         <>
@@ -54,7 +58,7 @@ export default function TravelCard({travel, onRemove}) {
                 className='travel-card-swiper'
                 onRemove={handleRemove}
                 rightButton={!tagsScrolling}
-                onClick={() => navigate(`/travel/${travel.id}/`)}
+                onClick={handleClickCard}
             >
                 <div className='travel-item'>
                     <div className='flex-between gap-0.5'>

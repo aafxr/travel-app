@@ -54,7 +54,7 @@ export default function TravelContextProvider() {
                     .then(item => {
                         setLoading(false)
                         const t = item
-                            ?  new Travel(item)
+                            ?  new Travel(item, travelCode)
                             :  new Travel(undefined, travelCode)
                         t?.setUser(user.id)
                         if (t) {

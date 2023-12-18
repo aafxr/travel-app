@@ -73,7 +73,7 @@ export default class RouteBuilder {
      */
     updateRoute() {
         // this.placesMap.clear()
-        this._travel._modified.places = this.sortByGeneticAlgorithm(this._travel.places)
+        this._travel._modified.places = this.sortByGeneticAlgorithm(this._travel._modified.places)
             // this._travel.places.length > 6
             // ? this.sortByGeneticAlgorithm(this._travel.places)
             // : this.sortPlacesByDistance(this._travel.places)
@@ -209,12 +209,16 @@ export default class RouteBuilder {
         }
 
         const activitiesList = new LinkedList(compareActivities)
-        const travelStartDate = new Date(this._travel.date_start)
-        const places = this._travel.object.places
+        const travelStartDate = new Date(this._travel._modified.date_start)
+        const places = this._travel._modified.places
+        if (places.length === 0){
+            this.activitiesList = activitiesList
+            return activitiesList
+        }
 
         const placeActivityOptions = (idx, startTime) => {
             return {
-                place: this._travel.places[idx],
+                place: places[idx],
                 travel_start_time: travelStartDate,
                 start: startTime ? startTime : travelStartDate,
                 preference: {
@@ -344,8 +348,8 @@ export default class RouteBuilder {
 
     /**
      * @param {SortPointType[]} points
-     * @param {number} mutation  0 - 100, вероятность мутации
-     * @param {number} cycles количество циклов
+     * @param {number} [mutation]  0 - 100, вероятность мутации
+     * @param {number} [cycles] количество циклов
      * @returns {*[]}
      */
     sortByGeneticAlgorithm(points, mutation = 100, cycles = 700) {

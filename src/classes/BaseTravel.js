@@ -74,10 +74,10 @@ export default class BaseTravel extends Entity {
 
         this.routeBuilder = new RouteBuilder({
             travel: this,
-            places: this.places,
-            appointments: this.appointments,
-            hotels: this.hotels,
-            waypoints: this.waypoints
+            places: this._modified.places,
+            appointments: this._modified.appointments,
+            hotels: this._modified.hotels,
+            waypoints: this._modified.waypoints
         })
 
         // this._checkTravelFields(item)
@@ -88,46 +88,26 @@ export default class BaseTravel extends Entity {
                 a.date = new Date(a.date)
                 return a
             }) : [],
-            hotels: item.hotels ? item.appointments.map(h => {
+            hotels: item.hotels ? item.hotels.map(h => {
                 h.check_in = new Date(h.check_in)
                 h.check_out = new Date(h.check_out)
+                h.type = ENTITY.HOTEL
                 return h
             }) : [],
-            places: item.places ? item.appointments.map(p => {
+            places: item.places ? item.places.map(p => {
                 p.time_start = new Date(p.time_start)
                 p.time_end = new Date(p.time_end)
+                p.type = ENTITY.PLACE
                 return p
             }) : [],
             date_start: item.date_start ? new Date(item.date_start) : new Date(),
             date_end: item.date_end ? new Date(item.date_end) : new Date(),
         }
 
-        // this
-        //     .setID(item.id)
-        //     .setCode(item.code)
-        //     .setTitle(item.title)
-        //     .setDirection(item.direction)
-        //     .setDescription(item.description)
-        //     .setOwnerID(item.owner_id)
-        //     .setCreatedAt(item.created_at)
-        //     .setUpdatedAt(item.updated_at)
-        //     .setAppointments(item.appointments)
-        //     .setMembers(item.members)
-        //     .setHotels(item.hotels)
-        //     .setMovementTypes(item.movementTypes?.length > 0 && item.movementTypes)
-        //     .setWaypoints(item.waypoints)
-        //     .setPlaces(item.places)
-        //     .setAdultsCount(item.adults_count)
-        //     .setChildsCount(item.childs_count)
-        //     .setDateStart(item.date_start)
-        //     .setDateEnd(item.date_end)
-        //     .setIsPublic(item.isPublic)
-        //     ._setIsFromPoint(item.isFromPoint)
-        //     .setPhoto(item.photo)
-
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
         this.change = this._new
+
 
         this._init()
     }
@@ -141,20 +121,12 @@ export default class BaseTravel extends Entity {
             }
             if (p.location) p.coords = p.location
             if (!p.visited) p.visited = 0
-            p.time_start = new Date(p.date_start || 0)
-            p.time_end = new Date(p.date_end || 0)
-            p.type = ENTITY.PLACE
             delete p.date_start
             delete p.date_end
             return p
         })
 
         this._modified.waypoints.forEach(wp => wp.type = ENTITY.POINT)
-        this._modified.hotels.forEach(h => {
-            h.type = ENTITY.HOTEL
-            h.check_in = new Date(h.check_in || 0)
-            h.check_out = new Date(h.check_out || 0)
-        })
     }
 
     /**

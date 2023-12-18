@@ -18,7 +18,7 @@ import ShowAdvice from "../../components/ShowAdvice/ShowAdvice";
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
     const {dayNumber} = useParams()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function ShowRouteByDays() {
                     {
                         travel.routeBuilder.getActivityDays()
                             .map((i) => (
-                                <Tab to={`/travel/${travel.id}/${i}/`} key={i} name={`${i} день`}/>
+                                <Tab to={`/travel/${travelObj.id}/${i}/`} key={i} name={`${i} день`}/>
                             ))
                     }
                 </div>
@@ -48,10 +48,10 @@ export default function ShowRouteByDays() {
                                     {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
                                 </div>
                             </React.Fragment>))
-                        : travel.places.length === 0
+                        : travelObj.places.length === 0
                             ? (
                                 <div>
-                                    <Link className='link' to={`/travel/${travel.id}/add/place/`}>Добавить место</Link>
+                                    <Link className='link' to={`/travel/${travelObj.id}/add/place/`}>Добавить место</Link>
                                 </div>
                             )
                             : <div>Loading...</div>
@@ -68,7 +68,7 @@ export default function ShowRouteByDays() {
  * @return {JSX.Element}
  */
 function ShowActivity({activity}) {
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const user = useUserSelector()
     const [_activity, setActivity] = useState(/**@type{Activity}*/null)
 
@@ -88,7 +88,7 @@ function ShowActivity({activity}) {
         return (
             <>
                 <RecommendLocation
-                    to={`/travel/${travel.id}/params/`}
+                    to={`/travel/${travelObj.id}/params/`}
                     items={[
                         {id: 1, entityType: 'hotel', entityName: '123'},
                         {id: 2, entityType: 'hotel', entityName: 'name'},
