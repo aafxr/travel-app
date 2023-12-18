@@ -23,7 +23,7 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
  */
 export default function TravelAddPlace() {
     const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const navigate = useNavigate()
     const [placeName, setPlaceName] = useState('')
     // const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
@@ -41,7 +41,7 @@ export default function TravelAddPlace() {
         if (p) {
             setPlace({
                 ...p,
-                _id: createId() + ':' + travel.id,
+                _id: createId() + ':' + travelObj.id,
                 coords: p.location,
                 visited: 0
             })
@@ -53,8 +53,8 @@ export default function TravelAddPlace() {
         if (place) {
             travel.addPlace({
                     ...place,
-                    time_start: '', //dateRange.start,
-                    time_end: '', //dateRange.end
+                    time_start: new Date(0), //dateRange.start,
+                    time_end: new Date(0), //dateRange.end
                 }
             )
 
@@ -81,7 +81,7 @@ export default function TravelAddPlace() {
 
     /** @param {PlaceType[]} placesList */
     function handleSelectedPlaces(placesList){
-        const filtered = placesList.filter(p => !travel.places.find(tp => tp.id === p.id))
+        const filtered = placesList.filter(p => !travelObj.places.find(tp => tp.id === p.id))
         setPlaces(filtered)
     }
 
@@ -99,8 +99,8 @@ export default function TravelAddPlace() {
                     />
                     {/*<DateRange*/}
                     {/*    init={dateRange}*/}
-                    {/*    minDateValue={travel.date_start}*/}
-                    {/*    maxDateValue={travel.date_end}*/}
+                    {/*    minDateValue={travelObj.date_start}*/}
+                    {/*    maxDateValue={travelObj.date_end}*/}
                     {/*    onChange={setDateRange}*/}
                     {/*/>*/}
                 </div>

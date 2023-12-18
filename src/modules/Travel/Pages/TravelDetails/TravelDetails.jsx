@@ -65,7 +65,7 @@ export default function TravelDetails() {
 
     useEffect(() => {
         const days = travel.routeBuilder.getActivityDays()
-        if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travel.id}/${days[0]}/`)
+        if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travelObj.id}/${days[0] || 1}/`)
 
         travel
             .routeBuilder

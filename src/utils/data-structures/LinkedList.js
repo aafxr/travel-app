@@ -56,33 +56,45 @@ export default class LinkedList {
 
     /**
      * @param {*} value
-     * @param {number} rawIndex
+     * @param {number} [rawIndex]
      * @return {LinkedList}
      */
     insert(value, rawIndex) {
-        const index = rawIndex < 0 ? 0 : rawIndex;
-        if (index === 0) {
-            this.prepend(value);
-        } else {
-            let count = 1;
-            let currentNode = this.head;
-            const newNode = new LinkedListNode(value);
-            while (currentNode) {
-                if (count === index) break;
-                currentNode = currentNode.next;
-                count += 1;
-            }
-            if (currentNode) {
-                newNode.next = currentNode.next;
-                currentNode.next = newNode;
+        if(typeof rawIndex === 'number'){
+            const index = rawIndex < 0 ? 0 : rawIndex;
+            if (index === 0) {
+                this.prepend(value);
             } else {
-                if (this.tail) {
-                    this.tail.next = newNode;
-                    this.tail = newNode;
-                } else {
-                    this.head = newNode;
-                    this.tail = newNode;
+                let count = 1;
+                let currentNode = this.head;
+                const newNode = new LinkedListNode(value);
+                while (currentNode) {
+                    if (count === index) break;
+                    currentNode = currentNode.next;
+                    count += 1;
                 }
+                if (currentNode) {
+                    newNode.next = currentNode.next;
+                    currentNode.next = newNode;
+                } else {
+                    if (this.tail) {
+                        this.tail.next = newNode;
+                        this.tail = newNode;
+                    } else {
+                        this.head = newNode;
+                        this.tail = newNode;
+                    }
+                }
+            }
+        } else {
+            let node = this.head
+            while(node && this.compare.lessThan(node.value, value))
+                node = node.next
+
+            if(node){
+                node.next = new LinkedListNode(value, node.next)
+            } else {
+                this.append(new LinkedListNode(value))
             }
         }
         return this;
