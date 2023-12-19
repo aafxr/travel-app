@@ -39,7 +39,7 @@ export default function ShowRouteOnMap() {
                     <div class="balloon-body">
                         ${r.photos?.length ? `
                         <div class="balloon-image">
-                            <img class="img-abs" src="${r.photos[0]}" alt="${r.name}">
+                            <img class="img-abs" src="${r.photos[0]}" alt="${r.name}" width="${window.innerWidth*0.45}px">
                         </div>` : ''}
                         <div class="balloon-content">
                             <div>
@@ -56,7 +56,7 @@ export default function ShowRouteOnMap() {
                     balloonContentFooter: `<div class="balloon-footer">${r.formatted_address}</div>`,
                     iconContent: index + 1
                 }
-                map.setBalloonToPoint(r.id, balloonOptions, {maxWidth: window.innerWidth * 0.6})
+                // map.setBalloonToPoint(r.id, balloonOptions, {})
             })
             window.map = map
         }

@@ -24,7 +24,7 @@ export default function ShowRouteByDays() {
     useEffect(() => {
         const days = travel.routeBuilder.getActivityDays()
         setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber || days[0] || 1))
-    }, [dayNumber, travel, travel.places])
+    }, [dayNumber, travel, travelObj.places])
 
     return (
         <>

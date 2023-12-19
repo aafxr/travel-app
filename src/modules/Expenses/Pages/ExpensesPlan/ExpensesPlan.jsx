@@ -32,11 +32,17 @@ export default function ExpensesPlan() {
     }, [travel])
 
     useEffect(() => {
-        combineExpensesForSectionComponent(travel, "planned", travel.expenseFilter)
+        combineExpensesForSectionComponent(travel, "planned",
+            travelObj.adults_count === 1
+                ? 'All'
+                : travel.expenseFilter)
             .then(setSectionComponentData)
 
         function sub() {
-            combineExpensesForSectionComponent(travel, "planned", travel.expenseFilter)
+            combineExpensesForSectionComponent(travel, "planned",
+                travelObj.adults_count === 1
+                    ? 'All'
+                    : travel.expenseFilter)
                 .then(setSectionComponentData)
         }
 

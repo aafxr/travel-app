@@ -156,6 +156,11 @@ export default function TravelEdit() {
         setChanged(true)
     }
 
+    function handleToggleBoxChanged(){
+        setIsPublic(!isPublic)
+        setChanged(true)
+    }
+
     /**@param {InputEvent} e*/
     function handleTitleChange(e){
         setTitle(e.target.value)
@@ -230,7 +235,7 @@ export default function TravelEdit() {
                         <ToggleBox
                             className='block'
                             init={travelObj.isPublic === 1}
-                            onChange={setIsPublic}
+                            onChange={handleToggleBoxChanged}
                             title={"Сделать видимым для всех"}
                         />
                     </Container>

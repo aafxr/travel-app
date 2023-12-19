@@ -21,7 +21,8 @@ export default function ShowPlaces() {
     const activeDays = travel.routeBuilder.getActivityDays()
 
     useEffect(() => {
-        const places = travel.routeBuilder.getPlacesAtDay(+dayNumber || 1)
+        const days = travel.routeBuilder.getActivityDays()
+        const places = travel.routeBuilder.getPlacesAtDay(+dayNumber || days[0] || 1)
         setPlacesAtDay(places)
     }, [dayNumber, travelObj.places])
 

@@ -34,6 +34,7 @@ export default function useMap(options = {}) {
                     optionsRef.current.onPointAdd && optionsRef.current.onPointAdd(point)
                 },
                 onPointClick(point) {
+                    console.log(point)
                     optionsRef.current.onPointClick && optionsRef.current.onPointClick(point)
                 },
                 onPointMoved(point) {

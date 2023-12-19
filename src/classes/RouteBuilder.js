@@ -208,6 +208,7 @@ export default class RouteBuilder {
                 return 0
         }
 
+        const th = new TimeHelper(Activity.MORNING_TIME, Activity.EVENING_TIME)
         const activitiesList = new LinkedList(compareActivities)
         const travelStartDate = new Date(this._travel._modified.date_start)
         const places = this._travel._modified.places
@@ -264,6 +265,18 @@ export default class RouteBuilder {
             }
         }
 
+        const dt = travelStartDate - activitiesList.head.value.start
+        if(dt < - MS_IN_DAY / 2){
+            let node = activitiesList.head
+            while(node){
+                /**@type{Activity}*/
+                const activity = node.value
+                th.shiftAll([activity.start, activity.end], dt)
+                activity.setStart(activity.start)
+                activity.setEnd(activity.end)
+                node = node.next
+            }
+        }
         this.activitiesList = activitiesList
         return activitiesList
     }

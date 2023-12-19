@@ -67,9 +67,12 @@ export const UserContext = createContext(defaultUserContext)
 export default function UserContextProvider({children}) {
     const [state, setState] = useState(defaultUserContext)
 
-    const initUser = useCallback(/** @param {{id:string}} userData */async (userData) => {
+    const initUser = /** @param {{id:string}} userData */async (userData) => {
         try {
-            if (!userData) return null
+            if (!userData) {
+                setState({...state, loading: false, user: null})
+                return
+            }
             setState({...state, loading: true})
             const user = await storeDB.getOne(constants.store.USERS, userData.id)
             let newUserData = userData
@@ -83,7 +86,7 @@ export default function UserContextProvider({children}) {
             defaultHandleError(err)
             setState({...state, user: null, userLoc: null, loading: false})
         }
-    }, [])
+    }
 
     // const setUser = useCallback(/**@param{UserType | null} newUser*/(newUser) => {
     //     if (newUser) {

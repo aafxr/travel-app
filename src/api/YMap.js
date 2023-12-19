@@ -2,7 +2,7 @@
  * @typedef {IMapOptionsType} YMapOptionsType
  */
 
- /**
+/**
  * @typedef {IMapPointOptionsType} YMapPointOptionsType
  */
 
@@ -59,6 +59,22 @@ export default class YMap extends IMap {
         this._add_location_icon = options.add_location_icon || ''
         this._location_icon = options.location_icon || ''
         this._icon_size = options.icon_size || [32, 32]
+        this._mapClickListener = this._mapClickListener.bind(this)
+    }
+
+    _mapClickListener() {
+        this._map.events.add('balloonopen',  (e) =>  {
+            const closeBalloonHandler = (e) =>  {
+                console.log('close')
+                for(const placemark of this._pointsMap.values()){
+                    debugger
+                    window.placemark = placemark
+                    // placemark?.closeBalloon()
+                }
+                this._map.events.remove('click', closeBalloonHandler)
+            }
+            this._map.events.add('click',  closeBalloonHandler);
+        });
     }
 
     /**
@@ -102,12 +118,16 @@ export default class YMap extends IMap {
      * @returns {YMap}
      */
     setContainerID(container_id) {
+        if(this._map){
+            this._map.events.remove('balloonopen', this._mapClickListener)
+        }
         if (container_id) {
             this._container_id = container_id
             this._map = new window.ymaps.Map(this._container_id, {
                 center: this._center,
                 zoom: this._zoom
             }, {searchControlProvider: 'yandex#search'})
+            this._mapClickListener()
             this._initializeMap()
         }
         return this
@@ -172,9 +192,9 @@ export default class YMap extends IMap {
                 defaultHandleError(err)
             }
 
-            if (Array.isArray(coords)){
+            if (Array.isArray(coords)) {
                 resolve(coords)
-            } else{
+            } else {
                 window.ymaps.geolocation.get({
                     provider: 'yandex',
                     autoReverseGeocode: true
@@ -240,7 +260,7 @@ export default class YMap extends IMap {
             })
     }
 
-    _createIconContentLayout(){
+    _createIconContentLayout() {
         return window.ymaps.templateLayoutFactory.createClass(
             '<div style="color: #FFFFFF; background-color: #FF8E09; font-size: 9px;transform: translate(-50%, -50%)">$[properties.iconContent]</div>'
         )
@@ -268,9 +288,9 @@ export default class YMap extends IMap {
                     iconContent: idx + 1
                 }, {
                     iconLayout: 'default#imageWithContent',
-                    iconImageHref:  this._location_icon,
+                    iconImageHref: this._location_icon,
                     iconImageSize: this._icon_size,
-                    iconImageOffset: [-this._icon_size[0] * 0.5 , -this._icon_size[1]],
+                    iconImageOffset: [-this._icon_size[0] * 0.5, -this._icon_size[1]],
                     iconContentOffset: [this._icon_size[0] * 0.5, this._icon_size[1] * 0.375],
                     draggable: false,
                     cursor: 'pointer',
@@ -338,7 +358,7 @@ export default class YMap extends IMap {
     setBalloonToPoint(point_id, balloonOptions, placeMarkOptions) {
         if (this._pointsMap.has(point_id)) {
             const placeMark = this._pointsMap.get(point_id)
-            placeMark.properties.setAll(balloonOptions)
+            placeMark.properties.setAll({...placeMark.properties.getAll(), ...balloonOptions})
             if (placeMarkOptions) {
                 Object.keys(placeMarkOptions)
                     .forEach(key => placeMark.options.set(key, placeMarkOptions[key]))
@@ -353,10 +373,10 @@ export default class YMap extends IMap {
         const bounds = this._map.geoObjects.getBounds()
         bounds && this._map.setBounds(bounds)
         let zoom = Math.min(this._map.getZoom(), 15)
-        if(defaultZoomLevel && zoom > defaultZoomLevel) {
+        if (defaultZoomLevel && zoom > defaultZoomLevel) {
             zoom = defaultZoomLevel
             this._zoom = zoom
-        }else {
+        } else {
             this._zoom = zoom - 1
         }
         this._map.setZoom(this._zoom)
