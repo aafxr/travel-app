@@ -37,7 +37,7 @@ export default function ExpensesAdd({
                                         edit = false
                                     }) {
     const {expenseCode} = useParams()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     // const {defaultSection, sections} = useSelector(state => state[constants.redux.EXPENSES])
     const user = useUserSelector()
     const navigate = useNavigate()
@@ -48,7 +48,7 @@ export default function ExpensesAdd({
     const [currency, setCurrency] = useState(/**@type{CurrencyType[]}*/[])
 
     const [section_id, setSectionId] = useState(null)
-    const [personal, setPersonal] = useState(() => travel.adults_count === 1 ? true : defaultFilterValue() === 'personal')
+    const [personal, setPersonal] = useState(() => travelObj.adults_count === 1 ? true : defaultFilterValue() === 'personal')
 
     const inputNameRef = useRef()
     const inputSumRef = useRef()
@@ -143,7 +143,7 @@ export default function ExpensesAdd({
             .setCurrency(expCurr)
             .setCreatedAt(new Date().toISOString())
             .setSectionId(section_id)
-            .setPrimaryEntityID(travel.id)
+            .setPrimaryEntityID(travelObj.id)
             .save()
             .then(e => travel.addExpense(e, isPlan ? 'planned' : 'actual'))
             .catch(defaultHandleError)
@@ -214,7 +214,7 @@ export default function ExpensesAdd({
                             </div>
 
                             {
-                                travel.adults_count > 1 && (
+                                travelObj.adults_count > 1 && (
                                     <Checkbox checked={personal}
                                               onChange={e => setPersonal(e)} left>Личные</Checkbox>
                                 )

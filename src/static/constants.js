@@ -76,13 +76,21 @@ export const ENTITY = {
     PLACE: 2001,
     POINT: 2002,
     HOTEL: 2003,
-    AIRPORT: 2004
+    AIRPORT: 2004,
+    MOVING: 2005
 }
 
 export const SIGHTSEEING_DEPTH = {
     FAST: 25 * 60 * 1000,
     REGULAR: 45 * 60 * 1000,
     LONG: 1.5 * 60 * 1000
+}
+
+export const SPEED = {
+    WALK_SPEED: 5 * 1000 / 3600,
+    CAR_SPEED: 50 * 1000 / 3600,
+    PUBLIC_TRANSPORT__SPEED: 25 * 1000 / 3600,
+    PLANE_SPEED: 900 * 1000 / 3600,
 }
 
 

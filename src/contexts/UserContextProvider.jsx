@@ -37,9 +37,9 @@
  * @property {UserType | null} user
  * @property {CoordinatesType} userLoc
  * @property {boolean} loading
- * @property {(user: UserType | null) => unknown } setUser
- * @property {(newState: UserContextType) => unknown } setUserContext
  * @property {({id:string}) => unknown} initUser
+ * @property {(userData: UserType) => unknown} login
+ * @property {() => unknown} logout
  */
 
 
@@ -53,12 +53,9 @@ const defaultUserContext = {
     user: null,
     userLoc: null,
     loading: true,
-    setUser: () => {
-    },
-    initUser: () => {
-    },
-    setUserContext: () => {
-    }
+    initUser: () => {},
+    login: () => {},
+    logout: () => {},
 }
 
 /**
@@ -88,16 +85,34 @@ export default function UserContextProvider({children}) {
         }
     }, [])
 
-    const setUser = useCallback(/**@param{UserType | null} newUser*/(newUser) => {
-        if (newUser) {
-            localStorage.setItem(USER_AUTH, JSON.stringify(newUser))
-            setState({...state, user: newUser})
-        } else {
-            localStorage.setItem(USER_AUTH, JSON.stringify(null))
-            setState({...state, user: null})
+    // const setUser = useCallback(/**@param{UserType | null} newUser*/(newUser) => {
+    //     if (newUser) {
+    //         localStorage.setItem(USER_AUTH, JSON.stringify(newUser))
+    //         setState({...state, user: newUser})
+    //     } else {
+    //         localStorage.setItem(USER_AUTH, JSON.stringify(null))
+    //         setState({...state, user: null})
+    //
+    //     }
+    // }, [])
 
+    /**@param {UserType} userData*/
+    function login(userData){
+        if(userData) {
+            localStorage.setItem(USER_AUTH, JSON.stringify(userData))
+            storeDB.editElement(constants.store.USERS, userData)
+            setState(prev => ({...prev, user: userData, loading: false}))
         }
-    }, [])
+    }
+
+    function logout(){
+        if (state.user){
+            const user = state.user
+            localStorage.setItem(USER_AUTH, JSON.stringify(null))
+            storeDB.removeElement(constants.store.USERS, user.id)
+            setState(prev => ({...prev, user: null, loading: false}))
+        }
+    }
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'production'){
@@ -106,7 +121,7 @@ export default function UserContextProvider({children}) {
                 if (user) {
                     storeDB.getOne(constants.store.USERS, user.id)
                         .then(_user => {
-                            if (_user) setUser(_user)
+                            if (_user) login(_user)
                         })
                 }
 
@@ -117,11 +132,15 @@ export default function UserContextProvider({children}) {
         setState({
             ...state,
             initUser,
-            setUser,
-            setUserContext: setState
+            login,
+            logout
         })
     }, [])
 
+
+    state.login = login
+    state.logout = logout
+    state.initUser = initUser
 
     return (
         <UserContext.Provider value={state}>

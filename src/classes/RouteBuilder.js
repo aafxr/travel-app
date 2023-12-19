@@ -74,16 +74,16 @@ export default class RouteBuilder {
     updateRoute() {
         // this.placesMap.clear()
         this._travel._modified.places = this.sortByGeneticAlgorithm(this._travel._modified.places)
-            // this._travel.places.length > 6
-            // ? this.sortByGeneticAlgorithm(this._travel.places)
-            // : this.sortPlacesByDistance(this._travel.places)
+        // this._travel.places.length > 6
+        // ? this.sortByGeneticAlgorithm(this._travel.places)
+        // : this.sortPlacesByDistance(this._travel.places)
         this.createActivitiesList()
-        const updatedPlaces =  this.activitiesList
+        const updatedPlaces = this.activitiesList
             .toArray()
             .filter(ln => ln.value.isPlace())
             .map(ln => ln.value.place)
 
-        if(updatedPlaces.length === this._travel._modified.places.length) {
+        if (updatedPlaces.length === this._travel._modified.places.length) {
             this._travel._modified.places = updatedPlaces
             this._travel.change = true
         }
@@ -211,7 +211,7 @@ export default class RouteBuilder {
         const activitiesList = new LinkedList(compareActivities)
         const travelStartDate = new Date(this._travel._modified.date_start)
         const places = this._travel._modified.places
-        if (places.length === 0){
+        if (places.length === 0) {
             this.activitiesList = activitiesList
             return activitiesList
         }
@@ -268,6 +268,22 @@ export default class RouteBuilder {
         return activitiesList
     }
 
+
+    /**
+     * @param {Activity} activity
+     * return {PlaceActivity | undefined}
+     */
+    closestPrevPlace(activity) {
+        if (!this.activitiesList) return
+        let node = this.activitiesList.head
+        let prevPlace
+        while (node){
+            if(node.value.isPlace())
+                prevPlace = node.value
+            node = node.next
+        }
+        return prevPlace
+    }
 
     /**
      * @param startFrom

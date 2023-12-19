@@ -35,7 +35,7 @@
     border-radius: 30.5rem;
 }
 .chip-orange {
-    color: var(--color-text-secondary);
+    color: #fff;
     background-color: var(--color-primary);
 }
 .chip-green {

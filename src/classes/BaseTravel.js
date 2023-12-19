@@ -755,11 +755,26 @@ export default class BaseTravel extends Entity {
         if (item) {
             this._modified.places.push(item)
             this.change = true
-            console.log(this._modified.places)
-            // this.routeBuilder.updateRoute()
-            console.log(this._modified.places)
+            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
+        return this
+    }
+
+    /**
+     * @method
+     * @name BaseTravel.insertPlaceAfter
+     * @param {PlaceType} after после
+     * @param {PlaceType} insertedValue вставляемое значение
+     * @returns {BaseTravel}
+     */
+    insertPlaceAfter(after, insertedValue){
+        const idx = this._modified.places.findIndex(p => p.id === after.id)
+        if(~idx)
+            console.warn(new Error(`element ${after} not found`))
+
+        this._modified.places.splice(idx + 1, 0, insertedValue)
+        this.forceUpdate()
         return this
     }
 

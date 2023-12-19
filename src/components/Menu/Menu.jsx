@@ -22,8 +22,7 @@ import './Menu.css'
  * @category Components
  */
 export default function Menu({children, className}) {
-    const {setUser} = useContext(UserContext)
-    const user = useUserSelector()
+    const {logout, user} = useContext(UserContext)
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside(false, setIsOpen)
@@ -36,19 +35,17 @@ export default function Menu({children, className}) {
                         aFetch.post('/user/auth/remove/', {
                             [REFRESH_TOKEN]: refresh_token?.value
                         })
-                            .then(() => {
-                                setUser(null)
-                                navigate('/')
-                            })
+                            .then(() => navigate('/'))
                             .catch(defaultHandleError)
                     }
                 )
-
+            logout()
         } else {
             navigate('/login/')
         }
     }
 
+    console.log(user)
 
     return (
         <div ref={ref} className={clsx('menu', {'open': isOpen}, className)}>

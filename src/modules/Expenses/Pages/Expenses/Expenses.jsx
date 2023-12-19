@@ -20,7 +20,7 @@ import '../../css/Expenses.css'
  */
 export default function Expenses() {
     const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const {travel, travelObj} = useTravelContext()
     const [sectionComponentData, setSectionComponentData] = useState(/**@type{SectionComponentDataType[]} */[])
 
     const [noDataMessage, setNoDataMessage] = useState('')
@@ -52,7 +52,7 @@ export default function Expenses() {
     return (
         <>
             <Container className='pt-20 content column gap-1'>
-                <AddButton to={`/travel/${travel.id}/expenses/add/`}>Записать расходы</AddButton>
+                <AddButton to={`/travel/${travelObj.id}/expenses/add/`}>Записать расходы</AddButton>
                 {
                     sectionComponentData.length > 0
                         ? sectionComponentData.map(sk => (
@@ -67,7 +67,7 @@ export default function Expenses() {
                 }
             </Container>
             {
-                travel.adults_count > 1 && (
+                travelObj.adults_count > 1 && (
                     <ExpensesFilterVariant
                         className='footer'
                         value={travel.expenseFilter}

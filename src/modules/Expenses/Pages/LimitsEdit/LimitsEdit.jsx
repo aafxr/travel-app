@@ -34,7 +34,7 @@ export default function LimitsEdit({
                                        primary_entity_type
                                    }) {
     const {currency} = useSelector(state => state[constants.redux.EXPENSES])
-    const {travel} = useTravelContext()
+    const {travel,travelObj} = useTravelContext()
     const {travelCode: primary_entity_id, sectionId} = useParams()
     const {pathname} = useLocation()
 
@@ -84,8 +84,6 @@ export default function LimitsEdit({
         }
         return 0
     }, [expenses, section_id, personal, user_id, currency])
-    console.log(minLimit)
-    console.log(expenses)
 
 
     //получаем все расходы (планы) за текущую поездку
@@ -102,7 +100,7 @@ export default function LimitsEdit({
     // если в бд уже был записан лимит записываем его в limitObj (либо null)
     useEffect(() => {
         if (section_id) {
-            storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travel.id)
+            storeDB.getAllFromIndex(constants.store.LIMIT, constants.indexes.PRIMARY_ENTITY_ID, travelObj.id)
                 .then(/**@param{LimitType[]} limits*/(limits) => {
                     const limit = limits
                         .filter(l => l.section_id === section_id)
@@ -170,7 +168,7 @@ export default function LimitsEdit({
         } else {
             console.warn('need add user_id')
         }
-        navigate(-1)
+        navigate(`/travel/${primary_entity_id}/expenses/`)
     }
 
 

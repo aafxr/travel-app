@@ -76,8 +76,8 @@ export default class PlaceActivity extends Activity {
     _setPlaceTime() {
         this.place = {
             ...this.place,
-            time_start: this.start.toISOString(),
-            time_end: this.end.toISOString(),
+            time_start: this.start,
+            time_end: this.end,
         }
     }
 

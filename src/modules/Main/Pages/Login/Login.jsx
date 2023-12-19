@@ -18,7 +18,7 @@ import aFetch from "../../../../axios";
  */
 export default function Login() {
     const navigate = useNavigate()
-    const {setUser} = useContext(UserContext)
+    const {login} = useContext(UserContext)
 
     /**
      * обработчик, получает от telegram инфо о авторизации пользователя и отправляет на удаленный сервер
@@ -31,7 +31,7 @@ export default function Login() {
                 const {ok, data} = res
                 if (ok) {
                     /** после успешной отправки данные пользователя записываются в store */
-                    setUser(data)
+                    login(data)
                     sleep(500).then(() => navigate(-1))
                 }
             })

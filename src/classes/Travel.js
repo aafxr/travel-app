@@ -118,7 +118,8 @@ export default class Travel extends BaseTravel {
         const expActual = []
         let pointer = cursor
         while (pointer) {
-            if (pointer.value.primary_entity_id === this.id)
+            if (pointer.value.primary_entity_id === this._modified.id)
+                console.log(pointer.value)
                 expActual.push(pointer.value)
             pointer = await pointer.continue()
         }

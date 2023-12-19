@@ -21,7 +21,7 @@ export default function ShowAdvice({prevActivity, nextActivity}){
     if(prevActivity.isEndEqualToEvening() || prevActivity.isEndAtNight()){
         return (
             <div className='advice-container advice-container--pt2 link'>
-                <Link className='align-center gap-1' to={`/travel/${travel.id}/add/hotel/`}>
+                <Link className='align-center gap-1' to={`/travel/${travel.id}/add/hotel/?after=&{}`}>
                     Добавить отель
                     <span className="advice-icon">
                         <PlusIcon  />

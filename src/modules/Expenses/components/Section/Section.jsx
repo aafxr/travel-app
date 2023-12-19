@@ -37,7 +37,7 @@ function Section({
                      line = false,
                      planed
                  }) {
-    const {travel} = useTravelContext()
+    const {travel,travelObj} = useTravelContext()
 
     const percent = (total / limit) || 0
     const color = percent < 0.45 ? 'var(--color-success)' : percent > 0.82 ? 'var(--color-danger)' : 'var(--color-warning)'
@@ -52,7 +52,7 @@ function Section({
     return (
         <div className='expenses-list'>
             <div>
-                <Link to={`/travel/${travel.id}/expenses/limit/${section_id}/`}>
+                <Link to={`/travel/${travelObj.id}/expenses/limit/${section_id}/`}>
                     <div className='flex-between'>
                         <div className='section-title'>{title}</div>
                         <div className='section-title'>{formatter.format(total)} ₽</div>
