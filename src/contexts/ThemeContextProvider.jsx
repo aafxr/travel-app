@@ -28,7 +28,7 @@ export const ThemeContext = createContext(defaultThemeContext)
 export default function ThemeContextProvider({children}) {
     const [state, setState] = useState(defaultThemeContext)
 
-    const setTheme = useCallback(/**@param{DefaultThemeType} newTheme*/(newTheme) => {
+    const setTheme = /**@param{DefaultThemeType} newTheme*/(newTheme) => {
         const themeName = newTheme === 'default' ? defaultThemeClass() : newTheme
         localStorage.setItem(THEME, newTheme.toString())
 
@@ -40,12 +40,13 @@ export default function ThemeContextProvider({children}) {
             ...state,
             theme: themeName
         })
-    }, [])
+    }
 
     useEffect(() => {
         setState({...state, setTheme})
     }, [])
 
+    state.setTheme = setTheme
 
     return (
         <ThemeContext.Provider value={state}>

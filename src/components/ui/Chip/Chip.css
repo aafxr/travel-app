@@ -48,7 +48,7 @@
 }
 
 .chip-light-orange{
-    color: var(--color-text-secondary);
+    color: black;
     background-color: var(--color-primary-light);
 }
 .chip-light-orange img{

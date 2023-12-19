@@ -42,7 +42,7 @@ export default function ShowPlaces() {
     return (
         <>
             {
-                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll'>
+                <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll flex-0'>
                     {
                         activeDays
                             .map((i) => (
@@ -52,7 +52,7 @@ export default function ShowPlaces() {
                     }
                 </div>
             }
-            <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1'>
+            <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     placesAtDay.map(p => (
                         <LocationCard

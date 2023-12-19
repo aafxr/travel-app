@@ -45,8 +45,6 @@ export default function Menu({children, className}) {
         }
     }
 
-    console.log(user)
-
     return (
         <div ref={ref} className={clsx('menu', {'open': isOpen}, className)}>
             <div className='menu-dots' onClick={() => setIsOpen(!isOpen)}>

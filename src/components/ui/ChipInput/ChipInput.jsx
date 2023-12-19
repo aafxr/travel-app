@@ -16,6 +16,8 @@ import './ChipInput.css'
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
  * @param {boolean} pointer default = false
  * @param {string} className css class
+ * @param {string} min 00:00
+ * @param {string} max 23:59
  * @param props other props
  * @returns {JSX.Element}
  * @category UI-Components
@@ -29,6 +31,8 @@ export default function ChipInput({
                                       rounded,// boolean
                                       pointer = false,
                                       className,
+                                      min = '00:00',
+                                      max = '23:59',
                                       ...props
 
                                   }) {
@@ -90,6 +94,8 @@ export default function ChipInput({
         // inputMode='numeric'
         size={1}
         className={classes} {...props}
+        min={min}
+        max={max}
         value={formatTime('hh:mm', inputValue)}
         onChange={handleChange}
         onKeyDown={handleChange}
