@@ -9,6 +9,9 @@ import Menu from "../../../../components/Menu/Menu";
 import Travel from "../../../../classes/Travel";
 
 import './Main.css'
+import SmallCard from "../../../../components/SmallCard/SmallCard";
+import PopularSection from "../../../../components/PopularSection/PopularSection";
+import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
 
 /**
  * компонент отображает главную страницу приложения
@@ -30,15 +33,17 @@ export default function Main({
                 .save(user.id)
                 .then((t) => navigate(`/travel/${t.object.id}/map/`))
                 .catch(console.error)
-        } else{
+        } else {
             navigate('/login/')
         }
     }
 
     return (
         <div className='wrapper'>
-            <Container className='content'>
+            <Container>
                 <PageHeader title={'Главная страница'} MenuEl={<Menu/>}/>
+            </Container>
+            <Container className='content pb-20'>
                 <div className='banner'>
                     <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
                     <button
@@ -48,6 +53,9 @@ export default function Main({
                         {user ? 'Новая поездка' : 'Авторизоваться'}
                     </button>
                 </div>
+                <PopularSection/>
+                <RecommendSection/>
+
                 {/*<IconButton*/}
                 {/*    border={false}*/}
                 {/*    title='+ Добавить'*/}

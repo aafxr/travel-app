@@ -1,5 +1,5 @@
 /**
- * выбрасывает исключение если value экземляр Error
+ * выбрасывает исключение если value экземляр OtherPages
  * @param {*} value
  * @throws {Error}
  * @function

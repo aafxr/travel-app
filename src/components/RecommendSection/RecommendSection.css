@@ -1,0 +1,10 @@
+.recommend{
+    margin-top: var(--margin-base);
+}
+
+.recommend-cards-list{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.8rem;
+    margin-top: 1rem;
+}

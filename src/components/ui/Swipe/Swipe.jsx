@@ -109,6 +109,7 @@ export default function Swipe({
     }
 
     function handleRemove() {
+        setMarginLeft(0)
         onRemove && onRemove()
     }
 

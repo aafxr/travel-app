@@ -1,0 +1,7 @@
+.title-and-more{
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 140%;
+}

@@ -1,0 +1,27 @@
+.popular{
+    margin-top: var(--margin-base);
+}
+
+.popular-card-list {
+    margin: 0 calc(var(--margin-base) * -1);
+    padding-bottom: 2rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+}
+
+.popular-card-list li{
+    position: relative;
+}
+
+.popular-card-list li:first-child{
+    margin-left: var(--margin-base);
+}
+
+.popular-card-list li:last-child{
+    margin-right: var(--margin-base);
+}
+
+.popular-card-list li > *{
+    z-index: 10;
+}

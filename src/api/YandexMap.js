@@ -104,10 +104,10 @@
 //                     location,
 //                 }) {
 //         return new Promise((resolve, reject) => {
-//             if (!mapContainerID) reject(new Error('[YandexMap] mapContainerID is required'))
+//             if (!mapContainerID) reject(new OtherPages('[YandexMap] mapContainerID is required'))
 //
 //             const element = document.getElementById(mapContainerID)
-//             if (!element) reject(new Error(`[YandexMap] Can't not find element with id ${mapContainerID}`))
+//             if (!element) reject(new OtherPages(`[YandexMap] Can't not find element with id ${mapContainerID}`))
 //
 //             if (window.ymaps) resolve(window.ymaps)
 //             else {
@@ -115,7 +115,7 @@
 //                 if(script) {
 //                     script.onload = () => resolve(window.ymaps)
 //                 } else {
-//                     reject(new Error('You have to include ymaps-script in your index.html file'))
+//                     reject(new OtherPages('You have to include ymaps-script in your index.html file'))
 //                 }
 //             }
 //         })
@@ -202,14 +202,14 @@
 //      */
 //     async addMarker(coords, primary_travel_id) {
 //         if (!coords || !Array.isArray(coords) || coords.length !== 2) {
-//             throw new Error(`
+//             throw new OtherPages(`
 //             [YandexMap] не коректный формат координат
 //             получено: ${coords},
 //             ожидается массив вида: [latitude, longitude]
 //             `)
 //         }
 //
-//         if(!primary_travel_id) console.error(new Error("primary_travel_id is not define"))
+//         if(!primary_travel_id) console.error(new OtherPages("primary_travel_id is not define"))
 //
 //         const point = this.newPoint(primary_travel_id)
 //         if (this.tempPlacemark) {
@@ -243,7 +243,7 @@
 //      */
 //     _markerInfo(geoObject, id) {
 //         if (!geoObject || typeof geoObject !== 'object') {
-//             throw new Error('[YandexMap._markerInfo] geoObject should be define and typeof "object"')
+//             throw new OtherPages('[YandexMap._markerInfo] geoObject should be define and typeof "object"')
 //         }
 //
 //         const coords = geoObject.geometry.getCoordinates()
@@ -365,7 +365,7 @@
 //      * @returns {Promise<PointType | null>}
 //      */
 //     async addMarkerByAddress(address, id) {
-//         if(!id) console.error(new Error("id is not define"))
+//         if(!id) console.error(new OtherPages("id is not define"))
 //         /** если место спереданным адресом уже существует, то возвращаем информацию о нем */
 //         const existingAddress = this.placemarks.find(p => p.address === address)
 //         if (existingAddress) return existingAddress
@@ -406,7 +406,7 @@
 //      */
 //     async addMarkerByLocalCoords(coords) {
 //         if (!coords || !Array.isArray(coords) || coords.length !== 2)
-//             throw new Error(`
+//             throw new OtherPages(`
 //             [YandexMap] не коректный формат координат
 //             получено: ${coords},
 //             ожидается массив вида: [latitude, longitude]
@@ -432,7 +432,7 @@
 //      */
 //     removeMarkerByLocalCoords(coords) {
 //         if (!coords || !Array.isArray(coords) || coords.length !== 2)
-//             throw new Error(`
+//             throw new OtherPages(`
 //             [YandexMap] не коректный формат координат
 //             получено: ${coords},
 //             ожидается массив вида: [latitude, longitude]
@@ -451,14 +451,14 @@
 //      */
 //     removeMarker(options) {
 //         if (!options || typeof options !== 'object')
-//             throw new Error(`
+//             throw new OtherPages(`
 //             [YandexMap] не коректный формат данных
 //             получено: ${options},
 //             ожидается объект (возвращаемые методом "getMarkers".
 //             `)
 //         let idx
 //         if (options.placemark) {
-//             console.warn(new Error('указан placemark, лучше указать id'))
+//             console.warn(new OtherPages('указан placemark, лучше указать id'))
 //             idx = this.placemarks.findIndex(p => p.id === options.placemark)
 //         } else if (options.id){
 //             idx = this.placemarks.findIndex( p => p.id === options.id)
@@ -538,7 +538,7 @@
 //     /**
 //      * вывод сообщения об ошибке в консоль, отправка сообщения об ошибке на сервер, отображение всплывающего сообщения
 //      * @method YandexMap._handleError
-//      * @param {Error} err
+//      * @param {OtherPages} err
 //      * @param {string} message - сообщение, отображаемое во всплывающем сообщении
 //      * @private
 //      */

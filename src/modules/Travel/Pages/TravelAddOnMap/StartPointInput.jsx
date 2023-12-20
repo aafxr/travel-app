@@ -28,6 +28,7 @@ export default function StartPointInput({  map}) {
     function handleRemoveFromPoint(){
         travel.removeFromPoint()
         map.removePoint(point.id)
+        map.showPolyRoute(travelObj.places,{})
         update()
     }
 

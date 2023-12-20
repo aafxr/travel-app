@@ -16,7 +16,20 @@ import {Chip, PageHeader} from "../../../../components/ui";
 import dateRange from "../../../../utils/dateRange";
 
 import './TravelSettings.css'
+import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 
+
+const sightseeingTime = [
+    {id: 1, title: 'Низкая'},
+    {id: 2, title: 'Средняя'},
+    {id: 3, title: 'Высокая'},
+]
+
+const depth = [
+    {id: 1, title: 'Поверхностно'},
+    {id: 2, title: 'Обычно'},
+    {id: 3, title: 'Детально'},
+]
 /**
  * Страница формирования путешествия ( добавление даты / отели / встречи / участники)
  * @function
@@ -27,7 +40,7 @@ import './TravelSettings.css'
 export default function TravelSettings() {
     const navigate = useNavigate()
     const user = useUserSelector()
-    const {travel, update,travelObj} = useTravelContext()
+    const {travel, update, travelObj} = useTravelContext()
 
     const [adultCount, setAdultCount] = useState(1)
     const [childCount, setChildCount] = useState(0)
@@ -168,7 +181,10 @@ export default function TravelSettings() {
                                     <section className='travel-settings-date column gap-0.5 block'>
                                         <h4 className='title-semi-bold'>Дата поездки</h4>
                                         <DateRange
-                                            init={{start: travelObj.date_start.toISOString(), end: travelObj.date_end.toISOString()}}
+                                            init={{
+                                                start: travelObj.date_start.toISOString(),
+                                                end: travelObj.date_end.toISOString()
+                                            }}
                                             minDateValue={travel.date_start || ''}
                                             onChange={handleDateRangeChange}
                                         />
@@ -197,6 +213,24 @@ export default function TravelSettings() {
                                                 onChange={handleTeenagerChange}
                                             />
                                         </div>
+                                    </section>
+
+                                    <section className='block'>
+                                        <RadioButtonGroup
+                                            title={'Насыщенность путешествия'}
+                                            checklist={sightseeingTime}
+                                            onChange={console.log}
+                                            initValue={sightseeingTime[1]}
+                                        />
+                                    </section>
+
+                                    <section className='block'>
+                                        <RadioButtonGroup
+                                            title={'Глубина осмотра '}
+                                            checklist={depth}
+                                            onChange={console.log}
+                                            initValue={depth[1]}
+                                        />
                                     </section>
 
                                     {
@@ -232,7 +266,8 @@ export default function TravelSettings() {
                                                 {
                                                     !!travelObj.appointments && Array.isArray(travelObj.appointments) && (
                                                         travelObj.appointments.map(a => (
-                                                            <Link key={a.id} to={`/travel/${travelObj.id}/add/appointment/${a.id}/`}>
+                                                            <Link key={a.id}
+                                                                  to={`/travel/${travelObj.id}/add/appointment/${a.id}/`}>
                                                                 <div className='travel-settings-appointment'>
                                                                     <div
                                                                         className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>

@@ -2,7 +2,7 @@ import React from 'react'
 import ErrorReport from "../../controllers/ErrorReport";
 import {CRITICAL_ERROR} from "../../static/constants";
 import errorToObject from "../../utils/errorToObject";
-import ErrorPage from "../../modules/Error/ErrorPage";
+import ErrorPage from "../../modules/OtherPages/ErrorPage";
 
 /**
  * Компонет оборачивает приложение и, в случае возникновения ошибки, отображает страницу об ошибке

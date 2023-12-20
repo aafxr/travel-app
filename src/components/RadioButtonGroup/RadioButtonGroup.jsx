@@ -18,7 +18,7 @@ import Checkbox from "../ui/Checkbox/Checkbox";
  * @param {function} onChange
  * @param {'right' | 'left'} position default = 'right'
  * @param {boolean} multy - флаг, позволяющий выбирать несколько значений
- * @param {string | string[]} initValue
+ * @param {CheckListType | CheckListType[]} initValue
  * @returns {JSX.Element|null}
  * @category Components
  */

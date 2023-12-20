@@ -17,7 +17,7 @@
  *
  * @apiError UserNotFound The id of the User was not found.
  *
- * @apiErrorExample Error-Response:
+ * @apiErrorExample OtherPages-Response:
  *     HTTP/1.1 404 Not Found
  *     {
  *       "error": "UserNotFound"

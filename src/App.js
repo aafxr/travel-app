@@ -1,6 +1,6 @@
 import {Provider} from 'react-redux'
 import React, {useContext, useEffect, useState} from "react";
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
 import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
@@ -43,7 +43,7 @@ import Events from "./modules/Main/Pages/Events/Events";
 import TelegramAuth from "./modules/Main/TelegramAuth";
 import Login from "./modules/Main/Pages/Login/Login";
 import Main from "./modules/Main/Pages/Main/Main";
-import ErrorPage from "./modules/Error/ErrorPage";
+import ErrorPage from "./modules/OtherPages/ErrorPage";
 import Loader from "./components/Loader/Loader";
 import Alerts from "./components/Alerts/Alerts";
 import AuthRequired from "./hoc/AuthRequired";
@@ -54,12 +54,18 @@ import Dev from "./modules/Dev";
 
 
 function App() {
+    const navigate = useNavigate()
     const {initUser, loading: userLoading} = useContext(UserContext)
     const [state, setState] = useState()
     const ready = useDBReady()
 
     useEffect(() => {
         store.subscribe(() => setState(store.getState()))
+    }, [])
+
+    useEffect(() => {
+        if(!'indexedDB' in window)
+            navigate('/not-supported/')
     }, [])
 
     useEffect(() => {
@@ -148,6 +154,7 @@ function App() {
                     <Route path={'/login/'} element={<Login/>}/>
                 </Route>
                 <Route path={'/error/'} element={<ErrorPage/>}/>
+                <Route path={'/not-supported/'} element={<ErrorPage/>}/>
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts count={2}/>

@@ -72,7 +72,7 @@ export const travelsSlice = createSlice({
                 if (typeof payload !== 'string') {
                     console.warn(new Error('[Redux/selectTravel] экшен ожидает олучить id путешествия, но получил ' + typeof payload))
                 }
-                // console.warn(new Error('select'))
+                // console.warn(new OtherPages('select'))
                 const idx = state.travels.findIndex(t => t.id === payload)
                 if (~idx) {
                     state.travelID = state.travels[idx].id

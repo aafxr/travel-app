@@ -1,5 +1,4 @@
 import {MS_IN_DAY} from "../static/constants";
-import {de} from "date-fns/locale";
 
 /**
  * @class
@@ -105,8 +104,7 @@ export default class TimeHelper{
      * @returns {number}
      */
     getLocaleTime_ms(time){
-        const day_ms = (time.getTime() - time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY
-        return Math.abs(day_ms)
+        return (time.getTime() - time.getTimezoneOffset() * 60 * 1000) % MS_IN_DAY
     }
 
     /**
@@ -130,7 +128,7 @@ export default class TimeHelper{
      * @param {Date} time
      * @return {Date}
      */
-    toNoon(time){
+    toMidnight(time){
         time.setTime(time.getTime() - time.getTime() % MS_IN_DAY  + time.getTimezoneOffset() * 60 * 1000)
         return time
     }
@@ -139,7 +137,7 @@ export default class TimeHelper{
      * @param {Date} time
      * @return {Date}
      */
-    toNextDayNoon(time){
+    toNextDayMidnight(time){
         time.setTime(time.getTime() - time.getTime() % MS_IN_DAY  + time.getTimezoneOffset() * 60 * 1000 + MS_IN_DAY)
         return time
     }

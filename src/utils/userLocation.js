@@ -42,7 +42,7 @@ export default function userLocation() {
         //                 //     },
         //                 //     reject)
         //             } else {
-        //                 reject(new Error('User browser not support geolocation'))
+        //                 reject(new OtherPages('User browser not support geolocation'))
         //             }
         //         } catch (err) {
         //         }

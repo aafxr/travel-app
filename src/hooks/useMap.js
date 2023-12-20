@@ -14,7 +14,7 @@ export default function useMap(options = {}) {
     const {travel} = useTravelContext()
     const [map, setMap] = useState(/**@type {IMap | null} */null)
     // const [loading, setLoading] = useState(/**@type {boolean} */false)
-    // const error = useRef(/**@type {Error | null} */null)
+    // const error = useRef(/**@type {OtherPages | null} */null)
     const optionsRef = useRef(/**@type{IMapOptionType}*/null)
 
     useEffect(() => {
