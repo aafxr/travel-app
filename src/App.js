@@ -63,10 +63,10 @@ function App() {
         store.subscribe(() => setState(store.getState()))
     }, [])
 
-    useEffect(() => {
-        if(!'indexedDB' in window)
-            navigate('/not-supported/')
-    }, [])
+    // useEffect(() => {
+    //     if(!'indexedDB' in window)
+    //         navigate('/not-supported/')
+    // }, [])
 
     useEffect(() => {
         if (ready) {
@@ -154,7 +154,7 @@ function App() {
                     <Route path={'/login/'} element={<Login/>}/>
                 </Route>
                 <Route path={'/error/'} element={<ErrorPage/>}/>
-                <Route path={'/not-supported/'} element={<ErrorPage/>}/>
+                {/*<Route path={'/not-supported/'} element={<ErrorPage/>}/>*/}
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts count={2}/>

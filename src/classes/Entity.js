@@ -1,4 +1,5 @@
 import ErrorReport from "../controllers/ErrorReport";
+import EventEmitter from "./EventEmmiter";
 
 /**
  * Абстрактный класс для сущностей, содержит набор дефолтных методов
@@ -7,7 +8,7 @@ import ErrorReport from "../controllers/ErrorReport";
  * @abstract
  * @category Classes
  */
-export default class Entity {
+export default class Entity extends EventEmitter{
     _new = false
     _change = false
     _modified = {}

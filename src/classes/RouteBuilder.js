@@ -217,6 +217,20 @@ export default class RouteBuilder {
             return activitiesList
         }
 
+        let change = true
+        while(change){
+            let idx = 0
+            change = false
+            while (idx < places.length) {
+                if(places[idx+1] && places[idx+1].time_start < places[idx].time_end){
+                    th.shiftAll([places[idx+1].time_start, places[idx+1].time_end], MS_IN_DAY)
+                    change = true
+                }
+
+                idx++
+            }
+        }
+
         const placeActivityOptions = (idx, startTime) => {
             return {
                 place: places[idx],

@@ -120,6 +120,7 @@ export default class Expense extends Entity {
     setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
+            this.emit('id', [id])
             this.change = true
         }
         return this
@@ -149,6 +150,7 @@ export default class Expense extends Entity {
             if(c) {
                 this._coef = c.value
             }
+            this.emit('currency', [currency])
             this._travel?.forceUpdate()
             this.change = true
         }
@@ -175,6 +177,7 @@ export default class Expense extends Entity {
     setSectionId(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.section_id = id
+            this.emit('section_is', [id])
             this.change = true
         }
         return this
@@ -200,6 +203,7 @@ export default class Expense extends Entity {
     setUserID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.user_id = id
+            this.emit('user_id', [id])
             this.change = true
         }
         return this
@@ -225,6 +229,7 @@ export default class Expense extends Entity {
     setPersonal(flag) {
         if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.personal = flag
+            this.emit('personal', [flag])
             this.change = true
         }
         return this
@@ -250,6 +255,7 @@ export default class Expense extends Entity {
     setTitle(title) {
         if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
+            this.emit('title', [title])
             this.change = true
         }
         return this
@@ -275,6 +281,7 @@ export default class Expense extends Entity {
     setValue(value) {
         if (typeof value === 'number' && value >= 0) {
             this._modified.value = value
+            this.emit('value', [value])
             this.change = true
         }
         return this
@@ -321,6 +328,7 @@ export default class Expense extends Entity {
     setPrimaryEntityID(primary_entity_id) {
         if (typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
             this._modified.primary_entity_id = primary_entity_id
+            this.emit('primary_entity_id', [primary_entity_id])
             this.change = true
         }
         return this
@@ -346,6 +354,7 @@ export default class Expense extends Entity {
     setEntityID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.entity_id = id
+            this.emit('entity_id', [id])
             this.change = true
         }
         return this
@@ -371,6 +380,7 @@ export default class Expense extends Entity {
     setEntityType(type) {
         if (typeof type === 'string' && type.length > 0) {
             this._modified.entity_type = type
+            this.emit('entity_type', [type])
             this.change = true
         }
         return this
@@ -396,6 +406,7 @@ export default class Expense extends Entity {
     setPrimaryEntityType(type) {
         if (typeof type === 'string' && type.length > 0) {
             this._modified.primary_entity_type = type
+            this.emit('primary_entity_type',[type])
             this.change = true
         }
         return this
@@ -421,12 +432,14 @@ export default class Expense extends Entity {
     setCreatedAt(time) {
         if (time instanceof Date) {
             this._modified.created_at = time.toISOString()
+            this.emit('created_at', [time])
             this.change = true
         } else if (typeof time === 'string') {
             const date = new Date(time)
             if (!Number.isNaN(date.getTime())) {
                 this._modified.created_at = date.toISOString()
                 this.change = true
+                this.emit('created_at', [time])
             }
         }
         return this
@@ -452,11 +465,13 @@ export default class Expense extends Entity {
     setDatetime(time) {
         if (time instanceof Date) {
             this._modified.datetime = time.toISOString()
+            this.emit('datetime', [time])
             this.change = true
         } else if (typeof time === 'string') {
             const date = new Date(time)
             if (!Number.isNaN(date.getTime())) {
                 this._modified.datetime = date.toISOString()
+                this.emit('datetime', [time])
                 this.change = true
             }
         }

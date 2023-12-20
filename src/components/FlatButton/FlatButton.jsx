@@ -2,7 +2,7 @@ import clsx from "clsx";
 import {motion} from "framer-motion";
 import {useEffect, useState} from "react";
 
-import {AppointmentIcon, HotelIcon, TerrainIcon} from "../svg";
+import {AppointmentIcon, HotelIcon, RouteIcon, TerrainIcon} from "../svg";
 import BlurBackplate from "../BlurBackplate/BlurBackplate";
 import PlusButton from "../ui/PlusButton/PlusButton";
 import ShareLinkIcon from "../svg/ShareLinkIcon";
@@ -17,6 +17,7 @@ const buttons = [
     // {id: 'hotel', description: "Добавить отель", icon: <HotelIcon/>},
     {id: 'place', description: "Добавить место", icon: <TerrainIcon/>},
     // {id: 'invite', description: "Пригласить пользователя", icon: <ShareLinkIcon/>}
+    {id: 'optimize', description: "Оптимизировать маршрут", icon: <RouteIcon/>},
 ]
 
 /**
@@ -30,6 +31,7 @@ const buttons = [
  * @param onHotel callback, вызывается при нажатии на кнопку hotel
  * @param onAppointment callback, вызывается при нажатии на кнопку appointment
  * @param onPlace callback, вызывается при нажатии на кнопку place
+ * @param onOptimizeRoute callback, вызывается при нажатии на кнопку place
  * @param props other props (add to main block of component)
  * @returns {JSX.Element}
  * @category Components
@@ -42,6 +44,7 @@ export default function FlatButton({
                                        onAppointment,
                                        onChange,
                                        onPlace,
+                                       onOptimizeRoute,
                                        ...props
                                    }) {
     const [isOpen, setIsOpen] = useState(false)

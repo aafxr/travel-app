@@ -53,8 +53,8 @@ export default function Main({
                         {user ? 'Новая поездка' : 'Авторизоваться'}
                     </button>
                 </div>
-                <PopularSection/>
-                <RecommendSection/>
+                {/*<PopularSection/>*/}
+                {/*<RecommendSection/>*/}
 
                 {/*<IconButton*/}
                 {/*    border={false}*/}

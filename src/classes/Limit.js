@@ -63,6 +63,7 @@ export default class Limit extends Entity{
     setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
+            this.emit('id', [id])
             this.change = true
         }
         return this
@@ -88,6 +89,7 @@ export default class Limit extends Entity{
     setValue(value) {
         if (typeof value === 'number' && value >= 0) {
             this._modified.value = value
+            this.emit('value', [value])
             this.change = true
         }
         return this
@@ -113,6 +115,7 @@ export default class Limit extends Entity{
     setPersonal(flag) {
         if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.personal = flag
+            this.emit('personal', [flag])
             this.change = true
         }
         return this
@@ -138,6 +141,7 @@ export default class Limit extends Entity{
     setSectionID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.section_id = id
+            this.emit('section_id', [id])
             this.change = true
         }
         return this
@@ -164,6 +168,7 @@ export default class Limit extends Entity{
     setUser(user_id) {
         if (typeof user_id === 'string' && user_id.length > 0) {
             this.user_id = user_id
+            this.emit('user_id', [user_id])
         }
         return this
     }

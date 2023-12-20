@@ -149,6 +149,29 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
 
+function sortByDays(timeRanges = [], th = new TimeHelper()){
+    timeRanges = timeRanges
+        .filter(tr => !!tr.time_start || !!tr.time_end)
+        .sort((a,b) => a.time_start - b.time_start)
+
+
+    let change = true
+    while(change){
+        let idx = 0
+        change = false
+        while (idx < timeRanges.length) {
+            if(timeRanges[idx+1] && timeRanges[idx+1].time_start < timeRanges[idx].time_end){
+                th.shiftAll([timeRanges[idx+1].time_start, timeRanges[idx+1].time_end], MS_IN_DAY)
+                change = true
+            }
+
+            idx++
+        }
+    }
+    return timeRanges
+}
 
 window.Route = Route
 window.timeHelper = new TimeHelper(9 * 60*60*1000, 19*60*60*1000)
+
+window.sortByDays = sortByDays

@@ -754,8 +754,8 @@ export default class BaseTravel extends Entity {
     addPlace(item) {
         if (item) {
             this._modified.places.push(item)
+            this.emit('places', this._modified.places)
             this.change = true
-            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
         return this
@@ -774,6 +774,7 @@ export default class BaseTravel extends Entity {
             console.warn(new Error(`element ${after} not found`))
 
         this._modified.places.splice(idx + 1, 0, insertedValue)
+        this.emit('places', this._modified.places)
         this.forceUpdate()
         return this
     }
@@ -792,7 +793,7 @@ export default class BaseTravel extends Entity {
             const newArray = [...this._modified.places]
             newArray[idx] = item
             this._modified.places = newArray
-            this.routeBuilder.updateRoute()
+            this.emit('places', this._modified.places)
             this.forceUpdate()
         }
         return this
@@ -808,8 +809,8 @@ export default class BaseTravel extends Entity {
     removePlace(item) {
         if (item) {
             this._modified.places = this._modified.places.filter(i => item._id !== i._id)
+            this.emit('places', this._modified.places)
             this.change = true
-            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
         return this
@@ -825,9 +826,9 @@ export default class BaseTravel extends Entity {
     setPlaces(items) {
         if (Array.isArray(items)) {
             this._modified.places = items
+            this.emit('places', this._modified.places)
             this.change = true
             this._updateDirection()
-            this.routeBuilder.updateRoute()
             this.forceUpdate()
         }
         return this
@@ -877,6 +878,7 @@ export default class BaseTravel extends Entity {
             ~idx
                 ? this._modified.members[idx] = item
                 : this._modified.members.push(item)
+            this.emit('members', this._modified.members)
             this.change = true
         }
         return this
@@ -892,6 +894,7 @@ export default class BaseTravel extends Entity {
     setMembers(items) {
         if (Array.isArray(items)) {
             this._modified.members = [...items]
+            this.emit('members', this._modified.members)
             this.change = true
         }
         return this
@@ -907,6 +910,7 @@ export default class BaseTravel extends Entity {
     removeMember(item) {
         if (item) {
             this._modified.members = this._modified.members.filter(m => m.id !== item.id)
+            this.emit('members', this._modified.members)
             this.change = true
         }
         return this
@@ -928,6 +932,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.addHotel
      * @param {HotelType} item добавляемый отель
      * @returns {BaseTravel}
+     * @deprecated
      */
     addHotel(item) {
         if (item) {
@@ -946,6 +951,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.setHotels
      * @param {HotelType[]} items добавляемый отель
      * @returns {BaseTravel}
+     * @deprecated
      */
     setHotels(items) {
         if (Array.isArray(items)) {
@@ -961,6 +967,7 @@ export default class BaseTravel extends Entity {
      * @name BaseTravel.removeHotel
      * @param {HotelType} item удалемый отель
      * @returns {BaseTravel}
+     * @deprecated
      */
     removeHotel(item) {
         if (item) {
@@ -993,6 +1000,7 @@ export default class BaseTravel extends Entity {
             ~idx
                 ? this._modified.appointments[idx] = item
                 : this._modified.appointments.push(item)
+            this.emit('appointments', this._modified.appointments)
             this.change = true
         }
         return this
@@ -1008,6 +1016,7 @@ export default class BaseTravel extends Entity {
     setAppointments(items) {
         if (Array.isArray(items)) {
             this._modified.appointments = [...items]
+            this.emit('appointments', this._modified.appointments)
             this.change = true
         }
         return this
@@ -1023,6 +1032,7 @@ export default class BaseTravel extends Entity {
     removeAppointment(item) {
         if (item) {
             this._modified.appointments = this._modified.appointments.filter(a => a.id !== item.id)
+            this.emit('appointments', this._modified.appointments)
             this.change = true
         }
         return this
@@ -1039,6 +1049,7 @@ export default class BaseTravel extends Entity {
     setUser(user_id) {
         if (typeof user_id === 'string' && user_id.length > 0) {
             this.user_id = user_id
+            this.emit('user_id', [user_id])
         }
         return this
     }
@@ -1062,6 +1073,7 @@ export default class BaseTravel extends Entity {
         if (typeof value === 'string' && value.length) {
             localStorage.setItem(DEFAULT_TRAVEL_DETAILS_FILTER, value)
             this._travelDetailsFilter = value
+            this.emit('travelDetailsFilter', [value])
             this.forceUpdate()
         }
         return this

@@ -86,6 +86,7 @@ export default class Section extends Entity {
     setID(id) {
         if (typeof id === 'string' && id.length > 0) {
             this._modified.id = id
+            this.emit('id', [id])
             this._change = true
         }
         return this
@@ -111,6 +112,7 @@ export default class Section extends Entity {
     setTitle(title) {
         if (typeof title === 'string' && title.length > 0) {
             this._modified.title = title
+            this.emit('title', [title])
             this._change = true
         }
         return this
@@ -136,6 +138,7 @@ export default class Section extends Entity {
     setColor(color) {
         if (typeof color === 'string' && color.length > 0) {
             this._modified.color = color
+            this.emit('color', [color])
             this._change = true
         }
         return this
@@ -161,6 +164,7 @@ export default class Section extends Entity {
     setHidden(flag) {
         if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
             this._modified.hidden = flag
+            this.emit('hidden', [flag])
             this._change = true
         }
         return this
