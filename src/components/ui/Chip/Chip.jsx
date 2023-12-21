@@ -9,7 +9,7 @@ import './Chip.css'
 /**
  * компонент для отображения тегов / пометок
  * @function
- * @param {'orange' | 'green' | 'grey' | 'light-orange' } color цвет фона компонента
+ * @param {'orange' | 'green' | 'grey' | 'light-orange' | 'red' } color цвет фона компонента
  * @param {string | JSX.Element} icon - url иконки
  * @param {'left' | 'right'} iconPosition - способ расположения иконки (стиль применяется если задан icon) default = 'left'
  * @param {boolean} rounded - способ скругления краев, default - более прямоугольная форма
@@ -40,6 +40,7 @@ export default function Chip({
             ['chip-orange']: color === 'orange',
             ['chip-green']: color === 'green',
             ['chip-grey']: color === 'grey',
+            ['chip-red']: color === 'red',
             ['chip-light-orange']: color === 'light-orange',
             ['chip-icon-left']: icon && iconPosition === 'left',
             ['chip-icon-right']: icon && iconPosition === 'right',

@@ -18,6 +18,7 @@
  * @property {PlaceStoreType[]} places список посещаемых мест
  * @property {string} date_start начало путешествия
  * @property {string} date_end конец путешествия
+ * @property {number} days число дней
  * @property {number} adults_count число взрослых
  * @property {number} childs_count число детей
  * @property {string} photo фото путешествия
@@ -39,13 +40,13 @@
  * @property {Date} created_at дата создания
  * @property {Date} updated_at дата обнавления
  * @property {AppointmentType[]} appointments список встреч
- * @property {MemberType[]} members список участников
+ * @property {string[]} members список id участников
  * @property {MovementType[]} movementTypes способ перемещения
- * @property {HotelType[]} hotels список отелей
  * @property {PointType[]} waypoints список посещаемых мест
  * @property {PlaceType[]} places список посещаемых мест
  * @property {Date} date_start начало путешествия
  * @property {Date} date_end конец путешествия
+ * @property {number} days число дней
  * @property {number} adults_count число взрослых
  * @property {number} childs_count число детей
  * @property {string} photo фото путешествия

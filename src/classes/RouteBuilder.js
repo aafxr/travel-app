@@ -8,7 +8,6 @@ import {MS_IN_DAY} from "../static/constants";
 import PlaceActivity from "./PlaceActivity";
 import RoadActivity from "./RoadActivity";
 import LinkedList from "../utils/data-structures/LinkedList";
-import RestTimeActivity from "./RestTimeActivity";
 import TimeHelper from "./TimeHelper";
 import Activity from "./Activity";
 
@@ -24,7 +23,6 @@ import Activity from "./Activity";
 /**
  * @typedef RouteBuilderOptionsType
  * @property {Travel} travel
- * @property {HotelType[]} hotels
  * @property {PlaceType[]} places
  * @property {PointType[]} waypoints
  * @property {AppointmentType[]} appointments
@@ -54,9 +52,8 @@ export default class RouteBuilder {
 
     /**@param {RouteBuilderOptionsType} options*/
     constructor(options) {
-        const {hotels, places, waypoints, appointments, travel} = options
+        const { places, waypoints, appointments, travel} = options
         this._travel = travel
-        this.hotels = hotels
         this.appoinments = appointments
         this.places = places
         this.waypoints = waypoints

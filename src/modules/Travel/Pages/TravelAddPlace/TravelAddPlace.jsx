@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Chip, InputWithSuggests, PageHeader} from "../../../../components/ui";
@@ -25,11 +25,14 @@ export default function TravelAddPlace() {
     const user = useUserSelector()
     const {travel, travelObj} = useTravelContext()
     const navigate = useNavigate()
+    const [search,setSearch] = useSearchParams()
     const [placeName, setPlaceName] = useState('')
     // const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
     //     start: travel.date_start,
     //     end: travel.date_start
     // })
+
+    console.log(search.get('place'))
 
     const [place, setPlace] = useState(/**@type{PlaceType}*/null)
 
@@ -51,12 +54,20 @@ export default function TravelAddPlace() {
 
     function handleSave() {
         if (place) {
-            travel.addPlace({
-                    ...place,
-                    time_start: new Date(0), //dateRange.start,
-                    time_end: new Date(0), //dateRange.end
-                }
-            )
+            const placeSearchId = search.get('place_id')
+            const prev  = placeSearchId
+                ? travelObj.places.find(p => p.id === placeSearchId)
+                : undefined
+
+            const newPlace = {
+                ...place,
+                time_start: new Date(0), //dateRange.start,
+                time_end: new Date(0), //dateRange.end
+            }
+
+            prev
+                ? travel.insertPlaceAfter(prev, newPlace)
+                : travel.addPlace(newPlace)
 
             travel
                 .save(user.id)

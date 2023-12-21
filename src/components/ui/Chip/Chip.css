@@ -51,6 +51,11 @@
     color: black;
     background-color: var(--color-primary-light);
 }
+
+.chip-red{
+    color: #ffffff;
+    background-color: var(--color-red);
+}
 .chip-light-orange img{
     /*stroke: var(--color-text);*/
 }

@@ -73,7 +73,7 @@ export default function TravelContextProvider() {
     if (state.travel) {
         window.travel = state.travel
     }
-    if (loading) {
+    if (state.travel && loading) {
         return (
             <PageContainer center>
                 <Loader className='loader'/>

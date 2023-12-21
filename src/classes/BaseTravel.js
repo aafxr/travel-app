@@ -41,6 +41,7 @@ export default class BaseTravel extends Entity {
         isPublic: () => 0,
         photo: () => '',
         isFromPoint: () => 0,
+        days: () => 1
     }
     /***@type{TravelType} */
     _modified = {}
@@ -76,7 +77,6 @@ export default class BaseTravel extends Entity {
             travel: this,
             places: this._modified.places,
             appointments: this._modified.appointments,
-            hotels: this._modified.hotels,
             waypoints: this._modified.waypoints
         })
 
@@ -88,15 +88,9 @@ export default class BaseTravel extends Entity {
                 a.date = new Date(a.date)
                 return a
             }) : [],
-            hotels: item.hotels ? item.hotels.map(h => {
-                h.check_in = new Date(h.check_in)
-                h.check_out = new Date(h.check_out)
-                h.type = ENTITY.HOTEL
-                return h
-            }) : [],
             places: item.places ? item.places.map(p => {
-                p.time_start = new Date(p.time_start)
-                p.time_end = new Date(p.time_end)
+                p.time_start = new Date(p.time_start || 0)
+                p.time_end = new Date(p.time_end || 0)
                 p.type = ENTITY.PLACE
                 return p
             }) : [],
@@ -358,6 +352,7 @@ export default class BaseTravel extends Entity {
         if (typeof photo === 'string' && photo.length > 0) {
             this._modified.photo = photo
             this.change = true
+            this.emit('date_start', [this._modified.date_start])
         }
         return this
     }
@@ -383,7 +378,8 @@ export default class BaseTravel extends Entity {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
             this._modified.date_start = d
-            this.forceUpdate()
+            this.emit('date_start', [this._modified.date_start])
+            this.change = true
         }
         return this
     }
@@ -409,7 +405,8 @@ export default class BaseTravel extends Entity {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
             this._modified.date_end = d
-            this.forceUpdate()
+            this.emit('date_end', [this._modified.date_end])
+            this.change = true
         }
         return this
     }
@@ -434,7 +431,9 @@ export default class BaseTravel extends Entity {
     setUpdatedAt(date) {
         const d = new Date(date)
         if (!Number.isNaN(d.getTime())) {
-            this._modified.updated_at = d.toISOString()
+            this._modified.updated_at = d
+            this.emit('updated_at', [this._modified.updated_at])
+            this.change = true
         }
         return this
     }
@@ -459,7 +458,9 @@ export default class BaseTravel extends Entity {
     setCreatedAt(date) {
         const d = new Date(date)
         if (!Number.isNaN(d.getTime())) {
-            this._modified.created_at = d.toISOString()
+            this._modified.created_at = d
+            this.emit('created_at', [this._modified.created_at])
+            this.change = true
         }
         return this
     }
@@ -473,6 +474,24 @@ export default class BaseTravel extends Entity {
     // get isPublic() {
     //     return this._modified.isPublic
     // }
+
+    /**
+     * число дней на которое планируется путешествие
+     * @method
+     * @name BaseTravel.setDays
+     * @param {number} d
+     * @returns {BaseTravel}
+     */
+    setDays(d){
+        if(d > 0) {
+            this._modified.days = d
+            this._modified.date_end = new Date(this._modified.date_start + d * MS_IN_DAY)
+            this.emit('days', [d])
+            this.emit('date_end', [this._modified.date_end])
+            this.change = true
+        }
+        return this
+    }
 
     /**
      * установка поля isPublic
@@ -496,7 +515,7 @@ export default class BaseTravel extends Entity {
      * @returns {PointType | null}
      */
     get fromPoint() {
-        if (this.isFromPoint) {
+        if (this._modified.isFromPoint) {
             return this._modified.waypoints[0]
         } else {
             return null
@@ -554,10 +573,11 @@ export default class BaseTravel extends Entity {
      * @returns {BaseTravel}
      */
     removeFromPoint() {
-        if (this.isFromPoint) {
+        if (this._modified.isFromPoint) {
             this._modified.isFromPoint = 0
             this._modified.waypoints.shift()
             this.change = true
+            this.emit('waypoints', [this._modified.waypoints])
         }
         return this
     }
@@ -583,6 +603,7 @@ export default class BaseTravel extends Entity {
         if (typeof value === 'number' && value >= 0) {
             this._modified.childs_count = value
             this.change = true
+            this.emit('childs_count', [this._modified.childs_count])
         }
         return this
     }
@@ -608,6 +629,7 @@ export default class BaseTravel extends Entity {
         if (typeof value === 'number' && value >= 0) {
             this._modified.adults_count = value
             this.change = true
+            this.emit('adults_count', [this._modified.adults_count])
         }
         return this
     }
@@ -632,11 +654,12 @@ export default class BaseTravel extends Entity {
      */
     addMovementType(item) {
         if (item) {
-            const idx = this.movementTypes.findIndex(mt => mt.id === item.id)
+            const idx = this._modified.movementTypes.findIndex(mt => mt.id === item.id)
             ~idx
                 ? this._modified.movementTypes[idx] = item
                 : this._modified.movementTypes.push(item)
             this.change = true
+            this.emit('movementTypes', [this._modified.movementTypes])
         }
         return this
     }
@@ -654,6 +677,7 @@ export default class BaseTravel extends Entity {
                 .filter(item => !!item)
                 .filter(item => item.id && item.title)
             this.change = true
+            this.emit('movementTypes', [this._modified.movementTypes])
         }
         return this
     }
@@ -668,6 +692,8 @@ export default class BaseTravel extends Entity {
     removeMovementType(item) {
         if (item) {
             this._modified.movementTypes = this._modified.movementTypes.filter(mt => mt.id !== item.id)
+            this.emit('movementTypes', [this._modified.movementTypes])
+            this.change = true
         }
     }
 
@@ -698,6 +724,7 @@ export default class BaseTravel extends Entity {
             }
             this.change = true
             this._updateDirection()
+            this.emit('waypoints', [this._modified.waypoints])
         }
         return this
     }
@@ -714,6 +741,7 @@ export default class BaseTravel extends Entity {
             this._modified.waypoints = this._modified.waypoints.filter(i => item.id !== i.id)
             this.change = true
             this._updateDirection()
+            this.emit('waypoints', [this._modified.waypoints])
         }
         return this
     }
@@ -730,6 +758,7 @@ export default class BaseTravel extends Entity {
             this._modified.waypoints = items
             this.change = true
             this._updateDirection()
+            this.emit('waypoints', [this._modified.waypoints])
         }
         return this
     }
@@ -756,7 +785,7 @@ export default class BaseTravel extends Entity {
             this._modified.places.push(item)
             this.emit('places', this._modified.places)
             this.change = true
-            this.forceUpdate()
+            this.emit('places', [this._modified.places])
         }
         return this
     }
@@ -775,7 +804,6 @@ export default class BaseTravel extends Entity {
 
         this._modified.places.splice(idx + 1, 0, insertedValue)
         this.emit('places', this._modified.places)
-        this.forceUpdate()
         return this
     }
 
@@ -794,7 +822,6 @@ export default class BaseTravel extends Entity {
             newArray[idx] = item
             this._modified.places = newArray
             this.emit('places', this._modified.places)
-            this.forceUpdate()
         }
         return this
     }
@@ -811,7 +838,6 @@ export default class BaseTravel extends Entity {
             this._modified.places = this._modified.places.filter(i => item._id !== i._id)
             this.emit('places', this._modified.places)
             this.change = true
-            this.forceUpdate()
         }
         return this
     }
@@ -828,8 +854,6 @@ export default class BaseTravel extends Entity {
             this._modified.places = items
             this.emit('places', this._modified.places)
             this.change = true
-            this._updateDirection()
-            this.forceUpdate()
         }
         return this
     }
@@ -853,6 +877,7 @@ export default class BaseTravel extends Entity {
                 place = place.trim()
                 return acc ? acc + ' - ' + place : place
             }, '')
+        this.emit('direction', [this._modified.direction])
     }
 
     // /**
@@ -874,12 +899,12 @@ export default class BaseTravel extends Entity {
      */
     addMember(item) {
         if (item) {
-            const idx = this._modified.members.findIndex(m => m.id === item.id)
-            ~idx
-                ? this._modified.members[idx] = item
-                : this._modified.members.push(item)
-            this.emit('members', this._modified.members)
-            this.change = true
+            const idx = this._modified.members.findIndex(m => m === item.id)
+            if(~idx) {
+                this._modified.members.push(item.id)
+                this.emit('members', this._modified.members)
+                this.change = true
+            }
         }
         return this
     }
@@ -893,7 +918,7 @@ export default class BaseTravel extends Entity {
      */
     setMembers(items) {
         if (Array.isArray(items)) {
-            this._modified.members = [...items]
+            this._modified.members = items.map(item=> item.id)
             this.emit('members', this._modified.members)
             this.change = true
         }
@@ -909,7 +934,7 @@ export default class BaseTravel extends Entity {
      */
     removeMember(item) {
         if (item) {
-            this._modified.members = this._modified.members.filter(m => m.id !== item.id)
+            this._modified.members = this._modified.members.filter(m => m !== item.id)
             this.emit('members', this._modified.members)
             this.change = true
         }
@@ -926,56 +951,56 @@ export default class BaseTravel extends Entity {
     //     return [...this._modified.hotels]
     // }
 
-    /**
-     * добавление отеля
-     * @method
-     * @name BaseTravel.addHotel
-     * @param {HotelType} item добавляемый отель
-     * @returns {BaseTravel}
-     * @deprecated
-     */
-    addHotel(item) {
-        if (item) {
-            const idx = this._modified.hotels.findIndex(h => h.id === item.id)
-            idx
-                ? this._modified.hotels[idx] = item
-                : this._modified.hotels.push(item)
-            this.change = true
-        }
-        return this
-    }
+    // /**
+    //  * добавление отеля
+    //  * @method
+    //  * @name BaseTravel.addHotel
+    //  * @param {HotelType} item добавляемый отель
+    //  * @returns {BaseTravel}
+    //  * @deprecated
+    //  */
+    // addHotel(item) {
+    //     if (item) {
+    //         const idx = this._modified.hotels.findIndex(h => h.id === item.id)
+    //         idx
+    //             ? this._modified.hotels[idx] = item
+    //             : this._modified.hotels.push(item)
+    //         this.change = true
+    //     }
+    //     return this
+    // }
 
-    /**
-     * добавление отелей
-     * @method
-     * @name BaseTravel.setHotels
-     * @param {HotelType[]} items добавляемый отель
-     * @returns {BaseTravel}
-     * @deprecated
-     */
-    setHotels(items) {
-        if (Array.isArray(items)) {
-            this._modified.hotels = [...items]
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * удаление отелей
-     * @method
-     * @name BaseTravel.removeHotel
-     * @param {HotelType} item удалемый отель
-     * @returns {BaseTravel}
-     * @deprecated
-     */
-    removeHotel(item) {
-        if (item) {
-            this._modified.hotels = this._modified.hotels.filter(h => h.id !== item.id)
-            this.change = true
-        }
-        return this
-    }
+    // /**
+    //  * добавление отелей
+    //  * @method
+    //  * @name BaseTravel.setHotels
+    //  * @param {HotelType[]} items добавляемый отель
+    //  * @returns {BaseTravel}
+    //  * @deprecated
+    //  */
+    // setHotels(items) {
+    //     if (Array.isArray(items)) {
+    //         this._modified.hotels = [...items]
+    //         this.change = true
+    //     }
+    //     return this
+    // }
+    //
+    // /**
+    //  * удаление отелей
+    //  * @method
+    //  * @name BaseTravel.removeHotel
+    //  * @param {HotelType} item удалемый отель
+    //  * @returns {BaseTravel}
+    //  * @deprecated
+    //  */
+    // removeHotel(item) {
+    //     if (item) {
+    //         this._modified.hotels = this._modified.hotels.filter(h => h.id !== item.id)
+    //         this.change = true
+    //     }
+    //     return this
+    // }
 
     // /**
     //  * геттер возвращает список appointments
@@ -1087,9 +1112,7 @@ export default class BaseTravel extends Entity {
      * @returns {number|number}
      */
     get days() {
-        let days = (new Date(this._modified.date_end).getTime() - new Date(this._modified.date_start).getTime()) / MS_IN_DAY
-        days = Math.ceil(days)
-        return days ? days : this.routeBuilder.days
+        return this._modified.days
 
 
     }
@@ -1111,22 +1134,7 @@ export default class BaseTravel extends Entity {
      */
     async save(user_id) {
         const userOK = typeof user_id === 'string' && user_id.length > 0
-        // appointments: item.appointments ? item.appointments.map(a => {
-        //     a.date = new Date(a.date)
-        //     return a
-        // }) : [] ,
-        //     hotels: item.hotels ? item.appointments.map(h => {
-        //     h.check_in = new Date(h.check_in)
-        //     h.check_out = new Date(h.check_out)
-        //     return h
-        // }) : [] ,
-        //     places: item.places ? item.appointments.map(p => {
-        //     p.time_start = new Date(p.time_start)
-        //     p.time_end = new Date(p.time_end)
-        //     return p
-        // }) : [] ,
-        //     date_start : item.date_start ? new Date(item.date_start) : new Date(),
-        //     date_end : item.date_end ? new Date(item.date_end) : new Date(),
+
         /**@type{TravelStoreType}*/
         const travelDTO = {...this._modified}
         travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
