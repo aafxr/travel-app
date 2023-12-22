@@ -881,10 +881,10 @@ export default class BaseTravel extends Entity {
     }
 
     _sortPlaces(){
-        this._modified.places.sort((a,b) => {
-            if(!a.__day) return 1
-            else if()
-        })
+        // this._modified.places.sort((a,b) => {
+        //     if(!a.__day) return 1
+        //     else if()
+        // })
     }
 
     /**
