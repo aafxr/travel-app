@@ -106,11 +106,15 @@ export default class BaseTravel extends Entity {
             places: item.places ? item.places.map(p => ({
                 ...p,
                 time_start: new Date(p.time_start || 0),
-                time_end: new Date(p.time_end || 0),
+                time_end: new Date(p.time_end || p.time_start + this._modified.preferences.sightseeingDepth ||  0),
+                __day: p.__day || -1,
             })) : [],
             date_start: item.date_start ? new Date(item.date_start) : new Date(),
             date_end: item.date_end ? new Date(item.date_end) : new Date(),
         }
+
+        if(this._modified.places.some(p => !~p.__day))
+
 
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
@@ -524,6 +528,25 @@ export default class BaseTravel extends Entity {
     }
 
     /**
+     * установка дефолтных предпочтений путешествий (глубина осмотра, насыщенность ...)
+     * @method
+     * @name BaseTravel.setPreferences
+     * @param {Partial<TravelPreferencesType>} options
+     * @return {BaseTravel}
+     */
+    setPreferences(options){
+        if(options){
+            this._modified.preferences = {
+                ...this._modified.preferences,
+                ... options
+            }
+            this.emit('preferences', [this._modified.preferences])
+            this.change = true
+        }
+        return this
+    }
+
+    /**
      * Метод возвращает точку начала маршрута (если она установленна)
      * @get
      * @name BaseTravel.fromPoint
@@ -855,6 +878,13 @@ export default class BaseTravel extends Entity {
             this.change = true
         }
         return this
+    }
+
+    _sortPlaces(){
+        this._modified.places.sort((a,b) => {
+            if(!a.__day) return 1
+            else if()
+        })
     }
 
     /**

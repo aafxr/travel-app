@@ -45,4 +45,8 @@ export default class EventEmitter {
             this.events.get(eventName)
                 .forEach(cb => cb(...args))
     }
+
+    logEmitEventsNames(){
+        console.log([...this.events.keys()])
+    }
 }

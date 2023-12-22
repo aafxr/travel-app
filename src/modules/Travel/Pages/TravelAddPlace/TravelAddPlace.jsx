@@ -62,7 +62,7 @@ export default function TravelAddPlace() {
             const newPlace = {
                 ...place,
                 time_start: new Date(0), //dateRange.start,
-                time_end: new Date(0), //dateRange.end
+                time_end: new Date(travelObj.preferences.sightseeingDepth), //dateRange.end
             }
 
             prev
