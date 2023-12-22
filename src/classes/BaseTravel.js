@@ -1,6 +1,12 @@
 import Entity from "./Entity";
 import travel_service from "../services/travel-service";
-import {DEFAULT_TRAVEL_DETAILS_FILTER, defaultMovementTags, ENTITY, MS_IN_DAY} from "../static/constants";
+import {
+    DEFAULT_TRAVEL_DETAILS_FILTER,
+    defaultMovementTags,
+    ENTITY, EVENTS_RATE,
+    MS_IN_DAY,
+    SIGHTSEEING_DEPTH, VISIBILITY
+} from "../static/constants";
 import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 import createId from "../utils/createId";
@@ -34,14 +40,20 @@ export default class BaseTravel extends Entity {
         movementTypes: () => defaultMovementTypes,
         waypoints: () => [],
         places: () => [],
-        adults_count: () => 1,
-        childs_count: () => 0,
+        members_count: () => 1,
+        children_count: () => 0,
         date_start: () => new Date().toISOString(),
         date_end: () => new Date().toISOString(),
         isPublic: () => 0,
         photo: () => '',
         isFromPoint: () => 0,
-        days: () => 1
+        days: () => 1,
+        preferences: () => ({
+            sightseeingDepth: SIGHTSEEING_DEPTH.NORMAL,
+            eventsRate: EVENTS_RATE.NORMAL
+        }),
+        permissions: {},
+        visibility: () => VISIBILITY.COMMENTS | VISIBILITY.EXPENSES | VISIBILITY.CHECKLIST | VISIBILITY.ROUTE, 
     }
     /***@type{TravelType} */
     _modified = {}
@@ -53,6 +65,9 @@ export default class BaseTravel extends Entity {
     _travelDetailsFilter
 
     _isCurtainOpen = true
+
+    /**@type{TimeHelper}*/
+    timeHelper
 
     /**
      * @param {TravelStoreType} item
@@ -88,12 +103,11 @@ export default class BaseTravel extends Entity {
                 a.date = new Date(a.date)
                 return a
             }) : [],
-            places: item.places ? item.places.map(p => {
-                p.time_start = new Date(p.time_start || 0)
-                p.time_end = new Date(p.time_end || 0)
-                p.type = ENTITY.PLACE
-                return p
-            }) : [],
+            places: item.places ? item.places.map(p => ({
+                ...p,
+                time_start: new Date(p.time_start || 0),
+                time_end: new Date(p.time_end || 0),
+            })) : [],
             date_start: item.date_start ? new Date(item.date_start) : new Date(),
             date_end: item.date_end ? new Date(item.date_end) : new Date(),
         }
@@ -181,15 +195,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение id
-     * @get
-     * @name BaseTravel.id
-     * @returns {string}
-     */
-    // get id() {
-    //     return this._modified.id
-    // }
+    // /**
+    //  * геттер возвращает значение id
+    //  * @get
+    //  * @name BaseTravel.id
+    //  * @returns {string}
+    //  */
+    // // get id() {
+    // //     return this._modified.id
+    // // }
 
     /**
      * метод устанавливает id путешествия
@@ -206,15 +220,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение title
-     * @get
-     * @name BaseTravel.title
-     * @returns {string}
-     */
-    // get title() {
-    //     return this._modified.title
-    // }
+    // /**
+    //  * геттер возвращает значение title
+    //  * @get
+    //  * @name BaseTravel.title
+    //  * @returns {string}
+    //  */
+    // // get title() {
+    // //     return this._modified.title
+    // // }
 
     /**
      * метод устанавливает title путешествия
@@ -231,15 +245,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение direction
-     * @get
-     * @name BaseTravel.direction
-     * @returns {string}
-     */
-    // get direction() {
-    //     return this._modified.direction
-    // }
+    // /**
+    //  * геттер возвращает значение direction
+    //  * @get
+    //  * @name BaseTravel.direction
+    //  * @returns {string}
+    //  */
+    // // get direction() {
+    // //     return this._modified.direction
+    // // }
 
     /**
      * метод устанавливает direction путешествия
@@ -256,15 +270,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение description
-     * @get
-     * @name BaseTravel.description
-     * @returns {string}
-     */
-    // get description() {
-    //     return this._modified.description
-    // }
+    // /**
+    //  * геттер возвращает значение description
+    //  * @get
+    //  * @name BaseTravel.description
+    //  * @returns {string}
+    //  */
+    // // get description() {
+    // //     return this._modified.description
+    // // }
 
     /**
      * метод устанавливает description путешествия
@@ -281,15 +295,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение owner_id
-     * @get
-     * @name BaseTravel.owner_id
-     * @returns {string}
-     */
-    // get owner_id() {
-    //     return this._modified.owner_id
-    // }
+    // /**
+    //  * геттер возвращает значение owner_id
+    //  * @get
+    //  * @name BaseTravel.owner_id
+    //  * @returns {string}
+    //  */
+    // // get owner_id() {
+    // //     return this._modified.owner_id
+    // // }
 
     /**
      * метод устанавливает owner_id путешествия
@@ -306,15 +320,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение code
-     * @get
-     * @name BaseTravel.code
-     * @returns {string}
-     */
-    // get code() {
-    //     return this._modified.code
-    // }
+    // /**
+    //  * геттер возвращает значение code
+    //  * @get
+    //  * @name BaseTravel.code
+    //  * @returns {string}
+    //  */
+    // // get code() {
+    // //     return this._modified.code
+    // // }
 
     /**
      * метод устанавливает code путешествия
@@ -331,15 +345,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возвращает значение photo
-     * @get
-     * @name BaseTravel.photo
-     * @returns {string}
-     */
-    // get photo() {
-    //     return this._modified.photo
-    // }
+    // /**
+    //  * геттер возвращает значение photo
+    //  * @get
+    //  * @name BaseTravel.photo
+    //  * @returns {string}
+    //  */
+    // // get photo() {
+    // //     return this._modified.photo
+    // // }
 
     /**
      * метод устанавливает photo путешествия
@@ -357,15 +371,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возврпщпет знасение поля date_start
-     * @get
-     * @name BaseTravel.date_start
-     * @returns {string}
-     */
-    // get date_start() {
-    //     return this._modified.date_start
-    // }
+    // /**
+    //  * геттер возврпщпет знасение поля date_start
+    //  * @get
+    //  * @name BaseTravel.date_start
+    //  * @returns {string}
+    //  */
+    // // get date_start() {
+    // //     return this._modified.date_start
+    // // }
 
     /**
      * установка поля date_start
@@ -384,15 +398,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возврпщпет знасение поля date_end
-     * @get
-     * @name BaseTravel.date_end
-     * @returns {string}
-     */
-    // get date_end() {
-    //     return this._modified.date_end
-    // }
+    // /**
+    //  * геттер возврпщпет знасение поля date_end
+    //  * @get
+    //  * @name BaseTravel.date_end
+    //  * @returns {string}
+    //  */
+    // // get date_end() {
+    // //     return this._modified.date_end
+    // // }
 
     /**
      * установка поля date_end
@@ -411,15 +425,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возврпщпет знасение поля updated_at
-     * @get
-     * @name BaseTravel.updated_at
-     * @returns {string}
-     */
-    // get updated_at() {
-    //     return this._modified.updated_at
-    // }
+    // /**
+    //  * геттер возврпщпет знасение поля updated_at
+    //  * @get
+    //  * @name BaseTravel.updated_at
+    //  * @returns {string}
+    //  */
+    // // get updated_at() {
+    // //     return this._modified.updated_at
+    // // }
 
     /**
      * установка поля updated_at
@@ -438,15 +452,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возврпщпет знасение поля created_at
-     * @get
-     * @name BaseTravel.created_at
-     * @returns {string}
-     */
-    // get created_at() {
-    //     return this._modified.created_at
-    // }
+    // /**
+    //  * геттер возврпщпет знасение поля created_at
+    //  * @get
+    //  * @name BaseTravel.created_at
+    //  * @returns {string}
+    //  */
+    // // get created_at() {
+    // //     return this._modified.created_at
+    // // }
 
     /**
      * установка поля created_at
@@ -465,15 +479,15 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    /**
-     * геттер возврпщпет знасение поля isPublic
-     * @get
-     * @name BaseTravel.isPublic
-     * @returns {DBFlagType}
-     */
-    // get isPublic() {
-    //     return this._modified.isPublic
-    // }
+    // /**
+    //  * геттер возврпщпет знасение поля isPublic
+    //  * @get
+    //  * @name BaseTravel.isPublic
+    //  * @returns {DBFlagType}
+    //  */
+    // // get isPublic() {
+    // //     return this._modified.isPublic
+    // // }
 
     /**
      * число дней на которое планируется путешествие
@@ -494,15 +508,16 @@ export default class BaseTravel extends Entity {
     }
 
     /**
-     * установка поля isPublic
+     * установка установка настроек видимости маршрута
      * @method
-     * @name BaseTravel.setIsPublic
-     * @param {DBFlagType} flag флаг видимости путешествия
+     * @name BaseTravel.setVisibility
+     * @param {number} visibilitySettings флаг видимости путешествия
      * @returns {BaseTravel}
      */
-    setIsPublic(flag) {
-        if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
-            this._modified.isPublic = flag
+    setVisibility(visibilitySettings) {
+        if (typeof visibilitySettings === 'number') {
+            this._modified.visibility = visibilitySettings
+            this.emit('visibility', [this._modified.visibility])
             this.change = true
         }
         return this
@@ -512,7 +527,7 @@ export default class BaseTravel extends Entity {
      * Метод возвращает точку начала маршрута (если она установленна)
      * @get
      * @name BaseTravel.fromPoint
-     * @returns {PointType | null}
+     * @returns {WaypointType | null}
      */
     get fromPoint() {
         if (this._modified.isFromPoint) {
@@ -552,7 +567,7 @@ export default class BaseTravel extends Entity {
      * устнновка точки начала маршрута
      * @method
      * @name BaseTravel.setFromPoint
-     * @param {PointType} point флаг видимости путешествия
+     * @param {WaypointType} point флаг видимости путешествия
      * @returns {BaseTravel}
      */
     setFromPoint(point) {
@@ -583,17 +598,17 @@ export default class BaseTravel extends Entity {
     }
 
     // /**
-    //  * геттер поля childs_count
+    //  * геттер поля children_count
     //  * @method
-    //  * @name BaseTravel.childs_count
+    //  * @name BaseTravel.children_count
     //  * @returns {number}
     //  */
-    // get childs_count() {
-    //     return this._modified.childs_count
+    // get children_count() {
+    //     return this._modified.children_count
     // }
 
     /**
-     * установка поля childs_count
+     * установка поля children_count
      * @method
      * @name BaseTravel.setChildsCount
      * @param {number} value число детей в путешествии
@@ -601,25 +616,25 @@ export default class BaseTravel extends Entity {
      */
     setChildsCount(value) {
         if (typeof value === 'number' && value >= 0) {
-            this._modified.childs_count = value
+            this._modified.children_count = value
             this.change = true
-            this.emit('childs_count', [this._modified.childs_count])
+            this.emit('children_count', [this._modified.children_count])
         }
         return this
     }
 
     // /**
-    //  * геттер поля adults_count
+    //  * геттер поля members_count
     //  * @method
-    //  * @name BaseTravel.adults_count
+    //  * @name BaseTravel.members_count
     //  * @returns {number}
     //  */
-    // get adults_count() {
-    //     return this._modified.adults_count
+    // get members_count() {
+    //     return this._modified.members_count
     // }
 
     /**
-     * установка поля adults_count
+     * установка поля members_count
      * @method
      * @name BaseTravel.setAdultsCount
      * @param {number} value число взрослых в путешествии
@@ -627,9 +642,9 @@ export default class BaseTravel extends Entity {
      */
     setAdultsCount(value) {
         if (typeof value === 'number' && value >= 0) {
-            this._modified.adults_count = value
+            this._modified.members_count = value
             this.change = true
-            this.emit('adults_count', [this._modified.adults_count])
+            this.emit('members_count', [this._modified.members_count])
         }
         return this
     }
@@ -701,7 +716,7 @@ export default class BaseTravel extends Entity {
     //  * геттер возвращает список waypoints
     //  * @get
     //  * @name BaseTravel.waypoints
-    //  * @returns {PointType[]}
+    //  * @returns {WaypointType[]}
     //  */
     // get waypoints() {
     //     return this._modified.waypoints
@@ -711,7 +726,7 @@ export default class BaseTravel extends Entity {
      * добавление (или обновление существующей) точки маршрута
      * @method
      * @name BaseTravel.addWaypoint
-     * @param {PointType} item посещаемое место
+     * @param {WaypointType} item посещаемое место
      * @returns {BaseTravel}
      */
     addWaypoint(item) {
@@ -733,7 +748,7 @@ export default class BaseTravel extends Entity {
      * удаление точки маршрута
      * @method
      * @name BaseTravel.removeWaypoint
-     * @param {PointType} item посещаемое место
+     * @param {WaypointType} item посещаемое место
      * @returns {BaseTravel}
      */
     removeWaypoint(item) {
@@ -750,7 +765,7 @@ export default class BaseTravel extends Entity {
      * устонавливает посещаемые места
      * @method
      * @name BaseTravel.setWaypoints
-     * @param {PointType[]} items посещаемые места
+     * @param {WaypointType[]} items посещаемые места
      * @returns {BaseTravel}
      */
     setWaypoints(items) {
@@ -1192,6 +1207,4 @@ export default class BaseTravel extends Entity {
         }
         return this
     }
-
-
 }

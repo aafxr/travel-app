@@ -33,14 +33,14 @@ export default function ExpensesPlan() {
 
     useEffect(() => {
         combineExpensesForSectionComponent(travel, "planned",
-            travelObj.adults_count === 1
+            travelObj.members_count === 1
                 ? 'All'
                 : travel.expenseFilter)
             .then(setSectionComponentData)
 
         function sub() {
             combineExpensesForSectionComponent(travel, "planned",
-                travelObj.adults_count === 1
+                travelObj.members_count === 1
                     ? 'All'
                     : travel.expenseFilter)
                 .then(setSectionComponentData)
@@ -77,7 +77,7 @@ export default function ExpensesPlan() {
                 }
             </Container>
             {
-                travelObj.adults_count > 1 && (
+                travelObj.members_count > 1 && (
                     <ExpensesFilterVariant
                         className='footer'
                         value={travel.expenseFilter}

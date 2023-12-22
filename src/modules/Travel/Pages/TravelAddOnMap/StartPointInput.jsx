@@ -19,7 +19,7 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  */
 export default function StartPointInput({  map}) {
     const {travel, update, travelObj} = useTravelContext()
-    const [point, setPoint] = useState(/**@type{PointType} */null)
+    const [point, setPoint] = useState(/**@type{WaypointType} */null)
 
     useEffect(() => {
         if (travelObj.isFromPoint) setPoint(travelObj.waypoints[0])

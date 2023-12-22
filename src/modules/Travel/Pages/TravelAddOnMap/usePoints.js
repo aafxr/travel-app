@@ -6,13 +6,13 @@ import useTravelContext from "../../../../hooks/useTravelContext";
  * @function
  * @name usePoints
  * @param {IMap} map
- * @returns {{setPoints: (value: (((prevState: PointType[]) => PointType[]) | PointType[])) => void, points: PointType[]}}
+ * @returns {{setPoints: (value: (((prevState: WaypointType[]) => WaypointType[]) | WaypointType[])) => void, points: WaypointType[]}}
  * @category Hooks
  */
 export default function usePoints(map) {
     const {travel} = useTravelContext()
     /** список точек на карте */
-    const [points, setPoints] = useState(/**@type{PointType[]} */[])
+    const [points, setPoints] = useState(/**@type{WaypointType[]} */[])
 
     /** react ref на последний input элемент, который был в фокусе */
     const lastFocusedElement = useRef(null)
@@ -41,7 +41,7 @@ export default function usePoints(map) {
                 const id = lastFocusedElement.current.dataset.id
 
                 /** новый массив точек с обновленными данными
-                 * @type{PointType[]}
+                 * @type{WaypointType[]}
                  */
                 const newPoints = points.map(p => {
                     if (p.id === id)

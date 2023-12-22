@@ -88,7 +88,7 @@
 //      * @param {string} mapContainerID
 //      * @param {string} iconClass
 //      * @param {string} iconURL
-//      * @param {PointType[]} points
+//      * @param {WaypointType[]} points
 //      * @param {string} markerClassName
 //      * @param {string} location
 //      * @returns {Promise<YandexMap>}
@@ -145,7 +145,7 @@
 //      * метод устанавливает колбэк на обновление информации о точке
 //      * @set
 //      * @name YandexMap.onPointUpdate
-//      * @param {(p:PointType) => void} cb
+//      * @param {(p:WaypointType) => void} cb
 //      */
 //     set onPointUpdate(cb){
 //         if(typeof cb === 'function'){
@@ -157,7 +157,7 @@
 //      * метод устанавливает колбэк на клик по точке
 //      * @set
 //      * @name YandexMap.onPointClick
-//      * @param {(p:PointType) => void} cb
+//      * @param {(p:WaypointType) => void} cb
 //      */
 //     set onPointClick(cb){
 //         if(typeof cb === 'function'){
@@ -169,7 +169,7 @@
 //      * метод устанавливает колбэк на добавление новой точки
 //      * @set
 //      * @name YandexMap.onPointAdd
-//      * @param {(p:PointType) => void} cb
+//      * @param {(p:WaypointType) => void} cb
 //      */
 //     set onPointAdd(cb){
 //         if(typeof cb === 'function'){
@@ -180,7 +180,7 @@
 //     /**
 //      *
 //      * @param primary_entity_id
-//      * @returns {PointType}
+//      * @returns {WaypointType}
 //      */
 //     newPoint(primary_entity_id) {
 //         return {
@@ -198,7 +198,7 @@
 //      * @method YandexMap.addMarker
 //      * @param {Array.<number,number>} coords
 //      * @param {string} primary_travel_id
-//      * @returns {Promise<PointType>}
+//      * @returns {Promise<WaypointType>}
 //      */
 //     async addMarker(coords, primary_travel_id) {
 //         if (!coords || !Array.isArray(coords) || coords.length !== 2) {
@@ -238,7 +238,7 @@
 //      * @method YandexMap._markerInfo
 //      * @param {Object} geoObject
 //      * @param {string} id
-//      * @returns {PointType}
+//      * @returns {WaypointType}
 //      * @private
 //      */
 //     _markerInfo(geoObject, id) {
@@ -362,7 +362,7 @@
 //      * @method YandexMap.addMarkerByAddress
 //      * @param {string} address
 //      * @param {string} id
-//      * @returns {Promise<PointType | null>}
+//      * @returns {Promise<WaypointType | null>}
 //      */
 //     async addMarkerByAddress(address, id) {
 //         if(!id) console.error(new OtherPages("id is not define"))
@@ -474,7 +474,7 @@
 //     /**
 //      * метод возвращает список текущих placemarks на карте
 //      * @method YandexMap.getMarkers
-//      * @returns {PointType[]}
+//      * @returns {WaypointType[]}
 //      */
 //     getMarkers() {
 //         return [...this.placemarks]//.map(p => ({placemark: p, coords: p.geometry.getCoordinates()}))

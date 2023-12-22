@@ -8,20 +8,20 @@ import defaultPoint from "../../utils/default-values/defaultPoint";
 /**
  * @function
  * @name PointInput
- * @param {PointType} [point]
- * @param {(point: PointType) => unknown} [onRemovePoint]
- * @param {(point: PointType) => unknown} [onDragOver]
- * @param {(point: PointType) => unknown} [onDragLeave]
- * @param {(point: PointType) => unknown} [onFocus]
- * @param {(point: PointType) => unknown} [onBlur]
- * @param {(point: PointType) => unknown} [onSearchClick]
- * @param {(event: TouchEvent<HTMLDivElement>,point: PointType) => unknown} [onTouchStart]
- * @param {(event: TouchEvent<HTMLDivElement>,point: PointType) => unknown} [onTouchEnd]
- * @param {(event: TouchEvent<HTMLDivElement>,point: PointType) => unknown} [onTouchMove]
- * @param {(point: PointType) => unknown} [onDragStart]
- * @param {(point: PointType) => unknown} [onDragEnd]
- * @param {(event: InputEvent, point: PointType) => unknown} [onKeyDown]
- * @param {(event: InputEvent, point: PointType) => unknown} [onInputChange]
+ * @param {WaypointType} [point]
+ * @param {(point: WaypointType) => unknown} [onRemovePoint]
+ * @param {(point: WaypointType) => unknown} [onDragOver]
+ * @param {(point: WaypointType) => unknown} [onDragLeave]
+ * @param {(point: WaypointType) => unknown} [onFocus]
+ * @param {(point: WaypointType) => unknown} [onBlur]
+ * @param {(point: WaypointType) => unknown} [onSearchClick]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchStart]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchEnd]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchMove]
+ * @param {(point: WaypointType) => unknown} [onDragStart]
+ * @param {(point: WaypointType) => unknown} [onDragEnd]
+ * @param {(event: InputEvent, point: WaypointType) => unknown} [onKeyDown]
+ * @param {(event: InputEvent, point: WaypointType) => unknown} [onInputChange]
  * @returns {JSX.Element|null}
  * @category Components
  */
@@ -44,7 +44,7 @@ export default function PointInput(
     }
 ) {
     const {travel, travelObj} = useTravelContext()
-    const [p, setPoint] = useState(/**@type{PointType}*/ null)
+    const [p, setPoint] = useState(/**@type{WaypointType}*/ null)
     const isFocus = document.activeElement.dataset.id === p?.id
 
     useEffect(() => {
@@ -55,43 +55,43 @@ export default function PointInput(
             setPoint(defaultPoint(travelObj.id))
     }, [travel, point])
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleRemovePoint = (point) => onRemovePoint && onRemovePoint(point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleDragOver = (point) => onDragOver && onDragOver(point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleDragLeave = (point) => onDragLeave && onDragLeave(point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleFocus = (point) => onFocus && onFocus(point)
 
-    /**@type {(point:PointType) => unknown} */
+    /**@type {(point:WaypointType) => unknown} */
     const handleBlur = (point) => onBlur && onBlur(point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleSearchClick = (point) => onSearchClick && onSearchClick(point)
 
-    /**@type {(event: TouchEvent<HTMLDivElement>,point: PointType) => unknown} */
+    /**@type {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} */
     const handleTouchStart = (event, point) => onTouchStart && onTouchStart(event, point)
 
-    /**@type {(event: TouchEvent<HTMLDivElement>, point: PointType) => unknown} */
+    /**@type {(event: TouchEvent<HTMLDivElement>, point: WaypointType) => unknown} */
     const handleTouchEnd = (event, point) => onTouchEnd && onTouchEnd(event, point)
 
-    /**@type {(event: TouchEvent<HTMLDivElement>, point: PointType) => unknown} */
+    /**@type {(event: TouchEvent<HTMLDivElement>, point: WaypointType) => unknown} */
     const handleTouchMove = (event, point) => onTouchMove && onTouchMove(event, point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleDragStart = (point) => onDragStart && onDragStart(point)
 
-    /**@type {(point: PointType) => unknown} */
+    /**@type {(point: WaypointType) => unknown} */
     const handleDragEnd = (point) => onDragEnd && onDragEnd(point)
 
-    /**@type {(event: InputEvent, point: PointType) => unknown} */
+    /**@type {(event: InputEvent, point: WaypointType) => unknown} */
     const handleKeyDown = (event, point) => onKeyDown && onKeyDown(event, point)
 
-    /**@type {(event: InputEvent, point: PointType) => unknown} */
+    /**@type {(event: InputEvent, point: WaypointType) => unknown} */
     const handleInputChange = (event, point) => onInputChange && onInputChange(event, point)
 
 

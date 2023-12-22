@@ -37,7 +37,7 @@ export default function TravelAddOnMap() {
             window.map = map
             const waypoints = travelObj.waypoints
             map.clearMap()
-            waypoints.forEach(/**@param{PointType} p*/(p, idx) => map.addPoint({
+            waypoints.forEach(/**@param{WaypointType} p*/(p, idx) => map.addPoint({
                 id: p.id,
                 coords: p.coords
             }, {markerType: "exist", iconText: idx + 1}))
@@ -70,7 +70,7 @@ export default function TravelAddOnMap() {
 
     /**
      * обработка изменения списка точек ( добавлена / удалена / переставленна)
-     * @param {PointType[]} newPoints
+     * @param {WaypointType[]} newPoints
      */
     function handlePointListChange(newPoints) {
         travel.isFromPoint

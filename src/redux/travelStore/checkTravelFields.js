@@ -20,8 +20,8 @@ const defaultTravel = {
     movementTypes: () => [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}],
 
     direction: () => '',
-    childs_count: () => 0,
-    adults_count: () => 1,
+    children_count: () => 0,
+    members_count: () => 1,
     waypoints: () => [],
     isPublic: () => 0,
 }

@@ -13,7 +13,7 @@ import Activity from "./Activity";
 
 
 /**
- * @typedef SortPointType
+ * @typedef SortWaypointType
  * @property {string} id
  * @property {CoordinatesType} coords
  * @property {string} start_time date format iso string
@@ -24,7 +24,7 @@ import Activity from "./Activity";
  * @typedef RouteBuilderOptionsType
  * @property {Travel} travel
  * @property {PlaceType[]} places
- * @property {PointType[]} waypoints
+ * @property {WaypointType[]} waypoints
  * @property {AppointmentType[]} appointments
  */
 export default class RouteBuilder {
@@ -42,7 +42,7 @@ export default class RouteBuilder {
     /**@type{LinkedList}*/
     activitiesList
 
-    /**@type{Map<string, SortPointType>}*/
+    /**@type{Map<string, SortWaypointType>}*/
     placeMap = new Map()
     /**@type{Map<string, GraphVertex>}*/
     vertexMap = new Map()
@@ -337,20 +337,20 @@ export default class RouteBuilder {
      * проходящего через указанные города по одному разу
      * @method
      * @name RouteBuilder.sortPlacesByDistance
-     * @param {SortPointType[]} points список точек для сортировки
+     * @param {SortWaypointType[]} points список точек для сортировки
      * @param {number} [maxDist] радиус поиска точек
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
-     * @returns {SortPointType[]}
+     * @returns {SortWaypointType[]}
      */
     sortPlacesByDistance(points, maxDist, distanceCB = getDistanceFromTwoPoints) {
         if (points.length < 2) return points
 
         const pointGroupes = this._groupPoints(points, maxDist)
-        /**@type{Map<string, SortPointType[]>}*/
+        /**@type{Map<string, SortWaypointType[]>}*/
         const groupesMap = new Map()
-        /**@type{SortPointType[]}*/
+        /**@type{SortWaypointType[]}*/
         const majorPointsToSort = []
-        /**@type{SortPointType[]}*/
+        /**@type{SortWaypointType[]}*/
         const resulPointsArr = []
 
         pointGroupes.forEach(gp => {
@@ -369,7 +369,7 @@ export default class RouteBuilder {
 
             const graph = this._prepareData(temp, distanceCB)
 
-            /**@type{SortPointType[]}*/
+            /**@type{SortWaypointType[]}*/
             temp = bfTravellingSalesman(graph)
                 .map(/**@param {GraphVertex} gv*/gv => temp.find(tp => tp.id === gv.getKey()))
 
@@ -387,7 +387,7 @@ export default class RouteBuilder {
     }
 
     /**
-     * @param {SortPointType[]} points
+     * @param {SortWaypointType[]} points
      * @param {number} [mutation]  0 - 100, вероятность мутации
      * @param {number} [cycles] количество циклов
      * @returns {*[]}
@@ -549,7 +549,7 @@ export default class RouteBuilder {
     }
 
     /**
-     * @param {SortPointType[]} points
+     * @param {SortWaypointType[]} points
      * @param {(point_1: CoordinatesType, point_2: CoordinatesType) => number} [distanceCB] callback, возвращает число, которое будет использоваться как вес ребра
      * @return {Graph}
      * @private
@@ -600,14 +600,14 @@ export default class RouteBuilder {
 
     /**
      *
-     * @param {SortPointType[]} points
+     * @param {SortWaypointType[]} points
      * @param {number} [maxDist] default = 30
-     * @return {SortPointType[][]}
+     * @return {SortWaypointType[][]}
      * @private
      */
     _groupPoints(points, maxDist = 30) {
         if (!points || !points.length) return []
-        /**@type{Map<SortPointType, SortPointType[]>}*/
+        /**@type{Map<SortWaypointType, SortWaypointType[]>}*/
         const groups = new Map()
 
         for (const point of points) {

@@ -1,7 +1,7 @@
 /**
  * @description предпологаемое описание точки на карте
- * @typedef {Object} PointStoreType
- * @name PointStoreType
+ * @typedef {Object} WaypointStoreType
+ * @name WaypointStoreType
  * @property {string} id идентификатор точки
  * @property {[number, number]} coords координаты
  * @property {string} kind тип точки (?)
@@ -12,8 +12,8 @@
 
 /**
  * @description предпологаемое описание точки на карте
- * @typedef {Object} PointType
- * @name PointType
+ * @typedef {Object} WaypointType
+ * @name WaypointType
  * @property {string} id идентификатор точки
  * @property {2002} type
  * @property {[number, number]} coords координаты

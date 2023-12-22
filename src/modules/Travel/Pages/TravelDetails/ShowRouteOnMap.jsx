@@ -23,7 +23,7 @@ export default function ShowRouteOnMap() {
         if (map) {
             const route = travelObj.places
 
-            // /**@type{MapPointType[]}*/
+            // /**@type{MapWaypointType[]}*/
             // const routePointForMap = route
             //     .map(({id, coords}) => ({id, coords}))
             map

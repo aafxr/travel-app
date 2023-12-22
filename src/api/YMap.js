@@ -25,7 +25,7 @@ import defaultHandleError from "../utils/error-handlers/defaultHandleError";
  * @param {YMapOptionsType} options
  */
 export default class YMap extends IMap {
-    /**@type{MapPointType[]}*/
+    /**@type{MapWaypointType[]}*/
     points = []
     _map
     /**@type{number}*/
@@ -136,7 +136,7 @@ export default class YMap extends IMap {
     /**
      * @method
      * @name YMap.newPoint
-     * @returns {MapPointType}
+     * @returns {MapWaypointType}
      */
     newPoint() {
         return defaultPoint(this._travel._modified.id)
@@ -213,7 +213,7 @@ export default class YMap extends IMap {
     /**
      * @method
      * @name YMap.addPoint
-     * @param {MapPointType} point
+     * @param {MapWaypointType} point
      * @param {YMapPointOptionsType} [options]
      * @return {YMap}
      */
@@ -266,7 +266,7 @@ export default class YMap extends IMap {
         )
     }
 
-    /** @typedef {MapPointType & Partial<BalloonOptionsType>} MapPointWithOptionsType*/
+    /** @typedef {MapWaypointType & Partial<BalloonOptionsType>} MapPointWithOptionsType*/
     /**
      * @method
      * @name YMap.showRoute
@@ -410,7 +410,7 @@ export default class YMap extends IMap {
                             if (d < dist)
                                 closest = pointsProperties[i]
                         }
-                        /**@type{PointType}*/
+                        /**@type{WaypointType}*/
                         const point = {
                             address: closest.metaDataProperty.GeocoderMetaData.Address.formatted,
                             coords: closest.boundedBy[0],
@@ -431,7 +431,7 @@ export default class YMap extends IMap {
     /**
      * @methos
      * @name YMap.buildDetailRoute
-     * @param {MapPointType[]} points
+     * @param {MapWaypointType[]} points
      * @returns {Promise<RouteDetailType>}
      */
     buildDetailRoute(points) {
@@ -489,7 +489,7 @@ export default class YMap extends IMap {
     }
 
     /**
-     * @returns {PointType[]}
+     * @returns {WaypointType[]}
      */
     getMarkers() {
         return this._travel._modified.waypoints || []

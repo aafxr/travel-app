@@ -81,10 +81,27 @@ export const ENTITY = {
 }
 
 export const SIGHTSEEING_DEPTH = {
-    FAST: 25 * 60 * 1000,
-    REGULAR: 45 * 60 * 1000,
-    LONG: 1.5 * 60 * 1000
+    FAST: 1500000, // 25 * 60 * 1000,
+    NORMAL: 2700000, //45 * 60 * 1000,
+    LONG: 5400000, //1.5 * 60 * 60 * 1000
 }
+
+export const EVENTS_RATE = {
+    QUICK:  0b0,
+    NORMAL: 0b1,
+    LONG:   0b10,
+}
+
+/**@description настройки видимости деталей путешествия */
+export const VISIBILITY = {
+    PUBLIC:     0b1,
+    ROUTE:      0b10,
+    EXPENSES:   0b100,
+    CHECKLIST:  0b1000,
+    COMMENTS:   0b1_0000
+}
+
+
 
 export const SPEED = {
     WALK_SPEED: 5 * 1000 / 3600,

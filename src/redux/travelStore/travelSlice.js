@@ -31,8 +31,8 @@ export const defaultTravel = {
     appointments: () => [],
     movementTypes: () => [],
     waypoints: () => [],
-    adults_count: () =>  0,
-    childs_count: () =>  0,
+    members_count: () =>  0,
+    children_count: () =>  0,
     direction: () => '',
     isPublic: () => true,
     places: () => [],
@@ -209,7 +209,7 @@ export const travelsSlice = createSlice({
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
                     const adultCount = travel.members.filter(m => !m.isChild)
-                    if (adultCount < payload) travel.adults_count = payload
+                    if (adultCount < payload) travel.members_count = payload
                 }
 
             },
@@ -229,7 +229,7 @@ export const travelsSlice = createSlice({
                 const travel = state.travels.find(t => t.id === state.travelID)
                 if (travel) {
                     const childsCount = travel.members.filter(m => m.isChild)
-                    if (childsCount < payload) travel.childs_count = payload
+                    if (childsCount < payload) travel.children_count = payload
                 }
             },
 
@@ -559,7 +559,7 @@ export const travelsSlice = createSlice({
              * @param {TravelState} state
              * @param {boolean} payload
              */
-            setPublic(state, {payload}){
+            setVisibility(state, {payload}){
                 if (!state.travelID) {
                     console.warn(new Error('Обращение к travelID до инициализации'))
                     return
@@ -595,8 +595,8 @@ function updateMembersCount(state){
     let child = 0
     const travel = state.travels.find(t => t.id === state.travelID)
     travel.members.forEach(m => m.isChild ? child++ : adult++)
-    if(!travel.adults_count || travel.adults_count < adult) travel.adults_count = adult
-    if(!travel.childs_count || travel.childs_count < child) travel.childs_count = adult
+    if(!travel.members_count || travel.members_count < adult) travel.members_count = adult
+    if(!travel.children_count || travel.children_count < child) travel.children_count = adult
 }
 
 export const travelActions = travelsSlice.actions

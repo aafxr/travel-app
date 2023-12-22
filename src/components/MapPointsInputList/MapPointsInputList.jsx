@@ -18,13 +18,13 @@ import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
  */
 /**
  * @typedef {Function} PointsListChangeFunction
- * @param {PointType[]} points
+ * @param {WaypointType[]} points
  */
 
 /**
  * Компонент отображает список HTMLInputElement-ов (полей ввода желаемых мест для посещения)
  * @param {IMap} map интерфейс для взаимодействия с api карты
- * @param {PointType[]} pointsList список предпологаемых мест для посещения
+ * @param {WaypointType[]} pointsList список предпологаемых мест для посещения
  * @param {PointsListChangeFunction} onListChange обработчик на изменение порядка или введенной локации
  * @returns {JSX.Element}
  * @category Components
@@ -34,7 +34,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     // const user = useUserSelector()
     const {travel, travelObj} = useTravelContext()
     // const travelState = useTravelStateSelector()
-    const [points, setPoints] = useState(/**@type{PointType[]} */ [])
+    const [points, setPoints] = useState(/**@type{WaypointType[]} */ [])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
     const drag = useRef({})
@@ -66,7 +66,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      *
-     * @param {PointType} item
+     * @param {WaypointType} item
      * @returns {Promise<void>}
      */
     async function updatePointData(item) {
@@ -115,7 +115,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
     }
 
     /**
-     * @param {PointType} item - точка, которую перетаскивали
+     * @param {WaypointType} item - точка, которую перетаскивали
      */
     function handleDragEnd(item) {
         /**
@@ -130,7 +130,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
-            /**@type{PointType[]}*/
+            /**@type{WaypointType[]}*/
             const newPoints = points.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
                 if (i === overIDX) return arr[draggingIDX]
@@ -205,7 +205,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
 
     /***
      * удаление точки с карты
-     * @param {PointType} item
+     * @param {WaypointType} item
      */
     function handleRemovePoint(item) {
         if (map) {

@@ -1,10 +1,10 @@
 /**
  * @typedef IMapOptionsType
  * @property {Travel} travel
- * @property {MapPointType[]} points
- * @property {(point: MapPointType) => unknown} onPointMoved
- * @property {(point: MapPointType) => unknown} onPointClick
- * @property {(point: MapPointType) => unknown} onPointAdd
+ * @property {MapWaypointType[]} points
+ * @property {(point: MapWaypointType) => unknown} onPointMoved
+ * @property {(point: MapWaypointType) => unknown} onPointClick
+ * @property {(point: MapWaypointType) => unknown} onPointAdd
  * @property {number} zoom
  * @property {CoordinatesType} center
  * @property {string} container_id
@@ -38,7 +38,7 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.newPoint
-     * @returns{MapPointType}
+     * @returns{MapWaypointType}
      */
     newPoint(){
     }
@@ -76,7 +76,7 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.addPoint
-     * @param {MapPointType} point
+     * @param {MapWaypointType} point
      * @param {IMapPointOptionsType} [options]
      * @return {IMap}
      */
@@ -88,8 +88,8 @@ export default class IMap {
     //  * @method IMap.addMarkerByAddress
     //  * @param {string} address
     //  * @param {string} id
-    //  * @returns {MapPointType | null}
-    //  * @returns {Promise<MapPointType | null>}
+    //  * @returns {MapWaypointType | null}
+    //  * @returns {Promise<MapWaypointType | null>}
     //  */
     // addMarkerByAddress(address, id){
     //     console.warn('[IMap] addMarkerByAddress not override')
@@ -118,7 +118,7 @@ export default class IMap {
     /**
      * @abstract
      * @name IMap.showRoute
-     * @param {MapPointType[]} points
+     * @param {MapWaypointType[]} points
      * @param {IMapOptionsType} options
      * @returns {IMap}
      */
@@ -195,7 +195,7 @@ export default class IMap {
      * @return {IMap}
      */
     showPoint(coords, zoomLevel){
-        console.warn('[IMap] focusOnMapPointType not override')
+        console.warn('[IMap] focusOnMapWaypointType not override')
     }
 
     // построить маршрут
@@ -265,7 +265,7 @@ export default class IMap {
     /**
      * @method
      * @name IMap.showPolyline
-     * @param {MapPointType[]} polyline
+     * @param {MapWaypointType[]} polyline
      * @param {BalloonOptionsType} options
      * @return {IMap}
      * @deprecated
@@ -285,14 +285,14 @@ export default class IMap {
      * @abstract
      * @name IMap.getClosestAddressTo
      * @param {CoordinatesType} coords
-     * @return {Promise<Omit<PointType, 'id'>>}
+     * @return {Promise<Omit<WaypointType, 'id'>>}
      */
     getClosestAddressTo(coords){}
 
     /**
      * @methos
      * @name IMap.buildDetailRoute
-     * @param {MapPointType[]} points
+     * @param {MapWaypointType[]} points
      * @returns {Promise<RouteDetailSliceType>}
      */
     buildDetailRoute(points){}

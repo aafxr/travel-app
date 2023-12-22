@@ -49,8 +49,8 @@ export default function TravelSettings() {
     const [range, setRange] = useState(/***@type{DateRangeType | null}*/null)
 
     useEffect(() => {
-        setAdultCount(travelObj.adults_count)
-        setChildCount(travelObj.childs_count)
+        setAdultCount(travelObj.members_count)
+        setChildCount(travelObj.children_count)
         const tags = defaultMovementTags
             .filter(item => !!~travelObj.movementTypes.findIndex(m => m.id === item.id))
         setMovement(tags)
@@ -132,7 +132,7 @@ export default function TravelSettings() {
         } else if (!travelObj.movementTypes.length) {
             pushAlertMessage({type: 'warning', message: 'Укажите способ перемещения'})
             return
-        } else if (!travelObj.adults_count && !!travelObj.childs_count) {
+        } else if (!travelObj.members_count && !!travelObj.children_count) {
             pushAlertMessage({type: 'warning', message: 'Укажите количество участников путешествия'})
             return
         } else if (!user) {
@@ -200,7 +200,7 @@ export default function TravelSettings() {
                                         <div className='flex-between'>
                                             <span>Взрослые</span>
                                             <Counter
-                                                initialValue={travelObj.adults_count}
+                                                initialValue={travelObj.members_count}
                                                 min={travelObj.members.filter(m => !m.isChild).length || 1}
                                                 onChange={handleAdultChange}
                                             />
@@ -208,7 +208,7 @@ export default function TravelSettings() {
                                         <div className='flex-between'>
                                             <span>Дети</span>
                                             <Counter
-                                                initialValue={travelObj.childs_count}
+                                                initialValue={travelObj.children_count}
                                                 min={travelObj.members.filter(m => m.isChild).length}
                                                 onChange={handleTeenagerChange}
                                             />

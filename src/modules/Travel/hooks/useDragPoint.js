@@ -1,17 +1,17 @@
 import {useEffect, useState} from "react";
 
 /**
- * @typedef {Object} DragPointType
- * @property {PointType} dragPoint
+ * @typedef {Object} DragWaypointType
+ * @property {WaypointType} dragPoint
  * @property {number} index - индекс, по которому dragPoint находится в IMap карте
  */
 
 /**
  * хук возвращает последнюю перемещенную точку
- * @returns {DragPointType | null}
+ * @returns {DragWaypointType | null}
  */
 export default function useDragPoint(){
-    const [point, setPoint] = useState(/**@type{DragPointType | null} */ null)
+    const [point, setPoint] = useState(/**@type{DragWaypointType | null} */ null)
 
     //обработка события drag-point =====================================================================================
     useEffect(() => {
@@ -22,8 +22,8 @@ export default function useDragPoint(){
         const handleDragPoint = (e) => {
             /**
              * информация о точке с которой взаимодействовали и ее индекс в массиве точек возвращаемы интерфейсом IMap
-             * @typedef {Object} DragPointType
-             * @property {PointType} point
+             * @typedef {Object} DragWaypointType
+             * @property {WaypointType} point
              * @property {number} index
              */
             const {point: draggedPoint, index} = e.detail

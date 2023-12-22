@@ -48,7 +48,7 @@ export default function ExpensesAdd({
     const [currency, setCurrency] = useState(/**@type{CurrencyType[]}*/[])
 
     const [section_id, setSectionId] = useState(null)
-    const [personal, setPersonal] = useState(() => travelObj.adults_count === 1 ? true : defaultFilterValue() === 'personal')
+    const [personal, setPersonal] = useState(() => travelObj.members_count === 1 ? true : defaultFilterValue() === 'personal')
 
     const inputNameRef = useRef()
     const inputSumRef = useRef()
@@ -214,7 +214,7 @@ export default function ExpensesAdd({
                             </div>
 
                             {
-                                travelObj.adults_count > 1 && (
+                                travelObj.members_count > 1 && (
                                     <Checkbox checked={personal}
                                               onChange={e => setPersonal(e)} left>Личные</Checkbox>
                                 )

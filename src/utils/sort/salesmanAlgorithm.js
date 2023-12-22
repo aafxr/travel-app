@@ -1,5 +1,5 @@
 /**
- * @typedef SalesmanPointType
+ * @typedef SalesmanWaypointType
  * @property {CoordinatesType} location
  * @property {string} id
  */
@@ -8,8 +8,8 @@
 /**
  * @function
  * @name salesmanAlgorithm
- * @param {SalesmanPointType[]} points
- * @param {(point_1: SalesmanPointType, point_2: SalesmanPointType) => number} cb колбэк, возвращает растояние между переданными точками
+ * @param {SalesmanWaypointType[]} points
+ * @param {(point_1: SalesmanWaypointType, point_2: SalesmanWaypointType) => number} cb колбэк, возвращает растояние между переданными точками
  * @category Utils
  */
 export default function salesmanAlgorithm(points, cb) {

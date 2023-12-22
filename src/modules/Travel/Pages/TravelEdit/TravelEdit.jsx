@@ -38,7 +38,7 @@ export default function TravelEdit() {
     const [description, setDescription] = useState('')
     /*** способы передвижения */
     const [tags, setTags] = useState(/**@type{MovementType[]}*/[])
-    const [isPublic, setIsPublic] = useState(false)
+    const [isPublic, setVisibility] = useState(false)
     const [changed, setChanged] = useState(false)
 
     // const currentDay = new Date().toISOString().split('T').shift()
@@ -65,7 +65,7 @@ export default function TravelEdit() {
                 setDaysCount(days || 1)
             }
         } else setDaysCount(undefined)
-        setIsPublic(travelObj.isPublic === 1)
+        setVisibility(travelObj.isPublic === 1)
         //... доьавить остальные поля в будущем
     }, [])
 
@@ -79,7 +79,7 @@ export default function TravelEdit() {
                 .setDateEnd(range.end)
                 .setDescription(description)
                 .setMovementTypes(newTags)
-                .setIsPublic(isPublic ? 1 : 0)
+                .setVisibility(isPublic ? 1 : 0)
                 .routeBuilder.updateRoute()
 
             travel
@@ -157,7 +157,7 @@ export default function TravelEdit() {
     }
 
     function handleToggleBoxChanged(){
-        setIsPublic(!isPublic)
+        setVisibility(!isPublic)
         setChanged(true)
     }
 

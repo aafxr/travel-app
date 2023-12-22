@@ -30,7 +30,7 @@ export default function TravelAddWaypoint() {
     const [map, setMap] = useState(/** @type {IMap | null} */null)
 
     /** список точек на карте */
-    const [point, setPoint] = useState(/**@type{PointType} */ null)
+    const [point, setPoint] = useState(/**@type{WaypointType} */ null)
 
     const dragPoint = useDragPoint()
 

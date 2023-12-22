@@ -13,9 +13,9 @@ import MapControls from "../MapControls/MapControls";
  * @param {Travel} travel
  * @param {[number,number]} userLocation
  * @param children
- * @param {(p: PointType) => void} onPointUpdate Callback вызывается при обновлении информации о точке
- * @param {(p: PointType) => void} onPointClick Callback вызывается при клике на точке
- * @param {(p: PointType) => void} onPointAdd Callback вызывается при доьавлении новой точки
+ * @param {(p: WaypointType) => void} onPointUpdate Callback вызывается при обновлении информации о точке
+ * @param {(p: WaypointType) => void} onPointClick Callback вызывается при клике на точке
+ * @param {(p: WaypointType) => void} onPointAdd Callback вызывается при доьавлении новой точки
  * @param {(map:IMap) => unknown} onMapReadyCB
  * @returns {JSX.Element}
  * @category Components

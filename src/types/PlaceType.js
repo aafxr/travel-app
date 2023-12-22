@@ -3,6 +3,7 @@
  * @typedef {Object} PlaceStoreType
  * @property {string} _id
  * @property {string} id
+ * @property {number} __day
  * @property {string} name
  * @property {string[]} photos
  * @property {string} formatted_address
@@ -19,7 +20,7 @@
  * @typedef {Object} PlaceType
  * @property {string} _id
  * @property {string} id
- * @property {2001} type
+ * @property {number} __day
  * @property {string} name
  * @property {string[]} photos
  * @property {string} formatted_address

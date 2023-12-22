@@ -1,12 +1,12 @@
 import createId from "../createId";
 
 /**
- * Функция возвращает PointType с дефолтными полями
+ * Функция возвращает WaypointType с дефолтными полями
  * @function
  * @name defaultPoint
  * @param {string} primary_entity_id
- * @param {Partial<PointType>} options
- * @returns {PointType}
+ * @param {Partial<WaypointType>} options
+ * @returns {WaypointType}
  */
 export default function defaultPoint(primary_entity_id, options= {}){
     return {
