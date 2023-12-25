@@ -16,6 +16,7 @@ import {ENTITY, MS_IN_DAY} from "../../../../static/constants";
 import {Tab} from "../../../../components/ui";
 import {PlusIcon} from "../../../../components/svg";
 import {UserContext} from "../../../../contexts/UserContextProvider";
+import durationToSting from "../../../../utils/date-utils/durationToString";
 
 export default function ShowRouteByDays() {
     const {user} = useContext(UserContext)
@@ -31,6 +32,8 @@ export default function ShowRouteByDays() {
 
     const timeRange_start = travelObj.date_start.getTime() + MS_IN_DAY * (+dayNumber - 1)
     const timeRange_end = timeRange_start + MS_IN_DAY
+
+
 
     useEffect(() => {
         function updatePlane(__route = []) {
