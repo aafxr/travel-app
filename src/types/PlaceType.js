@@ -30,5 +30,6 @@
  * @property {Date} [time_start]
  * @property {Date} [time_end]
  * @property {DBFlagType} visited
+ * @property {boolean} __expire
  * @category Types
  */

@@ -39,7 +39,7 @@ export default function TravelDetails() {
     const {travel, update, travelObj} = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
-    const travelDurationLabel = dateRange(travelObj.date_start.toISO, travelObj.date_end)
+    const travelDurationLabel = dateRange(travelObj.date_start, travelObj.date_end)
 
     const menu = (
         <Menu>
@@ -64,13 +64,14 @@ export default function TravelDetails() {
     }
 
     useEffect(() => {
-        const days = travel.routeBuilder.getActivityDays()
-        if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travelObj.id}/${days[0] || 1}/`)
+        // const days = travel.routeBuilder.getActivityDays()
+        if (!dayNumber ) navigate(`/travel/${travelObj.id}/1/`)
+        // if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travelObj.id}/${days[0] || 1}/`)
 
-        travel
-            .routeBuilder
-            .createActivitiesList()
-        setCurtainOpen(travel.isCurtainOpen)
+        // travel
+        //     .routeBuilder
+        //     .createActivitiesList()
+        // setCurtainOpen(travel.isCurtainOpen)
     }, [travel])
 
     function handleCurtain(val = true) {
@@ -146,7 +147,7 @@ export default function TravelDetails() {
             </Container>
 
             <Curtain
-                direction={travel.routeBuilder.getPlacesAtDay(+dayNumber)[0]?.name}
+                direction={travelDurationLabel/*travel.routeBuilder.getPlacesAtDay(+dayNumber)[0]?.name*/}
                 onChange={handleCurtain}
                 defaultOffsetPercents={curtainOpen ? 0 : 1}
 

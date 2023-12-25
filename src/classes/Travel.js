@@ -110,7 +110,7 @@ export default class Travel extends BaseTravel {
         Section.defaultSections()
             .then(sl => this._defaultSections = sl)
 
-        this.routeBuilder.updateRoute()
+        // this.routeBuilder.updateRoute()
         this.forceUpdate()
     }
 

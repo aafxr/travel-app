@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Chip, InputWithSuggests, PageHeader} from "../../../../components/ui";
@@ -9,7 +9,7 @@ import DateRange from "../../../../components/DateRange/DateRange";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
-import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../../../static/constants";
 import YMap from "../../../../api/YMap";
 import createId from "../../../../utils/createId";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -25,6 +25,7 @@ export default function TravelAddPlace() {
     const user = useUserSelector()
     const {travel, travelObj} = useTravelContext()
     const navigate = useNavigate()
+    const {dayNumber} = useParams()
     const [search,setSearch] = useSearchParams()
     const [placeName, setPlaceName] = useState('')
     // const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{
@@ -32,7 +33,6 @@ export default function TravelAddPlace() {
     //     end: travel.date_start
     // })
 
-    console.log(search.get('place'))
 
     const [place, setPlace] = useState(/**@type{PlaceType}*/null)
 
@@ -59,10 +59,11 @@ export default function TravelAddPlace() {
                 ? travelObj.places.find(p => p.id === placeSearchId)
                 : undefined
 
+            const start_time = travelObj.date_start.getTime() + MS_IN_DAY * (+dayNumber || 0)
             const newPlace = {
                 ...place,
-                time_start: new Date(0), //dateRange.start,
-                time_end: new Date(travelObj.preferences.sightseeingDepth), //dateRange.end
+                time_start: new Date(start_time), //dateRange.start,
+                time_end: new Date(start_time + travelObj.preferences.sightseeingDepth), //dateRange.end
             }
 
             prev

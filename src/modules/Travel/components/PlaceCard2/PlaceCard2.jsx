@@ -104,6 +104,7 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
                                     ? <Chip
                                         onTouchStart={(e) => setStartChange(true)}
                                         className='place-date-start'
+                                        color={place.__expire ? "red" : "orange"}
                                     > {start} </Chip>
                                     : <ChipInput
                                         className='place-date-start'
@@ -117,6 +118,7 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
                                     ? <Chip
                                         onTouchStart={(e) => setEndChange(true)}
                                         className='place-date-end'
+                                        color={place.__expire ? "red" : "orange"}
                                     > {end} </Chip>
                                     : <ChipInput
                                         className='place-date-end'

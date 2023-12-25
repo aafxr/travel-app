@@ -93,12 +93,12 @@ export default class BaseTravel extends Entity {
         if (travelCode)
             this._modified.id = travelCode
 
-        this.routeBuilder = new RouteBuilder({
-            travel: this,
-            places: this._modified.places,
-            appointments: this._modified.appointments,
-            waypoints: this._modified.waypoints
-        })
+        // this.routeBuilder = new RouteBuilder({
+        //     travel: this,
+        //     places: this._modified.places,
+        //     appointments: this._modified.appointments,
+        //     waypoints: this._modified.waypoints
+        // })
 
         // this._checkTravelFields(item)
         this._modified = {
@@ -119,8 +119,7 @@ export default class BaseTravel extends Entity {
             __route: [],
         }
 
-        this._modified.__days = Math.floor((this._modified.date_end - this._modified.date_start) / MS_IN_DAY) + 1
-
+        this._modified.__days = Math.floor((this._modified.date_end.getTime() - this._modified.date_start.getTime()) / MS_IN_DAY)
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
         this.change = this._new
@@ -149,7 +148,7 @@ export default class BaseTravel extends Entity {
 
     _calcRoute(){
         this._modified.__route = []
-        const places = this._modified.places
+        const places = this._modified.places.sort((a,b) => a.time_start - b.time_start)
         if(places.length === 0 ) return
 
         let prevPlace = places[0]
@@ -168,9 +167,12 @@ export default class BaseTravel extends Entity {
                 duration: duration,
                 from: prevPlace,
                 to: nextPlace,
-                start: prevPlace.time_end,
+                start: new Date(prevPlace.time_end),
                 end: new Date(prevPlace.time_end.getTime() + duration),
             }
+
+            if(moving.end > nextPlace.time_start)
+                nextPlace.__expire = true
 
             this._modified.__route.push(moving)
             this._modified.__route.push(nextPlace)
@@ -864,6 +866,7 @@ export default class BaseTravel extends Entity {
             this.change = true
             this.emit('places', [this._modified.places])
             this.emit('route', [this._modified.__route])
+            this.forceUpdate()
         }
         return this
     }
@@ -884,6 +887,7 @@ export default class BaseTravel extends Entity {
         this._calcRoute()
         this.emit('places', [this._modified.places])
         this.emit('route', [this._modified.__route])
+        this.forceUpdate()
         return this
     }
 
@@ -904,6 +908,8 @@ export default class BaseTravel extends Entity {
             this._calcRoute()
             this.emit('places', [this._modified.places])
             this.emit('route', [this._modified.__route])
+            this.forceUpdate()
+
         }
         return this
     }
@@ -922,6 +928,8 @@ export default class BaseTravel extends Entity {
             this.emit('places', [this._modified.places])
             this.emit('route', [this._modified.__route])
             this.change = true
+            this.forceUpdate()
+
         }
         return this
     }
@@ -943,8 +951,11 @@ export default class BaseTravel extends Entity {
     setPlaces(items) {
         if (Array.isArray(items)) {
             this._modified.places = items
+            this._calcRoute()
+            this.emit('route', [this._modified.__route])
             this.emit('places', [this._modified.places])
             this.change = true
+            this.forceUpdate()
         }
         return this
     }
