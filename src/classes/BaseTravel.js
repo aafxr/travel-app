@@ -5,11 +5,14 @@ import {
     defaultMovementTags,
     ENTITY, EVENTS_RATE,
     MS_IN_DAY,
-    SIGHTSEEING_DEPTH, VISIBILITY
+    SIGHTSEEING_DEPTH, SPEED, VISIBILITY
 } from "../static/constants";
 import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 import createId from "../utils/createId";
+import {nanoid} from "nanoid";
+import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
+import TimeHelper from "./TimeHelper";
 
 const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
@@ -52,7 +55,7 @@ export default class BaseTravel extends Entity {
             sightseeingDepth: SIGHTSEEING_DEPTH.NORMAL,
             eventsRate: EVENTS_RATE.NORMAL
         }),
-        permissions: {},
+        permissions: () => ({}),
         visibility: () => VISIBILITY.COMMENTS | VISIBILITY.EXPENSES | VISIBILITY.CHECKLIST | VISIBILITY.ROUTE, 
     }
     /***@type{TravelType} */
@@ -81,6 +84,8 @@ export default class BaseTravel extends Entity {
             this._new = true
         }
 
+        this.timeHelper = new TimeHelper(9 * 60 * 60 *1000, 19 * 60 * 60 * 1000)
+
         Object
             .keys(BaseTravel.initValue)
             .forEach(key => this._modified[key] = BaseTravel.initValue[key]())
@@ -107,14 +112,14 @@ export default class BaseTravel extends Entity {
                 ...p,
                 time_start: new Date(p.time_start || 0),
                 time_end: new Date(p.time_end || p.time_start + this._modified.preferences.sightseeingDepth ||  0),
-                __day: p.__day || -1,
+                type: 2001,
             })) : [],
             date_start: item.date_start ? new Date(item.date_start) : new Date(),
             date_end: item.date_end ? new Date(item.date_end) : new Date(),
+            __route: [],
         }
 
-        if(this._modified.places.some(p => !~p.__day))
-
+        this._modified.__days = Math.floor((this._modified.date_end - this._modified.date_start) / MS_IN_DAY) + 1
 
         this._travelDetailsFilter = defaultTravelDetailsFilter()
 
@@ -122,6 +127,7 @@ export default class BaseTravel extends Entity {
 
 
         this._init()
+        this._calcRoute()
     }
 
     _init() {
@@ -139,6 +145,39 @@ export default class BaseTravel extends Entity {
         })
 
         this._modified.waypoints.forEach(wp => wp.type = ENTITY.POINT)
+    }
+
+    _calcRoute(){
+        this._modified.__route = []
+        const places = this._modified.places
+        if(places.length === 0 ) return
+
+        let prevPlace = places[0]
+        this._modified.__route[0] = prevPlace
+        let index = 1
+        while(places[index]){
+            const nextPlace = places[index]
+
+            const distance = getDistanceFromTwoPoints(prevPlace.coords, nextPlace.coords)
+            const duration = (distance / SPEED.CAR_SPEED) * 1000
+            /** @type{MovingType} */
+            const moving = {
+                id: nanoid(5),
+                type: 2005,
+                distance: distance,
+                duration: duration,
+                from: prevPlace,
+                to: nextPlace,
+                start: prevPlace.time_end,
+                end: new Date(prevPlace.time_end.getTime() + duration),
+            }
+
+            this._modified.__route.push(moving)
+            this._modified.__route.push(nextPlace)
+            prevPlace = nextPlace 
+
+            index ++
+        }
     }
 
     /**
@@ -538,7 +577,7 @@ export default class BaseTravel extends Entity {
         if(options){
             this._modified.preferences = {
                 ...this._modified.preferences,
-                ... options
+                ...options
             }
             this.emit('preferences', [this._modified.preferences])
             this.change = true
@@ -821,9 +860,10 @@ export default class BaseTravel extends Entity {
     addPlace(item) {
         if (item) {
             this._modified.places.push(item)
-            this.emit('places', this._modified.places)
+            this._calcRoute()
             this.change = true
             this.emit('places', [this._modified.places])
+            this.emit('route', [this._modified.__route])
         }
         return this
     }
@@ -841,7 +881,9 @@ export default class BaseTravel extends Entity {
             console.warn(new Error(`element ${after} not found`))
 
         this._modified.places.splice(idx + 1, 0, insertedValue)
-        this.emit('places', this._modified.places)
+        this._calcRoute()
+        this.emit('places', [this._modified.places])
+        this.emit('route', [this._modified.__route])
         return this
     }
 
@@ -859,7 +901,9 @@ export default class BaseTravel extends Entity {
             const newArray = [...this._modified.places]
             newArray[idx] = item
             this._modified.places = newArray
-            this.emit('places', this._modified.places)
+            this._calcRoute()
+            this.emit('places', [this._modified.places])
+            this.emit('route', [this._modified.__route])
         }
         return this
     }
@@ -874,7 +918,9 @@ export default class BaseTravel extends Entity {
     removePlace(item) {
         if (item) {
             this._modified.places = this._modified.places.filter(i => item._id !== i._id)
-            this.emit('places', this._modified.places)
+            this._calcRoute()
+            this.emit('places', [this._modified.places])
+            this.emit('route', [this._modified.__route])
             this.change = true
         }
         return this
@@ -897,7 +943,7 @@ export default class BaseTravel extends Entity {
     setPlaces(items) {
         if (Array.isArray(items)) {
             this._modified.places = items
-            this.emit('places', this._modified.places)
+            this.emit('places', [this._modified.places])
             this.change = true
         }
         return this
@@ -947,7 +993,7 @@ export default class BaseTravel extends Entity {
             const idx = this._modified.members.findIndex(m => m === item.id)
             if(~idx) {
                 this._modified.members.push(item.id)
-                this.emit('members', this._modified.members)
+                this.emit('members', [this._modified.members])
                 this.change = true
             }
         }
@@ -964,7 +1010,7 @@ export default class BaseTravel extends Entity {
     setMembers(items) {
         if (Array.isArray(items)) {
             this._modified.members = items.map(item=> item.id)
-            this.emit('members', this._modified.members)
+            this.emit('members', [this._modified.members])
             this.change = true
         }
         return this
@@ -980,7 +1026,7 @@ export default class BaseTravel extends Entity {
     removeMember(item) {
         if (item) {
             this._modified.members = this._modified.members.filter(m => m !== item.id)
-            this.emit('members', this._modified.members)
+            this.emit('members', [this._modified.members])
             this.change = true
         }
         return this
@@ -1070,7 +1116,7 @@ export default class BaseTravel extends Entity {
             ~idx
                 ? this._modified.appointments[idx] = item
                 : this._modified.appointments.push(item)
-            this.emit('appointments', this._modified.appointments)
+            this.emit('appointments', [this._modified.appointments])
             this.change = true
         }
         return this
@@ -1086,7 +1132,7 @@ export default class BaseTravel extends Entity {
     setAppointments(items) {
         if (Array.isArray(items)) {
             this._modified.appointments = [...items]
-            this.emit('appointments', this._modified.appointments)
+            this.emit('appointments', [this._modified.appointments])
             this.change = true
         }
         return this
@@ -1102,7 +1148,7 @@ export default class BaseTravel extends Entity {
     removeAppointment(item) {
         if (item) {
             this._modified.appointments = this._modified.appointments.filter(a => a.id !== item.id)
-            this.emit('appointments', this._modified.appointments)
+            this.emit('appointments', [this._modified.appointments])
             this.change = true
         }
         return this
@@ -1157,7 +1203,7 @@ export default class BaseTravel extends Entity {
      * @returns {number|number}
      */
     get days() {
-        return this._modified.days
+        return this._modified.__days
 
 
     }
@@ -1181,16 +1227,21 @@ export default class BaseTravel extends Entity {
         const userOK = typeof user_id === 'string' && user_id.length > 0
 
         /**@type{TravelStoreType}*/
-        const travelDTO = {...this._modified}
+        const travelDTO = {}
+        Object
+            .keys(this._modified)
+            .filter(key => !key.startsWith('__'))
+            .forEach(key => travelDTO[key] = this._modified[key])
+
         travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
-        travelDTO.hotels = travelDTO.hotels.map(h => {
+        travelDTO.hotels = travelDTO?.hotels.map(h => {
             /**@type{HotelStoreType}*/
             const nh = {
                 ...h,
                 check_in: h.check_in.toISOString(),
                 check_out: h.check_out.toISOString(),
             }
-            delete nh.type
+            delete nh?.type
             return nh
         })
 
@@ -1232,8 +1283,15 @@ export default class BaseTravel extends Entity {
     async delete(user_id) {
         const userOK = typeof user_id === 'string' && user_id.length > 0
 
+        /**@type{TravelStoreType}*/
+        const travelDTO = {}
+        Object
+            .keys(this._modified)
+            .filter(key => !key.startsWith('__'))
+            .forEach(key => travelDTO[key] = this._modified[key])
+
         if (userOK || this.user_id) {
-            await travel_service.delete(this._modified, userOK ? user_id : this.user_id)
+            await travel_service.delete(travelDTO, userOK ? user_id : this.user_id)
         }
         return this
     }

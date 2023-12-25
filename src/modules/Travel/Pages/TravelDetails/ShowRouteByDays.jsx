@@ -1,30 +1,30 @@
 import {Link, useParams} from "react-router-dom";
-import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 
+import RecommendLocation2 from "../../components/RecommendLocation2/RecommendLocation2";
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
-import RestTimeComponent from "../../components/RestTimeComponent/RestTimeComponent";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
+import PlaceCard2 from "../../components/PlaceCard2/PlaceCard2";
 import PlaceActivity from "../../../../classes/PlaceActivity";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import RoadActivity from "../../../../classes/RoadActivity";
+import {ENTITY} from "../../../../static/constants";
 import {Tab} from "../../../../components/ui";
-import {MIN_NO_ADVICE_TIME} from "../../../../static/constants";
-import ShowAdvice from "../../components/ShowAdvice/ShowAdvice";
 
 export default function ShowRouteByDays() {
     // const user = useUserSelector()
     const {dayNumber} = useParams()
     const {travel, travelObj} = useTravelContext()
-    const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
-
-    useEffect(() => {
-        const days = travel.routeBuilder.getActivityDays()
-        setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber || days[0] || 1))
-    }, [dayNumber, travel, travelObj.places])
+    // const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
+    //
+    // useEffect(() => {
+    //     const days = travel.routeBuilder.getActivityDays()
+    //     setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber || days[0] || 1))
+    // }, [dayNumber, travel, travelObj.places])
 
     return (
         <>
@@ -40,21 +40,26 @@ export default function ShowRouteByDays() {
             }
             <Container className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
-                    activitiesList
-                        ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
-                            <React.Fragment key={idx}>
-                                <div>
-                                    {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
-                                    {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
-                                </div>
-                            </React.Fragment>))
-                        : travelObj.places.length === 0
-                            ? (
-                                <div>
-                                    <Link className='link' to={`/travel/${travelObj.id}/add/place/`}>Добавить место</Link>
-                                </div>
-                            )
-                            : <div>Loading...</div>
+                    travelObj.__route.map(r=>
+                        r.type === ENTITY.PLACE
+                            ? <PlaceCard2 place={r} />
+                            : <RecommendLocation2 moving={r} />
+                    )
+                    // activitiesList
+                    //     ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
+                    //         <React.Fragment key={idx}>
+                    //             <div>
+                    //                 {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
+                    //                 {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
+                    //             </div>
+                    //         </React.Fragment>))
+                    //     : travelObj.places.length === 0
+                    //         ? (
+                    //             <div>
+                    //                 <Link className='link' to={`/travel/${travelObj.id}/add/place/`}>Добавить место</Link>
+                    //             </div>
+                    //         )
+                    //         : <div>Loading...</div>
                 }
 
             </Container>

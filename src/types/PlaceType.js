@@ -20,6 +20,7 @@
  * @typedef {Object} PlaceType
  * @property {string} _id
  * @property {string} id
+ * @property {2001} type
  * @property {number} __day
  * @property {string} name
  * @property {string[]} photos

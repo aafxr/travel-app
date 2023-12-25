@@ -66,7 +66,7 @@
  *
  * @property {Date} date_start начало путешествия
  * @property {Date} date_end конец путешествия
- * @property {number} days число дней
+ * @property {number} __days число дней
  *
  * @property {number} members_count число взрослых
  * @property {number} children_count число детей
@@ -77,4 +77,6 @@
  * @property {TravelPreferencesType} preferences
  * @property {TravelPermissionType} permissions
  * @property {number} visibility
+ *
+ * @property { Array<PlaceType | MovingType> } __route
  */
