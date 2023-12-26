@@ -43,10 +43,13 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
 
 
     const rightElement = (
-        <div className='column gap-0.5'>
+        <div className='right-element column gap-0.5'>
             {/*<PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd(id)}/>*/}
             {/*<EditePencil className='control-button flex-0' onClick={() => onEdite && onEdite(id)}/>*/}
-            <TrashIcon className='control-button flex-0' onClick={() => onDelete && onDelete(place)}/>
+            <div className='right-element-item'>
+                <TrashIcon className='control-button flex-0 icon' onClick={() => onDelete && onDelete(place)}/>
+                удалить
+            </div>
         </div>
     )
 

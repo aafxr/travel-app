@@ -1,8 +1,8 @@
-.place{
+.place {
     color: var(--color-text);
 }
 
-.place-container{
+.place-container {
     padding-top: 0.5rem;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
@@ -13,7 +13,7 @@
 }
 
 .place-date-start,
-.place-date-end{
+.place-date-end {
     position: absolute;
     left: 1rem;
     min-width: 60px;
@@ -21,17 +21,17 @@
     z-index: 2;
 }
 
-.place-date-start{
+.place-date-start {
     top: 0;
     transform: translateY(-50%);
 }
 
-.place-date-end{
+.place-date-end {
     bottom: 0;
     transform: translateY(50%);
 }
 
-.place-img{
+.place-img {
     position: relative;
     margin-top: -0.5rem;
     margin-right: -0.5rem;
@@ -43,7 +43,7 @@
     overflow: hidden;
 }
 
-.place-buttons{
+.place-buttons {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
@@ -51,43 +51,55 @@
     display: flex;
     gap: 0.5rem;
 }
-.place-btn{
-    background-color: var(--color-background)!important;
+
+.place-btn {
+    background-color: var(--color-background) !important;
 }
 
-.place-img img{
+.place-img img {
     object-fit: cover;
 }
 
-.place-title{
+.place-title {
     margin-top: .5rem;
     font-size: 1.125rem;
     font-weight: 600;
 }
 
-.place-entity-type{
+.place-entity-type {
     color: var(--color-grey);
     font-size: 0.75rem;
     font-weight: 600;
 }
 
-.place-add-button{
-    padding: 4px!important;
-    width: 40px!important;
-    height: 40px!important;
+.place-add-button {
+    padding: 4px !important;
+    width: 40px !important;
+    height: 40px !important;
     position: absolute;
     right: 0.5rem;
     bottom: .5rem;
 }
 
-.place-add-button-icon{
-    width: 14px!important;
-    height: 14px!important;
+.place-add-button-icon {
+    width: 14px !important;
+    height: 14px !important;
 }
 
-.place-swipe-right{
+.place-swipe-right {
     background-color: var(--color-primary-light);
 }
-.place-swipe-left{
+
+.place-swipe-left {
     background-color: var(--color-primary-light);
+}
+
+.right-element-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: black;
+    font-size: 0.8rem;
+    font-weight: 600;
 }

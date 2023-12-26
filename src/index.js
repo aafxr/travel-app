@@ -175,3 +175,4 @@ window.Route = Route
 window.timeHelper = new TimeHelper(9 * 60*60*1000, 19*60*60*1000)
 
 window.sortByDays = sortByDays
+

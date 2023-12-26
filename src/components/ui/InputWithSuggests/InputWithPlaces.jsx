@@ -22,8 +22,10 @@ function InputWithPlaces({onPlaces, delay = 500, ...props}, ref) {
             aFetch.post('/places/getList/', {text})
                 .then(resp => resp.data)
                 .then(resp => {
-                    if ("ok" in resp && onPlaces)
+                    if ("ok" in resp && onPlaces) {
+                        console.log(JSON.stringify(resp.data))
                         onPlaces(Array.isArray(resp.data) ? resp.data : [])
+                    }
                 })
                 .catch(console.error)
         }

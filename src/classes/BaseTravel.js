@@ -436,6 +436,7 @@ export default class BaseTravel extends Entity {
     setDateStart(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
+            d.setHours(0,0,0,0)
             this._modified.date_start = d
             this.emit('date_start', [this._modified.date_start])
             this.change = true
@@ -463,6 +464,7 @@ export default class BaseTravel extends Entity {
     setDateEnd(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
+            d.setHours(23,59,59,999)
             this._modified.date_end = d
             this.emit('date_end', [this._modified.date_end])
             this.change = true

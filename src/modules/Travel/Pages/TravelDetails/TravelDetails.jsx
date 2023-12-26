@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
-import {ChecklistIcon, Money, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
+import {ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -134,7 +134,7 @@ export default function TravelDetails() {
                         </div>
                     </div>
                     <div className='flex-between flex-nowrap gap-0.5 pb-20 footer'>
-                        <IconButton icon={<Money/>} title='Расходы'
+                        <IconButton icon={<MoneyIcon/>} title='Расходы'
                                     onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         <IconButton
                             icon={<ChecklistIcon/>}
