@@ -59,7 +59,7 @@ export default function ShowRouteByDays() {
     let showHotel = false
     const lastPlannedActivity = dayPlane[dayPlane.length - 1]
     if (lastPlannedActivity) {
-        const freeTime = timeRange_end - (lastPlannedActivity.time_end || lastPlannedActivity.end) > travelObj.preferences.sightseeingDepth
+        const freeTime = timeRange_end - (lastPlannedActivity.time_end || lastPlannedActivity.end) > travelObj.preferences.density
         if (freeTime)
             showHotel = true
     }

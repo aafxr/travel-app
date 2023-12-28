@@ -80,16 +80,12 @@ export const ENTITY = {
     MOVING: 2005
 }
 
-export const SIGHTSEEING_DEPTH = {
-    FAST: 1500000, // 25 * 60 * 1000,
-    NORMAL: 2700000, //45 * 60 * 1000,
-    LONG: 5400000, //1.5 * 60 * 60 * 1000
-}
+export const SIGHTSEEING_DEPTH = 2700000 //45 * 60 * 1000
 
-export const EVENTS_RATE = {
-    QUICK:  0b0,
-    NORMAL: 0b1,
-    LONG:   0b10,
+export const DENSITY = {
+    QUICK:  1,
+    NORMAL: 2,
+    LONG:   3,
 }
 
 /**@description настройки видимости деталей путешествия */

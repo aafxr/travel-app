@@ -20,6 +20,10 @@ import BaseService from "./classes/BaseService";
 import {nanoid} from "nanoid";
 import Route from './classes/Route'
 import TimeHelper from "./classes/TimeHelper";
+import Graph from "./utils/data-structures/Graph";
+import GraphEdge from "./utils/data-structures/GraphEdge";
+import GraphVertex from "./utils/data-structures/GraphVertex";
+import getDistanceFromTwoPoints from "./utils/getDistanceFromTwoPoints";
 
 
 let theme = localStorage.getItem(THEME)
@@ -39,81 +43,6 @@ root.render(
 
 window.store = storeDB
 
-// const t = Date.now()
-// const time = t - t % MS_IN_DAY
-// const promises = range(0, 2000)
-//     .map(i => {
-//
-//         const date = new Date(time - MS_IN_DAY * i)
-//             .getTime()
-//         /**@type{CurrencyType}*/
-//         const rub = {char_code:"RUB", name: 'Рубль', value: 1, num_code: 643, symbol: '₽'}
-//         /**@type{CurrencyType}*/
-//         const usd = {char_code:"USD", name: 'Доллар', value: Math.random() * 100, num_code: 654, symbol: '$'}
-//         /**@type{CurrencyType}*/
-//         const eur = {char_code:"EUR", name: 'Евро', value: Math.random() * 100, num_code: 593, symbol: '€'}
-//         /**@type{CurrencyType}*/
-//         const cny = {char_code:"CNY", name: 'Рубль', value: Math.random() * 30, num_code: 683, symbol: 'د.إ'}
-//         /**@type{CurrencyType}*/
-//         const kzt = {char_code:"KZT", name: 'Рубль', value: Math.random() * 10000, num_code: 603, symbol: '₯'}
-//         /** @type{ExchangeType}*/
-//         const res= {date, value: [rub, usd, eur, cny, kzt]}
-//         return res
-//     })
-//     .map(ex => storeDB.editElement(constants.store.CURRENCY, ex))
-//
-// Promise.all(promises)
-//     .then(() => console.log('ok'))
-//     .then(() => {
-//         storeDB.getOne(constants.store.CURRENCY, '12.12.2021').then(console.log)
-//     })
-//
-// sleep(2000)
-//     .then(() => {
-//         const promises = range(1,100)
-//             .map(i => new Expense(null,{
-//                 id: '12:'+i,
-//                 user_id: '12',
-//                 personal: 0,
-//                 title: 'test',
-//                 primary_entity_id: '12:1698219429629',
-//                 created_at: new Date(Date.now() - MS_IN_DAY * i).toISOString(),
-//                 datetime: new Date(Date.now() - MS_IN_DAY * i).toISOString(),
-//                 value: Math.random() * 1000,
-//                 section_id: 'misc',
-//                 currency: (i % 2 === 0)
-//                     ? '$'
-//                     : (i % 3 === 0)
-//                         ? '€'
-//                         : (i % 5 === 0)
-//                             ? '₯'
-//                             : 'د.إ',
-//             }, '12', 'actual'))
-//             .map(item => {
-//                 console.log(item)
-//                 return storeDB.editElement(constants.store.EXPENSES_ACTUAL, item.object)
-//             })
-//
-//         Promise.all(promises)
-//             .then((res) => console.log('ok',res))
-//     })
-
-// sleep(2000)
-//     .then(() => {
-//         const travel =  Travel.newTravel('12')
-//         if(travel) {
-//             console.log(travel)
-//             /**@type{SectionType}*/
-//             const section = {
-//                 id: '151',
-//                 color: '#aaaccf',
-//                 title: 'create',
-//                 hidden: 0
-//
-//             }
-//             travel.section.update(section,travel.user_id).catch(console.error)
-//         }
-//     })
 //===================== установка фикчированного vh ================================================
 setFixedVH()
 window.addEventListener('resize', setFixedVH)
@@ -149,30 +78,79 @@ document.addEventListener('devicemotion', /** @param {DeviceMotionEvent} e */(e)
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 // reportWebVitals();
 
-function sortByDays(timeRanges = [], th = new TimeHelper()){
-    timeRanges = timeRanges
-        .filter(tr => !!tr.time_start || !!tr.time_end)
-        .sort((a,b) => a.time_start - b.time_start)
+// const graph = new Graph()
+// async function fetchData(){
+//     const resp = await fetch ('http://localhost:4200/places')
+//     /**@type{PlaceType[]}*/
+//     const places = await resp.json()
+//
+//     const start = Date.now()
+//     places.forEach(p => {
+//         p.time_end = new Date(p.time_end)
+//         p.time_start = new Date(p.time_start)
+//         p.toString = function(){
+//             return this.id
+//         }
+//     })
+//
+//     places.forEach(p => graph.addVertex(new GraphVertex(p)))
+//
+//     graph
+//         .getAllVertices()
+//         .forEach((v, idx, arr) => {
+//             for(let i = 0; i < arr.length; i++ ){
+//                 if(arr[i] === v) continue
+//                 const edge = new GraphEdge(v, arr[i], getDistanceFromTwoPoints(v.value.location, arr[i].value.location))
+//                 v.addEdge(edge)
+//                 graph.addEdge(edge)
+//             }
+//         })
+//
+//     const route = []
+//
+//
+//
+//     const secToString = (seconds) => {
+//         let hh = Math.floor(seconds / (60*60))
+//         let mm = Math.floor(seconds % 3600 / 60)
+//         let ss = Math.floor(seconds % 60)
+//         hh = hh < 10 ? '0' + hh : hh
+//         mm = mm < 10 ? '0' + mm : mm
+//         ss = ss < 10 ? '0' + ss : ss
+//         return `${hh}:${mm}:${ss}`
+//     }
+//
+//
+//
+//     let startVertex = graph.getAllVertices()[0]
+//     const map = new Map()
+//     route.push(startVertex.value)
+//
+//     while(startVertex){
+//         const edges = startVertex.getEdges().filter(e => !route.includes(e.endVertex.value))
+//         const minDist = Math.min(...edges.map(e => e.weight))
+//         const closestEdge = edges.find(e => e.weight === minDist)
+//         const closestVertex = closestEdge?.endVertex
+//
+//         if(closestVertex){
+//             startVertex = closestVertex
+//             route.push(closestVertex.value)
+//             const id =  closestVertex.value.id, dist =  closestEdge.weight
+//             const seconds = 60 / 30 * dist
+//
+//             const time = secToString(seconds)
+//             map.set(closestVertex.value.id, {id, dist, time, seconds })
+//         } else {
+//             startVertex = undefined
+//         }
+//     }
+//     const end = Date.now()
+//
+//     console.log(route)
+//     console.log([...map.values()])
+//     console.log('total time ', secToString(Array.from(map.values()).reduce((acc, el) => acc + el.seconds, 0)))
+//     console.log(end - start)
+//
+// }
 
-
-    let change = true
-    while(change){
-        let idx = 0
-        change = false
-        while (idx < timeRanges.length) {
-            if(timeRanges[idx+1] && timeRanges[idx+1].time_start < timeRanges[idx].time_end){
-                th.shiftAll([timeRanges[idx+1].time_start, timeRanges[idx+1].time_end], MS_IN_DAY)
-                change = true
-            }
-
-            idx++
-        }
-    }
-    return timeRanges
-}
-
-window.Route = Route
-window.timeHelper = new TimeHelper(9 * 60*60*1000, 19*60*60*1000)
-
-window.sortByDays = sortByDays
-
+// fetchData().catch(console.error)

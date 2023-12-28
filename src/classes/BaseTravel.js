@@ -3,7 +3,7 @@ import travel_service from "../services/travel-service";
 import {
     DEFAULT_TRAVEL_DETAILS_FILTER,
     defaultMovementTags,
-    ENTITY, EVENTS_RATE,
+    ENTITY, DENSITY,
     MS_IN_DAY,
     SIGHTSEEING_DEPTH, SPEED, VISIBILITY
 } from "../static/constants";
@@ -52,8 +52,8 @@ export default class BaseTravel extends Entity {
         isFromPoint: () => 0,
         days: () => 1,
         preferences: () => ({
-            sightseeingDepth: SIGHTSEEING_DEPTH.NORMAL,
-            eventsRate: EVENTS_RATE.NORMAL
+            density: 2,
+            eventsRate: DENSITY.NORMAL
         }),
         permissions: () => ({}),
         visibility: () => VISIBILITY.COMMENTS | VISIBILITY.EXPENSES | VISIBILITY.CHECKLIST | VISIBILITY.ROUTE, 
@@ -111,7 +111,7 @@ export default class BaseTravel extends Entity {
             places: item.places ? item.places.map(p => ({
                 ...p,
                 time_start: new Date(p.time_start || 0),
-                time_end: new Date(p.time_end || p.time_start + this._modified.preferences.sightseeingDepth ||  0),
+                time_end: new Date(p.time_end || p.time_start + this._modified.preferences.density ||  0),
                 type: 2001,
             })) : [],
             date_start: item.date_start ? new Date(item.date_start) : new Date(),

@@ -1,6 +1,6 @@
 /**
  * @typedef TravelPreferencesType
- * @property {number} sightseeingDepth время осмотра места по умолчанию
+ * @property {number} density время осмотра места по умолчанию
  * @property { 0b0 | 0b1 | 0b10 } eventsRate насыщеность (частота) событий
  */
 

@@ -125,7 +125,7 @@ function App() {
                         <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>
                         <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                         <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
-                        <Route path={'/travel/:travelCode/add/place/:dayNumber/'} element={<TravelAddPlace/>}/>
+                        <Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>
                         <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
                         <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
                         <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>
