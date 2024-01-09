@@ -6,7 +6,7 @@
 
 .add-photo-image{
     position: relative;
-    height: 600px;
+    height: 71%;
     border-radius: var(--br-16);
     overflow: hidden;
 }

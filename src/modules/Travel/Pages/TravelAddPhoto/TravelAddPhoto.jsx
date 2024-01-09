@@ -24,21 +24,23 @@ export default function TravelAddPhoto() {
             <Container>
                 <PageHeader arrowBack title={'Добавить фото'}/>
             </Container>
-            <Container className='add-photo-container content'>
-                <div className='add-photo flex-1'>
-                    <div className='add-photo-image'>
-                        <img className='img-abs' src={url || DEFAULT_IMG_URL} alt={'add_photo'}/>
-                    </div>
+            <div className='content'>
+                <div className='add-photo-image'>
+                    <img className='img-abs' src={url || DEFAULT_IMG_URL} alt={'add_photo'}/>
+                </div>
+                <Container className='column'>
                     <TextArea
-                        className='mt-20'
+                        className='mt-20 h-full'
                         value={text}
                         onChange={e => setText(e.target.value)}
                         placeholder='Добавить описание'
+                        rows={5}
+                        autoResize={false}
                     />
-                </div>
-            </Container>
-            <Container className='footer pt-20 pb-20'>
-                <Button className='add-photo-button'>Добавить</Button>
+                </Container>
+            </div>
+            <Container className='footer footer-btn-container'>
+                <Button className=''>Добавить</Button>
             </Container>
         </div>
     )
