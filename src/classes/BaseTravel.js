@@ -27,7 +27,7 @@ const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMove
  * @constructor
  */
 export default class BaseTravel extends Entity {
-    /**@type{TravelStoreType} */
+    /**@type{TravelType} */
     static initValue = {
         id: () => '',
         code: () => '',
@@ -35,8 +35,8 @@ export default class BaseTravel extends Entity {
         direction: () => '',
         description: () => '',
         owner_id: () => '',
-        created_at: () => new Date().toISOString(),
-        updated_at: () => new Date().toISOString(),
+        created_at: () => new Date(),
+        updated_at: () => new Date(),
         appointments: () => [],
         members: () => [],
         hotels: () => [],
@@ -45,8 +45,8 @@ export default class BaseTravel extends Entity {
         places: () => [],
         members_count: () => 1,
         children_count: () => 0,
-        date_start: () => new Date().toISOString(),
-        date_end: () => new Date().toISOString(),
+        date_start: () => new Date(),
+        date_end: () => new Date(),
         isPublic: () => 0,
         photo: () => '',
         isFromPoint: () => 0,
@@ -73,7 +73,7 @@ export default class BaseTravel extends Entity {
     timeHelper
 
     /**
-     * @param {TravelStoreType} item
+     * @param {TravelType} item
      * @param {string} travelCode
      * @constructor
      */
@@ -114,8 +114,6 @@ export default class BaseTravel extends Entity {
                 time_end: new Date(p.time_end || p.time_start + this._modified.preferences.density ||  0),
                 type: 2001,
             })) : [],
-            date_start: item.date_start ? new Date(item.date_start) : new Date(),
-            date_end: item.date_end ? new Date(item.date_end) : new Date(),
             __route: [],
         }
 
@@ -1247,23 +1245,9 @@ export default class BaseTravel extends Entity {
             .forEach(key => travelDTO[key] = this._modified[key])
 
         travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
-        travelDTO.hotels = travelDTO?.hotels.map(h => {
-            /**@type{HotelStoreType}*/
-            const nh = {
-                ...h,
-                check_in: h.check_in.toISOString(),
-                check_out: h.check_out.toISOString(),
-            }
-            delete nh?.type
-            return nh
-        })
 
         travelDTO.places = travelDTO.places.map(p => {
-            const np = {
-                ...p,
-                time_start: p.time_start.toISOString(),
-                time_end: p.time_end.toISOString()
-            }
+            const np = { ...p }
             delete np.type
             return np
         })

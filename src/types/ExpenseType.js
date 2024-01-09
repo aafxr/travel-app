@@ -12,8 +12,8 @@
  * @property {number} value \>=0, сумма расхода
  * @property {1 | 0} personal флаг личный / общий расход
  * @property {string} section_id  id секции, в рамках которой создан расход
- * @property {string} datetime время,когда расход был осуществлен
- * @property {string} created_at дата создания записи о расходе
+ * @property {Date} datetime время,когда расход был осуществлен
+ * @property {Date} created_at дата создания записи о расходе
  * @property {string} currency символ валуты
  * @category Types
  */
