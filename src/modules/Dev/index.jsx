@@ -20,6 +20,8 @@ export default function Dev() {
         return null
     }
 
+    const options = ["₽", "$","€","¥","₸"]
+
     return (
         <>
             <Container>

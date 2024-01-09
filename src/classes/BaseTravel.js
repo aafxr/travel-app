@@ -111,11 +111,14 @@ export default class BaseTravel extends Entity {
             places: item.places ? item.places.map(p => ({
                 ...p,
                 time_start: new Date(p.time_start || 0),
-                time_end: new Date(p.time_end || p.time_start + this._modified.preferences.density ||  0),
+                time_end: new Date(p.time_end || p.time_start + 30 * 60 * 1000 * this._modified.preferences.density ||  2),
                 type: 2001,
             })) : [],
             __route: [],
         }
+
+        this._modified.date_start = new Date(this._modified.date_start)
+        this._modified.date_end = new Date(this._modified.date_end)
 
         this._modified.__days = Math.floor((this._modified.date_end.getTime() - this._modified.date_start.getTime()) / MS_IN_DAY)
         this._travelDetailsFilter = defaultTravelDetailsFilter()

@@ -37,7 +37,10 @@ export default function TravelRoutes() {
         if(user) {
             Travel
                 .travelList()
-                .then(setTravels)
+                .then(list => {
+                    console.log(list)
+                    setTravels(list)
+                })
         }
     }, [user])
 

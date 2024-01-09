@@ -139,7 +139,6 @@ function App() {
                         <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                         <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>
                         <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>
-                        <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                         <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                             <Route element={<ExpensesLayout/>}>
                                 <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>
@@ -152,6 +151,7 @@ function App() {
                             <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>
                         </Route>
                     </Route>
+                    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                     <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
                     <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
                     <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>

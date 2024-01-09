@@ -34,7 +34,7 @@ export default function TravelAddPhoto() {
                         value={text}
                         onChange={e => setText(e.target.value)}
                         placeholder='Добавить описание'
-                        rows={5}
+                        rows={4}
                         autoResize={false}
                     />
                 </Container>
