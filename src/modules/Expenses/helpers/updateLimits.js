@@ -5,7 +5,7 @@ import limitsModel from '../models/limit/limitModel'
 import constants from "../../../static/constants";
 import createId from "../../../utils/createId";
 import toArray from "../../../utils/toArray";
-import {store} from "../../../redux/store";
+// import {store} from "../../../redux/store";
 
 
 export function updateLimits(primary_entity_id, user_id = {}) {
@@ -15,7 +15,15 @@ export function updateLimits(primary_entity_id, user_id = {}) {
     return async function () {
         return new Promise(async (resolve, reject) => {
             try {
-                const currency = store.getState().expenses.currency
+                /**@type{{[key: string]: CurrencyType}} */
+                const currency = await storeDB
+                    .getAll(constants.store.CURRENCY)
+                    .then(/**@param {ExchangeType[]} currencyList*/ currencyList =>
+                        currencyList.reduce((acc, cl) => {
+                            acc[cl.date] = cl.value
+                            return acc
+                        }, {})
+                    )
                 const expenses_plan = await storeDB.getManyFromIndex(
                     constants.store.EXPENSES_PLAN,
                     constants.indexes.PRIMARY_ENTITY_ID,
@@ -31,7 +39,7 @@ export function updateLimits(primary_entity_id, user_id = {}) {
                 expenses_plan
                     .filter(e => e.personal === 1 && e.user_id === user_id)
                     .forEach(e => {
-                        const coeffList = currency[new Date(e.datetime).toLocaleDateString()] || []
+                        const coeffList = currency[new Date(e.datetime).setHours(0,0,0,0)] || []
                         const coeff = e.currency
                             ? coeffList.find(c => c.symbol === e.currency)?.value || 1
                             : 1

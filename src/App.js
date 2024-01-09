@@ -49,19 +49,21 @@ import Alerts from "./components/Alerts/Alerts";
 import AuthRequired from "./hoc/AuthRequired";
 import {USER_AUTH} from "./static/constants";
 import useDBReady from "./hooks/useDBReady";
-import {store} from './redux/store'
 import Dev from "./modules/Dev";
+import storeDB from "./db/storeDB/storeDB";
+import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
+import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 
 
 function App() {
     const navigate = useNavigate()
     const {initUser, loading: userLoading} = useContext(UserContext)
-    const [state, setState] = useState()
+    // const [state, setState] = useState()
     const ready = useDBReady()
 
-    useEffect(() => {
-        store.subscribe(() => setState(store.getState()))
-    }, [])
+    // useEffect(() => {
+    //     storeDB.subscribe(() => setState(storeDB.getState()))
+    // }, [])
 
     // useEffect(() => {
     //     if(!'indexedDB' in window)
@@ -101,8 +103,10 @@ function App() {
     //     prefetch.forEach(url => aFetch.get(url).catch(console.error))
     // }, [])
 
+    if(ready)
+        window.store = storeDB
     return (
-        <Provider store={store}>
+        <>
             <Routes>
                 <Route element={<WorkerContextProvider/>}>
                     <Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>
@@ -133,6 +137,8 @@ function App() {
                         <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
                         <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>
                         <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
+                        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>
+                        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>
                         <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>
                         <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                             <Route element={<ExpensesLayout/>}>
@@ -159,7 +165,7 @@ function App() {
                 <Route path={'*'} element={<Navigate to={'/'} replace/>}/>
             </Routes>
             <Alerts count={2}/>
-        </Provider>
+        </>
     );
 }
 
