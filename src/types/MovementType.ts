@@ -6,3 +6,10 @@
  * @property {string} title
  * @property {JSX.Element} [icon]
  */
+
+export enum MovementType{
+    WALK,
+    CAR,
+    PUBLICK_TRANSPORT,
+    FLIGHT,
+}

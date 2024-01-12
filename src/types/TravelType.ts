@@ -8,8 +8,6 @@
  * @typedef TravelPermissionType
  */
 
-
-
 /**
  * @category Types
  * @name TravelStoreType
@@ -22,7 +20,7 @@
  * @property {string} owner_id автор путешествия
  * @property {string} created_at дата создания
  * @property {string} updated_at дата обнавления
- * 
+ *
  * @property {AppointmentStoreType[]} appointments список встреч
  * @property {MemberType[]} members список участников
  * @property {MovementType[]} movementTypes способ перемещения
@@ -44,6 +42,11 @@
  * @property {number} visibility
  */
 
+import {MovementType} from "./MovementType";
+import {WaypointType} from "./WaypointType";
+import {PlaceType} from "./PlaceType";
+import {TravelPreferences} from "./TravelPreferences";
+import {DBFlagType} from "./DBFlagType";
 
 /**
  * @category Types
@@ -57,7 +60,7 @@
  * @property {string} owner_id автор путешествия
  * @property {Date} created_at дата создания
  * @property {Date} updated_at дата обнавления
- * 
+ *
  * @property {AppointmentType[]} appointments список встреч
  * @property {string[]} members список id участников
  * @property {MovementType[]} movementTypes способ перемещения
@@ -80,3 +83,30 @@
  *
  * @property { Array<PlaceType | MovingType> } __route
  */
+
+
+export type TravelType = {
+    id: string,
+    code: string,
+    title: string,
+    direction: string,
+    description: string,
+    owner_id: string,
+    created_at: Date,
+    updated_at: Date,
+    // appointments: ,
+    // members: ,
+    movementTypes: MovementType[],
+    waypoints: WaypointType[],
+    places: PlaceType[],
+    date_start:  Date,
+    date_end: Date ,
+    days: number,
+    members_count: number,
+    children_count: number,
+    photo: string,
+    isFromPoint: 0 | 1,
+    preferences: TravelPreferences,
+    // permissions: ,
+    visibility: DBFlagType,
+}

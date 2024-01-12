@@ -22,3 +22,10 @@
  * @property {string} locality улица / город / дом ...
  * @category Types
  */
+
+export type WaypointType = {
+    id: string,
+    coords: [number, number],
+    address: string,
+    locality: string,
+}
