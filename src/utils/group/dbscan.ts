@@ -18,7 +18,7 @@ type GroupType = {
 }
 
 
-function squareDistans(p1: [number, number], p2: [number, number]) {
+function squareDistanse(p1: [number, number], p2: [number, number]) {
     return Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2);
 }
 
@@ -31,7 +31,7 @@ function squareDistans(p1: [number, number], p2: [number, number]) {
  * @param getCoords колбэк, извлекает координаты из переданного элемента массива
  * @param getDist метод для расчета дистанции
  */
-export function dbscan<T>(data: T[], eps: number, min_points: number, getCoords: GetCoordsCB<T>, getDist = squareDistans) {
+export function dbscan<T>(data: T[], eps: number, min_points: number, getCoords: GetCoordsCB<T>, getDist = squareDistanse) {
     const dataMap = new Map<DBSCAN_Point, T>
     for (const elem of data) {
         dataMap.set({point: getCoords(elem), cluster: -1}, elem)
