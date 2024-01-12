@@ -9,7 +9,7 @@ import './TextArea.css';
  * @param {React.Ref} textAreaRef react ref на native textarea компонент
  * @param {boolean} autoResize default = true, автоматический пересчет высоты компонента при изменении контента
  * так, чтобы весь контент помещался в область textarea
- * @param props other props for textarea
+ * @param {React.HTMLAttributes<HTMLTextAreaElement>} props other props for textarea
  * @returns {JSX.Element}
  * @category UI-Components
  * @name TextArea

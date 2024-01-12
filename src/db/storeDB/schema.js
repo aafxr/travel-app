@@ -1,5 +1,8 @@
 import constants from "../../static/constants";
-import {defaultTravel} from "../../redux/travelStore/travelSlice";
+import {transform_expense_v29} from "./transform/expense/transform_expense_v29";
+import {transform_travel_v28} from "./transform/travel/transform_travel_v28";
+import {transform_travel_v30} from "./transform/travel/transform_travel_v30";
+import {transform_travel_v31} from "./transform/travel/transform_travel_v31";
 
 /***
  * @description - описание структуры бд store
@@ -7,12 +10,13 @@ import {defaultTravel} from "../../redux/travelStore/travelSlice";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 28,
+    version: 31,
     stores: [
         {
             name: constants.store.STORE,
             key: 'name',
             indexes: [],
+
         },
         {
             name: constants.store.CURRENCY,
@@ -51,12 +55,23 @@ const schema = {
             name: constants.store.EXPENSES_ACTUAL,
             key: 'id',
             indexes: ['user_id', constants.indexes.PRIMARY_ENTITY_ID, 'section_id'],
-            upgrade: []
+            upgrade: [
+                {
+                    version: 29,
+                    transformCallback: transform_expense_v29,
+                }
+            ]
         },
         {
             name: constants.store.EXPENSES_PLAN,
             key: 'id',
             indexes: ['user_id', constants.indexes.PRIMARY_ENTITY_ID, 'section_id'],
+            upgrade: [
+                {
+                    version: 29,
+                    transformCallback: transform_expense_v29,
+                }
+            ]
         },
         {
             name: constants.store.EXPENSES_ACTIONS,
@@ -71,23 +86,15 @@ const schema = {
             upgrade: [
                 {
                     version: 28,
-                    transformCallback: (noModifiedTravel) => {
-                        const def = {}
-                        Object.keys(defaultTravel).forEach(key => def[key] = defaultTravel[key]())
-                        /**@type{TravelType}*/
-                        const travel = {...def, ...noModifiedTravel}
-                        console.log('before ' ,travel)
-                        travel.places.map((p, idx) => {
-                            if (p.date_start) p.time_start = p.date_start
-                            if (p.date_end) p.time_end = p.date_end
-                            delete p.date_start
-                            delete p.date_end
-
-                            return p
-                        })
-                        console.log(travel)
-                        return travel
-                    }
+                    transformCallback: transform_travel_v28
+                },
+                {
+                    version: 30,
+                    transformCallback: transform_travel_v30
+                },
+                {
+                    version: 31,
+                    transformCallback: transform_travel_v31
                 }
             ]
         },

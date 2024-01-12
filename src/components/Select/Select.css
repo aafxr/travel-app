@@ -1,0 +1,13 @@
+.select{
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+.select:focus{
+    box-shadow: var(--box-shadow);
+}
+
+.select option{
+    border: none;
+}

@@ -25,7 +25,7 @@ export default function TravelAddPlace() {
     const user = useUserSelector()
     const {travel, travelObj} = useTravelContext()
     const navigate = useNavigate()
-    const {timestamp} = useParams()
+    const {timestamp,dayNumber} = useParams()
     const [search,setSearch] = useSearchParams()
     const [placeName, setPlaceName] = useState('')
     // const [dateRange, setDateRange] = useState(/**@type{DateRangeType}*/{

@@ -5,7 +5,7 @@ import './container.css'
 
 /**
  * @typedef ContainerPropsType
- * @property children
+ * @property {React.ReactNode} children
  * @property {string} className css class
  */
 

@@ -5,7 +5,7 @@ import constants from "../static/constants";
 import {userActions, userReducer} from "./userStore/userSlice";
 
 
-export const store = configureStore({
+const store = configureStore({
     reducer: {
         [constants.redux.EXPENSES]: expensesReducer,
         [constants.redux.TRAVEL]: travelReducer,

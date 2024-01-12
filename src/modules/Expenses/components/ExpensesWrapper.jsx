@@ -1,21 +1,11 @@
-import React, {useContext, useEffect} from 'react'
-import {useDispatch, useSelector} from "react-redux";
+import React, {useContext} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import {WorkerContext} from "../../../contexts/WorkerContextProvider";
-
-import useDefaultSection from "../hooks/useDefaultSections";
-
-import constants from "../../../static/constants";
-
+import useUserSelector from "../../../hooks/useUserSelector";
 import usePostMessage from "../hooks/usePostMessage";
 
-import {initExpensesThunk} from "../../../redux/expensesStore/initExpensesThunk";
-import {actions} from "../../../redux/store";
 import '../css/Expenses.css'
-import updateCurrency from "../helpers/updateCurrency";
-import storeDB from "../../../db/storeDB/storeDB";
-import useUserSelector from "../../../hooks/useUserSelector";
 
 /**
  * @typedef {Object} DispatchType
@@ -31,7 +21,7 @@ import useUserSelector from "../../../hooks/useUserSelector";
  * @constructor
  */
 export default function ExpensesWrapper() {
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
     const {travelCode: primary_entity_id} = useParams()
     const {worker} = useContext(WorkerContext)
     const user = useUserSelector()

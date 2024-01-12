@@ -46,6 +46,11 @@ async function openDataBase(dbname, version, stores) {
                 }
             });
 
+
+            /***
+             * обновление данных в бд, для обновления необходимо в
+             * db/storeDB/schema добавить к store.upgrade метод который обновляет записи в бд
+             */
             /*** отфильтровываем таблицы, для которых предусмотренно изменение данных */
             stores
                 .filter(store => Array.isArray(store.upgrade))

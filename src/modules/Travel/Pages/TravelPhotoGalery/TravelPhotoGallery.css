@@ -1,0 +1,23 @@
+.photo-gallery-container{
+    display: flex;
+    flex-direction: column;
+    max-height: calc(var(--vh) * 100);
+}
+
+.photo-gallery-content{
+    overflow-y: scroll;
+}
+
+.photo-gallery{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    overflow-y: scroll;
+}
+
+.photo-gallery-image{
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--br-16);
+    overflow: hidden;
+}

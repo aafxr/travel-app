@@ -1,0 +1,13 @@
+.add-photo-container{
+    display: flex;
+    flex-direction: column;
+    height: calc(var(--vh) * 100);
+}
+
+.add-photo-image{
+    position: relative;
+    height: 71%;
+    border-radius: var(--br-16);
+    overflow: hidden;
+}
+

@@ -24,11 +24,14 @@ import Graph from "./utils/data-structures/Graph";
 import GraphEdge from "./utils/data-structures/GraphEdge";
 import GraphVertex from "./utils/data-structures/GraphVertex";
 import getDistanceFromTwoPoints from "./utils/getDistanceFromTwoPoints";
+import {generateCurrency} from "./data/generateCurrency";
 
 
 let theme = localStorage.getItem(THEME)
 theme = theme === 'default' ? 'light-theme' : theme
 document.body.classList.add(theme)
+
+// generateCurrency()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
