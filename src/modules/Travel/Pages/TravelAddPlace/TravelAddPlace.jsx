@@ -90,13 +90,18 @@ export default function TravelAddPlace() {
         }
     }
 
+    function placeNameChnage(e){
+        console.log(e);
+        setPlaceName(e.target.value)
+    }
+
 
     /** @param {PlaceType[]} placesList */
     function handleSelectedPlaces(placesList){
         const filtered = placesList.filter(p => !travelObj.places.find(tp => tp.id === p.id))
         setPlaces(filtered)
     }
-
+console.log(placeName);
     return (
         <div className='wrapper'>
             <Container className='column gap-1 pb-20'>
@@ -105,7 +110,7 @@ export default function TravelAddPlace() {
                     <InputWithSuggests
                         type='text'
                         value={placeName}
-                        onChange={(e) => setPlaceName(e.target.value)}
+                        onChange={placeNameChnage}
                         placeholder='Выберите место'
                         onPlaces={handleSelectedPlaces}
                     />

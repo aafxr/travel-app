@@ -15,9 +15,10 @@ import {Input} from "../index";
  * @param {React.Ref} ref react ref
  * @returns {JSX.Element}
  */
-function InputWithPlaces({onPlaces, delay = 500, ...props}, ref) {
-    const requestSuggests = useCallback(debounce((e) =>  {
+function InputWithPlaces({onPlaces, value,delay = 500, ...props}, ref) {
+    const requestSuggests = (e) =>  {
         const text = e.target.value.trim()
+        console.log(e.target.value.trim());
         if(text.length) {
             aFetch.post('/places/getList/', {text})
                 .then(resp => resp.data)
@@ -29,12 +30,14 @@ function InputWithPlaces({onPlaces, delay = 500, ...props}, ref) {
                 })
                 .catch(console.error)
         }
-    }, delay, {trailing:true}), [])
+    }
 
     /***
      * @param {InputEvent} e
      */
     const handleInputChange = (e) =>  {
+        console.log(e.target.value.trim());
+        const t = e.target.value
         requestSuggests(e)
         props.onChange && props.onChange(e)
     }

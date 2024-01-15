@@ -27,7 +27,11 @@ function Input({delay = 0, ...props}, ref) {
     }
 
     const handleChangeInput = useCallback(debounce(/**@param{ChangeEvent | InputEvent} e */ e => {
-        console.log(e)
+        const {onInput, onChange} = props
+        const {type} = e
+        if(type === 'change' && onChange){
+            onChange(e)
+        }
 
     }, delay, {trailing: true}), [delay])
 
@@ -38,7 +42,6 @@ function Input({delay = 0, ...props}, ref) {
                 className={styles}
                 onKeyUp={handleEnterKeyUp}
                 onChange={handleChangeInput}
-                onInput={handleChangeInput}
             />
     )
 }
