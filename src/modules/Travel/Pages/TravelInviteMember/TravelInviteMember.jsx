@@ -1,3 +1,4 @@
+import {nanoid} from "nanoid";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -10,12 +11,10 @@ import TelegramIcon from "../../../../components/svg/TelegramIcon";
 import Button from "../../../../components/ui/Button/Button";
 import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
+import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
-import {useSelector} from "react-redux";
-import constants from "../../../../static/constants";
-import {nanoid} from "nanoid";
 
 /**@type{MemberType} */
 const defaultMember = {

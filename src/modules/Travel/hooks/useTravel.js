@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
 
 import constants from "../../../static/constants";
 import storeDB from "../../../db/storeDB/storeDB";
@@ -17,8 +16,6 @@ import {actions} from "../../../redux/store";
  * @returns {UseTravelType}
  */
 export default function useTravel() {
-    const dispatch = useDispatch()
-    const {travels, travelID, travelsLoaded} = useSelector(state => state[constants.redux.TRAVEL])
     const {travelCode} = useParams()
     const [errorMessage, setErrorMessage] = useState(/**@type{string | null} */null)
 

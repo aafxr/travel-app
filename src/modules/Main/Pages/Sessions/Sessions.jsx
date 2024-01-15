@@ -1,4 +1,3 @@
-import {useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 
 import {PageHeader} from "../../../../components/ui";

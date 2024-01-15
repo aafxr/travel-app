@@ -1,5 +1,4 @@
-import {Provider} from 'react-redux'
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect} from "react";
 import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";

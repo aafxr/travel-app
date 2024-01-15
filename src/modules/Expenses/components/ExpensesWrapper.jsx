@@ -21,7 +21,6 @@ import '../css/Expenses.css'
  * @constructor
  */
 export default function ExpensesWrapper() {
-    // const dispatch = useDispatch()
     const {travelCode: primary_entity_id} = useParams()
     const {worker} = useContext(WorkerContext)
     const user = useUserSelector()

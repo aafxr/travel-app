@@ -1,6 +1,5 @@
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
 
 import Container from "../../../../components/Container/Container";
 import {updateUser} from "../../../../redux/userStore/updateUser";

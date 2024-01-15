@@ -3,7 +3,6 @@ import constants from "../../../static/constants";
 import ErrorReport from "../../../controllers/ErrorReport";
 import aFetch from "../../../axios";
 import storeDB from "../../../db/storeDB/storeDB";
-import {useDispatch} from "react-redux";
 import {actions} from "../../../redux/store";
 
 
@@ -15,7 +14,6 @@ import {actions} from "../../../redux/store";
  */
 export default function useDefaultSection(primary_entity_id, user_id) {
     const [errorMessage, setErrorMessage] = useState('')
-    const dispatch = useDispatch()
 
     // добавлени дефолтных секций
     useEffect(() => {

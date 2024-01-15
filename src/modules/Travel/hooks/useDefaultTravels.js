@@ -1,5 +1,4 @@
 import {useEffect} from "react";
-import {useDispatch} from "react-redux";
 
 import constants from "../../../static/constants";
 import storeDB from "../../../db/storeDB/storeDB";

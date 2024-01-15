@@ -1,4 +1,3 @@
-import {useSelector} from "react-redux";
 import constants from "../static/constants";
 
 /**
