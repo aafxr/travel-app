@@ -9,6 +9,8 @@
  * @category Types
  */
 
+import {DBFlagType} from "./DBFlagType";
+
 /**
  * @typedef {object} EditLimitType
  * @property {string | number} id
@@ -17,3 +19,11 @@
  * @property {number | boolean } [personal]
  * @property {number} [value] \>= 0
  */
+
+
+export interface LimitType{
+    id: string
+    value: number
+    personal: DBFlagType
+    section_id: string
+}

@@ -7,4 +7,11 @@
  * @property {DBFlagType} hidden
  * @category Types
  */
+import {DBFlagType} from "./DBFlagType";
 
+export interface SectionType{
+    id: string
+    title: string
+    color: string
+    hidden: DBFlagType
+}

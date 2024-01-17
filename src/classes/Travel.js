@@ -334,17 +334,24 @@ export default class Travel extends BaseTravel {
      * @returns {Promise<TravelType[]>}
      */
     static async travelList() {
+        let list
         try {
-            let list = (await aFetch.get('/travel/getList/')).data
+            list = (await aFetch.get('/travel/getList/')).data
+        } catch (err) {
+            defaultHandleError(err, 'Проблема с подключением')
+        }
+
+        try {
             if(!Array.isArray(list))
                 list = await storeDB.getAll(constants.store.TRAVEL)
-
-            list = list.map(l => new BaseTravel(l).object)
-            return list
         } catch (err) {
             defaultHandleError(err)
             return []
         }
+
+
+            list = list.map(l => new BaseTravel(l).object)
+            return list
     }
 
     /**

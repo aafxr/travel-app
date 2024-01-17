@@ -10,6 +10,8 @@
  * @category Types
  */
 
+import {CoordinatesType} from "./CoordinatesType";
+
 /**
  * @description предпологаемое описание точки на карте
  * @typedef {Object} WaypointType
@@ -23,9 +25,9 @@
  * @category Types
  */
 
-export type WaypointType = {
+export interface WaypointType{
     id: string,
-    coords: [number, number],
+    coords: CoordinatesType,
     address: string,
     locality: string,
 }

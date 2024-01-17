@@ -9,7 +9,7 @@
  */
 import {DBFlagType} from "./DBFlagType";
 
-export type TravelPreferences = {
+export interface TravelPreferences {
     public: DBFlagType,
     showRoute: DBFlagType,
     showExpenses: DBFlagType,
