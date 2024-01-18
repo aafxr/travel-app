@@ -9,6 +9,7 @@ import Travel from "../classes/Travel";
 import useUpdate from "../hooks/useUpdate";
 import useUserSelector from "../hooks/useUserSelector";
 import {Travel2} from "../classes/Travel2";
+import Place from "../classes/Place";
 
 /**
  * @name TravelContextType
@@ -45,6 +46,9 @@ export default function TravelContextProvider() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
+window.localdb = storeDB
+    window.Travel = Travel2
+    window.Place = Place
 
     useEffect(() => {
         if (user && travelCode && (!state.travel || state.travel.id !== travelCode)) {

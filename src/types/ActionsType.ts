@@ -10,4 +10,16 @@
  * @property {string} user_id
  * @category Types
  */
+import {StoreName} from "./StoreName";
+import {DBFlagType} from "./DBFlagType";
+
+export interface ActionsType<T extends {dto: Function}>{
+    id: string
+    action: string
+    data: T
+    entity: StoreName
+    datetime: Date
+    synced: DBFlagType
+    user_id: string
+}
 

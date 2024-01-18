@@ -78,5 +78,21 @@ export default class Place implements PlaceType {
         this.visited = visited
     }
 
+    dto():PlaceType{
+        return{
+            _id: this._id,
+            id: this.id,
+            name: this.name,
+            formatted_address: this.formatted_address,
+            type: this.type,
+            day: this.day,
+            location: this.location,
+            coords: this.coords,
+            time_start: this.time_start,
+            time_end: this.time_end,
+            visited: this.visited,
+        }
+    }
+
 
 }

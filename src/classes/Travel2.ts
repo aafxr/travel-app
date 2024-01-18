@@ -8,9 +8,20 @@ import {Preferences} from "./Preferences";
 import Place from "./Place";
 import Waypoint from "./Waypoint";
 import Subscription from "./Subscription";
+import EventEmitter from "./EventEmmiter";
+import {nanoid} from "nanoid";
+import storeDB from "../db/storeDB/storeDB";
+import {StoreName} from "../types/StoreName";
 
-export class Travel2 extends Subscription<Travel2> implements TravelType {
-    id = '';
+
+export enum TravelEnetName{
+    UPDATE= "update",
+}
+
+export class Travel2 extends EventEmitter implements TravelType {
+
+
+    id = nanoid(8);
     code = '';
     description = '';
     direction = '';
@@ -30,7 +41,7 @@ export class Travel2 extends Subscription<Travel2> implements TravelType {
 
     movementTypes: MovementType[] = [MovementType.CAR];
     places: PlaceType[] = [];
-    preferences: TravelPreferences;
+    preferences = new Preferences({});
     updated_at= new Date();
     waypoints: WaypointType[] = [];
 
@@ -50,9 +61,7 @@ export class Travel2 extends Subscription<Travel2> implements TravelType {
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
         if (travel.visibility) this.visibility = travel.visibility
-
-        this.preferences = new Preferences(travel.preferences || {})
-
+        if(travel.preferences) this.preferences = new Preferences(travel.preferences)
         if (travel.created_at) this.created_at = new Date(travel.created_at)
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
@@ -61,60 +70,65 @@ export class Travel2 extends Subscription<Travel2> implements TravelType {
 
     setId(id:string){
         this.id = id
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setCode(code:string){
         this.code = code
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setDescription(description:string){
         this.description = description
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setDirection(direction:string){
         this.direction = direction
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setOwner_id(owner_id:string){
         this.owner_id = owner_id
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setPhoto(photo:string){
         this.photo = photo
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setTitle(title:string){
         this.title = title
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
 
     setDays(days: number){
         this.days = days
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setIsFromPoint(isFromPoint: DBFlagType){
         this.isFromPoint = isFromPoint
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setChildren_count(children_count: number){
         this.children_count = children_count
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setMembers_count(members_count: number){
         this.members_count = members_count
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setVisibility(visibility: DBFlagType){
         this.visibility = visibility
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
 
     setDate_end(date_end: Date){
         this.date_end = new Date(date_end.setHours(23,59,59,999))
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
     }
     setDate_start(date_start: Date){
         this.date_start = new Date(date_start.setHours(0,0,0,0))
-        this.dispatch(this)
+        this.emit(TravelEnetName.UPDATE)
+    }
+
+    save(user_id = '', success = () =>{} , error = (e: Error) => {}){
+        storeDB.getOne(StoreName.TRAVEL, this.id)
+            .then(travel => )
     }
 }

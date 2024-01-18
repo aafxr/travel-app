@@ -1,5 +1,7 @@
 import {SectionType} from "../types/SectionType";
 import {DBFlagType} from "../types/DBFlagType";
+import storeDB from "../db/storeDB/storeDB";
+import constants from "../static/constants";
 
 /**
  * класс для работы с сущностью Section
@@ -27,6 +29,10 @@ export default class Section implements SectionType {
 
     setHidden(hidden: DBFlagType) {
         this.hidden = hidden
+    }
+
+    static async defaultSections(){
+        return await storeDB.getAll(constants.store.SECTION)
     }
 
 }
