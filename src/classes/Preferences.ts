@@ -16,4 +16,14 @@ export class Preferences implements TravelPreferences{
         if(pref.showExpenses !== undefined) this.showExpenses = pref.showExpenses
         if(pref.showRoute !== undefined) this.showRoute = pref.showRoute
     }
+
+    dto():TravelPreferences{
+        return {
+            public: this.public,
+            showCheckList: this.showCheckList,
+            showComments: this.showComments,
+            showExpenses: this.showExpenses,
+            showRoute: this.showRoute,
+        }
+    }
 }

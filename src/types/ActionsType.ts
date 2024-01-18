@@ -13,9 +13,15 @@
 import {StoreName} from "./StoreName";
 import {DBFlagType} from "./DBFlagType";
 
-export interface ActionsType<T extends {dto: Function}>{
+export enum ActionName {
+    ADD = "add",
+    UPDATE = "update",
+    DELETE = "delete"
+}
+
+export interface ActionType<T> {
     id: string
-    action: string
+    action: ActionName
     data: T
     entity: StoreName
     datetime: Date

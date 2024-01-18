@@ -27,4 +27,13 @@ export default class Waypoint implements WaypointType {
         this.coords = coords
     }
 
+    dto():WaypointType{
+        return {
+            id: this.id,
+            address: this.address,
+            locality: this.locality,
+            coords: this.coords,
+        }
+    }
+
 }

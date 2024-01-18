@@ -10,7 +10,7 @@ import {transform_travel_v31} from "./transform/travel/transform_travel_v31";
  */
 const schema = {
     dbname: 'travelAppStore',
-    version: 31,
+    version: 32,
     stores: [
         {
             name: constants.store.STORE,

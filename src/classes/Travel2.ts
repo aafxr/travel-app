@@ -1,21 +1,19 @@
 import {TravelType} from "../types/TravelType";
 import {MovementType} from "../types/MovementType";
-import {WaypointType} from "../types/WaypointType";
 import {DBFlagType} from "../types/DBFlagType";
-import {TravelPreferences} from "../types/TravelPreferences";
-import {PlaceType} from "../types/PlaceType";
 import {Preferences} from "./Preferences";
 import Place from "./Place";
 import Waypoint from "./Waypoint";
-import Subscription from "./Subscription";
 import EventEmitter from "./EventEmmiter";
 import {nanoid} from "nanoid";
 import storeDB from "../db/storeDB/storeDB";
 import {StoreName} from "../types/StoreName";
+import {Action} from "./Action";
+import {ActionName} from "../types/ActionsType";
 
 
-export enum TravelEnetName{
-    UPDATE= "update",
+export enum TravelEnetName {
+    UPDATE = "update",
 }
 
 export class Travel2 extends EventEmitter implements TravelType {
@@ -40,10 +38,10 @@ export class Travel2 extends EventEmitter implements TravelType {
     date_start = new Date();
 
     movementTypes: MovementType[] = [MovementType.CAR];
-    places: PlaceType[] = [];
     preferences = new Preferences({});
-    updated_at= new Date();
-    waypoints: WaypointType[] = [];
+    updated_at = new Date();
+    places: Place[] = [];
+    waypoints: Waypoint[] = [];
 
     constructor(travel: Partial<TravelType>) {
         super()
@@ -61,74 +59,121 @@ export class Travel2 extends EventEmitter implements TravelType {
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
         if (travel.visibility) this.visibility = travel.visibility
-        if(travel.preferences) this.preferences = new Preferences(travel.preferences)
+        if (travel.preferences) this.preferences = new Preferences(travel.preferences)
         if (travel.created_at) this.created_at = new Date(travel.created_at)
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
         if (travel.updated_at) this.updated_at = new Date(travel.updated_at)
     }
 
-    setId(id:string){
+    setId(id: string) {
         this.id = id
         this.emit(TravelEnetName.UPDATE)
     }
-    setCode(code:string){
+
+    setCode(code: string) {
         this.code = code
         this.emit(TravelEnetName.UPDATE)
     }
-    setDescription(description:string){
+
+    setDescription(description: string) {
         this.description = description
         this.emit(TravelEnetName.UPDATE)
     }
-    setDirection(direction:string){
+
+    setDirection(direction: string) {
         this.direction = direction
         this.emit(TravelEnetName.UPDATE)
     }
-    setOwner_id(owner_id:string){
+
+    setOwner_id(owner_id: string) {
         this.owner_id = owner_id
         this.emit(TravelEnetName.UPDATE)
     }
-    setPhoto(photo:string){
+
+    setPhoto(photo: string) {
         this.photo = photo
         this.emit(TravelEnetName.UPDATE)
     }
-    setTitle(title:string){
+
+    setTitle(title: string) {
         this.title = title
         this.emit(TravelEnetName.UPDATE)
     }
 
-    setDays(days: number){
+    setDays(days: number) {
         this.days = days
         this.emit(TravelEnetName.UPDATE)
     }
-    setIsFromPoint(isFromPoint: DBFlagType){
+
+    setIsFromPoint(isFromPoint: DBFlagType) {
         this.isFromPoint = isFromPoint
         this.emit(TravelEnetName.UPDATE)
     }
-    setChildren_count(children_count: number){
+
+    setChildren_count(children_count: number) {
         this.children_count = children_count
         this.emit(TravelEnetName.UPDATE)
     }
-    setMembers_count(members_count: number){
+
+    setMembers_count(members_count: number) {
         this.members_count = members_count
         this.emit(TravelEnetName.UPDATE)
     }
-    setVisibility(visibility: DBFlagType){
+
+    setVisibility(visibility: DBFlagType) {
         this.visibility = visibility
         this.emit(TravelEnetName.UPDATE)
     }
 
-    setDate_end(date_end: Date){
-        this.date_end = new Date(date_end.setHours(23,59,59,999))
-        this.emit(TravelEnetName.UPDATE)
-    }
-    setDate_start(date_start: Date){
-        this.date_start = new Date(date_start.setHours(0,0,0,0))
+    setDate_end(date_end: Date) {
+        this.date_end = new Date(date_end.setHours(23, 59, 59, 999))
         this.emit(TravelEnetName.UPDATE)
     }
 
-    save(user_id = '', success = () =>{} , error = (e: Error) => {}){
+    setDate_start(date_start: Date) {
+        this.date_start = new Date(date_start.setHours(0, 0, 0, 0))
+        this.emit(TravelEnetName.UPDATE)
+    }
+
+    dto(): TravelType {
+        return {
+            id: this.id,
+            code: this.code,
+            description: this.description,
+            direction: this.direction,
+            owner_id: this.owner_id,
+            photo: this.photo,
+            title: this.title,
+            days: this.days,
+            isFromPoint: this.isFromPoint,
+            children_count: this.children_count,
+            members_count: this.members_count,
+            visibility: this.visibility,
+            created_at: this.created_at,
+            date_end: this.date_end,
+            date_start: this.date_start,
+            movementTypes: this.movementTypes,
+            places: this.places.map(p => p.dto()),
+            preferences: this.preferences.dto(),
+            waypoints: this.waypoints.map(w => w.dto()),
+            updated_at: this.updated_at,
+        }
+    }
+
+    save(user_id = '', success = () => {
+    }, error = (e: Error) => {
+    }) {
         storeDB.getOne(StoreName.TRAVEL, this.id)
-            .then(travel => )
+            .then(travel => {
+                let action: Action<TravelType>
+                if (travel) {
+                    action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.UPDATE)
+                } else {
+                    action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.ADD)
+                }
+
+                storeDB.addElement(StoreName.AC)
+            })
     }
 }
