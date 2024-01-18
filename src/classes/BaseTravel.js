@@ -2,17 +2,16 @@ import Entity from "./Entity";
 import travel_service from "../services/travel-service";
 import {
     DEFAULT_TRAVEL_DETAILS_FILTER,
-    defaultMovementTags,
     ENTITY, DENSITY,
     MS_IN_DAY,
-    SIGHTSEEING_DEPTH, SPEED, VISIBILITY
+    SPEED, VISIBILITY
 } from "../static/constants";
-import RouteBuilder from "./RouteBuilder";
 import defaultTravelDetailsFilter from "../utils/default-values/defaultTravelDetailsFilter";
 import createId from "../utils/createId";
 import {nanoid} from "nanoid";
 import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
 import TimeHelper from "./TimeHelper";
+import {defaultMovementTags} from '../components/defaultMovementTags'
 
 const defaultMovementTypes = [{id: defaultMovementTags[0].id, title: defaultMovementTags[0].title}]
 
@@ -56,7 +55,7 @@ export default class BaseTravel extends Entity {
             eventsRate: DENSITY.NORMAL
         }),
         permissions: () => ({}),
-        visibility: () => VISIBILITY.COMMENTS | VISIBILITY.EXPENSES | VISIBILITY.CHECKLIST | VISIBILITY.ROUTE, 
+        visibility: () => VISIBILITY.COMMENTS | VISIBILITY.EXPENSES | VISIBILITY.CHECKLIST | VISIBILITY.ROUTE,
     }
     /***@type{TravelType} */
     _modified = {}
@@ -84,7 +83,7 @@ export default class BaseTravel extends Entity {
             this._new = true
         }
 
-        this.timeHelper = new TimeHelper(9 * 60 * 60 *1000, 19 * 60 * 60 * 1000)
+        this.timeHelper = new TimeHelper(9 * 60 * 60 * 1000, 19 * 60 * 60 * 1000)
 
         Object
             .keys(BaseTravel.initValue)
@@ -111,7 +110,7 @@ export default class BaseTravel extends Entity {
             places: item.places ? item.places.map(p => ({
                 ...p,
                 time_start: new Date(p.time_start || 0),
-                time_end: new Date(p.time_end || p.time_start + 30 * 60 * 1000 * this._modified.preferences.density ||  2),
+                time_end: new Date(p.time_end || p.time_start + 30 * 60 * 1000 * this._modified.preferences.density || 2),
                 type: 2001,
             })) : [],
             __route: [],
@@ -147,15 +146,15 @@ export default class BaseTravel extends Entity {
         this._modified.waypoints.forEach(wp => wp.type = ENTITY.POINT)
     }
 
-    _calcRoute(){
+    _calcRoute() {
         this._modified.__route = []
-        const places = this._modified.places.sort((a,b) => a.time_start - b.time_start)
-        if(places.length === 0 ) return
+        const places = this._modified.places.sort((a, b) => a.time_start - b.time_start)
+        if (places.length === 0) return
 
         let prevPlace = places[0]
         this._modified.__route[0] = prevPlace
         let index = 1
-        while(places[index]){
+        while (places[index]) {
             const nextPlace = places[index]
 
             const distance = getDistanceFromTwoPoints(prevPlace.coords, nextPlace.coords)
@@ -172,14 +171,14 @@ export default class BaseTravel extends Entity {
                 end: new Date(prevPlace.time_end.getTime() + duration),
             }
 
-            if(moving.end > nextPlace.time_start)
+            if (moving.end > nextPlace.time_start)
                 nextPlace.__expire = true
 
             this._modified.__route.push(moving)
             this._modified.__route.push(nextPlace)
-            prevPlace = nextPlace 
+            prevPlace = nextPlace
 
-            index ++
+            index++
         }
     }
 
@@ -437,7 +436,7 @@ export default class BaseTravel extends Entity {
     setDateStart(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
-            d.setHours(0,0,0,0)
+            d.setHours(0, 0, 0, 0)
             this._modified.date_start = d
             this.emit('date_start', [this._modified.date_start])
             this.change = true
@@ -465,7 +464,7 @@ export default class BaseTravel extends Entity {
     setDateEnd(date) {
         const d = date instanceof Date ? date : new Date(date || '')
         if (!Number.isNaN(d.getTime())) {
-            d.setHours(23,59,59,999)
+            d.setHours(23, 59, 59, 999)
             this._modified.date_end = d
             this.emit('date_end', [this._modified.date_end])
             this.change = true
@@ -544,8 +543,8 @@ export default class BaseTravel extends Entity {
      * @param {number} d
      * @returns {BaseTravel}
      */
-    setDays(d){
-        if(d > 0) {
+    setDays(d) {
+        if (d > 0) {
             this._modified.days = d
             this._modified.date_end = new Date(this._modified.date_start + d * MS_IN_DAY)
             this.emit('days', [d])
@@ -578,8 +577,8 @@ export default class BaseTravel extends Entity {
      * @param {Partial<TravelPreferencesType>} options
      * @return {BaseTravel}
      */
-    setPreferences(options){
-        if(options){
+    setPreferences(options) {
+        if (options) {
             this._modified.preferences = {
                 ...this._modified.preferences,
                 ...options
@@ -881,9 +880,9 @@ export default class BaseTravel extends Entity {
      * @param {PlaceType} insertedValue вставляемое значение
      * @returns {BaseTravel}
      */
-    insertPlaceAfter(after, insertedValue){
+    insertPlaceAfter(after, insertedValue) {
         const idx = this._modified.places.findIndex(p => p.id === after.id)
-        if(~idx)
+        if (~idx)
             console.warn(new Error(`element ${after} not found`))
 
         this._modified.places.splice(idx + 1, 0, insertedValue)
@@ -937,7 +936,7 @@ export default class BaseTravel extends Entity {
         return this
     }
 
-    _sortPlaces(){
+    _sortPlaces() {
         // this._modified.places.sort((a,b) => {
         //     if(!a.__day) return 1
         //     else if()
@@ -1005,7 +1004,7 @@ export default class BaseTravel extends Entity {
     addMember(item) {
         if (item) {
             const idx = this._modified.members.findIndex(m => m === item.id)
-            if(~idx) {
+            if (~idx) {
                 this._modified.members.push(item.id)
                 this.emit('members', [this._modified.members])
                 this.change = true
@@ -1023,7 +1022,7 @@ export default class BaseTravel extends Entity {
      */
     setMembers(items) {
         if (Array.isArray(items)) {
-            this._modified.members = items.map(item=> item.id)
+            this._modified.members = items.map(item => item.id)
             this.emit('members', [this._modified.members])
             this.change = true
         }
@@ -1250,7 +1249,7 @@ export default class BaseTravel extends Entity {
         travelDTO.appointments.forEach(a => a.date = a.date.toISOString())
 
         travelDTO.places = travelDTO.places.map(p => {
-            const np = { ...p }
+            const np = {...p}
             delete np.type
             return np
         })

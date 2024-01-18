@@ -1,6 +1,6 @@
 import React from 'react';
 
-function AirplaneIcon(props:React.SVGProps<SVGSVGElement>) {
+export function AirplaneIcon(props:React.SVGProps<SVGSVGElement>) {
     return (
         <svg {...props} width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="airplanemode_active_24px">
@@ -10,4 +10,3 @@ function AirplaneIcon(props:React.SVGProps<SVGSVGElement>) {
     );
 }
 
-export default AirplaneIcon;

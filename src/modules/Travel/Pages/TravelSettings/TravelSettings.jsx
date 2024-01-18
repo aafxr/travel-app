@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
-import {defaultMovementTags} from "../../../../static/constants";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
@@ -17,6 +16,7 @@ import dateRange from "../../../../utils/dateRange";
 
 import './TravelSettings.css'
 import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 
 
 const sightseeingTime = [

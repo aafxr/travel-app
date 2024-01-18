@@ -1,9 +1,8 @@
 import clsx from "clsx";
 import React from 'react'
 
-import UserLocationIcon from "../svg/UserLocationIcon";
+import {UserLocationIcon, MinusIcon} from "../svg";
 import {pushAlertMessage} from "../Alerts/Alerts";
-import MinusIcon from "../svg/MinusIcon";
 import {PlusIcon} from "../svg";
 
 import './MapControls.css'

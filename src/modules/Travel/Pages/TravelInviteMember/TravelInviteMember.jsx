@@ -2,12 +2,10 @@ import {nanoid} from "nanoid";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
+import {ShareLinkIcon, TelegramIcon, WhatsappIcon} from "../../../../components/svg";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import ShareLinkIcon from "../../../../components/svg/ShareLinkIcon";
 import Container from "../../../../components/Container/Container";
-import WhatsappIcon from "../../../../components/svg/WhatsappIcon";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
-import TelegramIcon from "../../../../components/svg/TelegramIcon";
 import Button from "../../../../components/ui/Button/Button";
 import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
@@ -15,6 +13,7 @@ import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**@type{MemberType} */
 const defaultMember = {
@@ -38,7 +37,7 @@ const defaultMember = {
 export default function TravelInviteMember() {
     const navigate = useNavigate()
 
-    const {/**@type{UserType} */user} = useSelector(state => state[constants.redux.USER])
+    const user = useUserSelector()
     const [member, setMember] = useState(() => ({
         ...defaultMember,
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`

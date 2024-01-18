@@ -165,15 +165,19 @@ export class Travel2 extends EventEmitter implements TravelType {
     }, error = (e: Error) => {
     }) {
         storeDB.getOne(StoreName.TRAVEL, this.id)
-            .then(travel => {
+            .then(async (travel) => {
                 let action: Action<TravelType>
                 if (travel) {
+                    await storeDB.editElement(StoreName.TRAVEL, this.dto())
                     action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.UPDATE)
                 } else {
+                    await storeDB.addElement(StoreName.TRAVEL, this.dto())
                     action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.ADD)
                 }
 
-                storeDB.addElement(StoreName.AC)
+                await storeDB.addElement(StoreName.ACTION, action)
             })
+            .then(success)
+            .catch(error)
     }
 }

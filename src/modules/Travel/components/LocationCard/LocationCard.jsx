@@ -1,8 +1,7 @@
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
-import EditePencil from "../../../../components/svg/EditePencil";
-import {CheckIcon, PhotoIcon, PlusIcon, TrashIcon} from "../../../../components/svg";
+import {CheckIcon, EditePencil, PhotoIcon, PlusIcon, TrashIcon} from "../../../../components/svg";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Chip} from "../../../../components/ui";

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function BuildingIcon(props:React.SVGProps<SVGSVGElement>) {
+export function BuildingIcon(props:React.SVGProps<SVGSVGElement>) {
     return (
         <svg {...props} width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="Navigation / Building_04">
@@ -14,4 +14,3 @@ function BuildingIcon(props:React.SVGProps<SVGSVGElement>) {
     );
 }
 
-export default BuildingIcon;

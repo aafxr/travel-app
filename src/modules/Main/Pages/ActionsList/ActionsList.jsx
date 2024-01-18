@@ -4,11 +4,11 @@ import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import Container from "../../../../components/Container/Container";
 import ListItem from "../../../../components/ListItem/ListItem";
 import errorReport from "../../../../controllers/ErrorReport";
-import CheckIcon from "../../../../components/svg/CheckIcon";
 import Loader from "../../../../components/Loader/Loader";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {PageHeader} from "../../../../components/ui";
+import {CheckIcon} from "../../../../components/svg";
 
 
 const convertor = {

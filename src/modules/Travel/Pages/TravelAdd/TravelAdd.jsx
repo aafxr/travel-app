@@ -6,13 +6,13 @@ import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
-import MapIcon from "../../../../components/svg/MapIcon";
 import createTravel from "../../helpers/createTravel";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
-import {actions} from "../../../../redux/store";
 
 import '../../css/Travel.css'
+import {MapIcon} from "../../../../components/svg";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * @name TravelAdd
@@ -21,8 +21,7 @@ import '../../css/Travel.css'
  */
 export default function TravelAdd() {
     const navigate = useNavigate()
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    const user = useUserSelector()
 
     const [title, setTitle] = useState('')
 
@@ -44,7 +43,6 @@ export default function TravelAdd() {
             await storeDB.editElement(constants.store.TRAVEL, data)
             await storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
 
-            dispatch(actions.travelActions.addTravel(data))
             navigate('/travels/current/')
         }
     }

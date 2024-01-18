@@ -1,5 +1,5 @@
 import {Input} from "../ui";
-import DragIcon from "../svg/DragIcon";
+import {DragIcon} from "../svg";
 import Swipe from "../ui/Swipe/Swipe";
 import {useEffect, useState} from "react";
 import useTravelContext from "../../hooks/useTravelContext";

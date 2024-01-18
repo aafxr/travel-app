@@ -1,7 +1,7 @@
 import {motion} from "framer-motion";
 import {useEffect, useState} from "react";
 
-import ChevronRightIcon from "../svg/ChevronRightIcon";
+import {ChevronRightIcon} from "../svg";
 import {animationVariant} from "./animationVariant";
 import range from "../../utils/range";
 

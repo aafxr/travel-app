@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import {defaultMovementTags, MS_IN_DAY} from "../../../../static/constants";
+import {MS_IN_DAY} from "../../../../static/constants";
 import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
 import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import DateRange from "../../../../components/DateRange/DateRange";
@@ -12,6 +12,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 
 import "./TravelEdit.css"
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 
 
 /**

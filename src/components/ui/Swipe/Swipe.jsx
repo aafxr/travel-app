@@ -3,10 +3,9 @@ import {useSwipeable} from "react-swipeable";
 import React, {useEffect, useState} from "react";
 
 import useOutside from "../../../hooks/useOutside";
-import TrashIcon from "../../svg/TrashIcon";
-import CheckIcon from "../../svg/CheckIcon";
 
 import './Swipe.css'
+import {CheckIcon, TrashIcon} from "../../svg";
 
 let defaultMargin = 40
 

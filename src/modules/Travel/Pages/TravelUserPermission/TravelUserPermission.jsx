@@ -3,11 +3,11 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
-import TrashIcon from "../../../../components/svg/TrashIcon";
 import Button from "../../../../components/ui/Button/Button";
 import useTravel from "../../hooks/useTravel";
 
 import './TravelUserPermission.css'
+import {TrashIcon} from "../../../../components/svg";
 
 /**@type {MovementType[]} */
 const defaultMovementTypes = [

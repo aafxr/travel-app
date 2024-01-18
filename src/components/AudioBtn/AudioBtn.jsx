@@ -1,4 +1,4 @@
-import PlayIcon from "../svg/PlayIcon";
+import {PlayIcon} from "../svg";
 
 import './AudioBtn.css'
 

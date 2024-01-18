@@ -1,12 +1,12 @@
 import React, {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import {defaultMovementTags} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Photo from "../../../../components/Poto/Photo";
 import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 
 /**
  * компонент отображает карточку путешествия

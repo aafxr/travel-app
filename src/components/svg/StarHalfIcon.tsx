@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function StarHalfIcon(props:React.SVGProps<SVGSVGElement>) {
+export  function StarHalfIcon(props:React.SVGProps<SVGSVGElement>) {
     return (
         <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd"

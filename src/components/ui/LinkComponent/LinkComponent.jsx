@@ -1,9 +1,9 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
-import ChevronRightIcon from "../../svg/ChevronRightIcon";
 
 import './LinkComponent.css'
+import {ChevronRightIcon} from "../../svg";
 
 /**
  * компонент, обернутый в Link(куфсе-кщгеук-вщь) для добавления переходовна страницы

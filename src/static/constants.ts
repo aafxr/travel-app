@@ -1,9 +1,3 @@
-import React from "react";
-
-import WalkIcon from "../components/svg/WalkIcon";
-import CarIcon from "../components/svg/CarIcon";
-import BusIcon from "../components/svg/BusIcon";
-
 export const GLOBAL_DB_VERSION = 1;
 export const CACHE_VERSION = 16 + GLOBAL_DB_VERSION;
 
@@ -158,12 +152,9 @@ const month = {
     'декабрь': 11
 }
 
-/**
- *
- * @type {Proxy<typeof month>}
- */
+
 export const MONTH = new Proxy(month, {
-    get(target, prop) {
+    get(target, prop: keyof typeof month) {
         return prop.toLowerCase() in target ? target[prop] : -1
     }
 })

@@ -34,8 +34,9 @@ const schema = {
             key: 'id',
             indexes: [],
         },
+        //================ action =====================================================================================
         {
-            name: constants.store.STORE_ACTIONS,
+            name: constants.store.ACTION,
             key: 'id',
             indexes: ['synced', 'entity', 'action'],
         },
@@ -73,11 +74,6 @@ const schema = {
                 }
             ]
         },
-        {
-            name: constants.store.EXPENSES_ACTIONS,
-            key: 'id',
-            indexes: ['synced', 'entity', 'action'],
-        },
         //================ travels ===================================================================================
         {
             name: constants.store.TRAVEL,
@@ -97,11 +93,6 @@ const schema = {
                     transformCallback: transform_travel_v31
                 }
             ]
-        },
-        {
-            name: constants.store.TRAVEL_ACTIONS,
-            key: 'id',
-            indexes: ['synced', 'entity', 'action'],
         },
         {
             name: constants.store.CHECKLIST,

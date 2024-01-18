@@ -2,7 +2,6 @@ import clsx from "clsx";
 
 import Container from "../../../../components/Container/Container";
 import InfoBlock from "../../../../components/InfoBlock/InfoBlock";
-import FavoriteIcon from "../../../../components/svg/FavoriteIcon";
 import AudioBtn from "../../../../components/AudioBtn/AudioBtn";
 import Button from "../../../../components/ui/Button/Button";
 import Comment from "../../../../components/Comment/Comment";
@@ -11,6 +10,7 @@ import Rating from "../../../../components/Rating/Rating";
 import {Chip, PageHeader} from "../../../../components/ui";
 
 import './HotelDetails.css'
+import {FavoriteIcon} from "../../../../components/svg";
 
 /**
  * Страница отображения информации об отеле

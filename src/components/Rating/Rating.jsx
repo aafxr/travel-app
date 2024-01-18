@@ -1,5 +1,4 @@
-import StarIcon from "../svg/StarIcon";
-import StarHalfIcon from "../svg/StarHalfIcon";
+import {StarHalfIcon, StarIcon} from "../svg";
 
 import './Rating.css'
 
