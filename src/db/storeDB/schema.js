@@ -78,7 +78,7 @@ const schema = {
         {
             name: constants.store.TRAVEL,
             key: 'id',
-            indexes: [],
+            indexes: ["date_start"],
             upgrade: [
                 {
                     version: 28,

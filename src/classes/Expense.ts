@@ -1,43 +1,14 @@
-import constants from "../static/constants";
 import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
-import Entity from "./Entity";
-import storeDB from "../db/storeDB/storeDB";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
-import createId from "../utils/createId";
+import {ExpenseType} from "../types/ExpenseType";
 
 /**
  * данный класс позволяет работать с расходами
- * @class
- * @name Expense
- * @extends Entity
- *
- * @param {Travel} travel instance Travel
- * @param {ExpenseType} item прошлая запись о расзоде (если есть)
- * @param {string} user_id id пользователя, создавшего запись о расходе
- * @param {'planned' | 'actual'} type тип расходов
- * @constructor
+
  *
  */
-export default class Expense extends Entity {
-    /**@type{ExpenseType}*/
-    static initValue = {
-        id: () => '',
-        section_id: () => '',
-        user_id: () => '',
-        personal: () => 0,
-        title: () => '',
-        value: () => 0,
-        primary_entity_id: () => '',
-        created_at: () => new Date().toISOString(),
-        datetime: () => new Date().toISOString(),
-        entity_id: () => '',
-        entity_type: () => '',
-        primary_entity_type: () => '',
-        currency: () => '₽'
-    }
+export default class Expense implements ExpenseType {
 
-    /**@type{Travel}*/
-    _travel
 
     /**@type{ExchangeType}*/
     _exchange
@@ -46,57 +17,7 @@ export default class Expense extends Entity {
 
     _user_id
 
-    /**
-     * @param {Travel} travel instance Travel
-     * @param {ExpenseType} item прошлая запись о расзоде (если есть)
-     * @param {string} user_id id пользователя, создавшего запись о расходе
-     * @param {'planned' | 'actual'} type тип расходов
-     * @constructor
-     */
-    constructor(travel, item, user_id, type) {
-        super()
-        if (!item) {
-            item = {}
-            this._new = true
-        }
-
-        this._travel = travel
-
-        this._user_id = user_id
-
-        /***@type{ExpenseType}*/
-        this._modified = {}
-
-        Object.keys(Expense.initValue).forEach(key => this._modified[key] = Expense.initValue[key]())
-        this
-            .setID(item.id || createId(user_id))
-            .setCurrency(item.currency)
-            .setSectionId(item.section_id)
-            .setUserID(item.user_id || user_id)
-            .setPersonal(item.personal)
-            .setTitle(item.title)
-            .setValue(item.value)
-            .setPrimaryEntityID(item.primary_entity_id)
-            .setCreatedAt(item.created_at)
-            .setDatetime(item.datetime)
-            .setEntityID(item.entity_id)
-            .setEntityType(item.entity_type)
-            .setPrimaryEntityType(item.primary_entity_type)
-
-
-        storeDB.getOne(constants.store.CURRENCY, IDBKeyRange.upperBound(new Date(this.datetime).getTime()))
-            .then(/**@param{ExchangeType} t*/t => {
-                if (t) {
-                    this._exchange = t
-                    this._coef = t.value.find(e => e.symbol === this.currency)?.value || 1
-                    this.setCurrency(this.currency)
-                }
-            })
-
-        this.change = this._new
-        this.type = type
-        if (type === 'actual') this.storeName = constants.store.EXPENSES_ACTUAL
-        if (type === 'plan') this.storeName = constants.store.EXPENSES_PLAN
+    constructor(expense: Partial<Expense | ExpenseType>) {
 
     }
 
@@ -147,7 +68,7 @@ export default class Expense extends Entity {
         if (typeof currency === 'string' && currency.length > 0) {
             this._modified.currency = currency
             const c = this._exchange?.value.find(e => e.symbol === currency)
-            if(c) {
+            if (c) {
                 this._coef = c.value
             }
             this.emit('currency', [currency])
@@ -406,7 +327,7 @@ export default class Expense extends Entity {
     setPrimaryEntityType(type) {
         if (typeof type === 'string' && type.length > 0) {
             this._modified.primary_entity_type = type
-            this.emit('primary_entity_type',[type])
+            this.emit('primary_entity_type', [type])
             this.change = true
         }
         return this
