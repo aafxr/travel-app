@@ -161,9 +161,7 @@ export class Travel2 extends EventEmitter implements TravelType {
         }
     }
 
-    save(user_id = '', success = () => {
-    }, error = (e: Error) => {
-    }) {
+    save(user_id = '', success = () => {}, error = (e: Error) => {}) {
         storeDB.getOne(StoreName.TRAVEL, this.id)
             .then(async (travel) => {
                 let action: Action<TravelType>
@@ -177,6 +175,17 @@ export class Travel2 extends EventEmitter implements TravelType {
 
                 await storeDB.addElement(StoreName.ACTION, action)
             })
+            .then(success)
+            .catch(error)
+    }
+
+    delete(user_id = '', success = () => {}, error = (e: Error) => {}) {
+        const action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.DELETE)
+
+        Promise.all([
+            storeDB.addElement(StoreName.ACTION, action),
+            storeDB.removeElement(StoreName.TRAVEL, this.id)
+        ])
             .then(success)
             .catch(error)
     }

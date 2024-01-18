@@ -3,16 +3,16 @@ import {Link, useNavigate} from "react-router-dom";
 
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
+import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import createTravel from "../../helpers/createTravel";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
+import {MapIcon} from "../../../../components/svg";
 
 import '../../css/Travel.css'
-import {MapIcon} from "../../../../components/svg";
-import useUserSelector from "../../../../hooks/useUserSelector";
 
 /**
  * @name TravelAdd
