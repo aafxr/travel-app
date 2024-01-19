@@ -11,7 +11,6 @@ import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
-import updateExpenses from "../../helpers/updateExpenses";
 import BaseService from "../../../../classes/BaseService";
 import {updateLimits} from "../../helpers/updateLimits";
 import {defaultFilterValue} from "../../static/vars";
@@ -23,16 +22,8 @@ import '../../css/Expenses.css'
 
 /**
  * страница редактиррования лимитов
- * @function
- * @name LimitsEdit
- * @param {string} primary_entity_type
- * @returns {JSX.Element}
- * @category Pages
  */
-export default function LimitsEdit({
-                                       primary_entity_type
-                                   }) {
-    const {currency} = useSelector(state => state[constants.redux.EXPENSES])
+export default function LimitsEdit() {
     const {travel,travelObj} = useTravelContext()
     const {travelCode: primary_entity_id, sectionId} = useParams()
     const {pathname} = useLocation()
@@ -64,10 +55,10 @@ export default function LimitsEdit({
     const minLimit = useMemo(() => {
         if (expenses && expenses.length && section_id) {
             const date = new Date().toLocaleDateString()
-            const curr = currency[date]?.reduce((a, c) => {
-                a[c.symbol] = c
-                return a
-            }, {}) || {}
+            // const curr = currency[date]?.reduce((a, c) => {
+            //     a[c.symbol] = c
+            //     return a
+            // }, {}) || {}
 
             return expenses
                 .filter(e => (
@@ -77,12 +68,12 @@ export default function LimitsEdit({
                         : e.personal === 0)
                 ))
                 .reduce((acc, e) => {
-                    const coef = curr[e.currency]?.value || 1
-                    return e.value * coef + acc
+                    // const coef = curr[e.currency]?.value || 1
+                    return e.value * 1 + acc
                 }, 0)
         }
         return 0
-    }, [expenses, section_id, personal, user_id, currency])
+    }, [expenses, section_id, personal, user_id])
 
 
     //получаем все расходы (планы) за текущую поездку
@@ -156,7 +147,7 @@ export default function LimitsEdit({
                     value: value,
                     user_id,
                     primary_entity_id,
-                    primary_entity_type,
+                    primary_entity_type: travelObj.primary_entity_id,
                     id: createId(user_id)
                 }
                 limitService.create(limit, user_id)

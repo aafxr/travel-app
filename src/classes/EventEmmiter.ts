@@ -49,7 +49,7 @@ export default class EventEmitter {
                 .forEach(cb => cb(this))
     }
 
-    logEmitEventsNames(){
-        console.log([...this.events.keys()])
-    }
+    // logEmitEventsNames(){
+    //     console.log([...this.events.keys()])
+    // }
 }

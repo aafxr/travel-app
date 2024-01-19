@@ -1,464 +1,66 @@
-import {expenses_actual_service, expenses_plan_service} from "../services/expenses_service";
-import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 import {ExpenseType} from "../types/ExpenseType";
+import {DBFlagType} from "../types/DBFlagType";
+import {CurrencyName} from "../types/CurrencyName";
+import {nanoid} from "nanoid";
+import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
 
 /**
  * данный класс позволяет работать с расходами
-
- *
  */
-export default class Expense implements ExpenseType {
+class Expense implements ExpenseType {
+    id = nanoid(7);
+    entity_id = '';
+    entity_type = '';
+    primary_entity_id = '';
+    primary_entity_type = '';
+    section_id = '';
+    title = '';
+    user_id = '';
+    currency: CurrencyName = CurrencyName.RUB;
+    created_at = new Date();
+    datetime = new Date();
+    personal: DBFlagType = 0;
+    value = 0;
 
-
-    /**@type{ExchangeType}*/
-    _exchange
-
-    _coef = 1
-
-    _user_id
-
-    constructor(expense: Partial<Expense | ExpenseType>) {
-
+    constructor(expense: Partial<ExpenseType | Expense>) {
+        if(expense.id) this.id = expense.id
+        if(expense.entity_id) this.entity_id = expense.entity_id
+        if(expense.entity_type) this.entity_type = expense.entity_type
+        if(expense.primary_entity_id) this.primary_entity_id = expense.primary_entity_id
+        if(expense.primary_entity_type) this.primary_entity_type = expense.primary_entity_type
+        if(expense.section_id) this.section_id = expense.section_id
+        if(expense.title) this.title = expense.title
+        if(expense.user_id) this.user_id = expense.user_id
+        if(expense.currency) this.currency = expense.currency
+        if(expense.created_at) this.created_at = expense.created_at
+        if(expense.datetime) this.datetime = expense.datetime
+        if(expense.personal) this.personal = expense.personal
+        if(expense.value) this.value = expense.value
     }
 
-    /**
-     * геттер возвращает id расхода
-     * @get
-     * @name Expense.id
-     * @returns {string}
-     */
-    get id() {
-        return this._modified.id
+    setValue(value:number){
+        this.value = value
     }
 
-    /**
-     * метод устанавливает id расхода
-     * @method
-     * @name Expense.setID
-     * @param {string} id id расхода
-     * @returns {Expense}
-     */
-    setID(id) {
-        if (typeof id === 'string' && id.length > 0) {
-            this._modified.id = id
-            this.emit('id', [id])
-            this.change = true
+    dto(): ExpenseType{
+        return {
+            id: this.id,
+            entity_id: this.entity_id,
+            entity_type: this.entity_type,
+            primary_entity_id: this.primary_entity_id,
+            primary_entity_type: this.primary_entity_type,
+            section_id: this.section_id,
+            title: this.title,
+            user_id: this.user_id,
+            currency: this.currency,
+            created_at: this.created_at,
+            datetime: this.datetime,
+            personal: this.personal,
+            value: this.value,
         }
-        return this
     }
 
-    /**
-     * геттер возвращает currency расхода
-     * @get
-     * @name Expense.id
-     * @returns {string}
-     */
-    get currency() {
-        return this._modified.currency
-    }
-
-    /**
-     * метод устанавливает currency расхода
-     * @method
-     * @name Expense.setID
-     * @param {string} currency валюта расхода
-     * @returns {Expense}
-     */
-    setCurrency(currency) {
-        if (typeof currency === 'string' && currency.length > 0) {
-            this._modified.currency = currency
-            const c = this._exchange?.value.find(e => e.symbol === currency)
-            if (c) {
-                this._coef = c.value
-            }
-            this.emit('currency', [currency])
-            this._travel?.forceUpdate()
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает section_id
-     * @get
-     * @name Expense.section_id
-     * @returns {string}
-     */
-    get section_id() {
-        return this._modified.section_id
-    }
-
-    /**
-     * метод устанавливает id секции
-     * @method
-     * @name Expense.setSectionId
-     * @param {string} id id секции
-     * @returns {Expense}
-     */
-    setSectionId(id) {
-        if (typeof id === 'string' && id.length > 0) {
-            this._modified.section_id = id
-            this.emit('section_is', [id])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает user_id
-     * @get
-     * @name Expense.user_id
-     * @returns {string}
-     */
-    get user_id() {
-        return this._modified.user_id
-    }
-
-    /**
-     * метод устанавливает user_id
-     * @method
-     * @name Expense.setUserID
-     * @param {string} id user id
-     * @returns {Expense}
-     */
-    setUserID(id) {
-        if (typeof id === 'string' && id.length > 0) {
-            this._modified.user_id = id
-            this.emit('user_id', [id])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает personal
-     * @get
-     * @name Expense.personal
-     * @returns {DBFlagType}
-     */
-    get personal() {
-        return this._modified.personal
-    }
-
-    /**
-     * метод устанавливает personal
-     * @method
-     * @name Expense.setPersonal
-     * @param {DBFlagType} flag is expense personal
-     * @returns {Expense}
-     */
-    setPersonal(flag) {
-        if (typeof flag === 'number' && (flag === 1 || flag === 0)) {
-            this._modified.personal = flag
-            this.emit('personal', [flag])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает title
-     * @get
-     * @name Expense.title
-     * @returns {string}
-     */
-    get title() {
-        return this._modified.title
-    }
-
-    /**
-     * метод устанавливает title
-     * @method
-     * @name Expense.setTitle
-     * @param {string} title expense title
-     * @returns {Expense}
-     */
-    setTitle(title) {
-        if (typeof title === 'string' && title.length > 0) {
-            this._modified.title = title
-            this.emit('title', [title])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает value
-     * @get
-     * @name Expense.value
-     * @returns {number}
-     */
-    get value() {
-        return this._modified.value
-    }
-
-    /**
-     * метод устанавливает value
-     * @method
-     * @name Expense.setValue
-     * @param {number} value  expense value
-     * @returns {Expense}
-     */
-    setValue(value) {
-        if (typeof value === 'number' && value >= 0) {
-            this._modified.value = value
-            this.emit('value', [value])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает пересчитанное значение расхода
-     * @get
-     * @name Expense.convertedValue
-     * @returns {number}
-     */
-    get convertedValue() {
-        return this._modified.value * this._coef
-    }
-
-    /**
-     * метод проверяет является ли этот расход личным
-     * @method
-     * @name Expense.isPersonal
-     * @param {string} user_id
-     * @returns {boolean}
-     */
-    isPersonal(user_id) {
-        return this.personal === 1 && (user_id === this._modified.user_id || this._user_id === this._modified.user_id)
-    }
-
-    /**
-     * геттер возвращает primary_entity_id
-     * @get
-     * @name Expense.primary_entity_id
-     * @returns {string}
-     */
-    get primary_entity_id() {
-        return this._modified.primary_entity_id
-    }
-
-    /**
-     * метод устанавливает primary_entity_id
-     * @method
-     * @name Expense.setPrimaryEntityID
-     * @param {string} primary_entity_id  expense primary_entity_id
-     * @returns {Expense}
-     */
-    setPrimaryEntityID(primary_entity_id) {
-        if (typeof primary_entity_id === 'string' && primary_entity_id.length > 0) {
-            this._modified.primary_entity_id = primary_entity_id
-            this.emit('primary_entity_id', [primary_entity_id])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает entity_id
-     * @get
-     * @name Expense.entity_id
-     * @returns {string}
-     */
-    get entity_id() {
-        return this._modified.entity_id
-    }
-
-    /**
-     * метод устанавливает entity_id
-     * @method
-     * @name Expense.setEntityID
-     * @param {string} id  expense entity_id
-     * @returns {Expense}
-     */
-    setEntityID(id) {
-        if (typeof id === 'string' && id.length > 0) {
-            this._modified.entity_id = id
-            this.emit('entity_id', [id])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает entity_type
-     * @get
-     * @name Expense.entity_type
-     * @returns {string}
-     */
-    get entity_type() {
-        return this._modified.entity_type
-    }
-
-    /**
-     * метод устанавливает entity_type
-     * @method
-     * @name Expense.setEntityType
-     * @param {string} type  expense entity_type
-     * @returns {Expense}
-     */
-    setEntityType(type) {
-        if (typeof type === 'string' && type.length > 0) {
-            this._modified.entity_type = type
-            this.emit('entity_type', [type])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает primary_entity_type
-     * @get
-     * @name Expense.primary_entity_type
-     * @returns {string}
-     */
-    get primary_entity_type() {
-        return this._modified.primary_entity_type
-    }
-
-    /**
-     * метод устанавливает primary_entity_type
-     * @method
-     * @name Expense.setPrimaryEntityType
-     * @param {string} type  expense primary_entity_type
-     * @returns {Expense}
-     */
-    setPrimaryEntityType(type) {
-        if (typeof type === 'string' && type.length > 0) {
-            this._modified.primary_entity_type = type
-            this.emit('primary_entity_type', [type])
-            this.change = true
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает created_at
-     * @get
-     * @name Expense.created_at
-     * @returns {string}
-     */
-    get created_at() {
-        return this._modified.created_at
-    }
-
-    /**
-     * метод устанавливает created_at
-     * @method
-     * @name Expense.setCreatedAt
-     * @param {string | Date} time время когда была созданна запись о расходе впервые
-     * @returns {Expense}
-     */
-    setCreatedAt(time) {
-        if (time instanceof Date) {
-            this._modified.created_at = time.toISOString()
-            this.emit('created_at', [time])
-            this.change = true
-        } else if (typeof time === 'string') {
-            const date = new Date(time)
-            if (!Number.isNaN(date.getTime())) {
-                this._modified.created_at = date.toISOString()
-                this.change = true
-                this.emit('created_at', [time])
-            }
-        }
-        return this
-    }
-
-    /**
-     * геттер возвращает datetime
-     * @get
-     * @name Expense.datetime
-     * @returns {string}
-     */
-    get datetime() {
-        return this._modified.datetime
-    }
-
-    /**
-     * метод устанавливает datetime
-     * @method
-     * @name Expense.setDatetime
-     * @param {string | Date} time время когда была созданна запись о расходе впервые
-     * @returns {Expense}
-     */
-    setDatetime(time) {
-        if (time instanceof Date) {
-            this._modified.datetime = time.toISOString()
-            this.emit('datetime', [time])
-            this.change = true
-        } else if (typeof time === 'string') {
-            const date = new Date(time)
-            if (!Number.isNaN(date.getTime())) {
-                this._modified.datetime = date.toISOString()
-                this.emit('datetime', [time])
-                this.change = true
-            }
-        }
-        return this
-    }
-
-    /**
-     * @get
-     * @name Expense.changed
-     * @returns {boolean}
-     */
-    get changed() {
-        return this.change
-    }
-
-    /**
-     * метод созраняет запись о расходан в бд
-     * @method
-     * @name Expense.save
-     * @returns {Promise<Expense>}
-     */
-    async save() {
-        if (this.change) {
-            let expenseService
-            if (this.type === 'planned') {
-                expenseService = expenses_plan_service
-            } else if (this.type === 'actual') {
-                expenseService = expenses_actual_service
-            }
-            if (expenseService) {
-                this._new
-                    ? await expenseService.create(this.object)
-                        .catch(defaultHandleError)
-                    : await expenseService.update(this.object)
-                        .then(() => this._travel.forceUpdate())
-                this.change = false
-            }
-        }
-        return this
-    }
-
-    /**
-     * @method
-     * @name Expense.object
-     * @returns {ExpenseType}
-     */
-    get object() {
-        return this._modified;
-    }
-
-    /**
-     * метод удаляет запись о расходе из бд
-     * @method
-     * @name Expense.delete
-     * @returns {Promise<Expense>}
-     */
-    async delete() {
-        let expenseService
-        if (this.type === 'plan') {
-            expenseService = expenses_plan_service
-        } else if (this.type === 'actual') {
-            expenseService = expenses_actual_service
-        }
-        if (expenseService) {
-            await expenseService.delete(this._modified)
-        }
-        return this
-    }
 }
+
+
+export default staticIDBMethods(Expense)

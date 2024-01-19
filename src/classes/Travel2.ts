@@ -10,7 +10,7 @@ import storeDB from "../db/storeDB/storeDB";
 import {StoreName} from "../types/StoreName";
 import {Action} from "./Action";
 import {ActionName} from "../types/ActionsType";
-import {StaticIDBMethodsInterface, staticImplements} from "../types/StaticIDBMethodsInterface";
+import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
 
 
 export enum TravelEventName {
@@ -18,7 +18,7 @@ export enum TravelEventName {
 }
 
 
-export class Travel2 extends EventEmitter implements TravelType , StaticIDBMethodsInterface<Travel2>{
+class Travel2 extends EventEmitter implements TravelType{
 
 
     id = nanoid(8);
@@ -66,28 +66,6 @@ export class Travel2 extends EventEmitter implements TravelType , StaticIDBMetho
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
         if (travel.updated_at) this.updated_at = new Date(travel.updated_at)
-    }
-
-    add(data: Travel2, user_id: string, success?: Function | undefined, error?: Function | undefined): void {
-        throw new Error("Method not implemented.");
-    }
-    getOne(id: IDBValidKey, success: (data: Travel2 | undefined) => void, error: (e: Error) => void): void {
-        throw new Error("Method not implemented.");
-    }
-    getMany(range: IDBKeyRange, success: (data: Travel2[]) => void, error: (e: Error) => void): void {
-        throw new Error("Method not implemented.");
-    }
-    getOneFromIndex(index: keyof Travel2, query: IDBValidKey, success: (data: Travel2 | undefined) => void, error: (e: Error) => void): void {
-        throw new Error("Method not implemented.");
-    }
-    getManyFromIndex(index: keyof Travel2, query: IDBKeyRange, success: (data: Travel2[]) => void, error: (e: Error) => void): void {
-        throw new Error("Method not implemented.");
-    }
-    update(data: Travel2, user_id: string, success?: Function | undefined, error?: Function | undefined): void {
-        throw new Error("Method not implemented.");
-    }
-    delete(id: IDBValidKey, user_id: string, success?: Function | undefined, error?: Function | undefined): void {
-        throw new Error("Method not implemented.");
     }
 
     setId(id: string) {
@@ -219,3 +197,7 @@ export class Travel2 extends EventEmitter implements TravelType , StaticIDBMetho
 
 
 }
+
+
+
+export default staticIDBMethods(Travel2)

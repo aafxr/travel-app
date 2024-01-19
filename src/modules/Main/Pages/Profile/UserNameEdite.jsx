@@ -8,6 +8,7 @@ import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
+import useUserSelector from "../../../../hooks/useUserSelector";
 
 
 /**
@@ -18,8 +19,7 @@ import storeDB from "../../../../db/storeDB/storeDB";
  * @category Pages
  */
 export default function UserNameEdite() {
-    const {user} = useSelector(state => state[constants.redux.USER])
-    const dispatch = useDispatch()
+    const user = useUserSelector()
     const navigate = useNavigate()
 
     const [first_name, setFirstName] = useState(user?.first_name || '')
@@ -46,7 +46,6 @@ export default function UserNameEdite() {
             last_name,
             username
         }
-        dispatch(updateUser(newUserData))
         /** измененные поля пользователя +id */
         const changedFields = Object.keys(newUserData).reduce((acc, key) => {
             if (key === 'id'){

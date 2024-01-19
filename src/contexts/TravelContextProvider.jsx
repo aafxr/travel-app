@@ -8,7 +8,7 @@ import constants from "../static/constants";
 import Travel from "../classes/Travel";
 import useUpdate from "../hooks/useUpdate";
 import useUserSelector from "../hooks/useUserSelector";
-import {Travel2} from "../classes/Travel2";
+import Travel2 from "../classes/Travel2";
 import Place from "../classes/Place";
 
 /**
@@ -25,6 +25,7 @@ const defaultTravel = {
     travel: null,
     travelObj: null
 }
+
 
 /**
  * @type {React.Context<TravelContextType>}
