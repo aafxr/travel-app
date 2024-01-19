@@ -265,7 +265,7 @@ export class LocalDB {
      * поиск объекта в store по переданным параметрам query
      * @method LocalDB.getOne
      * @param {String} storeName                     массив с инфо о всех хранилищах в бд
-     * @param {String | Number | IDBKeyRange} query  параметры поиска
+     * @param {IDBValidKey} query  параметры поиска
      * @returns {Promise<any | undefined>}           возвращает Promise с резултатом поиска либо с ошибкой
      */
     async getOne(storeName, query) {
@@ -350,7 +350,7 @@ export class LocalDB {
      * @method LocalDB.getOneFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
-     * @param { string | IDBKeyRange} query        параметры поиска
+     * @param { IDBValidKey} query        параметры поиска
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
     async getOneFromIndex(storeName, indexName, query) {
@@ -368,12 +368,13 @@ export class LocalDB {
     }
 
 
+
     /**
      * поиск объекта в store по индексу с учетом переданных параметров query
      * @method LocalDB.getManyFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
-     * @param { string | IDBKeyRange} query        параметры поиска
+     * @param { IDBKeyRange} query        параметры поиска
      * @returns {Promise<[]>}                     Promise с результатом поиска либо ошибкой
      */
     async getManyFromIndex(storeName, indexName, query) {
@@ -395,17 +396,17 @@ export class LocalDB {
      * @method LocalDB.getAllFromIndex
      * @param {string} storeName                   имя хранилища в бд
      * @param {string} indexName                   имя индекса по котрому осуществляется поиск в бд
-     * @param { string | IDBKeyRange} query        параметры поиска
+     * @param {number} [count]
      * @returns {Promise<any>}                     Promise с результатом поиска либо ошибкой
      */
-    async getAllFromIndex(storeName, indexName, query) {
+    async getAllFromIndex(storeName, indexName, count) {
         while (!this.ready) await sleep(300)
 
         const storeInfo = this.getStoreInfo(storeName);
         if (storeInfo) {
             if (this.isIndexProp(storeInfo.indexes, indexName)) {
                 const db = await openDataBase(this.dbname, this.version, this.stores)
-                return await db.getAllFromIndex(storeName, indexName, query);
+                return await db.getAllFromIndex(storeName, indexName, count);
             }
             throw new Error(`[DB/${this.dbname}]: Index ${indexName} not exists in ${storeName}`)
         }
@@ -452,7 +453,7 @@ export class LocalDB {
      * удаляет объект из хранилище
      * @method LocalDB.removeElement
      * @param {string} storeName         имя хранилища
-     * @param {string} key               ключ удаляемого объекта
+     * @param {IDBValidKey | 'all'} key               ключ удаляемого объекта
      * @returns {Promise<void>}
      */
     async removeElement(storeName, key) {

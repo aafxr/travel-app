@@ -3,11 +3,12 @@ import {DBFlagType} from "../types/DBFlagType";
 import {CurrencyName} from "../types/CurrencyName";
 import {nanoid} from "nanoid";
 import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
+import EventEmitter from "./EventEmmiter";
 
 /**
  * данный класс позволяет работать с расходами
  */
-class Expense implements ExpenseType {
+class Expense extends EventEmitter implements ExpenseType {
     id = nanoid(7);
     entity_id = '';
     entity_type = '';
@@ -23,6 +24,7 @@ class Expense implements ExpenseType {
     value = 0;
 
     constructor(expense: Partial<ExpenseType | Expense>) {
+        super()
         if(expense.id) this.id = expense.id
         if(expense.entity_id) this.entity_id = expense.entity_id
         if(expense.entity_type) this.entity_type = expense.entity_type
@@ -38,7 +40,41 @@ class Expense implements ExpenseType {
         if(expense.value) this.value = expense.value
     }
 
-    setValue(value:number){
+
+    setId(id: string){
+        this.id = id
+    }
+    setEntity_id(entity_id: string){
+        this.entity_id = entity_id
+    }
+    setEntity_type(entity_type: string){
+        this.entity_type = entity_type
+    }
+    setPrimary_entity_id(primary_entity_id: string){
+        this.primary_entity_id = primary_entity_id
+    }
+    setPrimary_entity_type(primary_entity_type: string){
+        this.primary_entity_type = primary_entity_type
+    }
+    setSection_id(section_id: string){
+        this.section_id = section_id
+    }
+    setTitle(title: string){
+        this.title = title
+    }
+    setUser_id(user_id: string){
+        this.user_id = user_id
+    }
+    setCurrency(currency: CurrencyName){
+        this.currency = currency
+    }
+    setDatetime(datetime: Date){
+        this.datetime = new Date(datetime)
+    }
+    setPersonal(personal: DBFlagType){
+        this.personal = personal
+    }
+    setValue(value: number){
         this.value = value
     }
 
@@ -63,4 +99,4 @@ class Expense implements ExpenseType {
 }
 
 
-export default staticIDBMethods(Expense)
+export default staticIDBMethods(Expense, S)

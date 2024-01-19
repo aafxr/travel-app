@@ -1,9 +1,10 @@
+import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
 import {ActionName, ActionType} from "../types/ActionsType";
-import {StoreName} from "../types/StoreName";
 import {DBFlagType} from "../types/DBFlagType";
+import {StoreName} from "../types/StoreName";
 import {nanoid} from "nanoid";
 
-export class Action<T> implements ActionType<T> {
+class Action<T> implements ActionType<T> {
     id = nanoid(16);
     action: ActionName;
     data: T;
@@ -18,4 +19,18 @@ export class Action<T> implements ActionType<T> {
         this.entity = entity
         this.action = action
     }
+
+    dto(): ActionType<T>{
+        return {
+            id: this.id,
+            action: this.action,
+            data: this.data,
+            datetime: this.datetime,
+            entity: this.entity,
+            synced: this.synced,
+            user_id: this.user_id,
+        }
+    }
 }
+
+export default staticIDBMethods(Action, StoreName.ACTION, false)

@@ -200,4 +200,4 @@ class Travel2 extends EventEmitter implements TravelType{
 
 
 
-export default staticIDBMethods(Travel2)
+export default staticIDBMethods(Travel2, StoreName.TRAVEL, true)
