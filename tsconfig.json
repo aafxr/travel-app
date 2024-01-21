@@ -3,6 +3,8 @@
     "experimentalDecorators": true,
     "target": "ES5",
     "lib": [
+      "es2017",
+      "webworker",
       "dom",
       "dom.iterable",
       "esnext"

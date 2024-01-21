@@ -8,7 +8,7 @@ import EventEmitter from "./EventEmmiter";
 import {nanoid} from "nanoid";
 import storeDB from "../db/storeDB/storeDB";
 import {StoreName} from "../types/StoreName";
-import {Action} from "./Action";
+import Action from "./Action";
 import {ActionName} from "../types/ActionsType";
 import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
 
@@ -166,7 +166,7 @@ class Travel2 extends EventEmitter implements TravelType{
     save(user_id = '', success = () => {}, error = (e: Error) => {}) {
         storeDB.getOne(StoreName.TRAVEL, this.id)
             .then(async (travel) => {
-                let action: Action<TravelType>
+                let action
                 if (travel) {
                     await storeDB.editElement(StoreName.TRAVEL, this.dto())
                     action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.UPDATE)

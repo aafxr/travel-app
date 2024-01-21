@@ -4,11 +4,12 @@ import {CurrencyName} from "../types/CurrencyName";
 import {nanoid} from "nanoid";
 import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
 import EventEmitter from "./EventEmmiter";
+import {StoreName} from "../types/StoreName";
 
 /**
  * данный класс позволяет работать с расходами
  */
-class Expense extends EventEmitter implements ExpenseType {
+export default class Expense extends EventEmitter implements ExpenseType {
     id = nanoid(7);
     entity_id = '';
     entity_type = '';
@@ -98,5 +99,7 @@ class Expense extends EventEmitter implements ExpenseType {
 
 }
 
+const ExpenseActual = staticIDBMethods(Expense, StoreName.EXPENSES_ACTUAL, true)
+const ExpensePlan = staticIDBMethods(Expense, StoreName.EXPENSES_PLAN, true)
 
-export default staticIDBMethods(Expense, S)
+export {ExpenseActual, ExpensePlan}
