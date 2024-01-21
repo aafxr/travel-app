@@ -22,7 +22,7 @@ export enum ActionName {
 export interface ActionType<T> {
     id: string
     action: ActionName
-    data: T
+    data: Object
     entity: StoreName
     datetime: Date
     synced: DBFlagType

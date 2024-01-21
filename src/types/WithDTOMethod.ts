@@ -1,3 +1,3 @@
 export interface WithDTOMethod{
-    dto: () => Object
+    dto: () => {id:string}
 }

@@ -6,20 +6,20 @@ import {nanoid} from "nanoid";
 import {WithDTOMethod} from "../../types/WithDTOMethod";
 import {WithStoreProps} from "../../types/WithStoreProps";
 
-export default class Action<T> implements ActionType<T>, WithDTOMethod, WithStoreProps {
+export default class Action<T extends WithDTOMethod> implements ActionType<T>, WithDTOMethod, WithStoreProps {
     storeName = StoreName.ACTION
     withAction = false
 
     id = nanoid(16);
     action: ActionName;
-    data: T;
+    data: Object;
     datetime = new Date();
     entity: StoreName;
     synced: DBFlagType = 0;
     user_id = '';
 
     constructor(data: T, user_id: string, entity: StoreName, action: ActionName) {
-        this.data = data
+        this.data = data.dto()
         this.user_id = user_id
         this.entity = entity
         this.action = action

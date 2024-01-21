@@ -1,57 +1,52 @@
-import {openDB} from "idb";
+import {IDBPDatabase, openDB} from "idb";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
-import {DB_NAME, DB_VERSION} from "./db-constants";
+import {DB_NAME, DB_STORES, DB_VERSION} from "./db-constants";
+import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
+import {WithStoreProps} from "../types/WithStoreProps";
+import {WithDTOMethod} from "../types/WithDTOMethod";
+import {StoreName} from "../types/StoreName";
+import Action from "../classes/Entities/Action";
+import {User} from "../classes/User";
+import {ActionName} from "../types/ActionsType";
 
-async function openDataBase(dbname:string = DB_NAME, version = DB_VERSION, stores) {
+async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
-            console.log('upgrade db')
             const existedStores = Array.from(db.objectStoreNames)
-            const storeNameList = stores.map(store => store.name)
+            const storeNameList = stores.map(store => '' + store.name)
+
             /*** удаление существующих store из indexeddb если их нет в списке storeInfo (т.е. нет в схеме бд) */
             existedStores
                 .filter(store => !storeNameList.includes(store))
                 .forEach(store => db.deleteObjectStore(store))
 
-            stores.forEach( (storeInfo) => {
+            stores.forEach((storeInfo) => {
                 /*** проверяем существует ли в бд таблица с именем storeInfo.name */
                 if (!db.objectStoreNames.contains(storeInfo.name)) {
-                    const store = db.createObjectStore(storeInfo.name, {
-                        keyPath: storeInfo.key,
-                    });
 
-                    storeInfo.indexes.forEach( (indexName) => {
-                        store.createIndex(indexName, indexName, {});
-                    });
+                    const store =
+                        db.createObjectStore(storeInfo.name, {keyPath: storeInfo.key,});
+
+                    storeInfo.indexes.forEach(
+                        (indexName) => {
+                            store.createIndex(indexName, indexName, {});
+                        });
+
                     /*** если store существует обновляем индексы для этого store */
                 } else {
                     const store = transaction.objectStore(storeInfo.name)
                     const indexs = store.indexNames
-                    storeInfo.indexes.forEach(index => {
+                    const newIndexes = storeInfo.indexes.map(index => '' + index)
+
+                    newIndexes.forEach(index => {
                         if (!indexs.contains(index)) store.createIndex(index, index, {})
                     })
                     Array
                         .from(indexs)
-                        .filter(index => !storeInfo.indexes.includes(index))
+                        .filter(index => !newIndexes.includes(index))
                         .forEach(index => store.deleteIndex(index))
                 }
             });
-
-
-            /***
-             * обновление данных в бд, для обновления необходимо в
-             * db/storeDB/schema добавить к store.upgrade метод который обновляет записи в бд
-             */
-            /*** отфильтровываем таблицы, для которых предусмотренно изменение данных */
-            stores
-                .filter(store => Array.isArray(store.upgrade))
-                .forEach(store => {
-                    console.log('upgrade store ' + store.name)
-                    const idbStore = transaction.objectStore(store.name)
-                    idbStore.openCursor()
-                        .then((cursor) => transformStoreData(idbStore, cursor, store, oldVersion))
-                })
-
         },
         blocked(currentVersion, blockedVersion, event) {
             // …
@@ -75,48 +70,138 @@ async function openDataBase(dbname:string = DB_NAME, version = DB_VERSION, store
 }
 
 
+const startTransaction = <T extends WithStoreProps & WithDTOMethod>(data: T, db: IDBPDatabase) => db.transaction([data.storeName, StoreName.ACTION], "readwrite")
+
+// const createAction =  <T extends WithStoreProps & WithDTOMethod> (data: T, user: User) => {}
 
 
 
+export class DB {
+    static add<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success: Function, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(db => {
+                const tx = startTransaction(data, db)
+                const actionStore = tx.objectStore(StoreName.ACTION)
+                const elementStore = tx.objectStore(data.storeName)
 
+                elementStore.add(data.dto())
 
+                if(data.withAction){
+                    const  action = new Action(data, user.id, data.storeName,ActionName.ADD )
+                    actionStore.add(action.dto())
+                }
 
-
-export class DB{
-    static add<T>(data:T, user_id: string, success?: Function, error?: Function): void{
-
+            })
+            .then(() => success && success())
+            .catch(e => error && error(e))
     }
 
-    static getOne<T>(id:IDBValidKey, success?:(data:T | undefined) => void, error?: (e: Error) => void): void{
-
+    static getOne<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, id: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                return await store.get(id)
+            })
+            .then((item) => success && success(item))
+            .catch(e => error && error(e))
     }
 
-    static getMany<T>(range:IDBKeyRange, success?:(data:T[]) => void, error?: (e: Error) => void): void{
-
+    static getMany<T extends WithStoreProps & WithDTOMethod>(storeName:StoreName, range: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                return await store.getAll(range)
+            })
+            .then((items) => success && success(items))
+            .catch(e => error && error(e))
     }
 
-    static getAll<T>(success?:(data:T[]) => void, error?: (e: Error) => void):void{
-
+    static getAll<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                return await store.getAll()
+            })
+            .then((items) => success && success(items))
+            .catch(e => error && error(e))
     }
 
-    static getOneFromIndex<T>(index: keyof T, query: IDBValidKey, success?:(data:T | undefined) => void, error?: (e: Error) => void): void{
-
+    static getOneFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName:StoreName,index: keyof T, query: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                const idx = store.index(index as string)
+                return await idx.get(query)
+            })
+            .then((item) => success && success(item))
+            .catch(e => error && error(e))
     }
 
-    static getManyFromIndex<T>(index: keyof T, query: IDBKeyRange, success?:(data:T[]) => void, error?: (e: Error) => void): void{
-
+    static getManyFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, index: keyof T, query: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                const idx = store.index(index as string)
+                return await idx.getAll(query)
+            })
+            .then((items) => success && success(items))
+            .catch(e => error && error(e))
     }
 
-    static getAllFromIndex<T>(index: keyof T, count?:number,  success?:(data:T[]) => void, error?: (e: Error) => void): void{
-
+    static getAllFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, index: keyof T, count?: number, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+        openDataBase()
+            .then(async (db) => {
+                const tx = db.transaction(storeName)
+                const store = tx.objectStore(storeName)
+                const idx = store.index(index as string)
+                return await idx.getAll()
+            })
+            .then((items) => success && success(items))
+            .catch(e => error && error(e))
     }
 
-    static update<T>(data:T, user_id: string, success?: Function, error?: Function): void{
+    static update<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success?: Function, error?: Function): void {
+        openDataBase()
+            .then(db => {
+                const tx = startTransaction(data, db)
+                const actionStore = tx.objectStore(StoreName.ACTION)
+                const elementStore = tx.objectStore(data.storeName)
 
+                elementStore.put(data.dto())
+
+                if(data.withAction){
+                    const  action = new Action(data, user.id, data.storeName,ActionName.UPDATE )
+                    actionStore.add(action.dto())
+                }
+
+            })
+            .then(() => success && success())
+            .catch(e => error && error(e))
     }
 
-    static delete<T>(data:T, user_id: string, success?: Function, error?: Function): void{
+    static delete<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success?: Function, error?: Function): void {
+        openDataBase()
+            .then(db => {
+                const tx = startTransaction(data, db)
+                const actionStore = tx.objectStore(StoreName.ACTION)
+                const elementStore = tx.objectStore(data.storeName)
 
+
+                elementStore.delete(data.dto().id)
+
+                if(data.withAction){
+                    const  action = new Action(data, user.id, data.storeName,ActionName.DELETE )
+                    actionStore.add(action.dto())
+                }
+
+            })
+            .then(() => success && success())
+            .catch(e => error && error(e))
     }
 
 }
