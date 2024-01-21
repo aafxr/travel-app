@@ -172,10 +172,10 @@ export default class Travel2 extends EventEmitter implements TravelType, WithDTO
                 let action
                 if (travel) {
                     await storeDB.editElement(StoreName.TRAVEL, this.dto())
-                    action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.UPDATE)
+                    action = new Action(this, user_id, StoreName.TRAVEL, ActionName.UPDATE)
                 } else {
                     await storeDB.addElement(StoreName.TRAVEL, this.dto())
-                    action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.ADD)
+                    action = new Action(this, user_id, StoreName.TRAVEL, ActionName.ADD)
                 }
 
                 await storeDB.addElement(StoreName.ACTION, action)

@@ -53,6 +53,10 @@ import storeDB from "./db/storeDB/storeDB";
 import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
 import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 import {Executor} from "./classes/Executor/Executor";
+import Travel2 from "./classes/Entities/Travel2";
+import Place from "./classes/Entities/Place";
+import {DB} from "./db/DB";
+import {User} from "./classes/User";
 
 
 function App() {
@@ -107,6 +111,11 @@ function App() {
     //
     //     prefetch.forEach(url => aFetch.get(url).catch(console.error))
     // }, [])
+
+    window.Travel = Travel2
+    window.Place = Place
+    window.DB = DB
+    window.User = User
 
     return (
         <>

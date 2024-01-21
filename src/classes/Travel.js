@@ -6,7 +6,7 @@ import constants from "../static/constants";
 import storeDB from "../db/storeDB/storeDB";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import Subscription from "./Subscription";
-import Expense from "./Entities/Expense";
+import {Expense} from "./Entities/Expense";
 import {defaultFilterValue} from "../modules/Expenses/static/vars";
 import Section from "./Entities/Section";
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
