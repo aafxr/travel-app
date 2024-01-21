@@ -1,8 +1,9 @@
-import {DBFlagType} from "../types/DBFlagType";
-import {PlaceKind} from "../types/PlaceKindType";
-import {PlaceType} from "../types/PlaceType";
+import {DBFlagType} from "../../types/DBFlagType";
+import {PlaceKind} from "../../types/PlaceKindType";
+import {PlaceType} from "../../types/PlaceType";
 import {nanoid} from "nanoid";
-import {CoordinatesType} from "../types/CoordinatesType";
+import {CoordinatesType} from "../../types/CoordinatesType";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
 
 /**
  * @class
@@ -10,7 +11,7 @@ import {CoordinatesType} from "../types/CoordinatesType";
  * @extends Entity
  *
  */
-export default class Place implements PlaceType {
+export default class Place implements PlaceType, WithDTOMethod {
     _id = nanoid(6);
     id = '';
     name = '';

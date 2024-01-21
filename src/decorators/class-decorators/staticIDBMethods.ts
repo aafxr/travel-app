@@ -1,12 +1,9 @@
 import {StoreName} from "../../types/StoreName";
 import storeDB from "../../db/storeDB/storeDB";
-import Action from "../../classes/Action";
+import Action from "../../classes/Entities/Action";
 import {ActionName} from "../../types/ActionsType";
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-
-interface WithDTOMethod{
-    dto: () => Object
-}
+import {WithDTOMethod} from "../../types/WithDTOMethod";
 
 export interface StaticIDBMethodsInterface<T>{
     add(data:T, user_id: string, success?: Function, error?: Function): void

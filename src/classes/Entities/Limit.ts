@@ -1,11 +1,16 @@
 import {nanoid} from "nanoid";
-import {LimitType} from "../types/LimitType";
-import {DBFlagType} from "../types/DBFlagType";
+import {LimitType} from "../../types/LimitType";
+import {DBFlagType} from "../../types/DBFlagType";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
+import {WithStoreProps} from "../../types/WithStoreProps";
+import {StoreName} from "../../types/StoreName";
 
 /**
  * Класс для работы с лимитами
  */
-export default class Limit implements LimitType {
+export default class Limit implements LimitType, WithDTOMethod, WithStoreProps {
+    storeName = StoreName.LIMIT
+    withAction = true
 
     id = nanoid(6)
     personal: DBFlagType = 0
@@ -29,6 +34,19 @@ export default class Limit implements LimitType {
 
     setValue(value: number) {
         this.value = value
+    }
+
+    valueOf(){
+        return this.value
+    }
+
+    dto(): LimitType {
+        return {
+            id: this.id,
+            personal: this.personal,
+            section_id: this.section_id,
+            value: this.value,
+        };
     }
 
 }

@@ -1,10 +1,15 @@
-import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
-import {ActionName, ActionType} from "../types/ActionsType";
-import {DBFlagType} from "../types/DBFlagType";
-import {StoreName} from "../types/StoreName";
+import {staticIDBMethods} from "../../decorators/class-decorators/staticIDBMethods";
+import {ActionName, ActionType} from "../../types/ActionsType";
+import {DBFlagType} from "../../types/DBFlagType";
+import {StoreName} from "../../types/StoreName";
 import {nanoid} from "nanoid";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
+import {WithStoreProps} from "../../types/WithStoreProps";
 
-class Action<T> implements ActionType<T> {
+export default class Action<T> implements ActionType<T>, WithDTOMethod, WithStoreProps {
+    storeName = StoreName.ACTION
+    withAction = false
+
     id = nanoid(16);
     action: ActionName;
     data: T;
@@ -33,4 +38,3 @@ class Action<T> implements ActionType<T> {
     }
 }
 
-export default staticIDBMethods(Action, StoreName.ACTION, false)

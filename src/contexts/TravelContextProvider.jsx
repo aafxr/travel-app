@@ -8,8 +8,8 @@ import constants from "../static/constants";
 import Travel from "../classes/Travel";
 import useUpdate from "../hooks/useUpdate";
 import useUserSelector from "../hooks/useUserSelector";
-import Travel2 from "../classes/Travel2";
-import Place from "../classes/Place";
+import Travel2 from "../classes/Entities/Travel2";
+import Place from "../classes/Entities/Place";
 
 /**
  * @name TravelContextType

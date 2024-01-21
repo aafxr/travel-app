@@ -1,12 +1,18 @@
-import {SectionType} from "../types/SectionType";
-import {DBFlagType} from "../types/DBFlagType";
-import storeDB from "../db/storeDB/storeDB";
-import constants from "../static/constants";
+import {SectionType} from "../../types/SectionType";
+import {DBFlagType} from "../../types/DBFlagType";
+import storeDB from "../../db/storeDB/storeDB";
+import constants from "../../static/constants";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
+import {WithStoreProps} from "../../types/WithStoreProps";
+import {StoreName} from "../../types/StoreName";
 
 /**
  * класс для работы с сущностью Section
  */
-export default class Section implements SectionType {
+export default class Section implements SectionType, WithDTOMethod, WithStoreProps {
+    storeName = StoreName.SECTION
+    withAction = true
+    
     id = '';
     color = '';
     title = '';
@@ -33,6 +39,15 @@ export default class Section implements SectionType {
 
     static async defaultSections(){
         return await storeDB.getAll(constants.store.SECTION)
+    }
+
+    dto(): SectionType {
+        return {
+            id: this.id,
+            color: this.color,
+            title: this.title,
+            hidden: this.hidden,
+        };
     }
 
 }

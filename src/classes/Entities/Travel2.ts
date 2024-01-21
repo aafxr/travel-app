@@ -1,16 +1,17 @@
-import {TravelType} from "../types/TravelType";
-import {MovementType} from "../types/MovementType";
-import {DBFlagType} from "../types/DBFlagType";
-import {Preferences} from "./Preferences";
+import {TravelType} from "../../types/TravelType";
+import {MovementType} from "../../types/MovementType";
+import {DBFlagType} from "../../types/DBFlagType";
+import {Preferences} from "../Preferences";
 import Place from "./Place";
 import Waypoint from "./Waypoint";
-import EventEmitter from "./EventEmmiter";
+import EventEmitter from "../EventEmmiter";
 import {nanoid} from "nanoid";
-import storeDB from "../db/storeDB/storeDB";
-import {StoreName} from "../types/StoreName";
+import storeDB from "../../db/storeDB/storeDB";
+import {StoreName} from "../../types/StoreName";
 import Action from "./Action";
-import {ActionName} from "../types/ActionsType";
-import {staticIDBMethods} from "../decorators/class-decorators/staticIDBMethods";
+import {ActionName} from "../../types/ActionsType";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
+import {WithStoreProps} from "../../types/WithStoreProps";
 
 
 export enum TravelEventName {
@@ -18,7 +19,9 @@ export enum TravelEventName {
 }
 
 
-class Travel2 extends EventEmitter implements TravelType{
+export default class Travel2 extends EventEmitter implements TravelType, WithDTOMethod, WithStoreProps{
+    storeName: StoreName = StoreName.TRAVEL;
+    withAction = true
 
 
     id = nanoid(8);
@@ -184,6 +187,7 @@ class Travel2 extends EventEmitter implements TravelType{
 
 
 
+
     // delete(user_id = '', success = () => {}, error = (e: Error) => {}) {
     //     const action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.DELETE)
     //
@@ -200,4 +204,3 @@ class Travel2 extends EventEmitter implements TravelType{
 
 
 
-export default staticIDBMethods(Travel2, StoreName.TRAVEL, true)

@@ -1,8 +1,9 @@
-import {WaypointType} from "../types/WaypointType";
-import {CoordinatesType} from "../types/CoordinatesType";
+import {WaypointType} from "../../types/WaypointType";
+import {CoordinatesType} from "../../types/CoordinatesType";
 import {nanoid} from "nanoid";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
 
-export default class Waypoint implements WaypointType {
+export default class Waypoint implements WaypointType, WithDTOMethod {
     address = '';
     id = nanoid(6);
     locality = '';
