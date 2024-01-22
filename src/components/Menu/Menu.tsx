@@ -1,11 +1,10 @@
 import clsx from "clsx";
-import {useContext, useState} from "react";
+import {ReactNode, useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import constants, {REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
+import constants, {REFRESH_TOKEN} from "../../static/constants";
 import {UserContext} from "../../contexts/UserContextProvider";
-import useUserSelector from "../../hooks/useUserSelector";
 import MenuIconList from "../MenuIconList/MenuIconList";
 import useOutside from "../../hooks/useOutside";
 import storeDB from "../../db/storeDB/storeDB";
@@ -14,6 +13,11 @@ import {MenuIcon} from "../svg";
 
 import './Menu.css'
 
+type MenuPropsType = {
+    children?: ReactNode,
+    className?: string
+}
+
 /**
  * Компонент для отображения меню
  * @param children
@@ -21,11 +25,11 @@ import './Menu.css'
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Menu({children, className}) {
+export default function Menu({children, className}:MenuPropsType) {
     const {logout, user} = useContext(UserContext)
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
-    const {ref} = useOutside(false, setIsOpen)
+    const {ref} = useOutside<HTMLDivElement>(false, setIsOpen)
 
     function handleLogin() {
         if (user) {

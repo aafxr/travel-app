@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import AvatarPlaceHolder from "./AvatarPlaceholder";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";
-import Photo from "../Poto/Photo";
+import Photo from "../Photo/Photo";
 
 import './UserCard.css'
 

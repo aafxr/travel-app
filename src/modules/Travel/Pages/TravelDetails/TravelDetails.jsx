@@ -14,7 +14,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 import {Chip, PageHeader} from "../../../../components/ui";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Button from "../../../../components/ui/Button/Button";
-import Photo from "../../../../components/Poto/Photo";
+import Photo from "../../../../components/Photo/Photo";
 import storeDB from "../../../../db/storeDB/storeDB";
 import constants from "../../../../static/constants";
 import dateRange from "../../../../utils/dateRange";

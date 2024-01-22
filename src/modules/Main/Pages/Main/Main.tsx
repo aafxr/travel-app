@@ -1,17 +1,16 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import {useNavigate} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import useUserSelector from "../../../../hooks/useUserSelector";
+import {Travel} from "../../../../classes/StoreEntities";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
-import Travel from "../../../../classes/Travel";
+import {DB} from "../../../../db/DB";
 
 import './Main.css'
-import SmallCard from "../../../../components/SmallCard/SmallCard";
-import PopularSection from "../../../../components/PopularSection/PopularSection";
-import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
 
 /**
  * компонент отображает главную страницу приложения
@@ -19,20 +18,16 @@ import RecommendSection from "../../../../components/RecommendSection/RecommendS
  * @name Main
  * @category Pages
  */
-export default function Main({
-                                 primary_entity_type,
-                                 primary_entity_id
-                             }) {
+export default function Main() {
     const navigate = useNavigate()
     const user = useUserSelector()
 
     function handleNewTravel() {
         if (user) {
-            Travel
-                .newTravel(user.id)
-                .save(user.id)
-                .then((t) => navigate(`/travel/${t.object.id}/map/`))
-                .catch(console.error)
+            const travel = new Travel({owner_id: user.id})
+            DB.add(travel, user, () => {
+                navigate(`/travel/${travel.id}/map/`)
+            }, (e) => defaultHandleError(e, 'Ошибка при создании путешествия'))
         } else {
             navigate('/login/')
         }

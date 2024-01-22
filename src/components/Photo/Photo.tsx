@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from "react";
 
 import constants, {DEFAULT_IMG_URL} from "../../static/constants";
 import storeDB from "../../db/storeDB/storeDB";
 import createId from "../../utils/createId";
+import {nanoid} from "nanoid";
 
 /**
  * @typedef {Object} UserPhotoType
@@ -10,31 +11,42 @@ import createId from "../../utils/createId";
  * @property {Blob} blob - блоб файл с изобрадением
  * @property {string} src - ссылка на фото на удаленном сервере
  */
-/**
- * @typedef {Function} PhotoChangeFunction
- * @param {UserPhotoType} photo
- */
+type UserPhotoType = {
+    id: string,
+    blob: Blob,
+    src: string
+} | {
+    id: string,
+    blob: Blob,
+} | {
+    id: string,
+    src: string
+};
 
+interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChange'> {
+    id: string,
+    onChange?: (photo: UserPhotoType) => unknown
+}
 
 /**
  * компонент отображает фото по переданному src , либо ищет в бд по id
- * @param {string} className css class
- * @param {string} id                       идентификатор фото в бд
- * @param {PhotoChangeFunction} onChange    обработчик на изменение фото
- * @param props                             other props
+ * @param  className css class
+ * @param  id        идентификатор фото в бд
+ * @param  onChange  обработчик на изменение фото
+ * @param  props     other props
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Photo({className, id, onChange, ...props}) {
-    const [photo, setPhoto] = useState(/**@type{UserPhotoType | null} */null)
+export default function Photo({className, id, onChange, ...props}: PhotoPropsType) {
+    const [photo, setPhoto] = useState<UserPhotoType | null>(null)
     const [photoURL, setPhotoURL] = useState('')
-    const inputRef = useRef(/**@type{HTMLInputElement}*/null)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     /*** загругка фото из по предоставленному ID */
     useEffect(() => {
         if (id) {
             storeDB.getOne(constants.store.IMAGES, id)
-                .then( /*** @param{UserPhotoType | undefined} p*/p => {
+                .then(/*** @param{UserPhotoType | undefined} p*/p => {
                     if (p) {
                         setPhoto(p)
                         let url
@@ -50,27 +62,28 @@ export default function Photo({className, id, onChange, ...props}) {
                     }
                 })
         }
-        return () => photoURL && URL.revokeObjectURL(photoURL)
+        return () => {
+            photoURL && URL.revokeObjectURL(photoURL)
+        }
     }, [id])
 
 
-    function handlePhotoChange(/**@type{ChangeEvent<HTMLInputElement>} */e) {
+    function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (!e.target.files) return
+
         const file = e.target.files[0]
-        if (file) {
-            /**@type {UserPhotoType} */
-            const userPhoto = {
-                id: photo?.id || createId(),
-                blob: file,
-                src: ''
-            }
-            /*** освобождение ресурсов выделенных для фото */
-            photoURL && URL.revokeObjectURL(photoURL)
-            /*** ссылка на новое изображение */
-            const newURL = URL.createObjectURL(userPhoto.blob)
-            setPhotoURL(newURL)
-            /*** передаем обновленные данные о фото в компонент родитель */
-            onChange && onChange(userPhoto)
+        const userPhoto: UserPhotoType = {
+            id: photo?.id || nanoid(7),
+            blob: file,
+            src: ''
         }
+        /*** освобождение ресурсов выделенных для фото */
+        photoURL && URL.revokeObjectURL(photoURL)
+        /*** ссылка на новое изображение */
+        const newURL = URL.createObjectURL(userPhoto.blob)
+        setPhotoURL(newURL)
+        /*** передаем обновленные данные о фото в компонент родитель */
+        onChange && onChange(userPhoto)
     }
 
     return (

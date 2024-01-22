@@ -10,7 +10,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL
 
 const aFetch = axios.create({
     baseURL,
-    timeout: 120000,
+    timeout: 4000,
 });
 
 const urlWithAuth = [
@@ -92,6 +92,8 @@ aFetch.interceptors.response.use(
     },
     async (err) => {
         console.error(err)
+        if(err.message === "Network Error") return err
+
         const originalRequest = err.config;
         if (err.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;

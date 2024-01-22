@@ -1,13 +1,29 @@
 import clsx from "clsx";
 import {useSwipeable} from "react-swipeable";
-import React, {useEffect, useState} from "react";
+import React, {PropsWithChildren, useEffect, useState} from "react";
 
 import useOutside from "../../../hooks/useOutside";
-
-import './Swipe.css'
 import {CheckIcon, TrashIcon} from "../../svg";
 
+import './Swipe.css'
+
 let defaultMargin = 40
+
+interface SwipePropsType extends PropsWithChildren{
+    className: string
+    onClick?: Function
+    onRemove?: Function
+    onConfirm?: Function
+    marginMax?: number
+    small?: boolean
+    leftButton?: boolean
+    leftElement?: JSX.Element
+    lElemBg?: string
+    rightButton?: boolean
+    rightElement?: JSX.Element
+    rElemBg?: string
+    multy?:boolean
+}
 
 
 /**
@@ -49,9 +65,9 @@ export default function Swipe({
                                   rElemBg,
 
                                   multy = false
-                              }) {
+                              }: SwipePropsType) {
     const [marginLeft, setMarginLeft] = useState(0)
-    const {ref} = useOutside(false, setMarginLeft.bind(this, 0))
+    const {ref} = useOutside<HTMLDivElement>(false, setMarginLeft)//.bind(this, 0)!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     useEffect(() => {
         defaultMargin = parseInt(getComputedStyle(document.head).getPropertyValue('--x')) * 2 || 40
@@ -89,8 +105,8 @@ export default function Swipe({
 
 
     useEffect(() => {
-        function touchOutside(e) {
-            if (ref.current && !ref.current.contains(e.target)) {
+        function touchOutside(e: TouchEvent ) {
+            if (e.target instanceof Node && ref.current && !ref.current.contains(e.target)) {
                 setMarginLeft(0)
             }
         }
@@ -112,7 +128,7 @@ export default function Swipe({
         onRemove && onRemove()
     }
 
-    function handleClick(e) {
+    function handleClick(e:React.TouchEvent | React.MouseEvent) {
         if (e.eventPhase === Event.BUBBLING_PHASE) {
             e.stopPropagation()
             onClick && onClick()

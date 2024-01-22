@@ -3,7 +3,7 @@ import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";
-import StorageEntity from "./StorageEntity";
+import {StorageEntity} from "./StorageEntity";
 
 /**
  * класс для работы с сущностью Section

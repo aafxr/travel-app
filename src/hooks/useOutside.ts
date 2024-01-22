@@ -10,23 +10,23 @@ import {useCallback, useEffect, useRef, useState} from 'react';
  * @param {function} cb
  * @returns {{ref: React.MutableRefObject<null>, setIsOutside: (value: (((prevState: boolean) => boolean) | boolean)) => void, isOutside: boolean}}
  */
-export default function useOutside(initialIsVisible, cb) {
+export default function useOutside<T extends HTMLElement>(initialIsVisible: boolean, cb: Function) {
     const [isOutside, setIsOutside] = useState(initialIsVisible || false);
-    const ref = useRef(null);
+    const ref = useRef<T>(null);
 
-    const handleClickOutside = useCallback((e) => {
-        if (ref.current && !ref.current.contains(e.target)) {
-            setIsOutside(true);
-            cb && cb()
+    const handleClickOutside = useCallback((e: Event) => {
+        if(e instanceof TouchEvent ||  e instanceof MouseEvent) {
+            if (e.target instanceof Node && ref.current && !ref.current.contains( e.target)) {
+                setIsOutside(true);
+                cb && cb()
+            }
         }
     }, []);
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside, true);
 
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside, true);
-        };
+        return () =>  document.removeEventListener('mousedown', handleClickOutside, true);
     });
 
     return { ref, isOutside, setIsOutside };

@@ -14,12 +14,17 @@ let alertId = 0
  * @property {'info' | 'success' | 'warning' | 'danger'} type
  * @property {string} message
  */
+type AlertPayloadType = {
+    type:'info' | 'success' | 'warning' | 'danger'
+    message: string
+    id?:number
+}
 
 /**
  * Помогает генерировать alert-event
  * @param {AlertPayload} payload
  */
-export function pushAlertMessage(payload) {
+export function pushAlertMessage(payload: AlertPayloadType) {
     if (!payload)
         console.warn('Push empty alert ', payload)
 
@@ -47,11 +52,11 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
     /*** флаг сигнализирует о том, что очередб пуста */
     const [isEmpty, setIsEmpty] = useState(true)
     /*** очередь сообщений */
-    const alertsQueue = useRef([])
+    const alertsQueue = useRef<AlertPayloadType[]>([])
     /*** React ref на контейнер с сообщениями */
-    const ref = useRef(null)
+    const ref = useRef<HTMLDivElement>(null)
 
-    const onNewAlert = useCallback(function (e) {
+    const onNewAlert = useCallback(function (e: CustomEvent<AlertPayloadType>) {
         const {detail} = e
 
         if (activeAlerts.current < count && ref && ref.current) {
@@ -66,18 +71,18 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
 
 
     useEffect(() => {
-        document.addEventListener(ALERT_EVENT_NAME, onNewAlert)
-        return () => document.removeEventListener(ALERT_EVENT_NAME, onNewAlert)
+        document.addEventListener(ALERT_EVENT_NAME, onNewAlert as any)
+        return () => document.removeEventListener(ALERT_EVENT_NAME, onNewAlert as any)
     }, [])
 
 
-    function handleRemoveAlert(e) {
-        if (e.type === 'animationend' && e.target.classList.contains('alert-item')) {
-            e.target.remove()
+    function handleRemoveAlert(e:  React.AnimationEvent<HTMLDivElement>| React.TouchEvent | React.MouseEvent) {
+        if (e.type === 'animationend'  && (e.target as HTMLDivElement).classList.contains('alert-item')) {
+            (e.target as HTMLDivElement).remove()
             activeAlerts.current = activeAlerts.current > 0 ? activeAlerts.current - 1 : 0
             addAlertToDOM()
-        } else if (e.type === 'click' && e.target.classList.contains('close-svg')) {
-            const alertItem = e.target.closest('.alert-item')
+        } else if (e.type === 'click' && (e.target as HTMLDivElement).classList.contains('close-svg')) {
+            const alertItem = (e.target as HTMLDivElement).closest('.alert-item')
             if (alertItem) {
                 alertItem.remove()
                 activeAlerts.current = activeAlerts.current > 0 ? activeAlerts.current - 1 : 0
@@ -93,7 +98,7 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
             const extraAlert = alertsQueue.current.shift()
 
             if (extraAlert) {
-                const {id, type, message} = extraAlert
+                const { type, message} = extraAlert
                 activeAlerts.current += 1
                 appendAlert(type, message)
             }
@@ -101,7 +106,7 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
         }
     }
 
-    function appendAlert(type, message) {
+    function appendAlert(type: AlertPayloadType['type'], message: AlertPayloadType['message']) {
         const icon_url = `${process.env.PUBLIC_URL}/icons/${type}_icon.png`
         const div = document.createElement('div')
         div.className = clsx('alert-item')
@@ -111,7 +116,7 @@ export default function Alerts({count = 1, maxAlertsCount = 10}) {
             <span class="close-svg" ></span>
         `
         // <span class="alert-line"></span>
-        ref.current.append(div)
+        ref.current?.append(div)
     }
 
     return (

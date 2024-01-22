@@ -1,12 +1,19 @@
 import React, {useMemo, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
-import Photo from "../../../../components/Poto/Photo";
+import {Travel} from "../../../../classes/StoreEntities";
+import {MS_IN_DAY} from "../../../../static/constants";
+import Photo from "../../../../components/Photo/Photo";
 import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
-import {defaultMovementTags} from "../../../../components/defaultMovementTags";
+
+interface TravelCardPropsType{
+    travel: Travel,
+    onRemove: Function
+}
 
 /**
  * компонент отображает карточку путешествия
@@ -15,16 +22,17 @@ import {defaultMovementTags} from "../../../../components/defaultMovementTags";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function TravelCard({travel, onRemove}) {
+export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
     const navigate = useNavigate()
     const [tagsScrolling, setTextScrolling] = useState(false)
     const travelDays = useMemo(() => {
         if (travel) {
-            const start = travel.date_start ? new Date(travel.date_start).getTime() : 0
-            const end = travel.date_end ? new Date(travel.date_end).getTime() : 0
-            const duration = end - start
+            const start = travel.date_start
+            const end = travel.date_end
+            const duration = end.getTime() - start.getTime()
+
             if (duration > 0) {
-                const d = Math.ceil(duration / (1000 * 60 * 60 * 24))
+                const d = Math.ceil(duration / MS_IN_DAY)
                 return d === 1 ? '1 день' : `${d} дней`
             } else if (duration === 0) {
                 return '1 день'
@@ -37,12 +45,8 @@ export default function TravelCard({travel, onRemove}) {
         onRemove && onRemove()
     }
 
-    /**
-     * обработка скрола тегов
-     * @param {TouchEvent<HTMLDivElement>} e
-     * @param {boolean} value
-     */
-    function handleTagsMoving(e, value) {
+    /**  обработка скрола тегов */
+    function handleTagsMoving(e: React.TouchEvent<HTMLDivElement>, value: boolean) {
         e.stopPropagation()
         setTextScrolling(value)
     }
@@ -79,13 +83,13 @@ export default function TravelCard({travel, onRemove}) {
                                         {
                                             travel.movementTypes.map(mt => (
                                                 <Chip
-                                                    key={mt.id}
+                                                    key={'' + mt}
                                                     color='light-orange'
-                                                    icon={defaultMovementTags.find(dm => dm.id === mt.id)?.icon}
+                                                    icon={defaultMovementTags.find(dm => dm.id === mt)?.icon}
                                                     iconPosition='left'
                                                     rounded
                                                 >
-                                                    {mt.title}
+                                                    {defaultMovementTags.find(dm => dm.id === mt)?.title}
                                                 </Chip>
                                             ))
                                         }

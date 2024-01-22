@@ -3,7 +3,7 @@ import {nanoid} from "nanoid";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 import {LimitType} from "../../types/LimitType";
-import StorageEntity from "./StorageEntity";
+import {StorageEntity} from "./StorageEntity";
 
 /**
  * Класс для работы с лимитами

@@ -16,6 +16,8 @@ import {fetchTravels} from "../../../../api/fetch/fetchTravels";
 import {DB} from "../../../../db/DB";
 import {StoreName} from "../../../../types/StoreName";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import PageContainer from "../../../../components/PageContainer/PageContainer";
+import Loader from "../../../../components/Loader/Loader";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -36,19 +38,29 @@ export default function TravelRoutes() {
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
     const [actualTravels, setActualTravels] = useState<Array<Travel>>([])
 
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
+        const ifNotFetchGetFromDB = () => {
+            DB.getAll<Travel>(StoreName.TRAVEL, list => {
+                const travelsList = list.map(t => new Travel(t))
+                console.log(travelsList)
+                setTravels(travelsList)
+                setLoading(false)
+            }, () => setLoading(false))
+        }
+
         if (user) {
             fetchTravels()
                 .then(list => {
-                    if (list.length)
+                    if (list.length) {
                         setTravels(list)
-                    else {
-                        DB.getAll<Travel>(StoreName.TRAVEL, list => {
-                            const travelsList = list.map(t => new Travel(t))
-                            setTravels(travelsList)
-                        })
+                        setLoading(false)
+                    } else {
+                        ifNotFetchGetFromDB()
                     }
                 })
+                .catch(ifNotFetchGetFromDB)
         }
     }, [user])
 
@@ -72,6 +84,13 @@ export default function TravelRoutes() {
             })
         }
     }
+
+    if (loading)
+        return (
+            <PageContainer center>
+                <Loader style={{width: 40, height: 40}}/>
+            </PageContainer>
+        )
 
     return (
         <div className='wrapper'>

@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import Container from "../../../../components/Container/Container";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
-import Photo from "../../../../components/Poto/Photo";
+import Photo from "../../../../components/Photo/Photo";
 import {PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";

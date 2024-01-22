@@ -1,6 +1,18 @@
 import clsx from "clsx";
 
 import './IconButton.css'
+import {HTMLAttributes, PropsWithChildren} from "react";
+
+interface IconButtonPropsType extends PropsWithChildren<HTMLAttributes<HTMLButtonElement>>{
+    icon?:JSX.Element
+    small?:boolean
+    border?: boolean
+    shadow?: boolean
+    bgVariant?: 'transparent' | 'secondary' | 'primary' | 'bg-default'
+    title?:string
+    iconClass?:string
+}
+
 
 /**
  * Компонент-кнопка с иконкой
@@ -30,7 +42,7 @@ export default function IconButton({
                                        className,
                                        iconClass,
                                        ...props
-                                   }) {
+                                   }: IconButtonPropsType) {
 
     const classes = clsx('icon-button',
         {

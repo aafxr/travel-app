@@ -1,10 +1,17 @@
 import clsx from 'clsx'
-import React from 'react'
+import React, {HTMLAttributes, PropsWithChildren} from 'react'
 
 import isString from "../../../utils/validation/isString";
 
 import './Chip.css'
 
+interface ChipPropsType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>> {
+    color: 'orange' | 'green' | 'grey' | 'light-orange' | 'red'
+    icon?: string | JSX.Element
+    iconPosition?: 'left' | 'right'
+    rounded?: boolean
+    pointer?: boolean
+}
 
 /**
  * компонент для отображения тегов / пометок
@@ -31,7 +38,7 @@ export default function Chip({
                                  className,
                                  ...props
 
-                             }) {
+                             }: ChipPropsType) {
     const classes = clsx(
         {
             ['chip gap-0.25']: true,
@@ -53,7 +60,7 @@ export default function Chip({
         {icon && (
             <span className='chip-icon'>
                 {
-                    isString(icon)
+                    typeof icon === 'string'
                         ? <img src={icon} alt="icon"/>
                         : icon
                 }

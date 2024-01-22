@@ -7,26 +7,22 @@ import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 import useUserSelector from "../../../../hooks/useUserSelector";
 
+
 /**
- * Страница отображения ближайших рекомендуемых событий
+ * компонент отображает добавленные маршруты в избранное
  * @function
- * @name Events
- * @param {string} primary_entity_type
- * @param {string} primary_entity_id
- * @returns {JSX.Element}
+ * @name Favorite
  * @category Pages
  */
-export default function Events({
-                                 primary_entity_type,
-                                 primary_entity_id
-                             }) {
+export default function Favorite() {
     const navigate = useNavigate()
     const user = useUserSelector()
+
 
     return (
         <div className='wrapper'>
             <Container className='content'>
-                <PageHeader title={'События'} />
+                <PageHeader title={'Избранное'} />
                 {
                     user
                         ? (

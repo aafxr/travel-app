@@ -3,7 +3,7 @@ import {nanoid} from "nanoid";
 import {ActionName, ActionType} from "../../types/ActionsType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import StorageEntity from "./StorageEntity";
+import {StorageEntity} from "./StorageEntity";
 
 export class Action<T extends StorageEntity> extends StorageEntity implements ActionType<T> {
     storeName = StoreName.ACTION

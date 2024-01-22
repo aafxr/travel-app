@@ -5,6 +5,22 @@ import {useEffect, useRef} from "react";
  * @param {UserTelegramAuthPayloadType} user
  */
 
+type TelegramPayloadType = {
+    id: string,
+    first_name: string,
+    last_name: string,
+    username: string,
+    photo_url: string,
+    auth_date: string,
+    hash: string
+}
+
+type TelegramAuthPropsType = {
+    handleAuth: (tr_user: TelegramPayloadType) => unknown
+}
+
+
+
 /**
  * компонент добавляет кнопку регистрации телеграм
  * @function
@@ -13,8 +29,8 @@ import {useEffect, useRef} from "react";
  * @return {JSX.Element}
  * @category Pages
  */
-export default function TelegramAuth({handleAuth}) {
-    const ref = useRef(null)
+export default function TelegramAuth({handleAuth}: TelegramAuthPropsType) {
+    const ref = useRef<HTMLDivElement>(null)
 
     window.TelegramLoginWidget = {
         dataOnauth: (user) => handleAuth(user),
@@ -30,7 +46,7 @@ export default function TelegramAuth({handleAuth}) {
             const script = document.createElement("script");
             script.src = "https://telegram.org/js/telegram-widget.js?22";
             /** имя используемого telegram бота */
-            script.setAttribute("data-telegram-login", botName);
+            script.setAttribute("data-telegram-login", botName || '');
             /** размер кнопки телегам */
             script.setAttribute("data-size", "medium");
             /** запрашиваемые права */

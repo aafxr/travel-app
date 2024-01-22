@@ -4,7 +4,7 @@ import {CurrencyName} from "../../types/CurrencyName";
 import {ExpenseType} from "../../types/ExpenseType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import StorageEntity from "./StorageEntity";
+import {StorageEntity} from "./StorageEntity";
 
 /**
  * данный класс позволяет работать с расходами

@@ -4,7 +4,7 @@ import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
-import Photo from "../../../../components/Poto/Photo";
+import Photo from "../../../../components/Photo/Photo";
 import {PageHeader} from "../../../../components/ui";
 import storeDB from "../../../../db/storeDB/storeDB";
 import Menu from "../../../../components/Menu/Menu";
