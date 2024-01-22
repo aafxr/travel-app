@@ -32,7 +32,7 @@ import TravelContextProvider from "./contexts/TravelContextProvider";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
-import PageContainer from "./components/Loading/PageContainer";
+import PageContainer from "./components/PageContainer/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import {UserContext} from "./contexts/UserContextProvider";
@@ -123,7 +123,7 @@ function App() {
                 <Route element={<WorkerContextProvider/>}>
                     <Route path={'/'} element={<Main/>}/>
                     {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
-                {/*    <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>*/}
+                    <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
                 {/*    <Route path={'/events/'} element={<Events/>}/>*/}
                 {/*    <Route path={'/favorite/'} element={<Favorite/>}/>*/}
                 {/*    <Route path={'/auth/'} element={<TelegramAuth/>}/>*/}

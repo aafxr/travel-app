@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {Navigate} from "react-router-dom";
 import Loader from "../components/Loader/Loader";
-import PageContainer from "../components/Loading/PageContainer";
+import PageContainer from "../components/PageContainer/PageContainer";
 import {UserContext} from "../contexts/UserContextProvider";
 
 /**

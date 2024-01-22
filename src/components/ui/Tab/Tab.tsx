@@ -1,14 +1,19 @@
-import React from "react";
+import React, {HTMLAttributes, PropsWithChildren} from "react";
 import clsx from "clsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import './Tab.css'
 
 
+interface TabPropsType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>>{
+    name: React.ReactNode
+    to: string
+}
+
 /**
  * компонент tab active если  to = location.pathname
  * @kind component
  * @function
- * @param {string} name имя таба
+ * @param {React.ReactNode} name имя таба
  * @param {string} to url, куда будет перенаправлен пользователь при клике
  * и если loaction.pathname совподает с параметром, то таб подсвеччивается
  * @param {string} className css class
@@ -22,7 +27,7 @@ export default function Tab({
                                 to,
                                 className,
                                 ...props
-                            }) {
+                            }: TabPropsType) {
     const {pathname} = useLocation()
     const navigate = useNavigate()
     const styles = clsx(

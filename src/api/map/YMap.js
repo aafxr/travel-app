@@ -7,11 +7,11 @@
  */
 
 
-import defaultPoint from "../utils/default-values/defaultPoint";
-import userLocation from "../utils/userLocation";
+import defaultPoint from "../../utils/default-values/defaultPoint";
+import userLocation from "../../utils/userLocation";
 import IMap from "./IMap";
-import getDistanceFromTwoPoints from "../utils/getDistanceFromTwoPoints";
-import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import getDistanceFromTwoPoints from "../../utils/getDistanceFromTwoPoints";
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 
 /**
  * #### Данный класс предполагается использовать когда скрипт карты уже загружен и готов к работе

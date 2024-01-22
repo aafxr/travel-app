@@ -1,18 +1,21 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Navigation from "../../../../components/Navigation/Navigation";
-import {UserContext} from "../../../../contexts/UserContextProvider";
 import Container from "../../../../components/Container/Container";
-import {MS_IN_DAY, USER_AUTH} from "../../../../static/constants";
+import {MS_IN_DAY} from "../../../../static/constants";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import {PageHeader, Tab} from "../../../../components/ui";
 import removeTravel from "../../../../utils/removeTravel";
-import Travel from "../../../../classes/Travel";
+import {Travel} from "../../../../classes/StoreEntities";
 import useUserSelector from "../../../../hooks/useUserSelector";
+import {fetchTravels} from "../../../../api/fetch/fetchTravels";
+import {DB} from "../../../../db/DB";
+import {StoreName} from "../../../../types/StoreName";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -28,18 +31,23 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 export default function TravelRoutes() {
     const navigate = useNavigate()
     const {travelsType} = useParams()
-    const [travels, setTravels] = useState(/**@type{TravelType[]} */[])
+    const [travels, setTravels] = useState<Array<Travel>>([])
     const user = useUserSelector()
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
-    const [actualTravels, setActualTravels] = useState(/**@type{TravelType[]} */[])
+    const [actualTravels, setActualTravels] = useState<Array<Travel>>([])
 
     useEffect(() => {
-        if(user) {
-            Travel
-                .travelList()
+        if (user) {
+            fetchTravels()
                 .then(list => {
-                    console.log(list)
-                    setTravels(list)
+                    if (list.length)
+                        setTravels(list)
+                    else {
+                        DB.getAll<Travel>(StoreName.TRAVEL, list => {
+                            const travelsList = list.map(t => new Travel(t))
+                            setTravels(travelsList)
+                        })
+                    }
                 })
         }
     }, [user])
@@ -52,22 +60,16 @@ export default function TravelRoutes() {
         }
     }, [travels, travelsType])
 
-    /**
-     * обработка удаления путешествия
-     * @param {TravelType} travel
-     */
-    function handleRemove(travel) {
+    /** обработка удаления путешествия */
+    function handleRemove(travel: Travel) {
         if (user) {
             /** удаление путешествия из бд и добавление экшена об удалении */
-            removeTravel(travel, user.id)
-                .then(() => pushAlertMessage({type: "success", message: `${travel.title} удалено.`}))
-                .then(() => setTravels(travels.filter(t => t.id !== travel.id)))
-                /** обновление global store после успешного удаления */
-                // .then(() => dispatch(actions.travelActions.removeTravel(travel)))
-                .catch(err => {
-                    ErrorReport.sendError(err).catch(console.error)
-                    pushAlertMessage({type: 'danger', message: 'Не удалось удалить путешествие'})
-                })
+            DB.delete(travel, user, () => {
+                pushAlertMessage({type: "success", message: `${travel.title} удалено.`})
+                setTravels(travels.filter(t => t.id !== travel.id))
+            }, (e) => {
+                defaultHandleError(e, 'Не удалось удалить путешествие')
+            })
         }
     }
 
@@ -115,20 +117,14 @@ export default function TravelRoutes() {
 
 /**
  * функция определяет временной статус путешествия (прошлыые, текущие, будущие)
- * @param {TravelType} travel
- * @returns {TravelDateStatus}
  */
-function getTravelDateStatus(travel) {
+function getTravelDateStatus(travel: Travel) {
     if (!travel) return "old"
-    const msInDay = MS_IN_DAY // число милисекунд в сутках
-    const now = Date.now()
-    /** время, прошедшее с начала суток */
-    const dayOffset = now % msInDay
+    const now = new Date()
 
-    if (travel.date_end && new Date(travel.date_end).getTime() < now - dayOffset) {
+    if (travel.date_end < now) {
         return "old"
-    } else if (travel.date_start
-        && new Date(travel.date_start).getTime() > (now + (msInDay - dayOffset))) {
+    } else if (travel.date_start > now) {
         return "plan"
     }
     return "current"

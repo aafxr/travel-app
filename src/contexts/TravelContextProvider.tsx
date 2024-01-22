@@ -1,14 +1,13 @@
 import React, {createContext, useEffect, useState} from "react";
 import {Outlet, useNavigate, useParams} from "react-router-dom";
 
-import PageContainer from "../components/Loading/PageContainer";
+import PageContainer from "../components/PageContainer/PageContainer";
 import useUserSelector from "../hooks/useUserSelector";
 import {Place, Travel} from "../classes/StoreEntities";
 import Loader from "../components/Loader/Loader";
-import storeDB from "../db/storeDB/storeDB";
-import constants from "../static/constants";
-import useUpdate from "../hooks/useUpdate";
 import {DB} from "../db/DB";
+import {StoreName} from "../types/StoreName";
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 
 /**
  * @name TravelContextType
@@ -20,11 +19,13 @@ import {DB} from "../db/DB";
 
 type TravelContextType = {
     travel: Travel | null
+    loading: boolean
 }
 
 
 const defaultTravel: TravelContextType = {
     travel: null,
+    loading: false
 }
 
 
@@ -38,10 +39,9 @@ export const TravelContext = createContext<TravelContextType>(defaultTravel)
  * @category Components
  */
 export default function TravelContextProvider() {
-    const [loading, setLoading] = useState(true)
     const [state, setState] = useState(defaultTravel)
+    const [unsubscribe, setUnsubscribe] = useState<Function | null>(null)
     const user = useUserSelector()
-    const update = useUpdate()
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
@@ -51,25 +51,23 @@ export default function TravelContextProvider() {
 
     useEffect(() => {
         if (user && travelCode && (!state.travel || state.travel.id !== travelCode)) {
-            setLoading(true)
-            storeDB.onReadySubscribe(() => {
-                storeDB
-                    .getOne(constants.store.TRAVEL, travelCode)
-                    .then(item => {
-                        setLoading(false)
-                        const t = item
-                            ? new Travel(item, travelCode)
-                            : new Travel(undefined, travelCode)
-                        t?.setUser(user.id)
-                        if (t) {
-                            t.onUpdate(() => setState(prev => ({...prev, travelObj: Object.freeze(t.object)})))
-                            setState({travel: t, travelObj: Object.freeze(t.object)})
-                        }
+            setState({...state, loading: true})
+            DB.getOne<Travel>(StoreName.TRAVEL, travelCode, (travel) => {
+                const newState = {...state, loading: false}
+                if (travel) {
+                    travel = new Travel(travel)
+                    const subscription = travel.subscribe('update', (travel) => {
+                        DB.update(travel, user, undefined, defaultHandleError)
+                        setState(prev => ({...prev, travel}))
                     })
+                    setUnsubscribe(subscription)
+                    newState.travel = travel
+                }
+                setState(newState)
             })
         }
         return () => {
-            if (state.travel) state.travel.offUpdate(update)
+            if (unsubscribe) unsubscribe()
         }
     }, [travelCode, user])
 
@@ -77,7 +75,9 @@ export default function TravelContextProvider() {
     if (state.travel) {
         window.travel = state.travel
     }
-    if (state.travel && loading) {
+    
+    
+    if (state.travel && state.loading) {
         return (
             <PageContainer center>
                 <Loader className='loader'/>

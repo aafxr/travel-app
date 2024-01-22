@@ -10,7 +10,7 @@ import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../../../static/constants";
-import YMap from "../../../../api/YMap";
+import YMap from "../../../../api/map/YMap";
 import createId from "../../../../utils/createId";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 

@@ -1,18 +1,21 @@
-import React, {useState} from "react";
+import React, {HTMLAttributes, PropsWithChildren} from "react";
 import {useNavigate} from 'react-router-dom'
 import clsx from "clsx";
 
 import {ArrowBackIcon} from "../../svg";
-import isString from "../../../utils/validation/isString";
 
 
 import './PageHeader.css'
 
+interface PageHeaderPropsType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>>{
+    arrowBack?: boolean
+    title?: string
+    to?: string | Function
+    MenuEl?: JSX.Element
+}
 
 /**
  * компонент добавляет заголовок и стрелку "вернуться назад"
- * @kind component
- * @kind component
  * @function
  * @param {boolean} arrowBack true добавляет стрелочку назад <=
  * @param {string} className css class
@@ -33,10 +36,8 @@ export default function PageHeader({
                                        MenuEl,
                                        children,
                                        ...props
-                                   }) {
+                                   }: PageHeaderPropsType) {
     const navigate = useNavigate()
-    // const [_, setMenuOpen] = useState(false)
-    // const {ref} = useOutside(false, setMenuOpen)
 
     const styles = clsx(
         'page-header-container gap-0.25',

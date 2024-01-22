@@ -110,7 +110,7 @@ export default function ShowRouteByDays() {
                     //                 <Link className='link' to={`/travel/${travelObj.id}/add/place/`}>Добавить место</Link>
                     //             </div>
                     //         )
-                    //         : <div>Loading...</div>
+                    //         : <div>PageContainer...</div>
                 }
                 {showHotel &&
                     <Link

@@ -1,12 +1,10 @@
 import {IDBPDatabase, openDB} from "idb";
 
 import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
-import {pushAlertMessage} from "../components/Alerts/Alerts";
+import {Action, StorageEntity, User} from "../classes/StoreEntities";
 import {DB_NAME, DB_STORES, DB_VERSION} from "./db-constants";
-import StorageEntity from "../classes/StoreEntities/StorageEntity";
+import {pushAlertMessage} from "../components/Alerts/Alerts";
 import {ActionName} from "../types/ActionsType";
-import Action from "../classes/StoreEntities/Action";
-import {User} from "../classes/StoreEntities/User";
 import {StoreName} from "../types/StoreName";
 
 async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
@@ -163,7 +161,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static update<T extends StorageEntity>(data: T, user: User, success?: Function, error?: Function): void {
+    static update<T extends StorageEntity>(data: T, user: User, success?: Function, error?: (e: Error) => void): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)
@@ -182,7 +180,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static delete<T extends StorageEntity>(data: T, user: User, success?: Function, error?: Function): void {
+    static delete<T extends StorageEntity>(data: T, user: User, success?: Function, error?: (e: Error) => void): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)

@@ -3,10 +3,10 @@ import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import StorageEntity from "./StorageEntity";
+import {StorageEntity} from "./StorageEntity";
 import {Preferences} from "../Preferences";
-import Waypoint from "./Waypoint";
-import Place from "./Place";
+import {Waypoint} from "./Waypoint";
+import {Place} from "./Place";
 
 
 export enum TravelEventName {
@@ -43,7 +43,7 @@ export class Travel extends StorageEntity implements TravelType{
     places: Place[] = [];
     waypoints: Waypoint[] = [];
 
-    constructor(travel: Partial<TravelType>) {
+    constructor(travel: Partial<TravelType | Travel>) {
         super()
         if (travel.id) this.id = travel.id
         if (travel.title) this.title = travel.title

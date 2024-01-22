@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 
-import YMap from "../api/YMap";
+import YMap from "../api/map/YMap";
 import useTravelContext from "./useTravelContext";
 
 /**
