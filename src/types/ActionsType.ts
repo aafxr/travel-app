@@ -19,7 +19,7 @@ export enum ActionName {
     DELETE = "delete"
 }
 
-export interface ActionType<T> {
+export interface ActionType {
     id: string
     action: ActionName
     data: Object

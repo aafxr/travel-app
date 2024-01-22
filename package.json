@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/lodash.debounce": "^4.0.9",
     "babel-eslint": "^10.1.0",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.0.0",

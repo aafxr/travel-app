@@ -1,23 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import PageContainer from "../../../../components/PageContainer/PageContainer";
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import {MS_IN_DAY} from "../../../../static/constants";
-import ErrorReport from "../../../../controllers/ErrorReport";
-import {PageHeader, Tab} from "../../../../components/ui";
-import removeTravel from "../../../../utils/removeTravel";
-import {Travel} from "../../../../classes/StoreEntities";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import {fetchTravels} from "../../../../api/fetch/fetchTravels";
-import {DB} from "../../../../db/DB";
-import {StoreName} from "../../../../types/StoreName";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import PageContainer from "../../../../components/PageContainer/PageContainer";
 import Loader from "../../../../components/Loader/Loader";
+import {PageHeader, Tab} from "../../../../components/ui";
+import {Travel} from "../../../../classes/StoreEntities";
+import {StoreName} from "../../../../types/StoreName";
+import {DB} from "../../../../db/DB";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus

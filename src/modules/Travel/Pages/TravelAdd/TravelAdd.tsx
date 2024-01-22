@@ -57,7 +57,7 @@ export default function TravelAdd() {
                             <Input
                                 className='travel-destination-input'
                                 value={title}
-                                onChange={e => setTitle(e.target.value)}
+                                onChange={setTitle}
                                 placeholder='Куда едем?'
                             />
                         </div>

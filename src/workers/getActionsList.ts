@@ -1,10 +1,8 @@
-import functionDurationTest from "../utils/functionDurationTest";
+import {ActionType} from "../types/ActionsType";
 import {Action} from "../classes/StoreEntities";
 import {StoreName} from "../types/StoreName";
 import {IndexName} from "../types/IndexName";
 import {DB} from "../db/DB";
-import constants from "../static/constants";
-import {ActionType} from "../types/ActionsType";
 
 
 // let ready = false
@@ -18,7 +16,7 @@ import {ActionType} from "../types/ActionsType";
 
 type ResponseType = {
     ok: boolean,
-    result: ActionType<any>[]
+    result: ActionType[]
 }
 
 /**

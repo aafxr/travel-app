@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import React, {HTMLAttributes, PropsWithChildren} from 'react'
 
-import isString from "../../../utils/validation/isString";
 
 import './Chip.css'
 

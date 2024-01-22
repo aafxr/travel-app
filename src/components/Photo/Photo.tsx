@@ -1,8 +1,7 @@
-import React, {HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from "react";
+import React, {HTMLAttributes, useEffect, useRef, useState} from "react";
 
 import constants, {DEFAULT_IMG_URL} from "../../static/constants";
 import storeDB from "../../db/storeDB/storeDB";
-import createId from "../../utils/createId";
 import {nanoid} from "nanoid";
 
 /**

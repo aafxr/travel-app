@@ -124,7 +124,7 @@ function App() {
                     <Route path={'/favorite/'} element={<Favorite/>}/>
                     <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
-                {/*    <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>*/}
+                    <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
                 {/*    <Route element={<TravelContextProvider/>}>*/}
                 {/*        <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}

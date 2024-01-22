@@ -1,8 +1,12 @@
-import React from "react";
+import React, {ButtonHTMLAttributes} from "react";
 import clsx from "clsx";
 
 import  './Button.css'
 
+
+interface ButtonPropsType extends ButtonHTMLAttributes<HTMLButtonElement>{
+    active?: boolean
+}
 
 /**
  * Компонент кнопка
@@ -16,9 +20,11 @@ import  './Button.css'
  * @category UI-Components
  * @name Button
  */
-export default function Button({className, children, active = true, ...props}){
+export default function Button({className, children, active = true, ...props}: ButtonPropsType){
 
-    return <button  className={clsx('full-screen-btn', active && 'active', className)} {...props}>
+    return (
+        <button  className={clsx('full-screen-btn', {active}, className)} {...props}>
             {children || ''}
         </button>
+    )
 }

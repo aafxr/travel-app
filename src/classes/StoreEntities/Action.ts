@@ -5,7 +5,7 @@ import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 import {StorageEntity} from "./StorageEntity";
 
-export class Action<T extends StorageEntity> extends StorageEntity implements ActionType<T> {
+export class Action<T extends StorageEntity> extends StorageEntity implements ActionType {
     storeName = StoreName.ACTION
     withAction = false
 
@@ -26,7 +26,7 @@ export class Action<T extends StorageEntity> extends StorageEntity implements Ac
         this.action = action
     }
 
-    dto(): ActionType<T>{
+    dto(): ActionType{
         return {
             id: this.id,
             action: this.action,
