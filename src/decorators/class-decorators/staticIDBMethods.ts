@@ -1,6 +1,6 @@
 import {StoreName} from "../../types/StoreName";
 import storeDB from "../../db/storeDB/storeDB";
-import Action from "../../classes/Entities/Action";
+import Action from "../../classes/StoreEntities/Action";
 import {ActionName} from "../../types/ActionsType";
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import {WithDTOMethod} from "../../types/WithDTOMethod";

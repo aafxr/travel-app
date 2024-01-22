@@ -1,13 +1,13 @@
 import {IDBPDatabase, openDB} from "idb";
+
+import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
 import {pushAlertMessage} from "../components/Alerts/Alerts";
 import {DB_NAME, DB_STORES, DB_VERSION} from "./db-constants";
-import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
-import {WithStoreProps} from "../types/WithStoreProps";
-import {WithDTOMethod} from "../types/WithDTOMethod";
-import {StoreName} from "../types/StoreName";
-import Action from "../classes/Entities/Action";
-import {User} from "../classes/User";
+import StorageEntity from "../classes/StoreEntities/StorageEntity";
 import {ActionName} from "../types/ActionsType";
+import Action from "../classes/StoreEntities/Action";
+import {User} from "../classes/StoreEntities/User";
+import {StoreName} from "../types/StoreName";
 
 async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
     return await openDB(dbname, version, {
@@ -70,14 +70,12 @@ async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stor
 }
 
 
-const startTransaction = <T extends WithStoreProps & WithDTOMethod>(data: T, db: IDBPDatabase) => db.transaction([data.storeName, StoreName.ACTION], "readwrite")
-
-// const createAction =  <T extends WithStoreProps & WithDTOMethod> (data: T, user: User) => {}
+const startTransaction = <T extends StorageEntity>(data: T, db: IDBPDatabase) => db.transaction([data.storeName, StoreName.ACTION], "readwrite")
 
 
 
 export class DB {
-    static add<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success: Function, error?: (e: Error) => void): void {
+    static add<T extends StorageEntity>(data: T, user: User, success: Function, error?: (e: Error) => void): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)
@@ -96,7 +94,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getOne<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, id: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
+    static getOne<T extends StorageEntity>(storeName: StoreName, id: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -107,7 +105,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getMany<T extends WithStoreProps & WithDTOMethod>(storeName:StoreName, range: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+    static getMany<T extends StorageEntity>(storeName:StoreName, range: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -118,7 +116,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getAll<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+    static getAll<T extends StorageEntity>(storeName: StoreName, success?: (data: T[]) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -129,7 +127,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getOneFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName:StoreName,index: keyof T, query: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
+    static getOneFromIndex<T extends StorageEntity>(storeName:StoreName,index: keyof T, query: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -141,7 +139,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getManyFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, index: keyof T, query: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+    static getManyFromIndex<T extends StorageEntity>(storeName: StoreName, index: keyof T, query: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -153,7 +151,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getAllFromIndex<T extends WithStoreProps & WithDTOMethod>(storeName: StoreName, index: keyof T, count?: number, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+    static getAllFromIndex<T extends StorageEntity>(storeName: StoreName, index: keyof T, count?: number, success?: (data: T[]) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -165,7 +163,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static update<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success?: Function, error?: Function): void {
+    static update<T extends StorageEntity>(data: T, user: User, success?: Function, error?: Function): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)
@@ -184,7 +182,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static delete<T extends WithStoreProps & WithDTOMethod>(data: T, user: User, success?: Function, error?: Function): void {
+    static delete<T extends StorageEntity>(data: T, user: User, success?: Function, error?: Function): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)

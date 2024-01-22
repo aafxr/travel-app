@@ -1,16 +1,15 @@
+import {nanoid} from "nanoid";
+
+import {CurrencyName} from "../../types/CurrencyName";
 import {ExpenseType} from "../../types/ExpenseType";
 import {DBFlagType} from "../../types/DBFlagType";
-import {CurrencyName} from "../../types/CurrencyName";
-import {nanoid} from "nanoid";
-import EventEmitter from "../EventEmmiter";
 import {StoreName} from "../../types/StoreName";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-import {WithStoreProps} from "../../types/WithStoreProps";
+import StorageEntity from "./StorageEntity";
 
 /**
  * данный класс позволяет работать с расходами
  */
-abstract class Expense extends EventEmitter implements ExpenseType, WithDTOMethod, WithStoreProps {
+abstract class Expense extends StorageEntity implements ExpenseType{
     abstract storeName: StoreName;
     withAction = true
 

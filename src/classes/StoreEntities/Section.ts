@@ -1,15 +1,14 @@
 import {SectionType} from "../../types/SectionType";
 import {DBFlagType} from "../../types/DBFlagType";
+import {StoreName} from "../../types/StoreName";
 import storeDB from "../../db/storeDB/storeDB";
 import constants from "../../static/constants";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-import {WithStoreProps} from "../../types/WithStoreProps";
-import {StoreName} from "../../types/StoreName";
+import StorageEntity from "./StorageEntity";
 
 /**
  * класс для работы с сущностью Section
  */
-export default class Section implements SectionType, WithDTOMethod, WithStoreProps {
+export class Section extends StorageEntity implements SectionType{
     storeName = StoreName.SECTION
     withAction = true
     
@@ -19,6 +18,8 @@ export default class Section implements SectionType, WithDTOMethod, WithStorePro
     hidden: DBFlagType = 0;
 
     constructor(section: Partial<SectionType> | Section) {
+        super()
+
         if (section.id) this.id = section.id
         if (section.color) this.color = section.color
         if (section.title) this.title = section.title

@@ -1,3 +1,4 @@
+/** Тип, описывающий данные пользователя */
 export interface UserType{
     id: string,
     first_name: string,

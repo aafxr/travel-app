@@ -1,17 +1,12 @@
-import {TravelType} from "../../types/TravelType";
-import {MovementType} from "../../types/MovementType";
-import {DBFlagType} from "../../types/DBFlagType";
-import {Preferences} from "../Preferences";
-import Place from "./Place";
-import Waypoint from "./Waypoint";
-import EventEmitter from "../EventEmmiter";
 import {nanoid} from "nanoid";
-import storeDB from "../../db/storeDB/storeDB";
+import {MovementType} from "../../types/MovementType";
+import {TravelType} from "../../types/TravelType";
+import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import Action from "./Action";
-import {ActionName} from "../../types/ActionsType";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-import {WithStoreProps} from "../../types/WithStoreProps";
+import StorageEntity from "./StorageEntity";
+import {Preferences} from "../Preferences";
+import Waypoint from "./Waypoint";
+import Place from "./Place";
 
 
 export enum TravelEventName {
@@ -19,7 +14,7 @@ export enum TravelEventName {
 }
 
 
-export default class Travel2 extends EventEmitter implements TravelType, WithDTOMethod, WithStoreProps{
+export class Travel extends StorageEntity implements TravelType{
     storeName: StoreName = StoreName.TRAVEL;
     withAction = true
 
@@ -165,41 +160,6 @@ export default class Travel2 extends EventEmitter implements TravelType, WithDTO
             updated_at: this.updated_at,
         }
     }
-
-    save(user_id = '', success = () => {}, error = (e: Error) => {}) {
-        storeDB.getOne(StoreName.TRAVEL, this.id)
-            .then(async (travel) => {
-                let action
-                if (travel) {
-                    await storeDB.editElement(StoreName.TRAVEL, this.dto())
-                    action = new Action(this, user_id, StoreName.TRAVEL, ActionName.UPDATE)
-                } else {
-                    await storeDB.addElement(StoreName.TRAVEL, this.dto())
-                    action = new Action(this, user_id, StoreName.TRAVEL, ActionName.ADD)
-                }
-
-                await storeDB.addElement(StoreName.ACTION, action)
-            })
-            .then(success)
-            .catch(error)
-    }
-
-
-
-
-
-    // delete(user_id = '', success = () => {}, error = (e: Error) => {}) {
-    //     const action = new Action(this.dto(), user_id, StoreName.TRAVEL, ActionName.DELETE)
-    //
-    //     Promise.all([
-    //         storeDB.addElement(StoreName.ACTION, action),
-    //         storeDB.removeElement(StoreName.TRAVEL, this.id)
-    //     ])
-    //         .then(success)
-    //         .catch(error)
-    // }
-
-
 }
 
 

@@ -1,14 +1,14 @@
 import {nanoid} from "nanoid";
-import {LimitType} from "../../types/LimitType";
+
 import {DBFlagType} from "../../types/DBFlagType";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-import {WithStoreProps} from "../../types/WithStoreProps";
 import {StoreName} from "../../types/StoreName";
+import {LimitType} from "../../types/LimitType";
+import StorageEntity from "./StorageEntity";
 
 /**
  * Класс для работы с лимитами
  */
-export default class Limit implements LimitType, WithDTOMethod, WithStoreProps {
+export class Limit extends StorageEntity implements LimitType {
     storeName = StoreName.LIMIT
     withAction = true
 
@@ -18,6 +18,8 @@ export default class Limit implements LimitType, WithDTOMethod, WithStoreProps {
     value = 0
 
     constructor(limit: Partial<Limit | LimitType>) {
+        super()
+
         if (limit.id) this.id = limit.id
         if (limit.personal) this.personal = limit.personal
         if (limit.section_id) this.section_id = limit.section_id

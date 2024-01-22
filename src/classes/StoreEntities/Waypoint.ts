@@ -3,7 +3,7 @@ import {CoordinatesType} from "../../types/CoordinatesType";
 import {nanoid} from "nanoid";
 import {WithDTOMethod} from "../../types/WithDTOMethod";
 
-export default class Waypoint implements WaypointType, WithDTOMethod {
+export class Waypoint implements WaypointType, WithDTOMethod {
     address = '';
     id = nanoid(6);
     locality = '';

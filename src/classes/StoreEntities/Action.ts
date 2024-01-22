@@ -1,12 +1,11 @@
-import {staticIDBMethods} from "../../decorators/class-decorators/staticIDBMethods";
+import {nanoid} from "nanoid";
+
 import {ActionName, ActionType} from "../../types/ActionsType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import {nanoid} from "nanoid";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-import {WithStoreProps} from "../../types/WithStoreProps";
+import StorageEntity from "./StorageEntity";
 
-export default class Action<T extends WithDTOMethod> implements ActionType<T>, WithDTOMethod, WithStoreProps {
+export class Action<T extends StorageEntity> extends StorageEntity implements ActionType<T> {
     storeName = StoreName.ACTION
     withAction = false
 
@@ -19,6 +18,8 @@ export default class Action<T extends WithDTOMethod> implements ActionType<T>, W
     user_id = '';
 
     constructor(data: T, user_id: string, entity: StoreName, action: ActionName) {
+        super()
+
         this.data = data.dto()
         this.user_id = user_id
         this.entity = entity

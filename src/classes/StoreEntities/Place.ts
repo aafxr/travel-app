@@ -11,7 +11,7 @@ import {WithDTOMethod} from "../../types/WithDTOMethod";
  * @extends Entity
  *
  */
-export default class Place implements PlaceType, WithDTOMethod {
+export class Place implements PlaceType, WithDTOMethod {
     _id = nanoid(6);
     id = '';
     name = '';

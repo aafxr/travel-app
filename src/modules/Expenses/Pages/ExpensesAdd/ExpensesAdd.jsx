@@ -16,7 +16,7 @@ import Button from "../../../../components/ui/Button/Button";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../db/storeDB/storeDB";
 import {defaultFilterValue} from "../../static/vars";
-import {Expense} from "../../../../classes/Entities/Expense";
+import {Expense} from "../../../../classes/StoreEntities/Expense";
 import useExpense from "../../hooks/useExpense";
 
 import '../../css/Expenses.css'

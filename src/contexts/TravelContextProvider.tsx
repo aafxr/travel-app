@@ -2,35 +2,33 @@ import React, {createContext, useEffect, useState} from "react";
 import {Outlet, useNavigate, useParams} from "react-router-dom";
 
 import PageContainer from "../components/Loading/PageContainer";
+import useUserSelector from "../hooks/useUserSelector";
+import {Place, Travel} from "../classes/StoreEntities";
 import Loader from "../components/Loader/Loader";
 import storeDB from "../db/storeDB/storeDB";
 import constants from "../static/constants";
-import Travel from "../classes/Travel";
 import useUpdate from "../hooks/useUpdate";
-import useUserSelector from "../hooks/useUserSelector";
-import Travel2 from "../classes/Entities/Travel2";
-import Place from "../classes/Entities/Place";
+import {DB} from "../db/DB";
 
 /**
  * @name TravelContextType
- * @typedef {Object} TravelContextType
- * @property {Travel | null} travel instance класса Travel
- * @property {TravelType | null}  travelObj
+ * @typedef {Object}                TravelContextType
+ * @property {Travel | null}        travel instance класса Travel
+ * @property {TravelType | null}    travelObj
  * @category Types
  */
 
-
-/**@type {TravelContextType}*/
-const defaultTravel = {
-    travel: null,
-    travelObj: null
+type TravelContextType = {
+    travel: Travel | null
 }
 
 
-/**
- * @type {React.Context<TravelContextType>}
- */
-export const TravelContext = createContext(defaultTravel)
+const defaultTravel: TravelContextType = {
+    travel: null,
+}
+
+
+export const TravelContext = createContext<TravelContextType>(defaultTravel)
 
 /**
  * Контекст предоставляет экземпляр Travel
@@ -41,14 +39,14 @@ export const TravelContext = createContext(defaultTravel)
  */
 export default function TravelContextProvider() {
     const [loading, setLoading] = useState(true)
-    const [state, setState] = useState(/**@type{TravelContextType}*/defaultTravel)
+    const [state, setState] = useState(defaultTravel)
     const user = useUserSelector()
     const update = useUpdate()
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
-window.localdb = storeDB
-    window.Travel = Travel2
+    window.DB = DB
+    window.Travel = Travel
     window.Place = Place
 
     useEffect(() => {
@@ -60,8 +58,8 @@ window.localdb = storeDB
                     .then(item => {
                         setLoading(false)
                         const t = item
-                            ?  new Travel(item, travelCode)
-                            :  new Travel(undefined, travelCode)
+                            ? new Travel(item, travelCode)
+                            : new Travel(undefined, travelCode)
                         t?.setUser(user.id)
                         if (t) {
                             t.onUpdate(() => setState(prev => ({...prev, travelObj: Object.freeze(t.object)})))
