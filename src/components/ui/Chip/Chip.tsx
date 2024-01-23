@@ -5,7 +5,7 @@ import React, {HTMLAttributes, PropsWithChildren} from 'react'
 import './Chip.css'
 
 interface ChipPropsType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>> {
-    color: 'orange' | 'green' | 'grey' | 'light-orange' | 'red'
+    color?: 'orange' | 'green' | 'grey' | 'light-orange' | 'red'
     icon?: string | JSX.Element
     iconPosition?: 'left' | 'right'
     rounded?: boolean

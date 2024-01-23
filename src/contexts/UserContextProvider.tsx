@@ -49,7 +49,7 @@ export default function UserContextProvider({children}: React.PropsWithChildren)
         if(!user) return null
         if(unsubscribe.unsub) unsubscribe.unsub()
         return user.subscribe('update', function(this:User, user:User) {
-            console.log(this)
+
             DB.update(this,this, undefined, defaultHandleError)
             localStorage.setItem(USER_AUTH, JSON.stringify(this.dto()))
             setState({...state, user: this})
@@ -125,7 +125,7 @@ export default function UserContextProvider({children}: React.PropsWithChildren)
 
         // if(state.user && !unsubscribe){
         //     const f = subscribeOnUserChanges(state.user)
-        //     console.log(f)
+        //
         //     setUnsubscribe({
         //         unsub: function() {
         //             console.warn(1);
@@ -139,7 +139,7 @@ export default function UserContextProvider({children}: React.PropsWithChildren)
     state.login = login
     state.logout = logout
     state.initUser = initUser
-    console.log(state)
+
 
     return (
         <UserContext.Provider value={state}>

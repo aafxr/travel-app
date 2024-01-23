@@ -1,40 +1,40 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
+import {Place} from "../../../../classes/StoreEntities";
 import {Tab} from "../../../../components/ui";
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
+import {DB} from "../../../../db/DB";
 
 export default function ShowPlaces() {
     const user = useUserSelector()
     const {dayNumber} = useParams()
-    const {travel, travelObj} = useTravelContext()
-    const tabs_ref = useRef(/**@type{HTMLDivElement}*/ null)
-    const container_ref = useRef(/**@type{HTMLDivElement}*/ null)
-    const [placesAtDay, setPlacesAtDay] = useState(/**@type{PlaceType[]}*/ [])
+    const {travel} = useTravelContext()
+    const tabs_ref = useRef<HTMLDivElement>(null)
+    const container_ref = useRef<HTMLDivElement>(null)
+    const [placesAtDay, setPlacesAtDay] = useState<Place[]>([])
 
     // const activeDays = travel.routeBuilder.getActivityDays()
 
     useEffect(() => {
         // const days = travel.routeBuilder.getActivityDays()
-        const places = travelObj.places//travel.routeBuilder.getPlacesAtDay(+dayNumber || days[0] || 1)
+        const places = travel.places//travel.routeBuilder.getPlacesAtDay(+dayNumber || days[0] || 1)
         setPlacesAtDay(places)
-    }, [dayNumber, travelObj.places])
+    }, [dayNumber, travel.places])
 
-    /** @param {PlaceType} place */
-    function handleRemovePLace(place) {
+
+    function handleRemovePLace(place:Place) {
+        if(!user) return user
         travel.removePlace(place)
-        travel.save(user.id)
-            .catch(defaultHandleError)
+        DB.update(travel, user)
     }
 
     useLayoutEffect(() => {
-        if (tabs_ref.current && container_ref) {
+        if (tabs_ref.current && container_ref.current) {
             const rect = tabs_ref.current.getBoundingClientRect()
             container_ref.current.style.height = window.screen.height - rect.bottom + 'px'
         }
@@ -45,9 +45,9 @@ export default function ShowPlaces() {
             {
                 <div ref={tabs_ref} className='travel-tab-container flex-stretch flex-nowrap hide-scroll flex-0'>
                     {
-                        Array.from({length: travelObj.__days})
+                        Array.from({length: travel.days})
                             .map((_, i) => (
-                                <Tab to={`/travel/${travelObj.id}/${i+1}/`} key={i+1} name={`${i+1} день`}/>
+                                <Tab to={`/travel/${travel.id}/${i+1}/`} key={i+1} name={`${i+1} день`}/>
                             ))
                         // :  <Tab to={`/travel/${travel.id}/1/`} name={dateToStringFormat(travel.date_start || travel.date_end).slice(0, -5)}/>
                     }
@@ -58,12 +58,8 @@ export default function ShowPlaces() {
                     placesAtDay.map(p => (
                         <LocationCard
                             key={p._id || p.id}
-                            id={p.id}
-                            title={p.name}
-                            imgURLs={p.photos || [DEFAULT_IMG_URL]}
-                            entityType={p.formatted_address}
+                            place={p}
                             onDelete={handleRemovePLace}
-                            item={p}
                         />
                     ))
                 }
