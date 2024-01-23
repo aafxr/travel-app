@@ -18,6 +18,7 @@ export class Place implements PlaceType, WithDTOMethod {
     formatted_address = '';
     type: PlaceKind = PlaceKind.place;
     day?: number;
+    photos: string[] = []
     location: CoordinatesType = [-1, -1];
     coords: CoordinatesType = [-1, -1];
     time_start: Date = new Date(0);
@@ -31,6 +32,7 @@ export class Place implements PlaceType, WithDTOMethod {
         if (place.name) this.name = place.name
         if (place.type) this.type = place.type
         if (place.day) this.day = place.day
+        if (place.photos) this.photos = place.photos
         if (place.coords) this.coords = place.coords
         if (place.location) this.location = place.location
         if (place.visited) this.visited = place.visited

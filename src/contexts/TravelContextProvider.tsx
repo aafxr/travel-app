@@ -1,13 +1,13 @@
 import React, {createContext, useEffect, useState} from "react";
 import {Outlet, useNavigate, useParams} from "react-router-dom";
 
+import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 import PageContainer from "../components/PageContainer/PageContainer";
 import useUserSelector from "../hooks/useUserSelector";
 import { Travel} from "../classes/StoreEntities";
 import Loader from "../components/Loader/Loader";
-import {DB} from "../db/DB";
 import {StoreName} from "../types/StoreName";
-import defaultHandleError from "../utils/error-handlers/defaultHandleError";
+import {DB} from "../db/DB";
 
 /**
  * @name TravelContextType

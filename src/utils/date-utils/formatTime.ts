@@ -13,10 +13,10 @@
  * @param {Date} date
  * @return {string}
  */
-export default function formatTime(template = '', date){
+export default function formatTime(template = '', date: Date){
     if(!date) return template
 
-    const formatter = new Intl.NumberFormat(navigator.language, {minimumIntegerDigits: 2, maximumIntegerDigits: 4, minimumFractionDigits: 0})
+    const formatter = new Intl.NumberFormat(navigator.language, {minimumIntegerDigits: 2, maximumSignificantDigits: 4, minimumFractionDigits: 0})
     return template
         .replace('DD', formatter.format(date.getDay()))
         .replace('MM', formatter.format(date.getMonth()))

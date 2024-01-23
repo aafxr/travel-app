@@ -4,87 +4,58 @@ import React, {useContext, useEffect, useState} from "react";
 import RecommendLocation2 from "../../components/RecommendLocation2/RecommendLocation2";
 import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {UserContext} from "../../../../contexts/UserContextProvider";
 import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import PlaceCard2 from "../../components/PlaceCard2/PlaceCard2";
+import {ENTITY, MS_IN_DAY} from "../../../../static/constants";
 import PlaceActivity from "../../../../classes/PlaceActivity";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import RoadActivity from "../../../../classes/RoadActivity";
-import {ENTITY, MS_IN_DAY} from "../../../../static/constants";
-import {Tab} from "../../../../components/ui";
 import {PlusIcon} from "../../../../components/svg";
-import {UserContext} from "../../../../contexts/UserContextProvider";
-import durationToSting from "../../../../utils/date-utils/durationToString";
+import {Tab} from "../../../../components/ui";
+import {Place} from "../../../../classes/StoreEntities";
 
 export default function ShowRouteByDays() {
     const {user} = useContext(UserContext)
     const {dayNumber} = useParams()
-    const {travel, travelObj} = useTravelContext()
-    const [dayPlane, setDayPlane] = useState(/**@type{Array<PlaceType | MovingType>}*/[])
-    // const [activitiesList, setActivitiesList] = useState(/**@type{Activity[]}*/[])
-    //
-    // useEffect(() => {
-    //     const days = travel.routeBuilder.getActivityDays()
-    //     setActivitiesList(travel.routeBuilder.getActivitiesAtDay(+dayNumber || days[0] || 1))
-    // }, [dayNumber, travel, travelObj.places])
-
-    const timeRange_start = travelObj.date_start.getTime() + MS_IN_DAY * (+dayNumber - 1)
-    const timeRange_end = timeRange_start + MS_IN_DAY
-
+    const {travel} = useTravelContext()
+    const [dayPlane, setDayPlane] = useState<Place[]>([])
 
 
     useEffect(() => {
-        function updatePlane(__route = []) {
-            const dp = __route
-                .filter(r => {
-                    switch (r.type) {
-                        case ENTITY.PLACE:
-                            return r.time_start.getTime() >= timeRange_start && r.time_start.getTime() <= timeRange_end
-                        case  ENTITY.MOVING:
-                            return r.start.getTime() >= timeRange_start && r.start.getTime() <= timeRange_end
-                        default:
-                            return false
-                    }
-                })
-            setDayPlane(dp)
-        }
+        const start = new Date(travel.date_start.getTime() + Number(dayNumber) * MS_IN_DAY)
+        const end = new Date(start.getTime() + MS_IN_DAY)
+        const places = travel.places.filter(p => p.time_start > start && p.time_start < end)
+        setDayPlane(places)
+    }, [dayNumber, travel])
 
-        updatePlane(travelObj.__route)
-        const unsubscrireb = travel.subscribe('route', updatePlane)
-        return () => unsubscrireb()
-    }, [dayNumber, travelObj])
 
     let showHotel = false
     const lastPlannedActivity = dayPlane[dayPlane.length - 1]
     if (lastPlannedActivity) {
-        const freeTime = timeRange_end - (lastPlannedActivity.time_end || lastPlannedActivity.end) > travelObj.preferences.density
+        const freeTime = lastPlannedActivity.time_end.getTime() > travel.preferences.density
         if (freeTime)
             showHotel = true
     }
 
-    const lastPlace = dayPlane.findLast(el => el.type === 2001)
+    const lastPlace = dayPlane[dayPlane.length - 1]
 
-    /** @param {PlaceType} place */
-    function handleRemovePlace(place){
+    function handleRemovePlace(place: Place) {
         travel.removePlace(place)
-            .save(user.id)
-            .catch(defaultHandleError)
     }
 
     return (
         <>
-            {
-                <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll flex-0'>
-                    {
-                        Array.from({length: travelObj.__days})
-                            .map((_, i) => (
-                                <Tab to={`/travel/${travelObj.id}/${i + 1}/`} key={i + 1} name={`${i + 1} день`}/>
-                            ))
-                    }
-                </div>
-            }
+            <div className='travel-tab-container flex-stretch flex-nowrap hide-scroll flex-0'>
+                {Array.from({length: travel.days})
+                    .map((_, i) => (
+                        <Tab to={`/travel/${travel.id}/${i + 1}/`} key={i + 1} name={`${i + 1} день`}/>
+                    ))
+                }
+            </div>
             <Container className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     dayPlane.length
@@ -94,7 +65,7 @@ export default function ShowRouteByDays() {
                                 : <RecommendLocation2 key={r.id} moving={r}/>
                         )
                         : <Link className='link align-center gap-1'
-                                to={`/travel/${travelObj.id}/add/place/${dayNumber}/`}><PlusIcon
+                                to={`/travel/${travel.id}/add/place/${dayNumber}/`}><PlusIcon
                             className='icon'/>&nbsp;Добавить локацию</Link>
                     // activitiesList
                     //     ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
@@ -104,10 +75,10 @@ export default function ShowRouteByDays() {
                     //                 {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
                     //             </div>
                     //         </React.Fragment>))
-                    //     : travelObj.places.length === 0
+                    //     : travel.places.length === 0
                     //         ? (
                     //             <div>
-                    //                 <Link className='link' to={`/travel/${travelObj.id}/add/place/`}>Добавить место</Link>
+                    //                 <Link className='link' to={`/travel/${travel.id}/add/place/`}>Добавить место</Link>
                     //             </div>
                     //         )
                     //         : <div>PageContainer...</div>
@@ -115,7 +86,7 @@ export default function ShowRouteByDays() {
                 {showHotel &&
                     <Link
                         className='link align-center gap-1'
-                        to={`/travel/${travelObj.id}/add/place/${dayNumber}/?place=${lastPlace?._id}`}>
+                        to={`/travel/${travel.id}/add/place/${dayNumber}/?place=${lastPlace?._id}`}>
                         <PlusIcon className='icon'/>&nbsp;Добавить отель
                     </Link>}
 
@@ -130,7 +101,7 @@ export default function ShowRouteByDays() {
  * @return {JSX.Element}
  */
 function ShowActivity({activity}) {
-    const {travel, travelObj} = useTravelContext()
+    const {travel, travel} = useTravelContext()
     const user = useUserSelector()
     const [_activity, setActivity] = useState(/**@type{Activity}*/null)
 
@@ -150,7 +121,7 @@ function ShowActivity({activity}) {
         return (
             <>
                 <RecommendLocation
-                    to={`/travel/${travelObj.id}/params/`}
+                    to={`/travel/${travel.id}/params/`}
                     items={[
                         {id: 1, entityType: 'hotel', entityName: '123'},
                         {id: 2, entityType: 'hotel', entityName: 'name'},

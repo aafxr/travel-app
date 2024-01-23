@@ -37,7 +37,7 @@ import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 // import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import {UserContext} from "./contexts/UserContextProvider";
 // import Profile from "./modules/Main/Pages/Profile/Profile";
-// import CheckList from "./components/CheckList/CheckList";
+import CheckList from "./components/CheckList/CheckList";
 import Events from "./modules/Main/Pages/Events/Events";
 import TelegramAuth from "./modules/Main/TelegramAuth";
 // import Login from "./modules/Main/Pages/Login/Login";
@@ -129,8 +129,8 @@ function App() {
                 {/*        <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
-                {/*        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
+                        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
+                        <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>
                 {/*        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>*/}

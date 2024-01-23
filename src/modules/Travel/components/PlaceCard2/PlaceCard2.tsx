@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {PropsWithChildren, useEffect, useState} from "react";
 
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import ChipInput from "../../../../components/ui/ChipInput/ChipInput";
@@ -11,6 +11,16 @@ import {Chip} from "../../../../components/ui";
 import '../PlaceCard/PlaceCard.css'
 import useUserSelector from "../../../../hooks/useUserSelector";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {Place} from "../../../../classes/StoreEntities";
+import {DB} from "../../../../db/DB";
+
+type PlaceCardPropsType = {
+    place: Place
+    onAdd?: (place: Place) => unknown
+    onEdite?: (place: Place) => unknown
+    onDelete?: (place: Place) => unknown
+    onPhotoAdd?: (place: Place) => unknown
+}
 
 /**
  * Компонент - карточка с описанием места
@@ -24,7 +34,14 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  * @param {(item) => void} onPhotoAdd
  * @returns {JSX.Element}
  */
-export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, onPhotoAdd}) {
+export default function PlaceCard2({
+                                       children,
+                                       place,
+                                       onAdd,
+                                       onEdite,
+                                       onDelete,
+                                       onPhotoAdd
+                                   }: PropsWithChildren<PlaceCardPropsType>) {
     const user = useUserSelector()
     const {travel} = useTravelContext()
     const [startChange, setStartChange] = useState(false)
@@ -39,8 +56,6 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
     }, [place, travel])
 
 
-
-
     const rightElement = (
         <div className='right-element column gap-0.5'>
             {/*<PlusIcon className='control-button flex-0' onClick={() => onAdd && onAdd(id)}/>*/}
@@ -52,36 +67,21 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
         </div>
     )
 
-    /**
-     * @param {string} time
-     * @param {Date} date
-     * @param {'start' | 'end'} type
-     */
-    function handleTime(time, date, type) {
-        const duration = place.time_end - place.time_start
-        if (time) {
+
+
+    function handleTime(date: Date, type: 'start' | 'end') {
+        const duration = place.time_end.getTime() - place.time_start.getTime()
+        if(user) {
             if (type === 'start') {
-                travel
-                    .updatePlace({
-                        ...place,
-                        time_start: new Date(date),
-                        time_end: new Date(date.getTime() + duration),
-                    })
-                    .save(user.id)
-                    .catch(defaultHandleError)
+                place.setTime_start(date)
+                DB.update(travel, user, undefined, e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
                 setStartChange(false)
-                setStart(time)
                 setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             } else if (type === 'end') {
-                travel
-                    .updatePlace({
-                        ...place,
-                        time_end: new Date(date),
-                    })
-                    .save(user.id)
-                    .catch(defaultHandleError)
+                place.setTime_start(date)
+                DB.update(travel, user, undefined, e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
                 setEndChange(false)
-                setEnd(time)
+                setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             }
         }
     }
@@ -106,13 +106,12 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
                                     ? <Chip
                                         onTouchStart={(e) => setStartChange(true)}
                                         className='place-date-start'
-                                        color={place.__expire ? "red" : "orange"}
+                                        color={"orange"}
                                     > {start} </Chip>
                                     : <ChipInput
                                         className='place-date-start'
-                                        template='hh:mm'
                                         value={new Date(place.time_start)}
-                                        onBlur={(time, date) => handleTime(time, date, 'start')}
+                                        onChange={(date) => handleTime(date, 'start')}
                                     />
                             }
                             {
@@ -120,13 +119,12 @@ export default function PlaceCard2({children, place, onAdd, onEdite, onDelete, o
                                     ? <Chip
                                         onTouchStart={(e) => setEndChange(true)}
                                         className='place-date-end'
-                                        color={place.__expire ? "red" : "orange"}
+                                        color={"orange"}
                                     > {end} </Chip>
                                     : <ChipInput
                                         className='place-date-end'
-                                        templates='hh:mm'
                                         value={new Date(place.time_end)}
-                                        onBlur={(time, date) => handleTime(time, date, 'end')}
+                                        onChange={(date) => handleTime(date, 'end')}
                                     />
                             }
                             <div className='place-img'>

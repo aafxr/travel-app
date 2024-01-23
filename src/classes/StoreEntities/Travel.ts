@@ -103,6 +103,16 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         this.members = members
     }
 
+    setPlaces(places: Place[]){
+        this.places = places
+        this.emit(TravelEventName.UPDATE)
+    }
+
+    removePlace(place: Place){
+        this.places = this.places.filter(p => p !== place)
+        this.emit(TravelEventName.UPDATE)
+    }
+
     setPhoto(photo: string | Blob) {
         if (this.imageURL && this.photo instanceof Blob) URL.revokeObjectURL(this.imageURL)
 

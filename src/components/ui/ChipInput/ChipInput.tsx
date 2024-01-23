@@ -1,9 +1,20 @@
 import clsx from 'clsx'
-import React, {useEffect, useRef, useState} from 'react'
+import React, {InputHTMLAttributes, useEffect, useRef, useState} from 'react'
 
 import formatTime from "../../../utils/date-utils/formatTime";
 
 import './ChipInput.css'
+
+
+interface ChipInputPropsType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'onBlur'> {
+    value: Date
+    onChange?: (date: Date) => unknown
+    color?: 'orange' | 'green' | 'grey' | 'light-orange' | 'red'
+    rounded?: boolean
+    pointer?: boolean
+    min?: string
+    max?: string
+}
 
 
 /**
@@ -26,7 +37,6 @@ import './ChipInput.css'
 export default function ChipInput({
                                       value,
                                       onChange,
-                                      onBlur,
                                       color = 'orange', // 'orange' | 'green' | 'grey' | 'light-orange'
                                       rounded,// boolean
                                       pointer = false,
@@ -35,25 +45,24 @@ export default function ChipInput({
                                       max = '23:59',
                                       ...props
 
-                                  }) {
-    const [inputValue, setInputValue] = useState(/**@type {Date}*/null)
-    const ref = useRef(/**@type{HTMLInputElement} */null)
-    const prepared = useRef(false)
+                                  }: ChipInputPropsType) {
+    const [inputValue, setInputValue] = useState<Date | null>(null)
+    const ref = useRef<HTMLInputElement>(null)
+
 
     useEffect(() => {
-        if (value instanceof Date) setInputValue(value)
+        setInputValue(value)
     }, [value])
 
-    useEffect(() => {
-        if (ref.current) {
-            function setFocus() {
-                if (ref.current && document.activeElement !== ref.current)
-                    ref.current.focus()
-                document.removeEventListener('touchend', setFocus)
-            }
 
-            document.addEventListener('touchend', setFocus)
+    useEffect(() => {
+        function setFocus() {
+            if (ref.current && document.activeElement !== ref.current)
+                ref.current.focus()
+            document.removeEventListener('touchend', setFocus)
         }
+
+        if (ref.current) document.addEventListener('touchend', setFocus)
     }, [ref.current])
 
 
@@ -70,20 +79,21 @@ export default function ChipInput({
         className
     )
 
-    /** @param {ChangeEvent<HTMLInputElement>} e */
-    function handleChange(e) {
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement> & React.KeyboardEvent<HTMLInputElement>) {
+        if (!inputValue) return
+
         const [hh, mm] = e.target.value.split(':')
         if (hh) inputValue.setHours(+hh)
         if (mm) inputValue.setMinutes(+mm)
         setInputValue(new Date(inputValue))
     }
 
-    function handleBlur() {
-        const cb = onBlur ? onBlur : () => {
-        }
 
-        let result = formatTime('hh:mm', inputValue)
-        cb(result, inputValue)
+    function handleBlur() {
+        if(onChange && inputValue) {
+            onChange(inputValue)
+        }
     }
 
     if (!inputValue) return null
@@ -91,16 +101,16 @@ export default function ChipInput({
     return <input
         ref={ref}
         type='time'
+        value={formatTime('hh:mm', inputValue)}
         // inputMode='numeric'
-        size={1}
         className={classes} {...props}
+        size={1}
         min={min}
         max={max}
-        value={formatTime('hh:mm', inputValue)}
+        step={60}
         onChange={handleChange}
         onKeyDown={handleChange}
         onBlur={handleBlur}
-        step={60}
     />
 }
 

@@ -6,6 +6,14 @@ import {animationVariant} from "./animationVariant";
 import range from "../../utils/range";
 
 import './PhotoCarousel.css'
+import clsx from "clsx";
+
+type PhotoCarouselPropsType = {
+    startValue?: number
+    urls?: string[]
+    className?:string
+}
+
 
 /**
  * Компонент-слайдер
@@ -17,15 +25,16 @@ import './PhotoCarousel.css'
  * @function
  * @name PhotoCarousel
  * @param {number} startValue default = 0, индекс изображения, которое будепервым отображаться первым
+ * @param {string} className
  * @param {string[]} urls default = [], список URL
  * @returns {JSX.Element}
  * @category Components
  */
-export default function PhotoCarousel({startValue = 0, urls = []}) {
+export default function PhotoCarousel({startValue = 0, urls = [], className}: PhotoCarouselPropsType) {
     /*** индекс текущего отображаемого изображения */
     const [index, setIndex] = useState(0)
     /*** список картинок с индексом (для вычисления направления анимации) */
-    const [urlsList, setUrlsList] = useState(/***@type {{idx:number, url:string}[]} */[])
+    const [urlsList, setUrlsList] = useState<{idx:number, url:string}[]>([])
     const rangeIndexes = range(index - 1, index + 1)
 
     /*** инициализация начальнлгл индекса отображаемого изображения */
@@ -35,14 +44,14 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
 
     /*** инициализация списка изображений */
     useEffect(() => {
-        if (Array.isArray(urls)) {
+        if (urls && urls.length) {
             const list = urls.map((url, idx) => ({idx, url}))
             setUrlsList(list)
         }
     }, [urls])
 
     return (
-        <div className='photo-container'>
+        <div className={clsx('photo-container', className)}>
             {
                 urlsList.length > 0 && urlsList
                     .filter((_, idx) => rangeIndexes.includes(idx))
@@ -64,7 +73,7 @@ export default function PhotoCarousel({startValue = 0, urls = []}) {
                     })
             }
             {
-                Array.isArray(urls) && urls.length > 1 && (
+                urls.length > 1 && (
                     <>
                         <button
                             className='photo-button-left rounded-button'
