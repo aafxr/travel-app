@@ -52,7 +52,6 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
     }
 
     function handleClickCard(){
-        console.log(travel)
         navigate(`/travel/${travel.id}/`)
     }
 

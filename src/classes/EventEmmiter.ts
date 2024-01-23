@@ -45,6 +45,7 @@ export default class EventEmitter {
      * @param {string} eventName
      */
     emit(eventName: string) {
+        console.log(this)
         if (this.events.has(eventName))
             this.events.get(eventName)!
                 .forEach(cb => cb(this))

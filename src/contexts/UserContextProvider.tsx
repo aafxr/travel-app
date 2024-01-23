@@ -102,38 +102,27 @@ export default function UserContextProvider({children}: React.PropsWithChildren)
     }
 
     useEffect(() => {
-        // if (process.env.NODE_ENV === 'production'){
-        //     try {
-        //         const user_auth = localStorage.getItem(USER_AUTH)
-        //         if (user_auth) {
-        //             const _user = JSON.parse(user_auth)
-        //             const user = new User(_user)
-        //             DB.getOne<User>(StoreName.USERS, user.id, (user)=> {
-        //                 if(user) login(user)
-        //             }, defaultHandleError)
-        //         }
-        //     } catch (err) {
-        //     }
-        // }
+        if (process.env.NODE_ENV === 'production'){
+            try {
+                const user_auth = localStorage.getItem(USER_AUTH)
+                if (user_auth) {
+                    const _user = JSON.parse(user_auth)
+                    const user = new User(_user)
+                    DB.getOne<User>(StoreName.USERS, user.id, (user)=> {
+                        if(user) login(user)
+                    }, defaultHandleError)
+                }
+            } catch (err) {
+            }
+        }
 
-        // setState({
-        //     ...state,
-        //     initUser,
-        //     login,
-        //     logout
-        // })
-
-        // if(state.user && !unsubscribe){
-        //     const f = subscribeOnUserChanges(state.user)
-        //
-        //     setUnsubscribe({
-        //         unsub: function() {
-        //             console.warn(1);
-        //             f()
-        //         }.bind(state.user)
-        //     })
-        // }
-    }, [unsubscribe, state.user])
+        setState({
+            ...state,
+            initUser,
+            login,
+            logout
+        })
+    }, [])
 
 
     state.login = login
