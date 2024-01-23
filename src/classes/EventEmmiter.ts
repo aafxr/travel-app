@@ -30,12 +30,13 @@ export default class EventEmitter {
             this.events.set(eventName, [])
 
         this.events.get(eventName)!.push(callback)
-        return () => {
+        return function(this:EventEmitter) {
+            console.warn(this)
             if (this.events.has(eventName)) {
                 const callbacks = this.events.get(eventName)!.filter(cb => cb !== callback)
                 this.events.set(eventName, callbacks)
             }
-        }
+        }.bind(this)
     }
 
     /**

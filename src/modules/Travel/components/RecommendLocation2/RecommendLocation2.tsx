@@ -1,12 +1,15 @@
 import React from "react";
 
-import { CarIcon} from "../../../../components/svg";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import {Chip} from "../../../../components/ui";
+import durationToSting from "../../../../utils/date-utils/durationToString";
+import {CarIcon} from "../../../../components/svg";
 
 import '../RecommendLocation/RecommendLocation.css'
-import durationToSting from "../../../../utils/date-utils/durationToString";
 
+type RecommendLocation2PropsType = {
+    to?: string
+    items?: any
+    moving?: number
+}
 
 /**
  * Компоонент отображает рекомендованные места в периоды между активностями
@@ -17,11 +20,10 @@ import durationToSting from "../../../../utils/date-utils/durationToString";
  * @constructor
  */
 export default function RecommendLocation2({
-                                              to,
-                                              items,
-                                               moving
-                                          }) {
-    const {travel} = useTravelContext()
+                                               to,
+                                               items,
+                                               moving = 10
+                                           }: RecommendLocation2PropsType) {
 
     if (!moving) return null
 
@@ -35,9 +37,9 @@ export default function RecommendLocation2({
                 <div className='recommend-movement-time row gap-1'>
                     {icon}
                     <span className='title-semi-bold'>
-                        {(moving.distance / 1000).toFixed(2)} км
+                        {(moving / 1000).toFixed(2)} км
                         &nbsp;/&nbsp;
-                        {durationToSting(moving.duration)}
+                        {durationToSting(moving)}
                     </span>
                 </div>
             </div>

@@ -84,6 +84,7 @@ export class User extends Member implements UserType {
 
     setTravelDetailsFilter(filter: TravelDetailsFilterType) {
         this.travelDetailsFilter = filter
+        console.log(this)
         this.emit('update')
     }
 

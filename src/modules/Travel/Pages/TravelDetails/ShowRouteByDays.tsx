@@ -1,25 +1,15 @@
 import {Link, useParams} from "react-router-dom";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
-import RecommendLocation2 from "../../components/RecommendLocation2/RecommendLocation2";
-import RecommendLocation from "../../components/RecommendLocation/RecommendLocation";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {UserContext} from "../../../../contexts/UserContextProvider";
-import RestTimeActivity from "../../../../classes/RestTimeActivity";
 import Container from "../../../../components/Container/Container";
 import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
 import PlaceCard2 from "../../components/PlaceCard2/PlaceCard2";
-import {ENTITY, MS_IN_DAY} from "../../../../static/constants";
-import PlaceActivity from "../../../../classes/PlaceActivity";
-import PlaceCard from "../../components/PlaceCard/PlaceCard";
-import RoadActivity from "../../../../classes/RoadActivity";
+import {Place} from "../../../../classes/StoreEntities";
+import {MS_IN_DAY} from "../../../../static/constants";
 import {PlusIcon} from "../../../../components/svg";
 import {Tab} from "../../../../components/ui";
-import {Place} from "../../../../classes/StoreEntities";
 
 export default function ShowRouteByDays() {
-    const {user} = useContext(UserContext)
     const {dayNumber} = useParams()
     const {travel} = useTravelContext()
     const [dayPlane, setDayPlane] = useState<Place[]>([])
@@ -36,7 +26,7 @@ export default function ShowRouteByDays() {
     let showHotel = false
     const lastPlannedActivity = dayPlane[dayPlane.length - 1]
     if (lastPlannedActivity) {
-        const freeTime = lastPlannedActivity.time_end.getTime() > travel.preferences.density
+        const freeTime = dayPlane.length > travel.preferences.density
         if (freeTime)
             showHotel = true
     }
@@ -59,10 +49,8 @@ export default function ShowRouteByDays() {
             <Container className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     dayPlane.length
-                        ? dayPlane.map(r =>
-                            r.type === ENTITY.PLACE
-                                ? <PlaceCard2 key={r._id} place={r} onDelete={() => handleRemovePlace(r)}/>
-                                : <RecommendLocation2 key={r.id} moving={r}/>
+                        ? dayPlane.map(p =>
+                            <PlaceCard2 key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
                         )
                         : <Link className='link align-center gap-1'
                                 to={`/travel/${travel.id}/add/place/${dayNumber}/`}><PlusIcon
@@ -94,62 +82,62 @@ export default function ShowRouteByDays() {
         </>
     )
 }
-
-
-/**
- * @param {Activity} activity
- * @return {JSX.Element}
- */
-function ShowActivity({activity}) {
-    const {travel, travel} = useTravelContext()
-    const user = useUserSelector()
-    const [_activity, setActivity] = useState(/**@type{Activity}*/null)
-
-    useEffect(() => {
-        setActivity(activity)
-    }, [activity])
-
-
-    /** @param {PlaceType} place */
-    function handleRemovePLace(place) {
-        travel.removePlace(place)
-        travel.save(user.id)
-            .catch(defaultHandleError)
-    }
-
-    if (activity instanceof RoadActivity) {
-        return (
-            <>
-                <RecommendLocation
-                    to={`/travel/${travel.id}/params/`}
-                    items={[
-                        {id: 1, entityType: 'hotel', entityName: '123'},
-                        {id: 2, entityType: 'hotel', entityName: 'name'},
-                    ]}
-                    activity={activity}
-                />
-            </>
-        )
-    } else if (activity instanceof PlaceActivity)
-        return <PlaceCard
-            placeActivity={activity}
-            onDelete={handleRemovePLace}
-        />
-    else if (activity instanceof RestTimeActivity)
-        return null//<RestTimeComponent activity={activity}/>
-    // return (
-    //     <div>
-    //         {/*<div className='row mt-20 gap-1'>*/}
-    //         {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
-    //         {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
-    //         {/*</div>*/}
-    //         <div className='title-semi-bold'>Свободное время</div>
-    //         <dl>
-    //             <dt>Время до места</dt>
-    //             <dd>{a.durationToSting()}</dd>
-    //         </dl>
-    //     </div>
-    // )
-}
+//
+//
+// /**
+//  * @param {Activity} activity
+//  * @return {JSX.Element}
+//  */
+// function ShowActivity({activity}) {
+//     const {travel, travel} = useTravelContext()
+//     const user = useUserSelector()
+//     const [_activity, setActivity] = useState(/**@type{Activity}*/null)
+//
+//     useEffect(() => {
+//         setActivity(activity)
+//     }, [activity])
+//
+//
+//     /** @param {PlaceType} place */
+//     function handleRemovePLace(place) {
+//         travel.removePlace(place)
+//         travel.save(user.id)
+//             .catch(defaultHandleError)
+//     }
+//
+//     if (activity instanceof RoadActivity) {
+//         return (
+//             <>
+//                 <RecommendLocation
+//                     to={`/travel/${travel.id}/params/`}
+//                     items={[
+//                         {id: 1, entityType: 'hotel', entityName: '123'},
+//                         {id: 2, entityType: 'hotel', entityName: 'name'},
+//                     ]}
+//                     activity={activity}
+//                 />
+//             </>
+//         )
+//     } else if (activity instanceof PlaceActivity)
+//         return <PlaceCard
+//             placeActivity={activity}
+//             onDelete={handleRemovePLace}
+//         />
+//     else if (activity instanceof RestTimeActivity)
+//         return null//<RestTimeComponent activity={activity}/>
+//     // return (
+//     //     <div>
+//     //         {/*<div className='row mt-20 gap-1'>*/}
+//     //         {/*    <Chip >{a.start.toLocaleTimeString()}</Chip>*/}
+//     //         {/*    <Chip >{a.end.toLocaleTimeString()}</Chip>*/}
+//     //         {/*</div>*/}
+//     //         <div className='title-semi-bold'>Свободное время</div>
+//     //         <dl>
+//     //             <dt>Время до места</dt>
+//     //             <dd>{a.durationToSting()}</dd>
+//     //         </dl>
+//     //     </div>
+//     // )
+// }
 
 

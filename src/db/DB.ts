@@ -74,7 +74,7 @@ const startTransaction = <T extends StorageEntity>(data: T, db: IDBPDatabase) =>
 
 
 export class DB {
-    static add<T extends StorageEntity>(data: T, user: User, success: Function, error?: (e: Error) => void): void {
+    static add<T extends StorageEntity>(data: T, user: User, success?: Function, error?: (e: Error) => void): void {
         openDataBase()
             .then(db => {
                 const tx = startTransaction(data, db)

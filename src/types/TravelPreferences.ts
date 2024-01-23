@@ -14,5 +14,7 @@ export interface TravelPreferences {
     showRoute: DBFlagType,
     showExpenses: DBFlagType,
     showCheckList: DBFlagType,
-    showComments: DBFlagType
+    showComments: DBFlagType,
+
+    density: 1 | 2 | 3
 }
