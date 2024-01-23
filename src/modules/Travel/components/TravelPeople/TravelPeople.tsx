@@ -1,4 +1,4 @@
-import React from "react";
+import React, {HTMLAttributes} from "react";
 import clsx from "clsx";
 
 import UserCard from "../../../../components/UserCard/UserCard";
@@ -6,6 +6,13 @@ import {PlusIcon} from "../../../../components/svg";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 
 import './TravelPeople.css'
+import {Member} from "../../../../classes/StoreEntities/Member";
+
+interface TravelPeoplePropsType extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+    peopleList: string[]
+    compact?: boolean
+    onClick?: (member: Member) => unknown
+}
 
 /**
  * Компонент принимает массив идентификаторов пользователей и отображает информацию о пользователях
@@ -23,22 +30,22 @@ export default function TravelPeople({
                                          compact = false,
                                          onClick,
                                          ...props
-                                     }) {
-    /**
-     * поднятие юзер инфо в вышестоящий компонент
-     * @param {UserType} user
-     */
-    function handleUserClick(user) {
+                                     }: TravelPeoplePropsType) {
+    const className = clsx('travel-details-people',
+        {
+            'compact row': compact,
+            'column gap-0.25': !compact
+        })
+
+    /** поднятие юзер инфо в вышестоящий компонент */
+    function handleUserClick(user: Member) {
         if (user && onClick) onClick(user)
     }
 
     return (
-        <div {...props} className={clsx('travel-details-people', {
-            'compact row': compact,
-            'column gap-0.25': !compact
-        })}>
+        <div {...props} className={className}>
             {
-                (Array.isArray(peopleList) && peopleList.length && compact )
+                (peopleList.length && compact)
                     ? peopleList.slice(0, 3).map(p => (
                         <UserCard
                             key={p}

@@ -3,7 +3,7 @@ import {Outlet, useNavigate, useParams} from "react-router-dom";
 
 import PageContainer from "../components/PageContainer/PageContainer";
 import useUserSelector from "../hooks/useUserSelector";
-import {Place, Travel} from "../classes/StoreEntities";
+import { Travel} from "../classes/StoreEntities";
 import Loader from "../components/Loader/Loader";
 import {DB} from "../db/DB";
 import {StoreName} from "../types/StoreName";
@@ -45,10 +45,6 @@ export default function TravelContextProvider() {
     const {travelCode} = useParams()
     const navigate = useNavigate()
 
-    window.DB = DB
-    window.Travel = Travel
-    window.Place = Place
-
     useEffect(() => {
         if (user && travelCode && (!state.travel || state.travel.id !== travelCode)) {
             setState({...state, loading: true})
@@ -70,14 +66,9 @@ export default function TravelContextProvider() {
             if (unsubscribe) unsubscribe()
         }
     }, [travelCode, user])
-
-
-    if (state.travel) {
-        window.travel = state.travel
-    }
     
     
-    if (state.travel && state.loading) {
+    if (state.loading) {
         return (
             <PageContainer center>
                 <Loader className='loader'/>

@@ -1,8 +1,14 @@
 import clsx from "clsx";
 import {useEffect, useState} from "react";
-import {motion} from 'framer-motion'
+import {motion, Variants} from 'framer-motion'
 
 import {PlusIcon} from "../../svg";
+
+type PlusButtonPropsType = {
+    init?: boolean
+    onChange?: (isRotate: boolean) => unknown
+    className?: string
+}
 
 /**
  * Кнопкка с иконкой "+"
@@ -12,10 +18,10 @@ import {PlusIcon} from "../../svg";
  * @returns {JSX.Element}
  * @constructor
  */
-export default function PlusButton({init, onChange, ...props}){
+export default function PlusButton({init, onChange, className}: PlusButtonPropsType){
     const [rotate, setRotate] = useState(false)
-    const className = clsx('rounded-button', props.className)
-    const variant ={
+    const cn = clsx('rounded-button', className)
+    const variant: Variants ={
         hidden: {
             rotate: 0,
             opacity: 0,
@@ -30,7 +36,7 @@ export default function PlusButton({init, onChange, ...props}){
     }
 
     useEffect(() =>{
-        if (typeof init === 'boolean') setRotate(init)
+        if (init !== undefined && init !== rotate) setRotate(init)
     }, [init])
 
 
@@ -41,8 +47,7 @@ export default function PlusButton({init, onChange, ...props}){
 
     return (
         <motion.button
-            {...props}
-            className={className}
+            className={cn}
             onClick={handleButtonClick}
             initial={'hidden'}
             animate='visible'

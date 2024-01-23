@@ -1,9 +1,13 @@
-import React from "react";
+import React, {ButtonHTMLAttributes, PropsWithChildren} from "react";
 import clsx from "clsx";
 import { useNavigate} from "react-router-dom";
 
 import './AddButton.css'
 
+
+interface AddButtonPropsType extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>{
+    to?:string
+}
 
 /**
  * Стилезованный компонент button с иконкой "+"
@@ -17,7 +21,7 @@ import './AddButton.css'
  * @category UI-Components
  * @name AddButton
  */
-export default function AddButton({className, children, to, props}) {
+export default function AddButton({className, children, to, ...props}: AddButtonPropsType) {
     const navigate = useNavigate()
 
     function handler() {

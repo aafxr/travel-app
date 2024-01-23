@@ -1,9 +1,21 @@
-import {useEffect, useRef, useState} from "react";
+import React, {PropsWithChildren, useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 
 import useResize from "../../hooks/useResize";
 
 import './Curtain.css'
+
+interface CurtainPropsType extends PropsWithChildren {
+    direction?: string
+    minOffset?: number
+    maxScroll?: number
+    maxOpenPercent?: number
+    defaultOffsetPX?: number
+    defaultOffsetPercents?: number
+    duration?: number
+    scrollDiff?: number
+    onChange?: (isOpen: boolean) => unknown
+}
 
 /**
  * компонент обертка, добавляет шторку
@@ -33,19 +45,12 @@ export default function Curtain({
                                     duration = 300,
                                     scrollDiff = 0.1,
                                     onChange
-                                }) {
-    /***
-     * react ref на основной блок-контейнер шторки
-     * @type{React.MutableRefObject<HTMLDivElement>}
-     */
-    const cRef = useRef()
-    /***
-     * react ref на верхнюю кнопку
-     * @type{React.MutableRefObject<HTMLDivElement>}
-     */
-    const cTopRef = useRef()
-    /***@type{React.MutableRefObject<HTMLDivElement>}*/
-    const curtainRef = useRef()
+                                }: CurtainPropsType) {
+    /** react ref на основной блок-контейнер шторки */
+    const cRef = useRef<HTMLDivElement>(null)
+    /** react ref на верхнюю кнопку */
+    const cTopRef = useRef<HTMLDivElement>(null)
+    const curtainRef = useRef<HTMLDivElement>(null)
 
     const [topOffset, setTopOffset] = useState(minOffset)
 
@@ -59,25 +64,31 @@ export default function Curtain({
     const windowSize = useResize()
 
     useEffect(() => {
-        if (typeof defaultOffsetPX === 'number' || typeof defaultOffsetPercents === 'number' ) {
-            const curtainHeight = cRef.current.getBoundingClientRect().height
-            const topButtonHeight = cTopRef.current.getBoundingClientRect().height
-            const height = curtainHeight - topButtonHeight
+        if (cRef.current && cTopRef.current) {
+            if (typeof defaultOffsetPX === 'number' || typeof defaultOffsetPercents === 'number') {
+                const curtainHeight = cRef.current.getBoundingClientRect().height
+                const topButtonHeight = cTopRef.current.getBoundingClientRect().height
+                const height = curtainHeight - topButtonHeight
 
-            setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * height))
-            setInit(true)
+                setTopOffset(Math.max(defaultOffsetPX, defaultOffsetPercents * height))
+                setInit(true)
+            }
         }
     }, [])
 
     useEffect(() => {
-        if (topOffset > minOffset) {
-            const t = calcTopOffset()
-            setTopOffset(t)
-            curtainRef.current.style.top = t + 'px'
+        if (curtainRef.current) {
+            if (topOffset > minOffset) {
+                const t = calcTopOffset()
+                setTopOffset(t)
+                curtainRef.current.style.top = t + 'px'
+            }
         }
     }, [windowSize])
 
     function calcTopOffset() {
+        if (!cRef.current || !cTopRef.current) return 0
+
         //высота, которую потнциально может занимать шторка
         const curtainHeight = cRef.current.getBoundingClientRect().height
         //высота кнопки шторки
@@ -92,9 +103,10 @@ export default function Curtain({
         return top
     }
 
-    function curtainHandler(e) {
+    function curtainHandler(e: React.MouseEvent<HTMLDivElement>) {
+        if(!curtainRef.current) return
         e.stopPropagation()
-        if(e.type === 'mouseup') {
+        if (e.type === 'mouseup') {
             if (topOffset > minOffset * (1 + scrollDiff)) {
                 setTopOffset(minOffset)
                 onChange && onChange(false)
@@ -116,46 +128,48 @@ export default function Curtain({
     }
 
     //================= drag handlers ============================================================================
-    function handleTouchStart(e) {
+    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
         e.stopPropagation()
         document.documentElement.classList.add('disable-reload')
         startPosition(e.touches[0].pageY)
     }
 
-    function handleTouchEnd(e) {
+    function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
         e.stopPropagation()
         document.documentElement.classList.remove('disable-reload')
         endPosition(e.touches[0]?.pageY)
     }
 
-    function handleTouchMove(e) {
+    function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
         e.stopPropagation()
         movePosition(e.touches[0].pageY)
     }
 
     //====================================
-    function handleDragStart(e) {
+    function handleDragStart(e: React.DragEvent<HTMLDivElement>) {
         e.stopPropagation()
         startPosition(e.pageY)
     }
 
-    function handleDragEnd(e) {
+    function handleDragEnd(e: React.DragEvent<HTMLDivElement>) {
         e.stopPropagation()
         endPosition(e.pageY)
     }
 
-    function handleDrag(e) {
+    function handleDrag(e: React.DragEvent<HTMLDivElement>) {
         e.stopPropagation()
         movePosition(e.pageY)
     }
 
     //====================================
 
-    function startPosition(y) {
+    function startPosition(y: number) {
         setDragStart(y)
     }
 
-    function endPosition(y) {
+    function endPosition(y: number) {
+        if(!curtainRef.current) return
+
         const diff = dragStart - dragEnd
         //минимальное смещение в пикселях, на которое не реагирует шторка
         const scrollDiffHeight = calcTopOffset() * scrollDiff
@@ -192,7 +206,7 @@ export default function Curtain({
     }, [topOffset])
 
 
-    function movePosition(y) {
+    function movePosition(y: number) {
         setDragEnd(y)
         setTopOffset(y)
     }
@@ -225,8 +239,9 @@ export default function Curtain({
                     >
                         {
                             (typeof direction === 'string' && direction.length > 0)
-                            ? <div className='title-semi-bold center' style={{height: "1.8rem",textAlign: 'center'}}>{direction}</div>
-                            : <button className='curtain-top-btn'/>
+                                ? <div className='title-semi-bold center'
+                                       style={{height: "1.8rem", textAlign: 'center'}}>{direction}</div>
+                                : <button className='curtain-top-btn'/>
                         }
                     </div>
                     <div className='content'>
@@ -245,7 +260,7 @@ export default function Curtain({
  * @param {number} topTarget
  * @param {number} duration
  */
-function animateTop(el, topTarget, duration) {
+function animateTop<T extends HTMLElement>(el: T, topTarget: number, duration: number) {
     const start = Date.now()
     let elementTop = el.getBoundingClientRect().top
     const delta = (topTarget - elementTop) / duration

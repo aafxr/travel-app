@@ -1,20 +1,28 @@
 import clsx from "clsx";
 import {useEffect, useState} from "react";
 
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
+import {Member} from "../../classes/StoreEntities/Member";
 import AvatarPlaceHolder from "./AvatarPlaceholder";
-import storeDB from "../../db/storeDB/storeDB";
-import constants from "../../static/constants";
+import {StoreName} from "../../types/StoreName";
 import Photo from "../Photo/Photo";
-
+import {DB} from "../../db/DB";
 import './UserCard.css'
 
 
+type UserCardPropsType = {
+    className?: string
+    id: string
+    variant?: 'compact' | 'horizontal' | 'vertical'
+    onClick?: (member: Member) => unknown
+}
+
 /**
  * компонент осуществляет поиск или пытается загрузить инфо о юзере
- * @param {string} className css class
- * @param {string} id - идентификатор пользователя
- * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
- * @param {Function} onClick - проп-функция (принимает инфо о юзере), генерируется при клике по карточке пользователя
+ * @param className css class
+ * @param id - идентификатор пользователя
+ * @param variant default = "horizontal"
+ * @param onClick - проп-функция (принимает инфо о юзере), генерируется при клике по карточке пользователя
  * @return {JSX.Element}
  * @category Components
  */
@@ -22,19 +30,19 @@ export default function UserCard({
                                      className,
                                      id,
                                      variant = 'horizontal',
-    onClick,
-}) {
-    const [user, setUser] = useState(null)
+                                     onClick,
+                                 }: UserCardPropsType) {
+    const [user, setUser] = useState<Member | null>(null)
 
     useEffect(() => {
-        if(id){
-            storeDB.getOne(constants.store.USERS, id)
-                .then(u =>  u && setUser(u))
-        }
+        DB.getOne<Member>(StoreName.USERS, id, (member) => {
+                if (member) setUser(new Member(member))
+            },
+            (e) => defaultHandleError(e, `Пользователь с id="${id}" не найден`))
     }, [id])
 
-    function handleUserCardClick(){
-        if(user){
+    function handleUserCardClick() {
+        if (user) {
             onClick && onClick(user)
         }
     }
@@ -46,7 +54,7 @@ export default function UserCard({
                     ? <AvatarPlaceHolder variant={variant}/>
                     : (
                         <>
-                            <Photo id={user.photo} className='avatar' />
+                            <Photo src={user.imageURL} className='avatar'/>
                             {variant !== 'compact' && (
                                 <>
                                     <div className='user-card-info column'>
@@ -67,7 +75,7 @@ export default function UserCard({
     )
 }
 
-const classNames = (variant, className) => clsx('user-card',
+const classNames = (variant: UserCardPropsType['variant'], className?: string) => clsx('user-card',
     {
         'flex-stretch gap-0.5': variant === 'horizontal',
         'column gap-0.5': variant === 'vertical',

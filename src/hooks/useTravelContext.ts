@@ -1,6 +1,5 @@
-import {useContext, useEffect} from "react";
+import {useContext} from "react";
 import {TravelContext} from "../contexts/TravelContextProvider";
-import useUpdate from "./useUpdate";
 
 /**
  * хук возвращает travel-контекст
@@ -11,6 +10,5 @@ import useUpdate from "./useUpdate";
  */
 export default function useTravelContext() {
     const state = useContext(TravelContext)
-    const update = useUpdate()
-    return {travel: state.travel, update, travelObj: state.travelObj}
+    return {travel: state.travel!}
 }

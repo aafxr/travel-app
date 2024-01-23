@@ -14,7 +14,7 @@ export enum TravelEventName {
 }
 
 
-export class Travel extends StorageEntity implements TravelType{
+export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
     storeName: StoreName = StoreName.TRAVEL;
     withAction = true
 
@@ -24,13 +24,16 @@ export class Travel extends StorageEntity implements TravelType{
     description = '';
     direction = '';
     owner_id = '';
-    photo = '';
     title = '';
+
+    private photo: string | Blob = '';
+    imageURL = ''
 
     days = 1
     isFromPoint: DBFlagType = 0
     children_count = 0
     members_count = 1
+    members: string[] = []
     visibility: DBFlagType = 0
 
     created_at = new Date();
@@ -43,7 +46,7 @@ export class Travel extends StorageEntity implements TravelType{
     places: Place[] = [];
     waypoints: Waypoint[] = [];
 
-    constructor(travel: Partial<TravelType | Travel>) {
+    constructor(travel: Partial<TravelType> | Travel) {
         super()
         if (travel.id) this.id = travel.id
         if (travel.title) this.title = travel.title
@@ -54,8 +57,13 @@ export class Travel extends StorageEntity implements TravelType{
         if (travel.days) this.days = travel.days
         if (travel.description) this.description = travel.description
         if (travel.members_count && travel.members_count > 1) this.members_count = travel.members_count
-        if (travel.movementTypes) this.movementTypes = travel.movementTypes
-        if (travel.photo) this.photo = travel.photo
+        if (travel.members) this.members = travel.members
+        if (travel.movementTypes) this.movementTypes = (travel.movementTypes as any).map((mt: any) => (mt['id'] ? mt['id'] : mt) as MovementType)
+        if (travel instanceof Travel)
+            this.setPhoto(travel.imageURL || '')
+        else if (travel.photo) {
+            this.setPhoto(travel.photo)
+        }
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
         if (travel.visibility) this.visibility = travel.visibility
@@ -91,8 +99,20 @@ export class Travel extends StorageEntity implements TravelType{
         this.emit(TravelEventName.UPDATE)
     }
 
-    setPhoto(photo: string) {
+    setMembers(members: string[]) {
+        this.members = members
+    }
+
+    setPhoto(photo: string | Blob) {
+        if (this.imageURL && this.photo instanceof Blob) URL.revokeObjectURL(this.imageURL)
+
         this.photo = photo
+        if (photo instanceof Blob)
+            this.imageURL = URL.createObjectURL(photo)
+        else {
+            this.imageURL = photo
+        }
+
         this.emit(TravelEventName.UPDATE)
     }
 
@@ -136,6 +156,13 @@ export class Travel extends StorageEntity implements TravelType{
         this.emit(TravelEventName.UPDATE)
     }
 
+    get people() {
+        const list: string[] = []
+        if (this.owner_id) list.push(this.owner_id)
+        if (this.members.length) list.push(...this.members)
+        return list
+    }
+
     dto(): TravelType {
         return {
             id: this.id,
@@ -149,6 +176,7 @@ export class Travel extends StorageEntity implements TravelType{
             isFromPoint: this.isFromPoint,
             children_count: this.children_count,
             members_count: this.members_count,
+            members: this.members,
             visibility: this.visibility,
             created_at: this.created_at,
             date_end: this.date_end,

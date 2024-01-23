@@ -1,30 +1,18 @@
-import React, {HTMLAttributes, useEffect, useRef, useState} from "react";
+import React, {HTMLAttributes, useRef} from "react";
 
-import constants, {DEFAULT_IMG_URL} from "../../static/constants";
-import storeDB from "../../db/storeDB/storeDB";
-import {nanoid} from "nanoid";
+import {DEFAULT_IMG_URL} from "../../static/constants";
 
 /**
- * @typedef {Object} UserPhotoType
+ * @typedef {Object} PhotoType
  * @property {string} id - идентификатор фото
  * @property {Blob} blob - блоб файл с изобрадением
  * @property {string} src - ссылка на фото на удаленном сервере
  */
-type UserPhotoType = {
-    id: string,
-    blob: Blob,
-    src: string
-} | {
-    id: string,
-    blob: Blob,
-} | {
-    id: string,
-    src: string
-};
+
 
 interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChange'> {
-    id: string,
-    onChange?: (photo: UserPhotoType) => unknown
+    src: string,
+    onChange?: (photo: Blob) => unknown
 }
 
 /**
@@ -36,58 +24,21 @@ interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChang
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Photo({className, id, onChange, ...props}: PhotoPropsType) {
-    const [photo, setPhoto] = useState<UserPhotoType | null>(null)
-    const [photoURL, setPhotoURL] = useState('')
+export default function Photo({className, src, onChange, ...props}: PhotoPropsType) {
     const inputRef = useRef<HTMLInputElement>(null)
-
-    /*** загругка фото из по предоставленному ID */
-    useEffect(() => {
-        if (id) {
-            storeDB.getOne(constants.store.IMAGES, id)
-                .then(/*** @param{UserPhotoType | undefined} p*/p => {
-                    if (p) {
-                        setPhoto(p)
-                        let url
-                        if (p.src) {
-                            url = p.src
-                        } else if (p.blob) {
-                            url = URL.createObjectURL(p.blob)
-                        } else {
-                            url = ''
-                        }
-                        /*** в приоритете устанавливается url из поля src, если поля нет, то ссылка сощдается на blob */
-                        setPhotoURL(url)
-                    }
-                })
-        }
-        return () => {
-            photoURL && URL.revokeObjectURL(photoURL)
-        }
-    }, [id])
-
 
     function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (!e.target.files) return
 
         const file = e.target.files[0]
-        const userPhoto: UserPhotoType = {
-            id: photo?.id || nanoid(7),
-            blob: file,
-            src: ''
-        }
-        /*** освобождение ресурсов выделенных для фото */
-        photoURL && URL.revokeObjectURL(photoURL)
-        /*** ссылка на новое изображение */
-        const newURL = URL.createObjectURL(userPhoto.blob)
-        setPhotoURL(newURL)
+
         /*** передаем обновленные данные о фото в компонент родитель */
-        onChange && onChange(userPhoto)
+        onChange && onChange(file)
     }
 
     return (
         <>
-            <img {...props} className={className} src={photoURL || DEFAULT_IMG_URL} alt="Фото"
+            <img {...props} className={className} src={src || DEFAULT_IMG_URL} alt="Фото"
                  onClick={e => inputRef.current?.click()}/>
             {!!onChange && <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/*'}/>}
         </>

@@ -322,11 +322,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url('../../public/icons/location_on_24px.svg');
 }
 
-.loader{
-    width: 40px;
-    height: 40px;
-    color: var(--color-grey);
-}
+/*.loader{*/
+/*    width: 40px;*/
+/*    height: 40px;*/
+/*    color: var(--color-grey);*/
+/*}*/
 
 #map{
     height: 100%;

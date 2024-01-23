@@ -12,7 +12,7 @@ import {Routes, Route, Navigate} from "react-router-dom";
 // import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
 // import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
-// import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
+import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 // import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 // import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
@@ -28,7 +28,7 @@ import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 // import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 // import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
 import WorkerContextProvider from "./contexts/WorkerContextProvider";
-// import TravelContextProvider from "./contexts/TravelContextProvider";
+import TravelContextProvider from "./contexts/TravelContextProvider";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 // import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
 // import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
@@ -125,10 +125,10 @@ function App() {
                     <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
                     <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
-                {/*    <Route element={<TravelContextProvider/>}>*/}
+                    <Route element={<TravelContextProvider/>}>
                 {/*        <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>*/}
+                        <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                 {/*        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>*/}
@@ -159,7 +159,7 @@ function App() {
                 {/*            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>*/}
                 {/*            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>*/}
                 {/*        </Route>*/}
-                {/*    </Route>*/}
+                    </Route>
                 {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                 {/*    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>*/}
                 {/*    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>*/}

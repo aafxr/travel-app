@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import PageContainer from "../../../../components/PageContainer/PageContainer";
 import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -10,7 +9,6 @@ import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import {fetchTravels} from "../../../../api/fetch/fetchTravels";
-import Loader from "../../../../components/Loader/Loader";
 import {PageHeader, Tab} from "../../../../components/ui";
 import {Travel} from "../../../../classes/StoreEntities";
 import {StoreName} from "../../../../types/StoreName";
@@ -82,12 +80,6 @@ export default function TravelRoutes() {
         }
     }
 
-    if (loading)
-        return (
-            <PageContainer center>
-                <Loader style={{width: 40, height: 40}}/>
-            </PageContainer>
-        )
 
     return (
         <div className='wrapper'>
@@ -99,7 +91,7 @@ export default function TravelRoutes() {
                 <Tab name={'Текущие'} to={'/travels/current/'}/>
                 <Tab name={'Будущие'} to={'/travels/plan/'}/>
             </div>
-            <Container className='overflow-x-hidden content pt-20 pb-20'>
+            <Container className='overflow-x-hidden content pt-20 pb-20' loading={loading}>
                 {
                     user
                         ? (

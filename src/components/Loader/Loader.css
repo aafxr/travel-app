@@ -34,3 +34,37 @@
         height: 40%;
     }
 }
+
+
+.loader {
+    --loader-border-size: 4px;
+    position: relative;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 50%;
+    display: inline-block;
+    border-top: var(--loader-border-size) solid #009CDE;
+    border-right: var(--loader-border-size) solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: - calc(var(--loader-border-size) / 2);
+    top: 0;
+    width: calc(100% + var(--loader-border-size)) ;
+    height: 100%;
+    border-radius: 50%;
+    border-bottom: var(--loader-border-size) solid #009CDE;
+    border-left: var(--loader-border-size) solid transparent;
+}
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

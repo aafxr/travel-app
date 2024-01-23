@@ -10,6 +10,8 @@ import {StoreName} from "../types/StoreName";
 async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
+            Array.from(db.objectStoreNames).forEach(storeName => db.deleteObjectStore(storeName))
+
             const existedStores = Array.from(db.objectStoreNames)
             const storeNameList = stores.map(store => '' + store.name)
 
@@ -71,7 +73,6 @@ async function openDataBase(dbname: string = DB_NAME, version = DB_VERSION, stor
 const startTransaction = <T extends StorageEntity>(data: T, db: IDBPDatabase) => db.transaction([data.storeName, StoreName.ACTION], "readwrite")
 
 
-
 export class DB {
     static add<T extends StorageEntity>(data: T, user: User, success: Function, error?: (e: Error) => void): void {
         openDataBase()
@@ -82,8 +83,8 @@ export class DB {
 
                 elementStore.add(data.dto())
 
-                if(data.withAction){
-                    const  action = new Action(data, user.id, data.storeName,ActionName.ADD )
+                if (data.withAction) {
+                    const action = new Action(data, user.id, data.storeName, ActionName.ADD)
                     actionStore.add(action.dto())
                 }
 
@@ -103,7 +104,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getMany<T extends StorageEntity>(storeName:StoreName, range: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
+    static getMany<T extends StorageEntity>(storeName: StoreName, range: IDBKeyRange, success?: (data: T[]) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -125,7 +126,7 @@ export class DB {
             .catch(e => error && error(e))
     }
 
-    static getOneFromIndex<T extends StorageEntity>(storeName:StoreName,index: keyof T, query: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
+    static getOneFromIndex<T extends StorageEntity>(storeName: StoreName, index: keyof T, query: IDBValidKey, success?: (data: T | undefined) => void, error?: (e: Error) => void): void {
         openDataBase()
             .then(async (db) => {
                 const tx = db.transaction(storeName)
@@ -170,8 +171,8 @@ export class DB {
 
                 elementStore.put(data.dto())
 
-                if(data.withAction){
-                    const  action = new Action(data, user.id, data.storeName,ActionName.UPDATE )
+                if (data.withAction) {
+                    const action = new Action(data, user.id, data.storeName, ActionName.UPDATE)
                     actionStore.add(action.dto())
                 }
 
@@ -190,8 +191,8 @@ export class DB {
 
                 elementStore.delete(data.dto().id)
 
-                if(data.withAction){
-                    const  action = new Action(data, user.id, data.storeName,ActionName.DELETE )
+                if (data.withAction) {
+                    const action = new Action(data, user.id, data.storeName, ActionName.DELETE)
                     actionStore.add(action.dto())
                 }
 

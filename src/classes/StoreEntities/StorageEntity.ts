@@ -5,5 +5,5 @@ export abstract class StorageEntity extends EventEmitter{
     abstract storeName: StoreName
     abstract withAction: boolean
 
-    abstract dto(): { id: string }
+    abstract dto(): { id: string, [key: string]: any }
 }

@@ -66,7 +66,7 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
             >
                 <div className='travel-item'>
                     <div className='flex-between gap-0.5'>
-                        <Photo className={'travel-image flex-0'} id={travel.photo}/>
+                        <Photo className={'travel-image flex-0'} src={travel.imageURL}/>
                         <div className='travel-content'>
                             <div className='travel-title w-full title-bold'>
                                 {travel.title || travel.direction || ''}

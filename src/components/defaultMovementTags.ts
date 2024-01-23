@@ -1,8 +1,10 @@
-import {BusIcon, CarIcon, WalkIcon} from "./svg";
+import {AirplaneIcon, BusIcon, CarIcon, WalkIcon} from "./svg";
+import {MovementType} from "../types/MovementType";
 
 
 export const defaultMovementTags = [
-    {id: 1, icon: WalkIcon ({className: 'img-abs'}), title: 'пешком'},
-    {id: 2, icon: CarIcon ({className: 'img-abs'}), title: 'авто'},
-    {id: 3, icon: BusIcon ({className: 'img-abs'}), title: 'общественный транспорт'},
+    {id: MovementType.WALK, icon: WalkIcon ({className: 'img-abs'}), title: 'пешком'},
+    {id: MovementType.CAR, icon: CarIcon ({className: 'img-abs'}), title: 'авто'},
+    {id: MovementType.PUBLICK_TRANSPORT, icon: BusIcon ({className: 'img-abs'}), title: 'общественный транспорт'},
+    {id: MovementType.FLIGHT, icon: AirplaneIcon ({className: 'img-abs'}), title: 'Самолет'},
 ]

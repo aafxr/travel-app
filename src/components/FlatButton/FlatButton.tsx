@@ -1,24 +1,40 @@
 import clsx from "clsx";
-import {motion} from "framer-motion";
-import {useEffect, useState} from "react";
+import {motion, Variants} from "framer-motion";
+import React, {JSX, useEffect, useState} from "react";
 
-import { RouteIcon, TerrainIcon } from "../svg";
+import {RouteIcon, TerrainIcon} from "../svg";
 import BlurBackplate from "../BlurBackplate/BlurBackplate";
 import PlusButton from "../ui/PlusButton/PlusButton";
-import ShareLinkIcon from "../svg/ShareLinkIcon";
 
 import './FlatButton.css'
 
 
 const icon_size = +getComputedStyle(document.documentElement).getPropertyValue('--control-button-size') || 40;
 
-const buttons = [
+type ButtonsItemType = {
+    id:string,
+    description:string,
+    icon:JSX.Element
+}
+
+const buttons: ButtonsItemType[] = [
     // {id: 'appointment', description: "Добавить встречу", icon: <AppointmentIcon/>},
     // {id: 'hotel', description: "Добавить отель", icon: <HotelIcon/>},
-    {id: 'place', description: "Добавить место", icon: <TerrainIcon />},
+    {id: 'place', description: "Добавить место", icon: <TerrainIcon/>},
     // {id: 'invite', description: "Пригласить пользователя", icon: <ShareLinkIcon/>}
-    {id: 'optimize', description: "Оптимизировать маршрут", icon: <RouteIcon />},
+    {id: 'optimize', description: "Оптимизировать маршрут", icon: <RouteIcon/>},
 ]
+
+interface FlatButtonPropsType {
+    className?: string,
+    open?: boolean,
+    onInvite?: Function,
+    onHotel?: Function,
+    onAppointment?: Function,
+    onPlace?: Function,
+    onChange?: (isOpen: boolean) => unknown,
+    onOptimizeRoute?: Function,
+}
 
 /**
  * Компонент добавляет кнопку меню ( для добавленияб отелей, встреч )
@@ -45,16 +61,15 @@ export default function FlatButton({
                                        onChange,
                                        onPlace,
                                        onOptimizeRoute,
-                                       ...props
-                                   }) {
+                                   }: FlatButtonPropsType) {
     const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
         setIsOpen(open)
     }, [open])
 
-    const btnAnimationVariant = {
-        visible: (n) => ({
+    const btnAnimationVariant: Variants = {
+        visible: (n: number) => ({
             y: -icon_size * (n + 1.2) - icon_size * 0.2 * n,
             opacity: 1,
             pointerEvents: 'all',
@@ -63,7 +78,7 @@ export default function FlatButton({
                 type: "Inertia"
             }
         }),
-        hidden: (n) => ({
+        hidden: (n: number) => ({
             y: 0,
             opacity: 0,
             pointerEvents: 'none',
@@ -75,7 +90,7 @@ export default function FlatButton({
     }
 
 
-    function handleButtonClick(btn, e) {
+    function handleButtonClick(btn:ButtonsItemType, e:React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation()
         switch (btn.id) {
             case 'invite' :
@@ -95,7 +110,7 @@ export default function FlatButton({
         }
     }
 
-    function handlePlusButtonClick(val) {
+    function handlePlusButtonClick(val: boolean) {
         setIsOpen(val)
         onChange && onChange(val)
 
@@ -109,7 +124,6 @@ export default function FlatButton({
                     style={{zIndex: 1000}}
                 />}
             <motion.div
-                {...props}
                 className={clsx('buttons-block-container gap-0.25', isOpen && 'active', className)}
             >
                 {

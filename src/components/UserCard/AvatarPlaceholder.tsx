@@ -1,14 +1,19 @@
 import clsx from "clsx";
 import './AvatarPlaceholder.css'
 
+type AvatarPlaceHolderPropsType = {
+    className?: string
+    variant?: 'compact' | 'horizontal' | 'vertical'
+}
+
 /**
  *
- * @param {string} className css class default = "horizontal"
- * @param {'compact' | 'horizontal' | 'vertical'} variant default = "horizontal"
+ * @param className css class default = "horizontal"
+ * @param variant default = "horizontal"
  * @returns {JSX.Element}
  * @category Components
  */
-export default function AvatarPlaceHolder({className, variant = "horizontal"}) {
+export default function AvatarPlaceHolder({className, variant = "horizontal"}: AvatarPlaceHolderPropsType) {
     const classNames = clsx(
         'avatar-placeholder gap-0.25',
         {
