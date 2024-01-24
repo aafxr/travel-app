@@ -20,6 +20,8 @@
 import {DBFlagType} from "./DBFlagType";
 import {CurrencyName} from "./CurrencyName";
 
+export type ExpenseVariantType = 'expenses_actual' | 'expenses_plan'
+
 export interface ExpenseType{
     id: string
     user_id: string
@@ -34,4 +36,5 @@ export interface ExpenseType{
     datetime: Date
     created_at: Date
     currency: CurrencyName
+    variant: ExpenseVariantType
 }

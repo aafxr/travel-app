@@ -1,17 +1,16 @@
 import {nanoid} from "nanoid";
 
 import {CurrencyName} from "../../types/CurrencyName";
-import {ExpenseType} from "../../types/ExpenseType";
+import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 import {StorageEntity} from "./StorageEntity";
 
+
 /**
  * данный класс позволяет работать с расходами
  */
-abstract class Expense extends StorageEntity implements ExpenseType{
-    abstract storeName: StoreName;
-    withAction = true
+class Expense extends StorageEntity implements ExpenseType {
 
     id = nanoid(7);
     entity_id = '';
@@ -26,6 +25,7 @@ abstract class Expense extends StorageEntity implements ExpenseType{
     datetime = new Date();
     personal: DBFlagType = 0;
     value = 0;
+    variant: ExpenseVariantType = "expenses_actual";
 
     constructor(expense: Partial<ExpenseType | Expense>) {
         super()
@@ -108,22 +108,21 @@ abstract class Expense extends StorageEntity implements ExpenseType{
             datetime: this.datetime,
             personal: this.personal,
             value: this.value,
+            variant: this.variant
         }
     }
 }
 
 class ExpenseActual extends Expense {
-    storeName: StoreName = StoreName.EXPENSES_ACTUAL;
+    variant: ExpenseVariantType = "expenses_actual";
+
 }
 
 
 class ExpensePlan extends Expense {
-    storeName: StoreName = StoreName.EXPENSES_PLAN
+    variant: ExpenseVariantType = "expenses_plan";
+
 }
 
 
-export {
-    Expense
-    , ExpenseActual
-    , ExpensePlan
-}
+export { Expense, ExpenseActual, ExpensePlan }

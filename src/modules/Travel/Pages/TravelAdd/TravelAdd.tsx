@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -6,13 +6,12 @@ import Container from "../../../../components/Container/Container";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import createAction from "../../../../utils/createAction";
-import createTravel from "../../helpers/createTravel";
-import storeDB from "../../../../db/storeDB/storeDB";
-import constants from "../../../../static/constants";
 import {MapIcon} from "../../../../components/svg";
 
 import '../../css/Travel.css'
+import {DB} from "../../../../db/DB";
+import {Action, Travel} from "../../../../classes/StoreEntities";
+import {nanoid} from "nanoid";
 
 /**
  * @name TravelAdd
@@ -35,15 +34,10 @@ export default function TravelAdd() {
             pushAlertMessage({type: "danger", message: "Необходимо указать название маршрута"})
             return
         }
-        if (title.length && user && user.id) {
-            const user_id = user.id
-            const data = createTravel(title, user_id)
-            const action = createAction(constants.store.TRAVEL, user_id, 'add', data)
+        if (title.length && user) {
+            const travel = new Travel({title, id: `${user.id}:${nanoid(7)}`, owner_id: user.id})
 
-            await storeDB.editElement(constants.store.TRAVEL, data)
-            await storeDB.editElement(constants.store.TRAVEL_ACTIONS, action)
-
-            navigate('/travels/current/')
+            DB.add(travel, user, () => navigate('/travels/current/'))
         }
     }
 

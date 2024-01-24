@@ -26,7 +26,7 @@ export default function WorkerContextProvider() {
     useEffect(() => {
         storeDB.onReadySubscribe(() => {
             if (window.Worker) {
-                const w = new Worker(new URL('../workers/worker.js', import.meta.url))
+                const w = new Worker(new URL('../workers/worker.ts', import.meta.url))
 
                 if (w) {
                     state.worker = w

@@ -2,7 +2,6 @@ import {nanoid} from "nanoid";
 import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StoreName} from "../../types/StoreName";
 import {StorageEntity} from "./StorageEntity";
 import {Preferences} from "../Preferences";
 import {Waypoint} from "./Waypoint";
@@ -15,9 +14,6 @@ export enum TravelEventName {
 
 
 export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
-    storeName: StoreName = StoreName.TRAVEL;
-    withAction = true
-
 
     id = nanoid(8);
     code = '';

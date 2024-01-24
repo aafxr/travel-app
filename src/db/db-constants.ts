@@ -3,7 +3,7 @@ import {StoreName} from "../types/StoreName";
 import {IndexName} from "../types/IndexName";
 
 export const DB_NAME = 'travelAppStore'
-export const DB_VERSION = 32
+export const DB_VERSION = 33
 
 export const DB_STORES: DBStoreDescriptionType[] = [
     {

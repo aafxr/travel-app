@@ -1,9 +1,8 @@
 import {SectionType} from "../../types/SectionType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import storeDB from "../../db/storeDB/storeDB";
-import constants from "../../static/constants";
 import {StorageEntity} from "./StorageEntity";
+import {DB} from "../../db/DB";
 
 /**
  * класс для работы с сущностью Section
@@ -39,7 +38,9 @@ export class Section extends StorageEntity implements SectionType{
     }
 
     static async defaultSections(){
-        return await storeDB.getAll(constants.store.SECTION)
+        return new Promise<Section[]>(resolve => {
+            DB.getAll(StoreName.SECTION,resolve)
+        })
     }
 
     dto(): SectionType {

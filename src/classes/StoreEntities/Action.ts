@@ -6,12 +6,10 @@ import {StoreName} from "../../types/StoreName";
 import {StorageEntity} from "./StorageEntity";
 
 export class Action<T extends StorageEntity> extends StorageEntity implements ActionType {
-    storeName = StoreName.ACTION
-    withAction = false
 
     id = nanoid(16);
     action: ActionName;
-    data: Object;
+    data: T;
     datetime = new Date();
     entity: StoreName;
     synced: DBFlagType = 0;
@@ -20,7 +18,7 @@ export class Action<T extends StorageEntity> extends StorageEntity implements Ac
     constructor(data: T, user_id: string, entity: StoreName, action: ActionName) {
         super()
 
-        this.data = data.dto()
+        this.data = data
         this.user_id = user_id
         this.entity = entity
         this.action = action
@@ -30,7 +28,7 @@ export class Action<T extends StorageEntity> extends StorageEntity implements Ac
         return {
             id: this.id,
             action: this.action,
-            data: this.data,
+            data: this.data.dto(),
             datetime: this.datetime,
             entity: this.entity,
             synced: this.synced,

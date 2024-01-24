@@ -1,10 +1,3 @@
-import {StoreName} from "../../types/StoreName";
-import storeDB from "../../db/storeDB/storeDB";
-import {Action} from "../../classes/StoreEntities";
-import {ActionName} from "../../types/ActionsType";
-import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
-
 export interface StaticIDBMethodsInterface<T>{
     add(data:T, user_id: string, success?: Function, error?: Function): void
     getOne(id:IDBValidKey, success?:(data:T | undefined) => void, error?: (e: Error) => void): void

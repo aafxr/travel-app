@@ -7,4 +7,3 @@ const storeDB = new LocalDB(schema, {
 });
 
 
-export default storeDB

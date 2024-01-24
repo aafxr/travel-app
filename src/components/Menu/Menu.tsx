@@ -3,15 +3,16 @@ import {ReactNode, useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import constants, {REFRESH_TOKEN} from "../../static/constants";
+import {REFRESH_TOKEN} from "../../static/constants";
 import {UserContext} from "../../contexts/UserContextProvider";
 import MenuIconList from "../MenuIconList/MenuIconList";
 import useOutside from "../../hooks/useOutside";
-import storeDB from "../../db/storeDB/storeDB";
 import aFetch from "../../axios";
 import {MenuIcon} from "../svg";
 
 import './Menu.css'
+import {DB} from "../../db/DB";
+import {StoreName} from "../../types/StoreName";
 
 type MenuPropsType = {
     children?: ReactNode,
@@ -33,16 +34,13 @@ export default function Menu({children, className}:MenuPropsType) {
 
     function handleLogin() {
         if (user) {
-            storeDB
-                .getOne(constants.store.STORE, REFRESH_TOKEN)
-                .then(refresh_token => {
-                        aFetch.post('/user/auth/remove/', {
-                            [REFRESH_TOKEN]: refresh_token?.value
-                        })
-                            .then(() => navigate('/'))
-                            .catch(defaultHandleError)
-                    }
-                )
+            DB.getOne<any>(StoreName.STORE, REFRESH_TOKEN, refresh_token => {
+                    aFetch.post('/user/auth/remove/', {
+                        [REFRESH_TOKEN]: refresh_token?.value
+                    })
+                        .then(() => navigate('/'))
+                        .catch(defaultHandleError)
+                })
             logout()
         } else {
             navigate('/login/')
