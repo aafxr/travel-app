@@ -9,4 +9,8 @@ export class TravelError extends CustomError {
     static permissionDeniedDeleteTravel() {
         return new TravelError('Вы не можете удалить данное путешествие', ErrorCode.PERMISSION_DENIED_DELETE_TRAVEL)
     }
+
+    static unexpectedTravelId(travelId: string){
+        return new TravelError(`Путешествие с id="${travelId}" не найдино`, ErrorCode.UNEXPECTED_TRAVEL_ID)
+    }
 }

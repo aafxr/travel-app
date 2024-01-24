@@ -3,10 +3,12 @@ import {StoreName} from "../../types/StoreName";
 import {ActionName} from "../../types/ActionsType";
 import {DB} from "../../db/DB";
 import {LimitType} from "../../types/LimitType";
+import {TravelService} from "./TravelService";
+import {TravelError} from "../errors";
 
 export class LimitService {
 
-    static async create(limit: Partial<LimitType> & Pick<LimitType, 'section_id'>, user: User) {
+    static async create(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id'>, user: User) {
         const newLimit = new Limit(limit, user.id)
         const action = new Action(newLimit, user.id, StoreName.LIMIT, ActionName.ADD)
         const tx = await DB.transaction([StoreName.LIMIT, StoreName.ACTION])
@@ -19,6 +21,11 @@ export class LimitService {
     }
 
     static async update(limit: Limit, user: User) {
+        if(!limit.isPersonal(user)){
+            const travel = await TravelService.getById(limit.primary_entity_id)
+            if(!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
+            if(!travel.canChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+        }
         const action = new Action(limit, user.id, StoreName.LIMIT, ActionName.UPDATE)
         const tx = await DB.transaction([StoreName.LIMIT, StoreName.ACTION])
         const limitStore = tx.objectStore(StoreName.LIMIT)
@@ -29,6 +36,11 @@ export class LimitService {
     }
 
     static async delete(limit: Limit, user: User) {
+        if(!limit.isPersonal(user)){
+            const travel = await TravelService.getById(limit.primary_entity_id)
+            if(!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
+            if(!travel.canDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
+        }
         const action = new Action(user, user.id, StoreName.LIMIT, ActionName.DELETE)
         const tx = await DB.transaction([StoreName.ACTION, StoreName.LIMIT])
         const userStore = tx.objectStore(StoreName.LIMIT)

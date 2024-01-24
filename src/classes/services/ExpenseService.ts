@@ -4,7 +4,7 @@ import {ActionName} from "../../types/ActionsType";
 import {StoreName} from "../../types/StoreName";
 import {DB} from "../../db/DB";
 import {TravelService} from "./TravelService";
-import {ExpenseError} from "../errors/ExpenseError";
+import {ExpenseError, TravelError} from "../errors";
 
 export class ExpenseService {
 
@@ -30,7 +30,7 @@ export class ExpenseService {
     static async update(expense: Expense, user: User) {
         if (!expense.isPersonal(user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
-            if (!travel) throw ExpenseError.unexpectedTravelId(expense.primary_entity_id)
+            if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
             if (travel.canChange(user)) throw ExpenseError.permissionDenied()
         }
         const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.UPDATE)
@@ -45,7 +45,7 @@ export class ExpenseService {
     static async delete(expense: Expense, user: User) {
         if (!expense.isPersonal(user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
-            if (!travel) throw ExpenseError.unexpectedTravelId(expense.primary_entity_id)
+            if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
             if (travel.canChange(user)) throw ExpenseError.permissionDenied()
         }
         const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.DELETE)

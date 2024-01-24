@@ -26,4 +26,5 @@ export interface LimitType{
     value: number
     personal: DBFlagType
     section_id: string
+    primary_entity_id: string
 }
