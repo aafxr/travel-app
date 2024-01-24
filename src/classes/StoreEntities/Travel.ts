@@ -6,6 +6,7 @@ import {StorageEntity} from "./StorageEntity";
 import {Preferences} from "../Preferences";
 import {Waypoint} from "./Waypoint";
 import {Place} from "./Place";
+import {Member} from "./Member";
 
 
 export enum TravelEventName {
@@ -42,6 +43,10 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
     places: Place[] = [];
     waypoints: Waypoint[] = [];
 
+    admins: string[] = [];
+    editors: string[] = [];
+    commentator: string[] = [];
+
     constructor(travel: Partial<TravelType> | Travel) {
         super()
         if (travel.id) this.id = travel.id
@@ -68,7 +73,12 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
         if (travel.updated_at) this.updated_at = new Date(travel.updated_at)
+
+        if (travel.admins) this.admins = travel.admins
+        if (travel.editors) this.editors = travel.editors
+        if (travel.commentator) this.commentator = travel.commentator
     }
+
 
     setId(id: string) {
         this.id = id
@@ -99,12 +109,12 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         this.members = members
     }
 
-    setPlaces(places: Place[]){
+    setPlaces(places: Place[]) {
         this.places = places
         this.emit(TravelEventName.UPDATE)
     }
 
-    removePlace(place: Place){
+    removePlace(place: Place) {
         this.places = this.places.filter(p => p !== place)
         this.emit(TravelEventName.UPDATE)
     }
@@ -169,6 +179,16 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         return list
     }
 
+    canChange<T extends Member>(member: T) {
+        return member.id === this.owner_id ||
+            this.admins.includes(member.id) ||
+            this.editors.includes(member.id)
+    }
+
+    canDelete<T extends Member>(membeer:T){
+        return membeer.id === this.owner_id
+    }
+
     dto(): TravelType {
         return {
             id: this.id,
@@ -192,6 +212,9 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             preferences: this.preferences.dto(),
             waypoints: this.waypoints.map(w => w.dto()),
             updated_at: this.updated_at,
+            admins: this.admins,
+            editors: this.editors,
+            commentator: this.commentator,
         }
     }
 }

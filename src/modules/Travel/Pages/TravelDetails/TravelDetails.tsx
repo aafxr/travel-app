@@ -24,6 +24,7 @@ import ShowPlaces from "./ShowPlaces";
 import {DB} from "../../../../db/DB";
 
 import './TravelDetails.css'
+import {TravelService} from "../../../../classes/services";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -53,7 +54,7 @@ export default function TravelDetails() {
     function handleTravelPhotoChange(photo: Blob) {
         travel.setPhoto(photo)
         if (user)
-            DB.update(travel, user, undefined, (e) => defaultHandleError(e, 'Не удалось сохранить фото'))
+            TravelService.update(travel, user).catch(defaultHandleError)
     }
 
     useEffect(() => {

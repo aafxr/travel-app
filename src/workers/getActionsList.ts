@@ -39,14 +39,15 @@ export default async function getActionsList(message: any) {
     if (receivedActions.ok && receivedActions.result) {
         receivedActions.result.forEach(a => a.synced ? 1 : 0)
 
-        DB.getAllFromIndex<Action<any>>(StoreName.ACTION, IndexName.SYNCED, undefined, (actions) => {
-            const existingActions = actions.reduce<{ [key: string]: Object }>((acc, a) => {
-                acc[a.id] = a
-                return acc
-            }, {})
-            const filtered = receivedActions.result.filter(a => !existingActions[a.id])
-            postMessage({type: 'action', data: filtered})
-        })
+        DB.getAllFromIndex<Action<any>>(StoreName.ACTION, IndexName.SYNCED, undefined)
+            .then((actions) => {
+                const existingActions = actions.reduce<{[key:string]:Action<any>}>((acc, a) => {
+                    acc[a.id] = a
+                    return acc
+                }, {})
+                const filtered = receivedActions.result.filter(a => !existingActions[a.id])
+                postMessage({type: 'action', data: filtered})
+            })
     }
 
 }

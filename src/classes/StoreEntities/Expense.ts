@@ -4,6 +4,7 @@ import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
 import {CurrencyName} from "../../types/CurrencyName";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StorageEntity} from "./StorageEntity";
+import {Member} from "./Member";
 
 
 /**
@@ -91,6 +92,14 @@ class Expense extends StorageEntity implements ExpenseType {
 
     setValue(value: number) {
         this.value = value
+    }
+
+    isPersonal<T extends Member>(user: T){
+        return this.personal === 1 && this.id.split(':').pop() === user.id
+    }
+
+    isCommon(){
+        return this.personal === 0
     }
 
     dto(): Omit<ExpenseType, 'variant'> {

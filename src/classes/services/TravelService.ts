@@ -1,9 +1,10 @@
-import {Action, Travel, User} from "../StoreEntities";
-import {StoreName} from "../../types/StoreName";
-import {ActionName} from "../../types/ActionsType";
-import {DB} from "../../db/DB";
-import {TravelType} from "../../types/TravelType";
 import {fetchTravels} from "../../api/fetch/fetchTravels";
+import {Action, Travel, User} from "../StoreEntities";
+import {ActionName} from "../../types/ActionsType";
+import {TravelType} from "../../types/TravelType";
+import {StoreName} from "../../types/StoreName";
+import {TravelError} from "../errors";
+import {DB} from "../../db/DB";
 
 export class TravelService {
     static async create(owner: User) {
@@ -18,12 +19,16 @@ export class TravelService {
     }
 
     static async update(travel: Travel, user: User) {
+        if (!travel.canChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.UPDATE)
         await DB.writeAll([travel, action])
         return travel
     }
 
     static async delete(travel: Travel, user: User) {
+        if(!travel.canDelete(user))throw TravelError.permissionDeniedDeleteTravel()
+
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.DELETE)
         const tx = await DB.transaction([StoreName.ACTION, StoreName.TRAVEL])
         const travelStore = tx.objectStore(StoreName.TRAVEL)
@@ -44,17 +49,5 @@ export class TravelService {
 
         const localTravelsList = await DB.getAll<TravelType>(StoreName.TRAVEL, max)
         return localTravelsList.map(ltl => new Travel(ltl))
-    }
-}
-
-
-class tmp {
-    static async create() {
-    }
-
-    static async update() {
-    }
-
-    static async delete() {
     }
 }
