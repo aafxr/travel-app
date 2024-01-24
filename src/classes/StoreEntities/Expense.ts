@@ -1,9 +1,8 @@
 import {nanoid} from "nanoid";
 
-import {CurrencyName} from "../../types/CurrencyName";
 import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
+import {CurrencyName} from "../../types/CurrencyName";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StoreName} from "../../types/StoreName";
 import {StorageEntity} from "./StorageEntity";
 
 
@@ -12,7 +11,7 @@ import {StorageEntity} from "./StorageEntity";
  */
 class Expense extends StorageEntity implements ExpenseType {
 
-    id = nanoid(7);
+    id: string;
     entity_id = '';
     entity_type = '';
     primary_entity_id = '';
@@ -27,9 +26,10 @@ class Expense extends StorageEntity implements ExpenseType {
     value = 0;
     variant: ExpenseVariantType = "expenses_actual";
 
-    constructor(expense: Partial<ExpenseType | Expense>) {
+    constructor(expense: Partial<ExpenseType | Expense>, user_id: string) {
         super()
         if (expense.id) this.id = expense.id
+        else this.id = `${user_id}:${nanoid(7)}`
         if (expense.entity_id) this.entity_id = expense.entity_id
         if (expense.entity_type) this.entity_type = expense.entity_type
         if (expense.primary_entity_id) this.primary_entity_id = expense.primary_entity_id
@@ -93,7 +93,7 @@ class Expense extends StorageEntity implements ExpenseType {
         this.value = value
     }
 
-    dto(): ExpenseType {
+    dto(): Omit<ExpenseType, 'variant'> {
         return {
             id: this.id,
             entity_id: this.entity_id,
@@ -108,7 +108,6 @@ class Expense extends StorageEntity implements ExpenseType {
             datetime: this.datetime,
             personal: this.personal,
             value: this.value,
-            variant: this.variant
         }
     }
 }

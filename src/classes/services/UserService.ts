@@ -33,7 +33,7 @@ export class UserService {
         const tx = await DB.transaction([StoreName.USERS, StoreName.ACTION])
         const userStore = tx.objectStore(StoreName.USERS)
         const actionStore = tx.objectStore(StoreName.ACTION)
-        userStore.add(user.dto())
+        userStore.put(user.dto())
         actionStore.add(action.dto())
         return user
     }
