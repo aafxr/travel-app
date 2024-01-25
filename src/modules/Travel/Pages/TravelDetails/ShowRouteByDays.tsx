@@ -11,7 +11,7 @@ import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
-    const {travel} = useTravelContext()
+    const travel = useTravelContext()
     const [dayPlane, setDayPlane] = useState<Place[]>([])
 
 

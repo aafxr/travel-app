@@ -1,4 +1,4 @@
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 import constants from "../static/constants";
 import createAction from "../utils/createAction";
 import ErrorReport from "../controllers/ErrorReport";

@@ -1,9 +1,9 @@
-import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
-import {StoreName} from "../types/StoreName";
-import {IndexName} from "../types/IndexName";
+import {DBStoreDescriptionType} from "../../types/DBStoreDescriptionType";
+import {StoreName} from "../../types/StoreName";
+import {IndexName} from "../../types/IndexName";
 
 export const DB_NAME = 'travelAppStore'
-export const DB_VERSION = 33
+export const DB_VERSION = 34
 
 export const DB_STORES: DBStoreDescriptionType[] = [
     {

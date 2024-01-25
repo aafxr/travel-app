@@ -2,9 +2,11 @@ import {Action, Expense, ExpenseActual, ExpensePlan, User} from "../StoreEntitie
 import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
 import {ActionName} from "../../types/ActionsType";
 import {StoreName} from "../../types/StoreName";
-import {DB} from "../../db/DB";
+import {DB} from "../db/DB";
 import {TravelService} from "./TravelService";
 import {ExpenseError, TravelError} from "../errors";
+import {IndexName} from "../../types/IndexName";
+import {openIDBDatabase} from "../db/openIDBDatabaase";
 
 export class ExpenseService {
 
@@ -18,7 +20,8 @@ export class ExpenseService {
         }
 
         const action = new Action(newExpense, newExpense.id, newExpense.variant as StoreName, ActionName.ADD)
-        const tx = await DB.transaction([StoreName.EXPENSE, StoreName.ACTION])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
         const expenseStore = tx.objectStore(StoreName.EXPENSE)
         const actionStore = tx.objectStore(StoreName.ACTION)
         expenseStore.add(newExpense.dto())
@@ -31,10 +34,11 @@ export class ExpenseService {
         if (!expense.isPersonal(user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
-            if (travel.canChange(user)) throw ExpenseError.permissionDenied()
+            if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
         }
         const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.UPDATE)
-        const tx = await DB.transaction([StoreName.EXPENSE, StoreName.ACTION])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
         const expenseStore = tx.objectStore(StoreName.EXPENSE)
         const actionStore = tx.objectStore(StoreName.ACTION)
         expenseStore.put(expense.dto())
@@ -46,13 +50,19 @@ export class ExpenseService {
         if (!expense.isPersonal(user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
-            if (travel.canChange(user)) throw ExpenseError.permissionDenied()
+            if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
         }
         const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.DELETE)
-        const tx = await DB.transaction([StoreName.ACTION, StoreName.EXPENSE])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
         const expenseStore = tx.objectStore(StoreName.EXPENSE)
         const actionStore = tx.objectStore(StoreName.ACTION)
         expenseStore.delete(expense.id)
         actionStore.add(action.dto())
+    }
+
+    static async getAllByTravelId(travelId:string){
+        const expenses = await DB.getAllFromIndex<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID)
+
     }
 }

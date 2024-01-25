@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import constants from "../static/constants";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 
 /**
  * @param {string} value

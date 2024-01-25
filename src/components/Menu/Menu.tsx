@@ -11,7 +11,7 @@ import aFetch from "../../axios";
 import {MenuIcon} from "../svg";
 
 import './Menu.css'
-import {DB} from "../../db/DB";
+import {DB} from "../../classes/db/DB";
 import {StoreName} from "../../types/StoreName";
 
 type MenuPropsType = {
@@ -34,7 +34,8 @@ export default function Menu({children, className}:MenuPropsType) {
 
     function handleLogin() {
         if (user) {
-            DB.getOne<any>(StoreName.STORE, REFRESH_TOKEN, refresh_token => {
+            DB.getOne<any>(StoreName.STORE, REFRESH_TOKEN)
+                .then(refresh_token => {
                     aFetch.post('/user/auth/remove/', {
                         [REFRESH_TOKEN]: refresh_token?.value
                     })

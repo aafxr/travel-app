@@ -6,7 +6,7 @@ import {Member} from "../../classes/StoreEntities/Member";
 import AvatarPlaceHolder from "./AvatarPlaceholder";
 import {StoreName} from "../../types/StoreName";
 import Photo from "../Photo/Photo";
-import {DB} from "../../db/DB";
+import {DB} from "../../classes/db/DB";
 import './UserCard.css'
 
 
@@ -35,10 +35,11 @@ export default function UserCard({
     const [user, setUser] = useState<Member | null>(null)
 
     useEffect(() => {
-        DB.getOne<Member>(StoreName.USERS, id, (member) => {
+        DB.getOne<Member>(StoreName.USERS, id)
+            .then((member) => {
                 if (member) setUser(new Member(member))
-            },
-            (e) => defaultHandleError(e, `Пользователь с id="${id}" не найден`))
+            })
+            .catch((e) => defaultHandleError(e, `Пользователь с id="${id}" не найден`))
     }, [id])
 
     function handleUserCardClick() {

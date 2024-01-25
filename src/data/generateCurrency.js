@@ -1,6 +1,6 @@
 import range from "../utils/range";
 import constants, {MS_IN_DAY} from "../static/constants";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 
 export function generateCurrency(dyas = 2000) {
     const time = new Date().setHours(0, 0, 0, 0)

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import constants from "../../../static/constants";
 import ErrorReport from "../../../controllers/ErrorReport";
 import aFetch from "../../../axios";
-import storeDB from "../../../db/storeDB/storeDB";
+import storeDB from "../../../classes/db/storeDB/storeDB";
 import {actions} from "../../../redux/store";
 
 

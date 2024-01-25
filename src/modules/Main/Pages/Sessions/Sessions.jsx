@@ -7,7 +7,7 @@ import SessionItem from "../../../../components/SessionItem/SessionItem";
 import Loader from "../../../../components/Loader/Loader";
 
 import aFetch from "../../../../axios";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import constants, {REFRESH_TOKEN} from "../../../../static/constants";
 import useUserSelector from "../../../../hooks/useUserSelector";
 

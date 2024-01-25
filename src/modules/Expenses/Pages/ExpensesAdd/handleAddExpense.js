@@ -1,6 +1,6 @@
 import constants from "../../../../static/constants";
 import createId from "../../../../utils/createId";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import createAction from "../../../../utils/createAction";
 
 

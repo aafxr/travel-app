@@ -10,14 +10,12 @@ import ErrorReport from "../../controllers/ErrorReport";
  * @category Utils
  */
 export default function defaultHandleError(err, message){
-    if(err instanceof Error){
         console.error(err)
-        const defaultMessage = 'Произошла ошибка'
+        // const defaultMessage = 'Произошла ошибка'
         if (err.message.match(/Failed to fetch/i)){
             pushAlertMessage({type:"info", message: 'Проверьте подключение к интернету'})
         } else {
             ErrorReport.sendError(err).catch(console.error)
-            pushAlertMessage({type:"info", message: message || defaultMessage})
+            pushAlertMessage({type:"info", message: message || err.message})
         }
-    }
 }

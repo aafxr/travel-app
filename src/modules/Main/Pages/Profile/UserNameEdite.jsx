@@ -7,7 +7,7 @@ import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import createAction from "../../../../utils/createAction";
 import constants from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import useUserSelector from "../../../../hooks/useUserSelector";
 
 

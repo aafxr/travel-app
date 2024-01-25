@@ -1,7 +1,7 @@
 import ErrorReport from "../controllers/ErrorReport";
 import TravelError from "../errors/TravelError";
 import createAction from "../utils/createAction";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 import constants from "../static/constants";
 import removeTravel from "../utils/removeTravel";
 

@@ -1,5 +1,5 @@
 import currencyToFixedFormat from "../../../utils/currencyToFixedFormat";
-import storeDB from "../../../db/storeDB/storeDB";
+import storeDB from "../../../classes/db/storeDB/storeDB";
 import createAction from "../../../utils/createAction";
 import limitsModel from '../models/limit/limitModel'
 import constants from "../../../static/constants";

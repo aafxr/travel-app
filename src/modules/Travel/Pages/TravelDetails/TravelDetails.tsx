@@ -21,7 +21,7 @@ import Menu from "../../../../components/Menu/Menu";
 import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
-import {DB} from "../../../../db/DB";
+import {DB} from "../../../../classes/db/DB";
 
 import './TravelDetails.css'
 import {TravelService} from "../../../../classes/services";
@@ -37,7 +37,7 @@ export default function TravelDetails() {
     const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
     const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const travel = useTravelContext()
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)

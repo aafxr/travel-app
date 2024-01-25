@@ -1,5 +1,5 @@
-import constants from "../../static/constants";
-import defaultPlace from "../../utils/default-values/defaultPlace";
+import constants from "../../../static/constants";
+import defaultPlace from "../../../utils/default-values/defaultPlace";
 
 /*** @type{UpgradeDBType[]} */
 export const onUpgradeDB = [

@@ -6,7 +6,7 @@ import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
 import Photo from "../../../../components/Photo/Photo";
 import {PageHeader} from "../../../../components/ui";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import Menu from "../../../../components/Menu/Menu";
 import constants from "../../../../static/constants";
 

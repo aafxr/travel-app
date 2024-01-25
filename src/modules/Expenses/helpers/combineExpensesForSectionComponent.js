@@ -7,7 +7,7 @@
  * @property {string} section_id
  */
 
-import storeDB from "../../../db/storeDB/storeDB";
+import storeDB from "../../../classes/db/storeDB/storeDB";
 import constants from "../../../static/constants";
 import BaseService from "../../../classes/BaseService";
 

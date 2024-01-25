@@ -1,17 +1,19 @@
 import {Action, Limit, User} from "../StoreEntities";
 import {StoreName} from "../../types/StoreName";
 import {ActionName} from "../../types/ActionsType";
-import {DB} from "../../db/DB";
+import {DB} from "../db/DB";
 import {LimitType} from "../../types/LimitType";
 import {TravelService} from "./TravelService";
 import {TravelError} from "../errors";
+import {openIDBDatabase} from "../db/openIDBDatabaase";
 
 export class LimitService {
 
     static async create(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id'>, user: User) {
         const newLimit = new Limit(limit, user.id)
         const action = new Action(newLimit, user.id, StoreName.LIMIT, ActionName.ADD)
-        const tx = await DB.transaction([StoreName.LIMIT, StoreName.ACTION])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
         const limitStore = tx.objectStore(StoreName.LIMIT)
         const actionStore = tx.objectStore(StoreName.ACTION)
         limitStore.add(newLimit.dto())
@@ -24,10 +26,11 @@ export class LimitService {
         if(!limit.isPersonal(user)){
             const travel = await TravelService.getById(limit.primary_entity_id)
             if(!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
-            if(!travel.canChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+            if(!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         }
         const action = new Action(limit, user.id, StoreName.LIMIT, ActionName.UPDATE)
-        const tx = await DB.transaction([StoreName.LIMIT, StoreName.ACTION])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
         const limitStore = tx.objectStore(StoreName.LIMIT)
         const actionStore = tx.objectStore(StoreName.ACTION)
         limitStore.put(limit.dto())
@@ -39,10 +42,11 @@ export class LimitService {
         if(!limit.isPersonal(user)){
             const travel = await TravelService.getById(limit.primary_entity_id)
             if(!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
-            if(!travel.canDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
+            if(!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
         }
         const action = new Action(user, user.id, StoreName.LIMIT, ActionName.DELETE)
-        const tx = await DB.transaction([StoreName.ACTION, StoreName.LIMIT])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
         const userStore = tx.objectStore(StoreName.LIMIT)
         const actionStore = tx.objectStore(StoreName.ACTION)
         userStore.delete(limit.id)

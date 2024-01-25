@@ -1,5 +1,4 @@
-import {useContext} from "react";
-import {TravelContext} from "../contexts/TravelContextProvider";
+import {useTravel} from "../contexts/AppContextProvider";
 
 /**
  * хук возвращает travel-контекст
@@ -9,6 +8,7 @@ import {TravelContext} from "../contexts/TravelContextProvider";
  * @category Hooks
  */
 export default function useTravelContext() {
-    const state = useContext(TravelContext)
-    return {travel: state.travel!}
+    return useTravel()!
+    // const state = useContext(TravelContext)
+    // return {travel: state.travel!}
 }

@@ -12,7 +12,8 @@ import '../PlaceCard/PlaceCard.css'
 import useUserSelector from "../../../../hooks/useUserSelector";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Place} from "../../../../classes/StoreEntities";
-import {DB} from "../../../../db/DB";
+import {DB} from "../../../../classes/db/DB";
+import {StoreName} from "../../../../types/StoreName";
 
 type PlaceCardPropsType = {
     place: Place
@@ -43,7 +44,7 @@ export default function PlaceCard2({
                                        onPhotoAdd
                                    }: PropsWithChildren<PlaceCardPropsType>) {
     const user = useUserSelector()
-    const {travel} = useTravelContext()
+    const travel = useTravelContext()
     const [startChange, setStartChange] = useState(false)
     const [endChange, setEndChange] = useState(false)
     const [start, setStart] = useState(() => place.time_start.toLocaleTimeString().split(':').slice(0, 2).join(':'))
@@ -71,15 +72,17 @@ export default function PlaceCard2({
 
     function handleTime(date: Date, type: 'start' | 'end') {
         const duration = place.time_end.getTime() - place.time_start.getTime()
-        if(user) {
+        if(user && travel) {
             if (type === 'start') {
                 place.setTime_start(date)
-                DB.update(travel, user, undefined, e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
+                DB.update(StoreName.TRAVEL, travel)
+                    .catch(e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
                 setStartChange(false)
                 setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             } else if (type === 'end') {
                 place.setTime_start(date)
-                DB.update(travel, user, undefined, e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
+                DB.update(StoreName.TRAVEL, travel)
+                    .catch(e => defaultHandleError(e, 'Ошибка при попытке изменить время'))
                 setEndChange(false)
                 setEnd(new Date(date.getTime() + duration).toLocaleTimeString().slice(0, -3))
             }

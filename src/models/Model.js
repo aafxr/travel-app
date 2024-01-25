@@ -1,4 +1,4 @@
-import {LocalDB} from "../db/LocalDB";
+import {LocalDB} from "../classes/db/LocalDB";
 import isString from "../utils/validation/isString";
 import isError from "../utils/isError";
 import ErrorReport from "../controllers/ErrorReport";
@@ -58,7 +58,7 @@ import ErrorReport from "../controllers/ErrorReport";
  * @class
  * @name Model
  * @constructor
- * @param {import('../db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
+ * @param {import('../classes/db/LocalDB').LocalDB} db - локальная база данных (indexeddb)
  * @param {string} storeName - имя хранилища
  * @param {validateCallback | validateObj}validation
  */

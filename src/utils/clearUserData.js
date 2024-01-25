@@ -1,5 +1,6 @@
 import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../static/constants";
-import storeDB from "../db/storeDB/storeDB";
+import {StoreName} from "../types/StoreName";
+import {DB} from '../classes/db/DB'
 
 /**
  * Данный метод преднозначен для очистки данных ксли пользователь не авторизован
@@ -13,8 +14,8 @@ export default function clearUserData(){
         window?.localStorage.setItem(USER_AUTH, null)
     }
     Promise.all([
-        storeDB.removeElement(constants.store.STORE, ACCESS_TOKEN),
-        storeDB.removeElement(constants.store.STORE, REFRESH_TOKEN)
+        DB.delete(StoreName.STORE, ACCESS_TOKEN),
+        DB.delete(StoreName.STORE, REFRESH_TOKEN)
     ])
         .catch(err => {
             console.error(err)

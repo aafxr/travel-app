@@ -1,6 +1,6 @@
 import ErrorReport from "../controllers/ErrorReport";
 import LimitError from "../errors/LimitError";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 import constants from "../static/constants";
 import createAction from "../utils/createAction";
 

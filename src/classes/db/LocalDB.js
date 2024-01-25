@@ -1,6 +1,6 @@
 import {openDB} from 'idb';
-import {pushAlertMessage} from "../components/Alerts/Alerts";
-import sleep from "../utils/sleep";
+import {pushAlertMessage} from "../../components/Alerts/Alerts";
+import sleep from "../../utils/sleep";
 
 
 /**

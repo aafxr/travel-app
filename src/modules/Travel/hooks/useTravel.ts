@@ -3,7 +3,7 @@ import {useParams} from "react-router-dom";
 
 import {Travel} from "../../../classes/StoreEntities";
 import {StoreName} from "../../../types/StoreName";
-import {DB} from "../../../db/DB";
+import {DB} from "../../../classes/db/DB";
 
 /**
  * @typedef {Object} UseTravelType
@@ -27,11 +27,11 @@ export default function useTravel() {
         /** в приоритете ищем travel по id travelCode */
         if (travelCode) {
             setErrorMessage('')
-            DB.getOne<Travel>(StoreName.TRAVEL, travelCode,
-                (travel) => {
+            DB.getOne<Travel>(StoreName.TRAVEL, travelCode)
+                .then((travel) => {
                     if (travel) setTravel(new Travel(travel))
-                },
-                (e) => setErrorMessage(`Путешествие с id="${travelCode}" не найдено`))
+                })
+                .catch((e) => setErrorMessage(`Путешествие с id="${travelCode}" не найдено`))
         }
     }, [travelCode])
 

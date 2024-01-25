@@ -1,10 +1,10 @@
-import {useContext} from "react";
-import {UserContext} from "../contexts/UserContextProvider";
+import {useUser} from "../contexts/AppContextProvider";
 
 /**
  * хук достает из стейта данные юзера
  */
 export default function useUserSelector(){
-    const {user} = useContext(UserContext)
-    return user
+    return useUser()
+    // const {user} = useContext(UserContext)
+    // return user
 }

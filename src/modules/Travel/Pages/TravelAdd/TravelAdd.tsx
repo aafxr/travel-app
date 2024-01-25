@@ -1,17 +1,17 @@
 import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
-import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
+import {TravelService} from "../../../../classes/services";
+import {Travel} from "../../../../classes/StoreEntities";
 import {MapIcon} from "../../../../components/svg";
 
 import '../../css/Travel.css'
-import {DB} from "../../../../db/DB";
-import {Action, Travel} from "../../../../classes/StoreEntities";
-import {nanoid} from "nanoid";
 
 /**
  * @name TravelAdd
@@ -20,24 +20,24 @@ import {nanoid} from "nanoid";
  */
 export default function TravelAdd() {
     const navigate = useNavigate()
-    const user = useUserSelector()
+    const user = useUser()
+    const context = useAppContext()
 
     const [title, setTitle] = useState('')
 
     /** обработчик добавления нового маршрута */
     async function handleAddRoute() {
-        if (!user) {
-            pushAlertMessage({type: "danger", message: "Необходимо авторизоваться"})
-            return
-        }
         if (!title.length) {
             pushAlertMessage({type: "danger", message: "Необходимо указать название маршрута"})
             return
         }
         if (title.length && user) {
-            const travel = new Travel({title, id: `${user.id}:${nanoid(7)}`, owner_id: user.id})
+            const travel = new Travel({title, owner_id: user.id})
+            console.log(travel)
+            TravelService.create(context, travel)
+                .then(() => navigate('/travels/current/'))
+                .catch(defaultHandleError)
 
-            DB.add(travel, user, () => navigate('/travels/current/'))
         }
     }
 

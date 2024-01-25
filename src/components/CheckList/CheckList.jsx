@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
 import Container from "../Container/Container";
-import storeDB from "../../db/storeDB/storeDB";
+import storeDB from "../../classes/db/storeDB/storeDB";
 import constants from "../../static/constants";
 import Checkbox from "../ui/Checkbox/Checkbox";
 import createId from "../../utils/createId";

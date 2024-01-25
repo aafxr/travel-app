@@ -1,15 +1,12 @@
-import {StoreName} from "../../types/StoreName";
+import {TravelDetailsFilterType} from "../../types/TravelFilterTypes";
+import {DBFlagType} from "../../types/DBFlagType";
 import {UserType} from "../../types/UserType";
 import {TravelEventName} from "./Travel";
 import {Member} from "./Member";
-import {TravelDetailsFilterType} from "../../types/TravelFilterTypes";
-import {DBFlagType} from "../../types/DBFlagType";
 
 const TRAVEL_DETAILS_FILTER = 'TRAVEL_DETAILS_FILTER'
 
 export class User extends Member implements UserType {
-    storeName: StoreName = StoreName.USERS;
-    withAction = false
 
     travelDetailsFilter: TravelDetailsFilterType = localStorage.getItem(TRAVEL_DETAILS_FILTER) as TravelDetailsFilterType || "byDays"
     token = '';
@@ -91,6 +88,11 @@ export class User extends Member implements UserType {
     setCurtainOpen(isOpen: DBFlagType | boolean) {
         this.isCurtainOpen = isOpen ? 1 : 0
         this.emit('update')
+    }
+
+    isLogIn(){
+        if(location.hostname === 'localhost') return true
+        return Boolean(this.token && this.refresh_token)
     }
 
 }

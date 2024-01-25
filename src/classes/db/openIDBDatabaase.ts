@@ -1,6 +1,6 @@
-import {DBStoreDescriptionType} from "../types/DBStoreDescriptionType";
+import {DBStoreDescriptionType} from "../../types/DBStoreDescriptionType";
 import {DB_NAME, DB_STORES, DB_VERSION} from "./db-constants";
-import {pushAlertMessage} from "../components/Alerts/Alerts";
+import {pushAlertMessage} from "../../components/Alerts/Alerts";
 import {openDB} from "idb";
 
 export async function openIDBDatabase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {

@@ -4,13 +4,20 @@ import {ActionName} from "../../types/ActionsType";
 import {TravelType} from "../../types/TravelType";
 import {StoreName} from "../../types/StoreName";
 import {TravelError} from "../errors";
-import {DB} from "../../db/DB";
+import {DB} from "../db/DB";
+import {Context} from "../Context/Context";
+import {UserError} from "../errors/UserError";
+import {openIDBDatabase} from "../db/openIDBDatabaase";
 
 export class TravelService {
-    static async create(owner: User) {
-        const travel = new Travel({owner_id: owner.id})
+    static async create(ctx: Context, newTravel?:Travel) {
+        if (!ctx.user || !ctx.user.isLogIn()) throw UserError.unauthorized()
+
+        const owner = ctx.user
+        const travel = new Travel({...newTravel, owner_id: owner.id})
         const action = new Action(travel, owner.id, StoreName.TRAVEL, ActionName.ADD)
-        const tx = await DB.transaction([StoreName.ACTION, StoreName.TRAVEL])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.ACTION, StoreName.TRAVEL], "readwrite")
         const travelStore = tx.objectStore(StoreName.TRAVEL)
         const actionStore = tx.objectStore(StoreName.ACTION)
         travelStore.add(travel.dto())
@@ -19,18 +26,21 @@ export class TravelService {
     }
 
     static async update(travel: Travel, user: User) {
-        if (!travel.canChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+        if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.UPDATE)
         await DB.writeAll([travel, action])
         return travel
     }
 
-    static async delete(travel: Travel, user: User) {
-        if(!travel.canDelete(user))throw TravelError.permissionDeniedDeleteTravel()
+    static async delete(ctx: Context, travel: Travel) {
+        const user = ctx.user
+        if (!user) throw UserError.unauthorized()
+        if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
 
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.DELETE)
-        const tx = await DB.transaction([StoreName.ACTION, StoreName.TRAVEL])
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
         const travelStore = tx.objectStore(StoreName.TRAVEL)
         const actionStore = tx.objectStore(StoreName.ACTION)
         travelStore.delete(travel.id)
@@ -46,8 +56,7 @@ export class TravelService {
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
         if (fetchTravelsList.length) return fetchTravelsList
-
-        const localTravelsList = await DB.getAll<TravelType>(StoreName.TRAVEL, max)
-        return localTravelsList.map(ltl => new Travel(ltl))
+        const idb_travels = await DB.getAll<TravelType>(StoreName.TRAVEL)
+        return idb_travels.map(t => new Travel(t))
     }
 }

@@ -14,7 +14,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 import Select from "../../../../components/ui/Select/Select";
 import Button from "../../../../components/ui/Button/Button";
 import constants from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import {defaultFilterValue} from "../../static/vars";
 import {Expense} from "../../../../classes/StoreEntities/Expense";
 import useExpense from "../../hooks/useExpense";

@@ -15,7 +15,7 @@ import BaseService from "../../../../classes/BaseService";
 import {updateLimits} from "../../helpers/updateLimits";
 import {defaultFilterValue} from "../../static/vars";
 import constants from "../../../../static/constants";
-import storeDB from "../../../../db/storeDB/storeDB";
+import storeDB from "../../../../classes/db/storeDB/storeDB";
 import createId from "../../../../utils/createId";
 
 import '../../css/Expenses.css'

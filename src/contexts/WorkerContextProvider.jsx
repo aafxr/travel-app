@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from "react";
 import {Outlet} from "react-router-dom";
 import ErrorReport from "../controllers/ErrorReport";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 
 /**
  *@typedef {Object} WorkerContextType

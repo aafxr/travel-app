@@ -10,7 +10,7 @@ import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
 
-interface TravelCardPropsType{
+interface TravelCardPropsType {
     travel: Travel,
     onRemove: Function
 }
@@ -25,21 +25,7 @@ interface TravelCardPropsType{
 export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
     const navigate = useNavigate()
     const [tagsScrolling, setTextScrolling] = useState(false)
-    const travelDays = useMemo(() => {
-        if (travel) {
-            const start = travel.date_start
-            const end = travel.date_end
-            const duration = end.getTime() - start.getTime()
-
-            if (duration > 0) {
-                const d = Math.ceil(duration / MS_IN_DAY)
-                return d === 1 ? '1 день' : `${d} дней`
-            } else if (duration === 0) {
-                return '1 день'
-            }
-        }
-        return null
-    }, [travel.date_start, travel.date_end])
+    const travelDays = travel.days === 1 ? '1 день' : `${travel.days} дней`
 
     function handleRemove() {
         onRemove && onRemove()
@@ -51,9 +37,10 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
         setTextScrolling(value)
     }
 
-    function handleClickCard(){
+    function handleClickCard() {
         navigate(`/travel/${travel.id}/`)
     }
+
 
     return (
         <>
@@ -70,32 +57,27 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
                             <div className='travel-title w-full title-bold'>
                                 {travel.title || travel.direction || ''}
                             </div>
-                            {
-                                !!travel && !!travel.movementTypes && (
-                                    <div
-                                        className='travel-movement row w-full gap-0.5'
-                                        onTouchStart={(e) => handleTagsMoving(e, true)}
-                                        onTouchMove={(e) => handleTagsMoving(e, true)}
-                                        onTouchEnd={(e) => handleTagsMoving(e, false)}
-                                    >
-                                        { travelDays && <Chip color='light-orange' rounded>{travelDays}</Chip>}
-                                        {
-                                            travel.movementTypes.map(mt => (
-                                                <Chip
-                                                    key={'' + mt}
-                                                    color='light-orange'
-                                                    icon={defaultMovementTags.find(dm => dm.id === mt)?.icon}
-                                                    iconPosition='left'
-                                                    rounded
-                                                >
-                                                    {defaultMovementTags.find(dm => dm.id === mt)?.title}
-                                                </Chip>
-                                            ))
-                                        }
-                                    </div>
-
-                                )
-                            }
+                            <div
+                                className='travel-movement row w-full gap-0.5'
+                                onTouchStart={(e) => handleTagsMoving(e, true)}
+                                onTouchMove={(e) => handleTagsMoving(e, true)}
+                                onTouchEnd={(e) => handleTagsMoving(e, false)}
+                            >
+                                <Chip color='light-orange' rounded>{travelDays}</Chip>
+                                {
+                                    travel.movementTypes.map(mt => (
+                                        <Chip
+                                            key={'' + mt}
+                                            color='light-orange'
+                                            icon={defaultMovementTags.find(dm => dm.id === mt)?.icon}
+                                            iconPosition='left'
+                                            rounded
+                                        >
+                                            {defaultMovementTags.find(dm => dm.id === mt)?.title}
+                                        </Chip>
+                                    ))
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

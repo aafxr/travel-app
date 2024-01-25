@@ -1,7 +1,7 @@
 import aFetch from "../../../axios";
 import {updateCurrencyThunk} from "../../../redux/expensesStore/updateCurrencyThunk";
 import constants, {reducerConstants} from "../../../static/constants";
-import storeDB from "../../../db/storeDB/storeDB";
+import storeDB from "../../../classes/db/storeDB/storeDB";
 
 /**@type{RangeType} */
 const defaultRange = {

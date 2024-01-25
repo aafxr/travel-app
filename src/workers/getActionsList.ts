@@ -2,7 +2,7 @@ import {ActionType} from "../types/ActionsType";
 import {Action} from "../classes/StoreEntities";
 import {StoreName} from "../types/StoreName";
 import {IndexName} from "../types/IndexName";
-import {DB} from "../db/DB";
+import {DB} from "../classes/db/DB";
 
 
 // let ready = false

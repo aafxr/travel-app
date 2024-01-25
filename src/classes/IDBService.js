@@ -1,5 +1,5 @@
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "./db/storeDB/storeDB";
 
 /**
  * Сервис предоставляет набор методов (CRUD операции) для работы с БД

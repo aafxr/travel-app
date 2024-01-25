@@ -1,5 +1,5 @@
 import ActionController from "../ActionController";
-import storeDB from "../../db/storeDB/storeDB";
+import storeDB from "../../classes/db/storeDB/storeDB";
 import options from "./controllerOptions";
 
 const travelController =  new ActionController(storeDB, options)

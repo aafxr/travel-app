@@ -1,9 +1,5 @@
 import {useEffect, useRef} from "react";
 
-/**
- * @typedef {Function} HandleTelegramAuthFunction
- * @param {UserTelegramAuthPayloadType} user
- */
 
 type TelegramPayloadType = {
     id: string,
@@ -25,7 +21,7 @@ type TelegramAuthPropsType = {
  * компонент добавляет кнопку регистрации телеграм
  * @function
  * @name TelegramAuth
- * @param {HandleTelegramAuthFunction} handleAuth
+ * @param {handleAuth} handleAuth
  * @return {JSX.Element}
  * @category Pages
  */

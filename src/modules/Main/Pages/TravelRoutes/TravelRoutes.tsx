@@ -1,18 +1,14 @@
 import React, {useEffect, useState} from 'react'
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import TravelCard from "../../../Travel/components/TravelCard/TravelCard";
-import IconButton from "../../../../components/ui/IconButton/IconButton";
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import useUserSelector from "../../../../hooks/useUserSelector";
-import {fetchTravels} from "../../../../api/fetch/fetchTravels";
+import {TravelService} from "../../../../classes/services";
 import {PageHeader, Tab} from "../../../../components/ui";
 import {Travel} from "../../../../classes/StoreEntities";
-import {StoreName} from "../../../../types/StoreName";
-import {DB} from "../../../../db/DB";
+import {ShowTravelsList} from "./ShowTravelsList";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -26,38 +22,27 @@ import {DB} from "../../../../db/DB";
  * @category Pages
  */
 export default function TravelRoutes() {
-    const navigate = useNavigate()
+    const user = useUser()
+    const context = useAppContext()
+
     const {travelsType} = useParams()
-    const [travels, setTravels] = useState<Array<Travel>>([])
-    const user = useUserSelector()
+    const navigate = useNavigate()
+    const [travels, setTravels] = useState<Travel[]>([])
     /** список отфильтрованных путешествий в соответствии с выбранным табом */
     const [actualTravels, setActualTravels] = useState<Array<Travel>>([])
 
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const ifNotFetchGetFromDB = () => {
-            DB.getAll<Travel>(StoreName.TRAVEL, list => {
-                const travelsList = list.map(t => new Travel(t))
-                console.log(travelsList)
-                setTravels(travelsList)
-                setLoading(false)
-            }, () => setLoading(false))
-        }
 
+    useEffect(() => {
         if (user) {
-            fetchTravels()
-                .then(list => {
-                    if (list.length) {
-                        setTravels(list)
-                        setLoading(false)
-                    } else {
-                        ifNotFetchGetFromDB()
-                    }
-                })
-                .catch(ifNotFetchGetFromDB)
+            TravelService.getList()
+                .then(setTravels)
+                .catch(console.error)
+                .finally(() => setLoading(false))
         }
     }, [user])
+
 
     /** обновление списка актуальных путешествий */
     useEffect(() => {
@@ -67,18 +52,19 @@ export default function TravelRoutes() {
         }
     }, [travels, travelsType])
 
+
     /** обработка удаления путешествия */
     function handleRemove(travel: Travel) {
         if (user) {
             /** удаление путешествия из бд и добавление экшена об удалении */
-            DB.delete(travel, user, () => {
-                pushAlertMessage({type: "success", message: `${travel.title} удалено.`})
-                setTravels(travels.filter(t => t.id !== travel.id))
-            }, (e) => {
-                defaultHandleError(e, 'Не удалось удалить путешествие')
-            })
+            TravelService.delete(context, travel)
+                .then(() => setTravels(travels.filter(t => t !== travel)))
+                .catch(defaultHandleError)
         }
     }
+
+
+    const handleNewTrip = () => navigate(`/travel/add/`)
 
 
     return (
@@ -92,30 +78,8 @@ export default function TravelRoutes() {
                 <Tab name={'Будущие'} to={'/travels/plan/'}/>
             </div>
             <Container className='overflow-x-hidden content pt-20 pb-20' loading={loading}>
-                {
-                    user
-                        ? (
-                            <ul className='column gap-1'>
-                                {
-                                    !!actualTravels.length && actualTravels.map(t => (
-                                        <li key={t.id}>
-                                            <TravelCard
-                                                travel={t}
-                                                onRemove={() => handleRemove(t)}
-                                            />
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        ) : (
-                            <IconButton
-                                border={false}
-                                title='Авторизоваться'
-                                className='link'
-                                onClick={() => navigate('/login/')}
-                            />
-                        )
-                }
+                {!travels.length && <div className='link' onClick={handleNewTrip}>Запланировать поездку</div>}
+                <ShowTravelsList travels={actualTravels} onRemove={handleRemove}/>
             </Container>
             <Navigation className='footer'/>
         </div>

@@ -1,4 +1,4 @@
-import {defaultTravel} from "../../../../redux/travelStore/travelSlice";
+import {defaultTravel} from "../../../../../redux/travelStore/travelSlice";
 
 export function transform_travel_v28(noModifiedTravel) {
     const def = {}

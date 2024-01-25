@@ -4,8 +4,8 @@ import {useNavigate} from "react-router-dom";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
+import {useUser} from "../../../../contexts/AppContextProvider";
 import {PageHeader} from "../../../../components/ui";
-import useUserSelector from "../../../../hooks/useUserSelector";
 
 
 /**
@@ -16,7 +16,7 @@ import useUserSelector from "../../../../hooks/useUserSelector";
  */
 export default function Favorite() {
     const navigate = useNavigate()
-    const user = useUserSelector()
+    const user = useUser()
 
 
     return (

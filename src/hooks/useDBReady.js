@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 
 /**
  * хук возвращает true, когда дб будет готова к работе

@@ -1,4 +1,4 @@
-import {DB} from "../../db/DB";
+import {DB} from "../db/DB";
 import {fetchSections} from "../../api/fetch/fetchSections";
 import {SectionType} from "../../types/SectionType";
 import {StoreName} from "../../types/StoreName";

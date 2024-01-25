@@ -2,15 +2,14 @@ import React from 'react'
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import useUserSelector from "../../../../hooks/useUserSelector";
-import {Travel} from "../../../../classes/StoreEntities";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
-import {DB} from "../../../../db/DB";
 
 import './Main.css'
+import {TravelService} from "../../../../classes/services";
 
 /**
  * компонент отображает главную страницу приложения
@@ -20,19 +19,21 @@ import './Main.css'
  */
 export default function Main() {
     const navigate = useNavigate()
-    const user = useUserSelector()
+    const user = useUser()
+    const context = useAppContext()
 
-    function handleNewTravel() {
+    async function handleNewTravel() {
         if (user) {
-            const travel = new Travel({owner_id: user.id})
-            DB.add(travel, user, () => {
-                navigate(`/travel/${travel.id}/map/`)
-            }, (e) => defaultHandleError(e, 'Ошибка при создании путешествия'))
+            TravelService.create(context)
+                .then((travel) => {
+                    context.setTravel(travel)
+                    navigate(`/travel/add/`)
+                })
+                .catch(defaultHandleError)
         } else {
             navigate('/login/')
         }
     }
-
 
     return (
         <div className='wrapper'>

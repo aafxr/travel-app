@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import storeDB from "../db/storeDB/storeDB";
+import storeDB from "../classes/db/storeDB/storeDB";
 import constants from "../static/constants";
 import isString from "../utils/validation/isString";
 

@@ -179,13 +179,13 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         return list
     }
 
-    canChange<T extends Member>(member: T) {
+    permitChange<T extends Member>(member: T) {
         return member.id === this.owner_id ||
             this.admins.includes(member.id) ||
             this.editors.includes(member.id)
     }
 
-    canDelete<T extends Member>(membeer:T){
+    permitDelete<T extends Member>(membeer:T){
         return membeer.id === this.owner_id
     }
 

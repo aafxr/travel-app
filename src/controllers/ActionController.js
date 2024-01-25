@@ -1,7 +1,7 @@
 import Model from '../models/Model';
 import constants from '../static/constants';
 import actionValidationObj from '../models/action/validation';
-import {LocalDB} from '../db/LocalDB';
+import {LocalDB} from '../classes/db/LocalDB';
 import isString from '../utils/validation/isString';
 import ErrorReport from "./ErrorReport";
 import toArray from "../utils/toArray";
@@ -9,7 +9,7 @@ import createId from "../utils/createId";
 
 /**
  * @callback CB
- * @param {import('../db/LocalDB').LocalDB}
+ * @param {import('../classes/db/LocalDB').LocalDB}
  * @returns {import('../models/Model').default}
  */
 
