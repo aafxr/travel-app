@@ -1,11 +1,11 @@
-import React, { PropsWithChildren, useEffect, useState} from "react";
-import { useNavigate, useParams} from "react-router-dom";
+import React, {PropsWithChildren, useEffect, useState} from "react";
+import {Outlet, useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 import PageContainer from "../components/PageContainer/PageContainer";
-import Loader from "../components/Loader/Loader";
-import {useAppContext} from "./AppContextProvider";
+import {useAppContext} from "../contexts/AppContextProvider";
 import {TravelService} from "../classes/services";
+import Loader from "../components/Loader/Loader";
 
 
 /**
@@ -34,6 +34,7 @@ export default function TravelLayout({children}: PropsWithChildren) {
         }
     }, [travelCode, user])
 
+    console.log(children)
 
     if (loading) {
         return (
@@ -51,7 +52,7 @@ export default function TravelLayout({children}: PropsWithChildren) {
             </PageContainer>
         )
     } else {
-        return <>{children}</>
+        return <Outlet/>
     }
 
 }

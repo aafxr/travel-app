@@ -14,7 +14,7 @@ import constants from "../static/constants";
  * @constructor
  * @template T
  */
-export default class BaseService{
+ class BaseService{
     /**@type{string}*/
     _storeName
     /**@type{BaseServiceOptionsType}*/

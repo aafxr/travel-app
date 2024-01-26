@@ -1,5 +1,5 @@
 import {fetchTravels} from "../../api/fetch/fetchTravels";
-import {Action, Travel, User} from "../StoreEntities";
+import {Action, Place, Travel, User} from "../StoreEntities";
 import {ActionName} from "../../types/ActionsType";
 import {TravelType} from "../../types/TravelType";
 import {StoreName} from "../../types/StoreName";
@@ -10,7 +10,7 @@ import {UserError} from "../errors/UserError";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 
 export class TravelService {
-    static async create(ctx: Context, newTravel?:Travel) {
+    static async create(ctx: Context, newTravel?: Travel) {
         if (!ctx.user || !ctx.user.isLogIn()) throw UserError.unauthorized()
 
         const owner = ctx.user
@@ -25,7 +25,9 @@ export class TravelService {
         return travel
     }
 
-    static async update(travel: Travel, user: User) {
+    static async update(ctx:Context, travel: Travel) {
+        const user = ctx.user
+        if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.UPDATE)
@@ -35,6 +37,7 @@ export class TravelService {
 
     static async delete(ctx: Context, travel: Travel) {
         const user = ctx.user
+
         if (!user) throw UserError.unauthorized()
         if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
 
@@ -59,4 +62,15 @@ export class TravelService {
         const idb_travels = await DB.getAll<TravelType>(StoreName.TRAVEL)
         return idb_travels.map(t => new Travel(t))
     }
+
+    static async addPlace(ctx: Context, place: Place) {
+        const {user, travel} = ctx
+        if (!travel) throw TravelError.unexpectedTravelId('undefined')
+        if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+        if (!place || place.id) throw TravelError.unexpectedPlace(place?.id)
+
+        travel.setPlaces([...travel.places, place])
+        return await TravelService.update(ctx, travel)
+    }
+
 }

@@ -75,6 +75,24 @@ export class DB {
         return await index.getAll(undefined, count)
     }
 
+
+    static async getManyByIds<T extends {id: string}>(storeName:StoreName, ids:string[]):Promise<T[]>{
+        if(!ids.length) return []
+        const list = new Set(ids)
+        const cursor = DB.openCursor<T>(storeName)
+        const result:T[] = []
+        while(list.size){
+            const item = (await cursor.next()).value as T
+            if(!item) break
+            if(list.has(item.id)){
+                list.delete(item.id)
+                result.push(item)
+            }
+        }
+        return result
+    }
+
+
     static async writeAll<T extends Pick<StorageEntity, 'dto'>>(elements: T[] = []) {
         if (!elements.length) return
         const storeNames = elements.map(el => el.constructor.name)
@@ -85,6 +103,15 @@ export class DB {
             store.put(el.dto())
         }
     }
+
+
+    static async writeAllToStore<T>(storeName:StoreName, items: T[]){
+        if(!items.length) return
+        const db = await openIDBDatabase()
+        const store = db.transaction(storeName, 'readwrite').objectStore(storeName)
+        await Promise.all(items.map(item => store.put(item)))
+    }
+
 
     static async* openCursor<T>(storeName: StoreName, query?: IDBValidKey | IDBKeyRange, direction?: IDBCursorDirection) {
         const db = await openIDBDatabase()

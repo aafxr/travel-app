@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
 import {ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -10,21 +11,15 @@ import FlatButton from "../../../../components/FlatButton/FlatButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
 import Curtain from "../../../../components/Curtain/Curtain";
-import Button from "../../../../components/ui/Button/Button";
+import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
 import Photo from "../../../../components/Photo/Photo";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
-import ShowRouteByDays from "./ShowRouteByDays";
-import ShowRouteOnMap from "./ShowRouteOnMap";
-import ShowPlaces from "./ShowPlaces";
-import {DB} from "../../../../classes/db/DB";
+import {ShowRoute} from "./ShowRoute";
 
 import './TravelDetails.css'
-import {TravelService} from "../../../../classes/services";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -36,8 +31,10 @@ import {TravelService} from "../../../../classes/services";
 export default function TravelDetails() {
     const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
-    const user = useUserSelector()
-    const travel = useTravelContext()
+    const context = useAppContext()
+    const travel = useTravel()!
+    const user = useUser()!
+
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
     const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
@@ -50,29 +47,25 @@ export default function TravelDetails() {
         </Menu>
     )
 
+    console.log(travel)
+
 
     function handleTravelPhotoChange(photo: Blob) {
         travel.setPhoto(photo)
         if (user)
-            TravelService.update(travel, user).catch(defaultHandleError)
+            TravelService.update(context, travel)
+                .catch(defaultHandleError)
     }
 
     useEffect(() => {
-        // const days = travel.routeBuilder.getActivityDays()
         if (!dayNumber) navigate(`/travel/${travel.id}/1/`)
-        // if (!dayNumber || (days.length && !days.includes(+dayNumber))) navigate(`/travel/${travel.id}/${days[0] || 1}/`)
 
-        // travel
-        //     .routeBuilder
-        //     .createActivitiesList()
-        // setCurtainOpen(travel.isCurtainOpen)
     }, [travel])
 
     function handleCurtain(val = true) {
-        user?.setCurtainOpen(val? 1: 0)
+        user.setCurtain(val)
         setCurtainOpen(val)
     }
-
 
     return (
         <>
@@ -94,7 +87,7 @@ export default function TravelDetails() {
                             <h2 className='center gap-0.5'
                                 onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
                                 {
-                                    travel?.title || travel?.direction || (
+                                    travel.title || travel.direction || (
                                         <span className='travel-details-title--empty'>Добавить название</span>
                                     )
                                 }
@@ -146,35 +139,7 @@ export default function TravelDetails() {
                 defaultOffsetPercents={curtainOpen ? 0 : 1}
 
             >
-                <div className='h-full relative column'>
-
-                    <Container className='flex-0'>
-                        <div className='flex-between gap-1 pt-20 pb-20'>
-                            <Button
-                                onClick={() => user?.setTravelDetailsFilter('byDays')}
-                                active={user?.travelDetailsFilter === 'byDays'}
-                            >по дням</Button>
-                            <Button
-                                onClick={() => user?.setTravelDetailsFilter('onMap')}
-                                active={user?.travelDetailsFilter === 'onMap'}
-                            >на карте</Button>
-                            <Button
-                                onClick={() => user?.setTravelDetailsFilter('allPlaces')}
-                                active={user?.travelDetailsFilter === 'allPlaces'}
-                            >все места</Button>
-                        </div>
-                    </Container>
-
-                    {
-                        user?.travelDetailsFilter === 'allPlaces' && <ShowPlaces/>
-                    }
-                    {
-                        user?.travelDetailsFilter === 'onMap' && <ShowRouteOnMap/>
-                    }
-                    {
-                        user?.travelDetailsFilter === 'byDays' && <ShowRouteByDays/>
-                    }
-                </div>
+                <ShowRoute/>
             </Curtain>
             {curtainOpen &&
                 <FlatButton

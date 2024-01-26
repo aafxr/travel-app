@@ -4,7 +4,6 @@ import {StoreName} from "../../types/StoreName";
 import {Action, User} from "../StoreEntities";
 import {UserType} from "../../types/UserType";
 import {DB} from "../db/DB";
-import * as process from "process";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 
 const devUser = {
@@ -58,5 +57,10 @@ export class UserService {
         const actionStore = tx.objectStore(StoreName.ACTION)
         userStore.delete(user.id)
         actionStore.add(action.dto())
+    }
+
+    static async getById(id:string){
+        const user = await DB.getOne<UserType>(StoreName.USERS, id)
+        if(user) return new User(user)
     }
 }

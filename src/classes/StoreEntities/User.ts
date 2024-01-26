@@ -1,28 +1,39 @@
-import {TravelDetailsFilterType} from "../../types/TravelFilterTypes";
+import {ExpenseFilterType, RouteFilterType} from "../../types/filtersTypes";
+import {ExtendType} from "../../types/ExtendType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {UserType} from "../../types/UserType";
 import {TravelEventName} from "./Travel";
 import {Member} from "./Member";
 
-const TRAVEL_DETAILS_FILTER = 'TRAVEL_DETAILS_FILTER'
+type UserContructorPropsType = Partial<UserType> | User
+
 
 export class User extends Member implements UserType {
 
-    travelDetailsFilter: TravelDetailsFilterType = localStorage.getItem(TRAVEL_DETAILS_FILTER) as TravelDetailsFilterType || "byDays"
     token = '';
     refresh_token = '';
-    isCurtainOpen: DBFlagType = 0
 
-    constructor(user: Partial<UserType | User>) {
+
+    expenseFilter: ExpenseFilterType = "all"
+    routeFilter: RouteFilterType = "byDays"
+    curtain: DBFlagType = 0
+    dayFilter: number = 1
+
+    constructor(user: UserContructorPropsType ) {
         super(user)
 
         if (user.photo) this.photo = user.photo
         if (user.token) this.token = user.token
         if (user.refresh_token) this.refresh_token = user.refresh_token
-        if (user.isCurtainOpen) this.isCurtainOpen = user.isCurtainOpen
+        if(user instanceof User) {
+            if (user.curtain) this.curtain = user.curtain
+            if (user.routeFilter) this.routeFilter = user.routeFilter
+            if (user.expenseFilter) this.expenseFilter = user.expenseFilter
+            if (user.dayFilter) this.dayFilter = user.dayFilter
+        }
     }
 
-    dto(): UserType {
+    dto(): UserType & ExtendType {
         return {
             id: this.id,
             username: this.username,
@@ -31,8 +42,10 @@ export class User extends Member implements UserType {
             photo: this.photo,
             token: this.token,
             refresh_token: this.refresh_token,
-            travelDetailsFilter: this.travelDetailsFilter,
-            isCurtainOpen: this.isCurtainOpen
+            curtain: this.curtain,
+            routeFilter: this.routeFilter,
+            expenseFilter: this.expenseFilter,
+            dayFilter: this.dayFilter,
         };
     }
 
@@ -79,19 +92,23 @@ export class User extends Member implements UserType {
         this.emit('update')
     }
 
-    setTravelDetailsFilter(filter: TravelDetailsFilterType) {
-        this.travelDetailsFilter = filter
-        console.log(this)
+    setRouteFilter(filter: RouteFilterType) {
+        this.routeFilter = filter
         this.emit('update')
     }
 
-    setCurtainOpen(isOpen: DBFlagType | boolean) {
-        this.isCurtainOpen = isOpen ? 1 : 0
+    setCurtain(isOpen: DBFlagType | boolean) {
+        this.curtain = isOpen ? 1 : 0
         this.emit('update')
     }
 
-    isLogIn(){
-        if(location.hostname === 'localhost') return true
+    setExpenseFilter(filter: ExpenseFilterType) {
+        this.expenseFilter = filter
+        this.emit('update')
+    }
+
+    isLogIn() {
+        if (location.hostname === 'localhost') return true
         return Boolean(this.token && this.refresh_token)
     }
 

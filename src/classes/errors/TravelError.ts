@@ -13,4 +13,8 @@ export class TravelError extends CustomError {
     static unexpectedTravelId(travelId: string){
         return new TravelError(`Путешествие с id="${travelId}" не найдино`, ErrorCode.UNEXPECTED_TRAVEL_ID)
     }
+
+    static unexpectedPlace(placeId: string){
+        return new TravelError(`Unexpected place with id="${placeId}"`, ErrorCode.UNEXPECTED_TRAVEL_ID)
+    }
 }

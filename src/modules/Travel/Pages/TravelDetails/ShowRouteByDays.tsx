@@ -2,7 +2,7 @@ import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
 import Container from "../../../../components/Container/Container";
-import useTravelContext from "../../../../hooks/useTravelContext";
+import {useTravel} from "../../../../contexts/AppContextProvider";
 import PlaceCard2 from "../../components/PlaceCard2/PlaceCard2";
 import {Place} from "../../../../classes/StoreEntities";
 import {MS_IN_DAY} from "../../../../static/constants";
@@ -11,7 +11,7 @@ import {Tab} from "../../../../components/ui";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
-    const travel = useTravelContext()
+    const travel = useTravel()!
     const [dayPlane, setDayPlane] = useState<Place[]>([])
 
 

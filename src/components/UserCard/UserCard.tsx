@@ -8,6 +8,7 @@ import {StoreName} from "../../types/StoreName";
 import Photo from "../Photo/Photo";
 import {DB} from "../../classes/db/DB";
 import './UserCard.css'
+import {UserService} from "../../classes/services";
 
 
 type UserCardPropsType = {
@@ -35,6 +36,7 @@ export default function UserCard({
     const [user, setUser] = useState<Member | null>(null)
 
     useEffect(() => {
+        UserService.
         DB.getOne<Member>(StoreName.USERS, id)
             .then((member) => {
                 if (member) setUser(new Member(member))
