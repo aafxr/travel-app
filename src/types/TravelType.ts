@@ -1,5 +1,5 @@
 /**
- * @typedef TravelPreferencesType
+ * @typedef TravelPreferenceType
  * @property {number} density время осмотра места по умолчанию
  * @property { 0b0 | 0b1 | 0b10 } eventsRate насыщеность (частота) событий
  */
@@ -37,16 +37,19 @@
  *
  * @property {DBFlagType} isFromPoint флаг начала путешествия
  *
- * @property {TravelPreferencesType} preferences
+ * @property {TravelPreferenceType} preferences
  * @property {TravelPermissionType} permissions
  * @property {number} visibility
  */
 
+import {TravelPermission} from "./TravelPermission";
+import {TravelPreference} from "./TravelPreference";
+import {Preference} from "../classes/Preference";
+import {Permission} from "../classes/Permission";
 import {MovementType} from "./MovementType";
 import {WaypointType} from "./WaypointType";
-import {PlaceType} from "./PlaceType";
-import {TravelPreferences} from "./TravelPreferences";
 import {DBFlagType} from "./DBFlagType";
+import {PlaceType} from "./PlaceType";
 
 /**
  * @category Types
@@ -77,7 +80,7 @@ import {DBFlagType} from "./DBFlagType";
  *
  * @property {DBFlagType} isFromPoint флаг начала путешествия
  *
- * @property {TravelPreferencesType} preferences
+ * @property {TravelPreferenceType} preferences
  * @property {TravelPermissionType} permissions
  * @property {number} visibility
  *
@@ -109,7 +112,8 @@ export type TravelType = {
     children_count: number,
     photo: string | Blob,
     isFromPoint: 0 | 1,
-    preferences: TravelPreferences,
+    preference: TravelPreference | Preference,
+    permission:TravelPermission | Permission,
     // permissions: ,
     visibility: DBFlagType,
 }

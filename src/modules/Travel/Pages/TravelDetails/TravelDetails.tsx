@@ -92,8 +92,8 @@ export default function TravelDetails() {
                                     )
                                 }
                                 <div
-                                    className={`travel-details-icon icon center ${travel.preferences.public ? 'public' : 'private'}`}>
-                                    {travel.preferences.public ? <VisibilityIcon/> : <VisibilityOffIcon/>}
+                                    className={`travel-details-icon icon center ${travel.isPublic ? 'public' : 'private'}`}>
+                                    {travel.isPublic ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                                 </div>
                             </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
@@ -107,7 +107,6 @@ export default function TravelDetails() {
                             </div>
                         }
                         <div>
-
                             <TravelPeople peopleList={travel.people} compact={compact}/>
                         </div>
                         <div className='flex-between'>
@@ -123,11 +122,13 @@ export default function TravelDetails() {
                     <div className='flex-between flex-nowrap gap-0.5 pb-20 footer'>
                         <IconButton icon={<MoneyIcon/>} title='Расходы'
                                     onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
-                        <IconButton
-                            icon={<ChecklistIcon/>}
-                            title='Чек-лист'
-                            onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
-                        />
+                        {
+                            travel.isPublic && <IconButton
+                                icon={<ChecklistIcon/>}
+                                title='Чек-лист'
+                                onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
+                            />
+                        }
                         {/*<IconButton icon={<ChatIcon badge/>}/>*/}
                     </div>
                 </div>

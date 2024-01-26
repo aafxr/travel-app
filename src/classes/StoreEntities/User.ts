@@ -2,7 +2,6 @@ import {ExpenseFilterType, RouteFilterType} from "../../types/filtersTypes";
 import {ExtendType} from "../../types/ExtendType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {UserType} from "../../types/UserType";
-import {TravelEventName} from "./Travel";
 import {Member} from "./Member";
 
 type UserContructorPropsType = Partial<UserType> | User
@@ -59,7 +58,7 @@ export class User extends Member implements UserType {
             this.imageURL = photo
         }
 
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setId(id: string) {

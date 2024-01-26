@@ -1,10 +1,10 @@
+import clsx from "clsx";
 import React, {useEffect, useState} from "react";
 
 import IconButton from "../ui/IconButton/IconButton";
 import {PlusIcon, MinusIcon} from "../svg";
 
 import './Counter.css'
-import clsx from "clsx";
 
 /**
  * Компонент-Счетчик,

@@ -26,7 +26,7 @@ export default function ShowRouteByDays() {
     let showHotel = false
     const lastPlannedActivity = dayPlane[dayPlane.length - 1]
     if (lastPlannedActivity) {
-        const freeTime = dayPlane.length > travel.preferences.density
+        const freeTime = dayPlane.length > travel.preference.density
         if (freeTime)
             showHotel = true
     }

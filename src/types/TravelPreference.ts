@@ -1,6 +1,6 @@
 /**
- * @name TravelPreferencesType
- * @typedef TravelPreferencesType
+ * @name TravelPreferenceType
+ * @typedef TravelPreferenceType
  * @property {DBFlagType} public
  * @property {DBFlagType} showRoute
  * @property {DBFlagType} showExpenses
@@ -9,12 +9,6 @@
  */
 import {DBFlagType} from "./DBFlagType";
 
-export interface TravelPreferences {
-    public: DBFlagType,
-    showRoute: DBFlagType,
-    showExpenses: DBFlagType,
-    showCheckList: DBFlagType,
-    showComments: DBFlagType,
-
+export interface TravelPreference {
     density: 1 | 2 | 3
 }

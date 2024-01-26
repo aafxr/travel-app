@@ -19,3 +19,7 @@
 .inout::placeholder{
     color: var(--color-grey-light);
 }
+
+.date-input{
+    padding-right: 12px;
+}

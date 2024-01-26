@@ -9,7 +9,7 @@ import {Routes, Route, Navigate} from "react-router-dom";
 // import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
 // import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 // import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
-// import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
+import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
 // import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
@@ -133,8 +133,8 @@ function App() {
                 {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
-                {/*        <Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>*/}
+                        {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
+                        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                 {/*        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>*/}

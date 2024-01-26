@@ -574,7 +574,7 @@ export default class BaseTravel extends Entity {
      * установка дефолтных предпочтений путешествий (глубина осмотра, насыщенность ...)
      * @method
      * @name BaseTravel.setPreferences
-     * @param {Partial<TravelPreferencesType>} options
+     * @param {Partial<TravelPreferenceType>} options
      * @return {BaseTravel}
      */
     setPreferences(options) {

@@ -3,16 +3,16 @@ import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StorageEntity} from "./StorageEntity";
-import {Preferences} from "../Preferences";
+import {Preference} from "../Preference";
+import {Permission} from "../Permission";
 import {Waypoint} from "./Waypoint";
-import {Place} from "./Place";
 import {Member} from "./Member";
+import {Place} from "./Place";
+import {TravelPermission} from "../../types/TravelPermission";
+import {TravelPreference} from "../../types/TravelPreference";
 
 
-export enum TravelEventName {
-    UPDATE = "update",
-}
-
+type TravelPropsType = Partial<TravelType> | Travel
 
 export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
 
@@ -35,10 +35,9 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
 
     created_at = new Date();
     date_end = new Date(new Date().setHours(23, 59, 59, 999));
-    date_start = new Date();
+    date_start = new Date(new Date().setHours(0, 0, 0, 0));
 
     movementTypes: MovementType[] = [MovementType.CAR];
-    preferences = new Preferences({});
     updated_at = new Date();
     places: Place[] = [];
     waypoints: Waypoint[] = [];
@@ -47,7 +46,10 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
     editors: string[] = [];
     commentator: string[] = [];
 
-    constructor(travel: Partial<TravelType> | Travel) {
+    preference = new Preference();
+    permission: Permission = new Permission();
+
+    constructor(travel: TravelPropsType) {
         super()
         if (travel.id) this.id = travel.id
         if (travel.title) this.title = travel.title
@@ -68,7 +70,6 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
         if (travel.visibility) this.visibility = travel.visibility
-        if (travel.preferences) this.preferences = new Preferences(travel.preferences)
         if (travel.created_at) this.created_at = new Date(travel.created_at)
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
@@ -77,46 +78,53 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         if (travel.admins) this.admins = travel.admins
         if (travel.editors) this.editors = travel.editors
         if (travel.commentator) this.commentator = travel.commentator
+
+        if (travel.preference) this.preference = new Preference(travel.preference)
+        if (travel.permission) this.permission = new Permission(travel.permission)
     }
 
 
     setId(id: string) {
         this.id = id
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setCode(code: string) {
         this.code = code
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setDescription(description: string) {
         this.description = description
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setDirection(direction: string) {
         this.direction = direction
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setOwner_id(owner_id: string) {
         this.owner_id = owner_id
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setMembers(members: string[]) {
         this.members = members
     }
 
+    setMovementTypes(movementTypes: MovementType[]){
+        this.movementTypes = movementTypes
+    }
+
     setPlaces(places: Place[]) {
         this.places = places
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     removePlace(place: Place) {
         this.places = this.places.filter(p => p !== place)
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setPhoto(photo: string | Blob) {
@@ -129,47 +137,47 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             this.imageURL = photo
         }
 
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setTitle(title: string) {
         this.title = title
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setDays(days: number) {
         this.days = days
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setIsFromPoint(isFromPoint: DBFlagType) {
         this.isFromPoint = isFromPoint
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setChildren_count(children_count: number) {
         this.children_count = children_count
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setMembers_count(members_count: number) {
         this.members_count = members_count
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setVisibility(visibility: DBFlagType) {
         this.visibility = visibility
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setDate_end(date_end: Date) {
         this.date_end = new Date(date_end.setHours(23, 59, 59, 999))
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     setDate_start(date_start: Date) {
         this.date_start = new Date(date_start.setHours(0, 0, 0, 0))
-        this.emit(TravelEventName.UPDATE)
+        this.emit('update')
     }
 
     get people() {
@@ -185,8 +193,21 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             this.editors.includes(member.id)
     }
 
-    permitDelete<T extends Member>(membeer:T){
+    permitDelete<T extends Member>(membeer: T) {
         return membeer.id === this.owner_id
+    }
+
+    hasPermit(user: Member, key: keyof TravelPermission) {
+        if (this.permitChange(user)) return true
+        return !!this.permission[key];
+    }
+
+    getPreference(key: keyof TravelPreference) {
+        return this.preference[key]
+    }
+
+    get isPublic() {
+        return !!this.permission.public
     }
 
     dto(): TravelType {
@@ -209,12 +230,13 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             date_start: this.date_start,
             movementTypes: this.movementTypes,
             places: this.places.map(p => p.dto()),
-            preferences: this.preferences.dto(),
+            preference: this.preference.dto(),
             waypoints: this.waypoints.map(w => w.dto()),
             updated_at: this.updated_at,
             admins: this.admins,
             editors: this.editors,
             commentator: this.commentator,
+            permission: this.permission.dto(),
         }
     }
 }
