@@ -10,6 +10,7 @@ import {Member} from "./Member";
 import {Place} from "./Place";
 import {TravelPermission} from "../../types/TravelPermission";
 import {TravelPreference} from "../../types/TravelPreference";
+import {de} from "date-fns/locale";
 
 
 type TravelPropsType = Partial<TravelType> | Travel
@@ -86,27 +87,27 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
 
     setId(id: string) {
         this.id = id
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setCode(code: string) {
         this.code = code
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setDescription(description: string) {
         this.description = description
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setDirection(direction: string) {
         this.direction = direction
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setOwner_id(owner_id: string) {
         this.owner_id = owner_id
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setMembers(members: string[]) {
@@ -119,12 +120,12 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
 
     setPlaces(places: Place[]) {
         this.places = places
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     removePlace(place: Place) {
         this.places = this.places.filter(p => p !== place)
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setPhoto(photo: string | Blob) {
@@ -137,47 +138,47 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             this.imageURL = photo
         }
 
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setTitle(title: string) {
         this.title = title
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setDays(days: number) {
         this.days = days
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setIsFromPoint(isFromPoint: DBFlagType) {
         this.isFromPoint = isFromPoint
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setChildren_count(children_count: number) {
         this.children_count = children_count
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setMembers_count(members_count: number) {
         this.members_count = members_count
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setVisibility(visibility: DBFlagType) {
         this.visibility = visibility
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setDate_end(date_end: Date) {
         this.date_end = new Date(date_end.setHours(23, 59, 59, 999))
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     setDate_start(date_start: Date) {
         this.date_start = new Date(date_start.setHours(0, 0, 0, 0))
-        this.emit('update')
+        this.setUpdated_at()
     }
 
     get people() {
@@ -206,8 +207,23 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         return this.preference[key]
     }
 
+    private setUpdated_at(){
+        this.updated_at = new Date()
+        this.emit('update')
+    }
+
     get isPublic() {
         return !!this.permission.public
+    }
+
+    setDepth(depth:TravelPreference['depth']){
+        this.preference.depth = depth
+        this.setUpdated_at()
+    }
+
+    setDensity(density:TravelPreference['density']){
+        this.preference.density = density
+        this.setUpdated_at()
     }
 
     dto(): TravelType {

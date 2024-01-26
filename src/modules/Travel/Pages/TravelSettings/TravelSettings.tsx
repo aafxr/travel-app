@@ -1,36 +1,31 @@
 import React, {useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
-import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
+import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
-import ErrorReport from "../../../../controllers/ErrorReport";
+import {Member} from "../../../../classes/StoreEntities/Member";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
-import {Chip, PageHeader} from "../../../../components/ui";
-import dateRange from "../../../../utils/dateRange";
-
-import './TravelSettings.css'
-import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
-import {defaultMovementTags} from "../../../../components/defaultMovementTags";
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
-import {Member} from "../../../../classes/StoreEntities/Member";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {Chip, PageHeader} from "../../../../components/ui";
 import {Travel} from "../../../../classes/StoreEntities";
 
+import './TravelSettings.css'
+import {TravelPreference} from "../../../../types/TravelPreference";
 
-const sightseeingTime = [
+
+const sightseeingTime: RadioButtonGroupItemType[] = [
     {id: 1, title: 'Низкая'},
     {id: 2, title: 'Средняя'},
     {id: 3, title: 'Высокая'},
 ]
 
-const depth = [
+const depth: RadioButtonGroupItemType[] = [
     {id: 1, title: 'Поверхностно'},
     {id: 2, title: 'Обычно'},
     {id: 3, title: 'Детально'},
@@ -80,11 +75,23 @@ export default function TravelSettings() {
         if (end) updatedTravel.setDate_end(end)
     }
 
-    //==================================================================================================================
+
+    function handleDensityChange(select:RadioButtonGroupItemType[]){
+        updatedTravel.setDensity(select[0].id as TravelPreference['density'])
+    }
+
+
+    function handleDepthChange(select:RadioButtonGroupItemType[]){
+        updatedTravel.setDepth(select[0].id as TravelPreference['depth'])
+
+    }
+
+
     /** сохранение параметров путешествия */
     function handleSaveTravelButton() {
         TravelService.update(context, updatedTravel)
             .then(() => context.setTravel(updatedTravel))
+            .then(() => navigate(`/travel/${travel.id}/`))
             .catch(defaultHandleError)
     }
 
@@ -114,8 +121,8 @@ export default function TravelSettings() {
                             <h4 className='title-semi-bold'>Дата поездки</h4>
                             <DateRange
                                 init={{
-                                    start: updatedTravel.date_start,
-                                    end: updatedTravel.date_end
+                                    start: travel.date_start,
+                                    end: travel.date_end
                                 }}
                                 minDate={updatedTravel.date_start}
                                 onChange={handleDateRangeChange}
@@ -132,17 +139,17 @@ export default function TravelSettings() {
                             <div className='flex-between'>
                                 <span>Взрослые</span>
                                 <Counter
-                                    initialValue={updatedTravel.members_count}
-                                    min={updatedTravel.members.filter(m => !m.isChild).length || 1}
-                                    onChange={handleAdultChange}
+                                    init={travel.members_count}
+                                    min={updatedTravel.members_count || 1}
+                                    onChange={updatedTravel.setMembers_count.bind(updatedTravel)}
                                 />
                             </div>
                             <div className='flex-between'>
                                 <span>Дети</span>
                                 <Counter
-                                    initialValue={updatedTravel.children_count}
-                                    min={updatedTravel.members.filter(m => m.isChild).length}
-                                    onChange={handleTeenagerChange}
+                                    init={travel.children_count}
+                                    min={updatedTravel.children_count || 0}
+                                    onChange={updatedTravel.setChildren_count.bind(updatedTravel)}
                                 />
                             </div>
                         </section>
@@ -151,8 +158,8 @@ export default function TravelSettings() {
                             <RadioButtonGroup
                                 title={'Насыщенность путешествия'}
                                 checklist={sightseeingTime}
-                                onChange={console.log}
-                                initValue={sightseeingTime[1]}
+                                onChange={handleDensityChange}
+                                init={sightseeingTime.find(st => st.id === travel.preference.density)!}
                             />
                         </section>
 
@@ -160,65 +167,65 @@ export default function TravelSettings() {
                             <RadioButtonGroup
                                 title={'Глубина осмотра '}
                                 checklist={depth}
-                                onChange={console.log}
-                                initValue={depth[1]}
+                                onChange={handleDepthChange}
+                                init={depth.find(d => d.id === travel.preference.depth)!}
                             />
                         </section>
 
-                        {
-                            Array.isArray(updatedTravel.hotels) && updatedTravel.hotels.length > 0 && (
-                                <section className='travel-settings-hotels column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Отель</h4>
-                                    {
-                                        updatedTravel.hotels.map(h => (
-                                            <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>
-                                                <div className='travel-settings-hotel'>
-                                                    <div
-                                                        className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>
-                                                    <div
-                                                        className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>
-                                                </div>
-                                            </Link>
-                                        ))
-                                    }
-                                    {/*<div*/}
-                                    {/*    className='link'*/}
-                                    {/*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*/}
-                                    {/*>*/}
-                                    {/*    + Добавить отель*/}
-                                    {/*</div>*/}
-                                </section>
-                            )
-                        }
+                        {/*{*/}
+                        {/*    Array.isArray(updatedTravel.hotels) && updatedTravel.hotels.length > 0 && (*/}
+                        {/*        <section className='travel-settings-hotels column gap-0.5 block'>*/}
+                        {/*            <h4 className='title-semi-bold'>Отель</h4>*/}
+                        {/*            {*/}
+                        {/*                updatedTravel.hotels.map(h => (*/}
+                        {/*                    <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>*/}
+                        {/*                        <div className='travel-settings-hotel'>*/}
+                        {/*                            <div*/}
+                        {/*                                className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>*/}
+                        {/*                            <div*/}
+                        {/*                                className='travel-settings-hotel-title title-semi-bold'>{h.title}</div>*/}
+                        {/*                        </div>*/}
+                        {/*                    </Link>*/}
+                        {/*                ))*/}
+                        {/*            }*/}
+                        {/*            /!*<div*!/*/}
+                        {/*            /!*    className='link'*!/*/}
+                        {/*            /!*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*!/*/}
+                        {/*            /!*>*!/*/}
+                        {/*            /!*    + Добавить отель*!/*/}
+                        {/*            /!*</div>*!/*/}
+                        {/*        </section>*/}
+                        {/*    )*/}
+                        {/*}*/}
 
-                        {
-                            Array.isArray(updatedTravel.appointments) && updatedTravel.appointments.length > 0 && (
-                                <section className='travel-settings-appointments column gap-0.5 block'>
-                                    <h4 className='title-semi-bold'>Встреча</h4>
-                                    {
-                                        !!updatedTravel.appointments && Array.isArray(updatedTravel.appointments) && (
-                                            updatedTravel.appointments.map(a => (
-                                                <Link key={a.id}
-                                                      to={`/travel/${travel.id}/add/appointment/${a.id}/`}>
-                                                    <div className='travel-settings-appointment'>
-                                                        <div
-                                                            className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>
-                                                        <div
-                                                            className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>
-                                                    </div>
-                                                </Link>
-                                            ))
-                                        )
-                                    }
-                                    {/*<div*/}
-                                    {/*    className='link'*/}
-                                    {/*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*/}
-                                    {/*>*/}
-                                    {/*    + Добавить встречу*/}
-                                    {/*</div>*/}
-                                </section>
-                            )
-                        }
+                        {/*{*/}
+                        {/*    Array.isArray(updatedTravel.appointments) && updatedTravel.appointments.length > 0 && (*/}
+                        {/*        <section className='travel-settings-appointments column gap-0.5 block'>*/}
+                        {/*            <h4 className='title-semi-bold'>Встреча</h4>*/}
+                        {/*            {*/}
+                        {/*                !!updatedTravel.appointments && Array.isArray(updatedTravel.appointments) && (*/}
+                        {/*                    updatedTravel.appointments.map(a => (*/}
+                        {/*                        <Link key={a.id}*/}
+                        {/*                              to={`/travel/${travel.id}/add/appointment/${a.id}/`}>*/}
+                        {/*                            <div className='travel-settings-appointment'>*/}
+                        {/*                                <div*/}
+                        {/*                                    className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>*/}
+                        {/*                                <div*/}
+                        {/*                                    className='travel-settings-appointment-title title-semi-bold'>{a.title}</div>*/}
+                        {/*                            </div>*/}
+                        {/*                        </Link>*/}
+                        {/*                    ))*/}
+                        {/*                )*/}
+                        {/*            }*/}
+                        {/*            /!*<div*!/*/}
+                        {/*            /!*    className='link'*!/*/}
+                        {/*            /!*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*!/*/}
+                        {/*            /!*>*!/*/}
+                        {/*            /!*    + Добавить встречу*!/*/}
+                        {/*            /!*</div>*!/*/}
+                        {/*        </section>*/}
+                        {/*    )*/}
+                        {/*}*/}
 
                         {/*<section className='travel-settings-movement column gap-0.5 block'>*/}
                         {/*    <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>*/}
@@ -241,7 +248,7 @@ export default function TravelSettings() {
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton} disabled={!hasChanges()}>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={!hasChange}>Построить маршрут</Button>
                 </div>
             </div>
             {/*<FlatButton*/}

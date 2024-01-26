@@ -11,4 +11,5 @@ import {DBFlagType} from "./DBFlagType";
 
 export interface TravelPreference {
     density: 1 | 2 | 3
+    depth: 1 | 2 | 3
 }

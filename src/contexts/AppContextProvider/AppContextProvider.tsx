@@ -21,7 +21,6 @@ export function AppContextProvider({children}: PropsWithChildren) {
 
 
     if (!state) return null
-    console.log(state.context)
     window.context = state.context
 
     return (

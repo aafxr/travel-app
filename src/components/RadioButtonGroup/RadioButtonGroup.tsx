@@ -3,22 +3,32 @@ import {useEffect, useState} from "react";
 
 import Checkbox from "../ui/Checkbox/Checkbox";
 
-/**
- * @typedef CheckListType
- * @property {string} id
- * @property {string} title
- */
+export type RadioButtonGroupItemType = {
+    id: number
+    title: string
+}
+
+type RadioButtonGroup = {
+    groupClassNames?: string
+    className?: string
+    title?: string
+    checklist:RadioButtonGroupItemType[]
+    onChange?: (selected:RadioButtonGroupItemType[]) => unknown
+    position?:'right' | 'left'
+    multy?: boolean
+    init: RadioButtonGroupItemType | RadioButtonGroupItemType[]
+}
 
 /**
  * компонент для отрисовки чеклиста
  * @param {string} groupClassNames - css класс корневова блока компонента
  * @param {string} className css class - css класс блока-контейнера группы Checkbox
  * @param {string} title
- * @param {CheckListType[]} checklist
+ * @param {RadioButtonGroupItemType[]} checklist
  * @param {function} onChange
  * @param {'right' | 'left'} position default = 'right'
  * @param {boolean} multy - флаг, позволяющий выбирать несколько значений
- * @param {CheckListType | CheckListType[]} initValue
+ * @param {RadioButtonGroupItemType | RadioButtonGroupItemType[]} initValue
  * @returns {JSX.Element|null}
  * @category Components
  */
@@ -30,38 +40,34 @@ export default function RadioButtonGroup({
                                              onChange,
                                              position = 'right',
                                              multy = false,
-                                             initValue
-                                         }) {
+                                             init
+                                         }:RadioButtonGroup) {
     const classNames = clsx('column', className)
     const isLeft = position === 'left'
-    const [selected, setSelected] = useState(multy ? [] : '')
+    const [selected, setSelected] = useState<RadioButtonGroupItemType|RadioButtonGroupItemType[]>()
 
     /*** инициялизация выбранных полей */
     useEffect(() => {
-        if (initValue) setSelected(initValue)
-    }, [initValue])
+        if (init) setSelected(init)
+    }, [])
 
     if (!checklist || !checklist.length) {
         console.log('[RadioButtonGroup] list empty.')
         return null
     }
 
-    /***
-     * обработчик клика по Checkbox
-     * @param {CheckListType} item
-     */
-    function handleChange(item) {
+    /** обработчик клика по Checkbox  */
+    function handleChange(item:RadioButtonGroupItemType) {
         let newSelected
-        if (multy) {
+        if (multy && Array.isArray(selected)) {
             if (selected.includes(item)) newSelected = selected.filter(s => s !== item)
             else newSelected = [...selected, item]
-        } else {
-            newSelected = item
-        }
+        } else  newSelected = item
+
         setSelected(newSelected)
-        /*** передача выбранных элементов в родительский компонент */
-        onChange && onChange(newSelected)
+        onChange && onChange(Array.isArray(newSelected)? newSelected : [newSelected])
     }
+
 
     return (
         <div className={groupClassNames}>
@@ -73,7 +79,7 @@ export default function RadioButtonGroup({
                             key={c.id}
                             left={isLeft}
                             onChange={() => handleChange(c)}
-                            checked={multy ? selected.includes(c) : selected === c}
+                            checked={Array.isArray(selected) ? selected.includes(c) : selected === c}
                         >
                             {c.title}
                         </Checkbox>

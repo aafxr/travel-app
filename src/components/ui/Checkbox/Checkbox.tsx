@@ -1,8 +1,14 @@
-import React from "react";
+import React, {HTMLAttributes, PropsWithChildren} from "react";
 import clsx from "clsx";
 
 import './Checkbox.css'
 
+
+interface CheckboxPropsType extends Omit<PropsWithChildren<HTMLAttributes<HTMLDivElement>>, 'onChange'>{
+    left?:boolean
+    onChange?:(checked: boolean) => unknown
+    checked?:boolean
+}
 
 /**
  * Компонент, аналогичный native \<input type="checkbox" /\>
@@ -16,16 +22,16 @@ import './Checkbox.css'
  * @param props
  * @returns {JSX.Element}
  * @category UI-Components
- * @name Checkbox
  */
-function Checkbox({
-                      children,
-                      className = '',
-                      checked = false,
-                      left,
-                      onChange,
-                      ...props
-                  }, ref) {
+
+export default React.forwardRef<HTMLInputElement, CheckboxPropsType>(({
+    children,
+    className = '',
+    checked = false,
+    left,
+    onChange,
+    ...props
+}, ref) => {
 
     const styles = clsx({
             ['checkbox gap-0.5']: true,
@@ -36,9 +42,8 @@ function Checkbox({
         className
     )
 
-    function handler(e) {
-        onChange && onChange(!checked)
-    }
+    const handler = () => onChange && onChange(!checked)
+
 
     return (
         <div {...props} className={styles} onClick={handler}>
@@ -52,6 +57,4 @@ function Checkbox({
             </div>
         </div>
     )
-}
-
-export default React.forwardRef(Checkbox)
+})

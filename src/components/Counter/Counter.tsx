@@ -6,6 +6,14 @@ import {PlusIcon, MinusIcon} from "../svg";
 
 import './Counter.css'
 
+type CounterPropsType = {
+    init?: number,
+    min?:number,
+    max?:number,
+    onChange?: (value: number) => unknown ,
+    valueClassName?: string
+}
+
 /**
  * Компонент-Счетчик,
  * @param {number} initialValue - начальное значение
@@ -16,28 +24,29 @@ import './Counter.css'
  * @category Components
  */
 export default function Counter({
-                                    initialValue,
+                                    init,
                                     min,
                                     max,
                                     onChange,
-    valueClassName
-                                }) {
+                                    valueClassName
+                                }: CounterPropsType) {
     const [value, setValue] = useState(0)
 
     /*** инициализация счетчика */
     useEffect(() => {
-        if (initialValue) setValue(initialValue)
-    }, [initialValue])
+        if (init) setValue(init)
+    }, [])
 
-    // обработчики =====================================================================================================
     /*** увелличение счетчика */
     function handleIncrement() {
+        if (max && max <= value) return
         setValue(value + 1)
         onChange && onChange(value + 1)
     }
 
     /*** уменьшение счетчика */
     function handleDecrement() {
+        if (min && min >= value) return
         setValue(value - 1)
         if (onChange) onChange(value - 1)
     }
