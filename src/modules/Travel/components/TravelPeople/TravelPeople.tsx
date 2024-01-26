@@ -1,12 +1,15 @@
-import React, {HTMLAttributes} from "react";
 import clsx from "clsx";
+import React, {HTMLAttributes, useEffect, useState} from "react";
 
-import UserCard from "../../../../components/UserCard/UserCard";
-import {PlusIcon} from "../../../../components/svg";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import AvatarPlaceHolder from "../../../../components/UserCard/AvatarPlaceholder";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {MemberService} from "../../../../classes/services/MemberService";
+import UserCard from "../../../../components/UserCard/UserCard";
+import {Member} from "../../../../classes/StoreEntities/Member";
+import {PlusIcon} from "../../../../components/svg";
 
 import './TravelPeople.css'
-import {Member} from "../../../../classes/StoreEntities/Member";
 
 interface TravelPeoplePropsType extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
     peopleList: string[]
@@ -31,6 +34,16 @@ export default function TravelPeople({
                                          onClick,
                                          ...props
                                      }: TravelPeoplePropsType) {
+    const [members, setMembers] = useState<Member[]>([])
+
+    useEffect(() => {
+        if(peopleList.length){
+            MemberService.getManyByIds(peopleList)
+                .then(setMembers)
+                .catch(defaultHandleError)
+        }
+    }, [peopleList])
+
     const className = clsx('travel-details-people',
         {
             'compact row': compact,
@@ -44,26 +57,27 @@ export default function TravelPeople({
 
     return (
         <div {...props} className={className}>
+            {!members.length && <AvatarPlaceHolder variant={compact ? "horizontal" : "vertical"} />}
             {
-                (peopleList.length && compact)
-                    ? peopleList.slice(0, 3).map(p => (
+                (members.length && compact)
+                    ? members.slice(0, 3).map(m => (
                         <UserCard
-                            key={p}
-                            id={p}
+                            key={m.id}
+                            member={m}
                             variant='compact'
                         />
                     ))
-                    : peopleList.map(p => (
+                    : members.map(m => (
                         <UserCard
-                            key={p}
-                            id={p}
+                            key={m.id}
+                            member={m}
                             variant='horizontal'
                             onClick={handleUserClick}
                         />
                     ))
             }
             {
-                compact && !!peopleList.length && <IconButton
+                compact && !!members.length && <IconButton
                     className='travel-details-people-add'
                     icon={<PlusIcon/>}
                     bgVariant='secondary'

@@ -154,23 +154,3 @@ export default function TravelDetails() {
     )
 }
 
-// <LocationCard
-//     title='Новосибирск-Сочи'
-//     entityType='Перелет'
-//     dateStart={Date.now() - 1000 * 60 * 60 * 2}
-//     dateEnd={Date.now()}
-// />
-// <RecommendLocation items={items}/>
-// <LocationCard
-//     title='Новосибирск-Сочи'
-//     entityType='Перелет'
-//     dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-//     dateEnd={Date.now()}
-// />
-// <RecommendLocation items={items}/>
-// <LocationCard
-//     title='Новосибирск-Сочи'
-//     entityType='Перелет'
-//     dateStart={Date.now() - 1000 * 60 * 60 * 2.1}
-// />
-// <AddButton>Добавить локацию</AddButton>

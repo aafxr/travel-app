@@ -9,11 +9,12 @@ import Photo from "../Photo/Photo";
 import {DB} from "../../classes/db/DB";
 import './UserCard.css'
 import {UserService} from "../../classes/services";
+import {MemberService} from "../../classes/services/MemberService";
 
 
 type UserCardPropsType = {
     className?: string
-    id: string
+    member: Member
     variant?: 'compact' | 'horizontal' | 'vertical'
     onClick?: (member: Member) => unknown
 }
@@ -29,51 +30,34 @@ type UserCardPropsType = {
  */
 export default function UserCard({
                                      className,
-                                     id,
+                                     member,
                                      variant = 'horizontal',
                                      onClick,
                                  }: UserCardPropsType) {
-    const [user, setUser] = useState<Member | null>(null)
 
-    useEffect(() => {
-        UserService.
-        DB.getOne<Member>(StoreName.USERS, id)
-            .then((member) => {
-                if (member) setUser(new Member(member))
-            })
-            .catch((e) => defaultHandleError(e, `Пользователь с id="${id}" не найден`))
-    }, [id])
 
     function handleUserCardClick() {
-        if (user) {
-            onClick && onClick(user)
-        }
+        onClick && onClick(member)
     }
 
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
-            {
-                !user
-                    ? <AvatarPlaceHolder variant={variant}/>
-                    : (
-                        <>
-                            <Photo src={user.imageURL} className='avatar'/>
-                            {variant !== 'compact' && (
-                                <>
-                                    <div className='user-card-info column'>
-                                        <div className='user-card-name'>
-                                            {user.first_name}&nbsp;
-                                            {/*{!!vehicle && <img src={vehicle} alt='vehicle'/>}*/}
-                                        </div>
-                                        {/* статус юзера (в поездке / на месте ...)*/}
-                                        {/*{!!status && <div className='user-card-status'>{status}</div>}*/}
-                                    </div>
-                                    {/*{!!role && <div className='user-card-role flex-0'>{role}</div>}*/}
-                                </>
-                            )}
-                        </>
-                    )
-            }
+            <>
+                <Photo src={member.imageURL} className='avatar'/>
+                {variant !== 'compact' && (
+                    <>
+                        <div className='user-card-info column'>
+                            <div className='user-card-name'>
+                                {member.first_name}&nbsp;
+                                {/*{!!vehicle && <img src={vehicle} alt='vehicle'/>}*/}
+                            </div>
+                            {/* статус юзера (в поездке / на месте ...)*/}
+                            {/*{!!status && <div className='user-card-status'>{status}</div>}*/}
+                        </div>
+                        {/*{!!role && <div className='user-card-role flex-0'>{role}</div>}*/}
+                    </>
+                )}
+            </>
         </div>
     )
 }
