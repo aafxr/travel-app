@@ -1,4 +1,4 @@
-import {StorageEntity, Travel} from "../StoreEntities";
+import {StoreEntity, Travel} from "../StoreEntities";
 import {openIDBDatabase} from "./openIDBDatabaase";
 import {StoreName} from "../../types/StoreName";
 
@@ -9,7 +9,7 @@ export class DB {
         const tx = db.transaction(storeName, "readwrite")
         const store = tx.objectStore(storeName)
         try {
-            if (data instanceof StorageEntity) store.add(data.dto())
+            if (data instanceof StoreEntity) store.add(data.dto())
             else store.add(data)
         } catch (e) {
             console.error(e)
@@ -20,15 +20,15 @@ export class DB {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName, "readwrite")
         const store = tx.objectStore(storeName)
-        if (data instanceof StorageEntity) store.put(data.dto())
+        if (data instanceof StoreEntity) store.put(data.dto())
         else store.put(data)
     }
 
-    static async delete<T extends StorageEntity | IDBValidKey>(storeName: StoreName, data: T) {
+    static async delete<T extends StoreEntity | IDBValidKey>(storeName: StoreName, data: T) {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName, "readwrite")
         const store = tx.objectStore(storeName)
-        if (data instanceof StorageEntity) store.delete(data.dto().id)
+        if (data instanceof StoreEntity) store.delete(data.dto().id)
         else store.delete(data)
     }
 
@@ -93,7 +93,13 @@ export class DB {
     }
 
 
-    static async writeAll<T extends Pick<StorageEntity, 'dto'>>(elements: T[] = []) {
+    static async getClosest<T>(storeName: StoreName, query: IDBKeyRange, count = 1):Promise<T[]>{
+        const db = await openIDBDatabase()
+        return await db.getAll(storeName,query, count)
+    }
+
+
+    static async writeAll<T extends Pick<StoreEntity, 'dto'>>(elements: T[] = []) {
         if (!elements.length) return
         const storeNames = elements.map(el => el.constructor.name)
         const db = await openIDBDatabase()

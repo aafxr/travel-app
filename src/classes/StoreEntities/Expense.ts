@@ -3,14 +3,14 @@ import {nanoid} from "nanoid";
 import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
 import {CurrencyName} from "../../types/CurrencyName";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
 
 
 /**
  * данный класс позволяет работать с расходами
  */
-class Expense extends StorageEntity implements ExpenseType {
+class Expense extends StoreEntity implements ExpenseType {
 
     id: string;
     entity_id = '';

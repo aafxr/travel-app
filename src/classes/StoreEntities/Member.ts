@@ -1,8 +1,8 @@
 import {StoreName} from "../../types/StoreName";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 import {MemberType} from "../../types/MemberType";
 
-export class Member extends StorageEntity implements MemberType {
+export class Member extends StoreEntity implements MemberType {
     storeName: StoreName = StoreName.USERS;
     withAction = false
 

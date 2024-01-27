@@ -1,13 +1,13 @@
 import {SectionType} from "../../types/SectionType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 import {DB} from "../db/DB";
 
 /**
  * класс для работы с сущностью Section
  */
-export class Section extends StorageEntity implements SectionType{
+export class Section extends StoreEntity implements SectionType{
     storeName = StoreName.SECTION
     withAction = true
     

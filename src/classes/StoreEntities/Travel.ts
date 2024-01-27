@@ -1,21 +1,20 @@
 import {nanoid} from "nanoid";
+import {TravelPermission} from "../../types/TravelPermission";
+import {TravelPreference} from "../../types/TravelPreference";
 import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 import {Preference} from "../Preference";
 import {Permission} from "../Permission";
 import {Waypoint} from "./Waypoint";
 import {Member} from "./Member";
 import {Place} from "./Place";
-import {TravelPermission} from "../../types/TravelPermission";
-import {TravelPreference} from "../../types/TravelPreference";
-import {de} from "date-fns/locale";
 
 
 type TravelPropsType = Partial<TravelType> | Travel
 
-export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
+export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
     id = nanoid(8);
     code = '';
@@ -32,11 +31,10 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
     children_count = 0
     members_count = 1
     members: string[] = []
-    visibility: DBFlagType = 0
 
     created_at = new Date();
-    date_end = new Date(new Date().setHours(23, 59, 59, 999));
-    date_start = new Date(new Date().setHours(0, 0, 0, 0));
+    date_end = new Date(0);
+    date_start = new Date(0);
 
     movementTypes: MovementType[] = [MovementType.CAR];
     updated_at = new Date();
@@ -70,7 +68,7 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         }
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
-        if (travel.visibility) this.visibility = travel.visibility
+
         if (travel.created_at) this.created_at = new Date(travel.created_at)
         if (travel.date_start) this.date_start = new Date(travel.date_start)
         if (travel.date_end) this.date_end = new Date(travel.date_end)
@@ -166,10 +164,6 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    setVisibility(visibility: DBFlagType) {
-        this.visibility = visibility
-        this.setUpdated_at()
-    }
 
     setDate_end(date_end: Date) {
         this.date_end = new Date(date_end.setHours(23, 59, 59, 999))
@@ -203,7 +197,7 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
         return !!this.permission[key];
     }
 
-    getPreference(key: keyof TravelPreference) {
+    getPreference<T extends keyof TravelPreference>(key: T) {
         return this.preference[key]
     }
 
@@ -240,7 +234,6 @@ export class Travel extends StorageEntity implements Omit<TravelType, 'photo'> {
             children_count: this.children_count,
             members_count: this.members_count,
             members: this.members,
-            visibility: this.visibility,
             created_at: this.created_at,
             date_end: this.date_end,
             date_start: this.date_start,

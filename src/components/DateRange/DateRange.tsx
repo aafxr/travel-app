@@ -37,9 +37,9 @@ export default function DateRange({
         if (init) {
             setRange(init)
         } else {
-            const start = new Date(new Date().setHours(0, 0, 0, 0))
-            const end = new Date(new Date().setHours(23, 59, 59, 999))
-            setRange({start, end})
+            // const start = new Date(new Date().setHours(0, 0, 0, 0))
+            // const end = new Date(new Date().setHours(23, 59, 59, 999))
+            // setRange({start, end})
         }
     }, [])
 
@@ -61,20 +61,19 @@ export default function DateRange({
         }
     }
 
-    if (!range) return null
 
 
     return (
         <div className='flex-stretch gap-0.25'>
             <DateInput
                 placeholder={'Начало'}
-                value={range.start}
+                value={range?.start}
                 onChange={date => handleDateChange(date, "start")}
             />
             <DateInput
                 placeholder={'Завершение'}
-                value={range.end}
-                min={range.start}
+                value={range?.end}
+                min={range?.start}
                 onChange={date => handleDateChange(date, "end")}
             />
         </div>

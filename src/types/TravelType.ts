@@ -115,5 +115,4 @@ export type TravelType = {
     preference: TravelPreference | Preference,
     permission:TravelPermission | Permission,
     // permissions: ,
-    visibility: DBFlagType,
 }

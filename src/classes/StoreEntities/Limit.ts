@@ -2,13 +2,13 @@ import {nanoid} from "nanoid";
 
 import {DBFlagType} from "../../types/DBFlagType";
 import {LimitType} from "../../types/LimitType";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
 
 /**
  * Класс для работы с лимитами
  */
-export class Limit extends StorageEntity implements LimitType {
+export class Limit extends StoreEntity implements LimitType {
 
     id: string
     personal: DBFlagType = 0

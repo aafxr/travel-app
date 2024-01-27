@@ -5,7 +5,7 @@ import './Input.css'
 
 
 interface DateInputPropsType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'min' | 'max'> {
-    value: Date
+    value?: Date
     onChange?: (date: Date) => unknown
     min?: Date,
     max?: Date
@@ -37,7 +37,7 @@ export default React.forwardRef<HTMLInputElement, DateInputPropsType>(({value, o
             ref={ref}
             type='date'
             className={className}
-            value={dateToString(value)}
+            value={value ? dateToString(value): undefined}
             min={min && dateToString(min)}
             max={max && dateToString(max)}
             onKeyUp={handleEnterKeyUp}

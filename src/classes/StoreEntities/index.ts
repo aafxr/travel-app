@@ -1,4 +1,4 @@
-export * from './StorageEntity'
+export * from './StoreEntity'
 export * from './Expense'
 export * from './Waypoint'
 export * from './Section'

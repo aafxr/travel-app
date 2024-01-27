@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
@@ -76,12 +76,12 @@ export default function TravelSettings() {
     }
 
 
-    function handleDensityChange(select:RadioButtonGroupItemType[]){
+    function handleDensityChange(select: RadioButtonGroupItemType[]) {
         updatedTravel.setDensity(select[0].id as TravelPreference['density'])
     }
 
 
-    function handleDepthChange(select:RadioButtonGroupItemType[]){
+    function handleDepthChange(select: RadioButtonGroupItemType[]) {
         updatedTravel.setDepth(select[0].id as TravelPreference['depth'])
 
     }
@@ -120,10 +120,10 @@ export default function TravelSettings() {
                         <section className='travel-settings-date column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Дата поездки</h4>
                             <DateRange
-                                init={{
+                                init={travel.date_start.getTime() > 0 ? {
                                     start: travel.date_start,
                                     end: travel.date_end
-                                }}
+                                } : undefined}
                                 minDate={updatedTravel.date_start}
                                 onChange={handleDateRangeChange}
                             />

@@ -3,9 +3,9 @@ import {nanoid} from "nanoid";
 import {ActionName, ActionType} from "../../types/ActionsType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import {StorageEntity} from "./StorageEntity";
+import {StoreEntity} from "./StoreEntity";
 
-export class Action<T extends StorageEntity> extends StorageEntity implements ActionType {
+export class Action<T extends StoreEntity> extends StoreEntity implements ActionType {
 
     id = nanoid(16);
     action: ActionName;
