@@ -115,6 +115,9 @@ function App() {
     //     prefetch.forEach(url => aFetch.get(url).catch(console.error))
     // }, [])
 
+    window.DB = DB
+    window.User = User
+
 
     return (
         <>

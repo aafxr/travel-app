@@ -5,16 +5,11 @@ import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Button from "../../../../components/ui/Button/Button";
+import {MovementType} from "../../../../types/MovementType";
 import {useMember} from "../../../../hooks/useMember";
 import {TrashIcon} from "../../../../components/svg";
 
 import './TravelUserPermission.css'
-
-/**@type {MovementType[]} */
-const defaultMovementTypes = [
-    {id: 1, title: 'На авто'},
-    {id: 2, title: 'В самолете'}
-]
 
 
 /**
@@ -33,20 +28,20 @@ export default function TravelUserPermission() {
     useEffect(() => {
     }, [travel])
 
-    /**
-     * обработчик добавления / удаления способа передвижения участника путешествия
-     * @param {MovementType} item
-     */
-    function handleMemberMovementType(item) {
-        console.log(item)
+    /** обработчик добавления / удаления способа передвижения участника путешествия */
+    function handleMovementType(mt: MovementType) {
+        console.log(MovementType[mt])
     }
 
-    /**
-     * обработчик добавления / удаления прав участника путешествия на редактирование путешествия
-     * @param {PermissionType} item
-     */
-    function handleMemberAccessRules(item) {
-        console.log(item)
+
+    function handleEditePermit() {
+    }
+
+    function handleShowPermit() {
+    }
+
+    function handleClose(){
+        navigate(`/travel/${travel.id}/`)
     }
 
 
@@ -58,7 +53,7 @@ export default function TravelUserPermission() {
                 </Container>
                 <Button
                     className='close-button'
-                    onClick={() => navigate(-1)}
+                    onClick={handleClose}
                 >
                     Закрыть
                 </Button>
@@ -73,30 +68,34 @@ export default function TravelUserPermission() {
                     <>
                         <div className='member-title title-semi-bold'>В поездке</div>
                         <ul className='title-semi-bold'>
-                            {
-                                defaultMovementTypes.map(mt => (
-                                    <li key={mt.id}>
-                                        <Checkbox
-                                            checked={!!member.movementType.find(m => m === mt.id)}
-                                            onChange={() => handleMemberMovementType(mt.id)}
-                                        >
-                                            {mt.title}
-                                        </Checkbox>
-                                    </li>
-                                ))
-                            }
+                            <li>
+                                <Checkbox
+                                    checked={false}
+                                    onChange={() => handleMovementType(MovementType.CAR)}
+                                >
+                                    На авто
+                                </Checkbox>
+                            </li>
+                            <li>
+                                <Checkbox
+                                    checked={false}
+                                    onChange={() => handleMovementType(MovementType.FLIGHT)}
+                                >
+                                    В самолете
+                                </Checkbox>
+                            </li>
                         </ul>
                     </>
                     <>
                         <div className='member-title title-semi-bold '>Права</div>
                         <ul className='member-access-rules'>
                             <li>
-                                <Checkbox checked={travel.permitChange(member)}>
+                                <Checkbox checked={travel.permitChange(member)} onChange={handleEditePermit}>
                                     Редактирование
                                 </Checkbox>
                             </li>
                             <li>
-                                <Checkbox checked={travel.permitChange(member)}>
+                                <Checkbox checked={travel.permitChange(member)} onChange={handleShowPermit}>
                                     Просмотр
                                 </Checkbox>
                             </li>
@@ -105,7 +104,7 @@ export default function TravelUserPermission() {
                     <button className='member-remove-btn'>Удалить <TrashIcon className='icon'/></button>
                     <Button
                         className='close-button'
-                        onClick={() => navigate(-1)}
+                        onClick={handleClose}
                     >
                         Закрыть
                     </Button>
@@ -137,4 +136,5 @@ export default function TravelUserPermission() {
                 </Container>
             </div>
         )
+    return <></>
 }
