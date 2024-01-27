@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Routes, Route, Navigate} from "react-router-dom";
 
-// import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
+import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
 // import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 // import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 // import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
@@ -135,7 +135,7 @@ function App() {
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
                         {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
-                {/*        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>*/}
+                        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
                 {/*        <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}

@@ -1,10 +1,8 @@
-import {StoreName} from "../../types/StoreName";
 import {StoreEntity} from "./StoreEntity";
 import {MemberType} from "../../types/MemberType";
+import {MovementType} from "../../types/MovementType";
 
 export class Member extends StoreEntity implements MemberType {
-    storeName: StoreName = StoreName.USERS;
-    withAction = false
 
     id = '';
     username = '';
@@ -13,6 +11,9 @@ export class Member extends StoreEntity implements MemberType {
     photo: string | Blob = '';
     imageURL = ''
 
+    movementType: MovementType[] = [MovementType.CAR];
+
+
     constructor(member: Partial<MemberType> | Member) {
         super();
 
@@ -20,6 +21,7 @@ export class Member extends StoreEntity implements MemberType {
         if (member.username) this.username = member.username
         if (member.first_name) this.first_name = member.first_name
         if (member.last_name) this.last_name = member.last_name
+        if(member.movementType) this.movementType = member.movementType
         if (member.photo) {
             this.photo = member.photo
             if (typeof this.photo === "string")
@@ -36,4 +38,5 @@ export class Member extends StoreEntity implements MemberType {
             photo: this.photo,
         };
     }
+
 }

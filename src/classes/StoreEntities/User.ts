@@ -1,4 +1,5 @@
 import {ExpenseFilterType, RouteFilterType} from "../../types/filtersTypes";
+import {CurrencyName} from "../../types/CurrencyTypes";
 import {ExtendType} from "../../types/ExtendType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {UserType} from "../../types/UserType";
@@ -17,6 +18,8 @@ export class User extends Member implements UserType {
     routeFilter: RouteFilterType = "byDays"
     curtain: DBFlagType = 0
     dayFilter: number = 1
+
+    currency:keyof CurrencyName = 'RUB'
 
     constructor(user: UserContructorPropsType ) {
         super(user)
@@ -58,57 +61,61 @@ export class User extends Member implements UserType {
             this.imageURL = photo
         }
 
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setId(id: string) {
         this.id = id
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setUsername(username: string) {
         this.username = username
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setFirst_name(first_name: string) {
         this.first_name = first_name
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setLast_name(last_name: string) {
         this.last_name = last_name
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setToken(token: string) {
         this.token = token
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setRefresh_token(refresh_token: string) {
         this.refresh_token = refresh_token
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setRouteFilter(filter: RouteFilterType) {
         this.routeFilter = filter
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setCurtain(isOpen: DBFlagType | boolean) {
         this.curtain = isOpen ? 1 : 0
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     setExpenseFilter(filter: ExpenseFilterType) {
         this.expenseFilter = filter
-        this.emit('update')
+        this.setUpdate_at()
     }
 
     isLogIn() {
         if (location.hostname === 'localhost') return true
         return Boolean(this.token && this.refresh_token)
+    }
+
+    setUpdate_at(){
+        this.emit('update', [this])
     }
 
 }

@@ -1,4 +1,3 @@
-import debounce from "lodash.debounce";
 /**
  * класс позволяет уведомлять передавать подписчикам данные
  *
@@ -11,10 +10,10 @@ import debounce from "lodash.debounce";
  * - метод __emit__ позволяет генерировать событие, которое будет вызывать всех подписчиков
  */
 export default class EventEmitter {
-    events:Map<string, ((ctx:this) => unknown)[]>
+    events: Map<string, ((ctx: this) => unknown)[]>
+
     constructor() {
         this.events = new Map()
-        // this.emit =this.emit.bind(this)// debounce(this.emit,100,{trailing:true}).bind(this)
     }
 
     /**
@@ -24,12 +23,13 @@ export default class EventEmitter {
      * @param {Function} callback
      * @return {() => unknown}
      */
-    subscribe(eventName: string, callback: (ctx:this) => unknown) {
+    subscribe<T extends keyof this & string>(eventName: T | string, callback: (ctx: this) => unknown) {
         if (!this.events.has(eventName))
             this.events.set(eventName, [])
 
         this.events.get(eventName)!.push(callback)
-        return () =>  {
+
+        return () => {
             console.warn(this)
             if (this.events.has(eventName)) {
                 const callbacks = this.events.get(eventName)!.filter(cb => cb !== callback)
@@ -42,27 +42,10 @@ export default class EventEmitter {
      * @method
      * @name EventEmitter.emit
      * @param {string} eventName
+     * @param that
      */
-    emit(eventName: string) {
-        console.log('emit',this)
-        debugger
-        if (this.events.has(eventName)) {
-            // const clone = this.clone<this>()
-            this.events.get(eventName)!
-                .forEach(cb => cb(this))
-        }
+    emit<T extends keyof this & string>(eventName: T | string, that: this[]) {
+        const callbacks = this.events.get(eventName)
+        if (callbacks) callbacks.forEach(cb => cb(that[0]))
     }
-
-    // private clone<T>():T {
-    //     const descriptors = Object.entries({ ...this }).reduce<PropertyDescriptorMap & ThisType<T>>(
-    //         (a, [key, value]) => {
-    //             a[key] = { value };
-    //             return a;
-    //         },
-    //         {}
-    //     );
-    //     const cloneElement = Object.create(Object.getPrototypeOf(this), descriptors);
-    //     // cloneElement.emit = debounce(this.emit,100,{trailing:true}).bind(this)
-    //     return cloneElement
-    // }
 }

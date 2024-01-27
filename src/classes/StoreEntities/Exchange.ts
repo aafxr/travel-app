@@ -1,11 +1,10 @@
-import {StoreEntity} from "./StoreEntity";
+import {CurrencyName, CurrencyType} from "../../types/CurrencyTypes";
 import {ExchangeType} from "../../types/ExchangeType";
-import {CurrencyType} from "../../types/CurrencyTypes";
-import {DB} from "../db/DB";
 import {StoreName} from "../../types/StoreName";
-import {Context} from "../Context/Context";
+import {StoreEntity} from "./StoreEntity";
+import {DB} from "../db/DB";
 
-type ExchangePropsType = string | Date | undefined
+type ExchangePropsType = string | Date | ExchangeType | undefined
 
 enum ExchangeStatus{
     pure,
@@ -18,22 +17,25 @@ export class Exchange extends StoreEntity implements ExchangeType{
     value: CurrencyType<any>[] = [];
     status: ExchangeStatus = ExchangeStatus.pure
 
-    ctx: Context
 
-
-    constructor(ctx: Context, date : ExchangePropsType) {
+    constructor(date?: ExchangePropsType) {
         super();
-
-        this.ctx = ctx
 
         if(!date) return
 
-        let time: Date
+        let time: Date | undefined
         if( typeof date === 'string') time = new Date(date)
-        else time = new Date(date)
+        else if(date instanceof Date) time = new Date(date)
+        else if(date && typeof date === 'object') {
+            this.date = date.date
+            this.value = date.value
+            return
+        }
 
-        time.setHours(0,0,0,0)
-        this.loadExchange(time)
+        if(time) {
+            time.setHours(0, 0, 0, 0)
+            this.loadExchange(time)
+        }
 
     }
 
@@ -50,7 +52,13 @@ export class Exchange extends StoreEntity implements ExchangeType{
         this.date = ex.date
         this.value = ex.value
         this.status = ExchangeStatus.done
-        this.emit('update')
+        this.emit('update', [this])
+    }
+
+    getCoefficient(key: keyof CurrencyName){
+        const c = this.value.find( c => c.char_code === key)
+        if(c) return c.value
+        return 1
     }
 
 

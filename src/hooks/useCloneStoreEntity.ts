@@ -6,7 +6,7 @@ export function useCloneStoreEntity<T extends StoreEntity>(init: T) {
 
     useEffect(() => {
         const clone = init.clone()
-        const unsub = clone.subscribe('update', () => {
+        const unsub = clone.subscribe('update', (t) => {
             setState(prev => {
                 if (!prev.change) prev.change = true
                 return {...prev}

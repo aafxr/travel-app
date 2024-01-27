@@ -17,12 +17,12 @@ export class Context extends EventEmitter {
 
     setUser(user: User) {
         this.user = user
-        this.emit('update')
+        this.emit('update', [this])
     }
 
     setTravel(travel: Travel) {
         this.travel = travel
-        this.emit('update')
+        this.emit('update', [this])
     }
 
     get isLogIn(){

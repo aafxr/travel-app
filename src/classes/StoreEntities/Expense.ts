@@ -1,10 +1,12 @@
 import {nanoid} from "nanoid";
 
 import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
-import {CurrencyName} from "../../types/CurrencyName";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
+import {CurrencyName} from "../../types/CurrencyTypes";
+import {Exchange} from "./Exchange";
+import {User} from "./User";
 
 
 /**
@@ -20,17 +22,24 @@ class Expense extends StoreEntity implements ExpenseType {
     section_id = '';
     title = '';
     user_id = '';
-    currency: CurrencyName = CurrencyName.RUB;
+    currency: keyof CurrencyName = 'RUB';
     created_at = new Date();
     datetime = new Date();
     personal: DBFlagType = 0;
     value = 0;
     variant: ExpenseVariantType = "expenses_actual";
 
-    constructor(expense: Partial<ExpenseType | Expense>, user_id: string) {
+    coeff = 1
+    exchanger!: Exchange
+
+    user: User
+
+    constructor(expense: Partial<ExpenseType | Expense>, user: User) {
         super()
+        this.user = user
+
         if (expense.id) this.id = expense.id
-        else this.id = `${user_id}:${nanoid(7)}`
+        else this.id = `${user.id}:${nanoid(7)}`
         if (expense.entity_id) this.entity_id = expense.entity_id
         if (expense.entity_type) this.entity_type = expense.entity_type
         if (expense.primary_entity_id) this.primary_entity_id = expense.primary_entity_id
@@ -43,6 +52,11 @@ class Expense extends StoreEntity implements ExpenseType {
         if (expense.datetime) this.datetime = expense.datetime
         if (expense.personal) this.personal = expense.personal
         if (expense.value) this.value = expense.value
+
+        this.setExchanger(new Exchange())
+
+        this.user.subscribe("currency", (u) => this.setCurrency(u.currency))
+
     }
 
 
@@ -78,8 +92,10 @@ class Expense extends StoreEntity implements ExpenseType {
         this.user_id = user_id
     }
 
-    setCurrency(currency: CurrencyName) {
+    setCurrency(currency: keyof CurrencyName) {
         this.currency = currency
+        this.coeff = this.exchanger.getCoefficient(currency)
+        this.emit('update', [this])
     }
 
     setDatetime(datetime: Date) {
@@ -94,12 +110,25 @@ class Expense extends StoreEntity implements ExpenseType {
         this.value = value
     }
 
-    isPersonal<T extends Member>(user: T){
+    isPersonal<T extends Member>(user: T) {
         return this.personal === 1 && this.id.split(':').pop() === user.id
     }
 
-    isCommon(){
+    isCommon() {
         return this.personal === 0
+    }
+
+    setCoeff(n: number) {
+        this.coeff = n
+        this.emit('update', [this])
+    }
+
+    setExchanger(ex: Exchange) {
+        this.exchanger = ex
+        let unsub = ex.subscribe('update', (e) => {
+            unsub()
+            this.setCoeff(e.getCoefficient(this.user.currency))
+        })
     }
 
     dto(): Omit<ExpenseType, 'variant'> {
@@ -133,4 +162,4 @@ class ExpensePlan extends Expense {
 }
 
 
-export { Expense, ExpenseActual, ExpensePlan }
+export {Expense, ExpenseActual, ExpensePlan}

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {InputHTMLAttributes} from "react";
+import React, {InputHTMLAttributes, useEffect, useState} from "react";
 
 import './Input.css'
 
@@ -13,6 +13,11 @@ interface DateInputPropsType extends Omit<InputHTMLAttributes<HTMLInputElement>,
 
 
 export default React.forwardRef<HTMLInputElement, DateInputPropsType>(({value, onChange,min,max, ...props}, ref) => {
+    const [date, setDate] = useState('')
+
+    useEffect(() => {
+        setDate((value ? dateToString(value): '' ) as string)
+    },[value])
 
     const className = clsx('input date-input', props.className)
 
@@ -37,7 +42,7 @@ export default React.forwardRef<HTMLInputElement, DateInputPropsType>(({value, o
             ref={ref}
             type='date'
             className={className}
-            value={value ? dateToString(value): undefined}
+            value={date}
             min={min && dateToString(min)}
             max={max && dateToString(max)}
             onKeyUp={handleEnterKeyUp}

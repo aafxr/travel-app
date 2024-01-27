@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
+import {TravelPreference} from "../../../../types/TravelPreference";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
 import {Member} from "../../../../classes/StoreEntities/Member";
@@ -15,8 +17,7 @@ import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
 
 import './TravelSettings.css'
-import {TravelPreference} from "../../../../types/TravelPreference";
-import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 
 
 const sightseeingTime: RadioButtonGroupItemType[] = [
@@ -95,6 +96,7 @@ export default function TravelSettings() {
     }
 
     if (!updatedTravel) return null
+
 
     return (
         <>
@@ -223,24 +225,24 @@ export default function TravelSettings() {
                         {/*    )*/}
                         {/*}*/}
 
-                        {/*<section className='travel-settings-movement column gap-0.5 block'>*/}
-                        {/*    <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>*/}
-                        {/*    <div className='flex-wrap gap-1'>*/}
-                        {/*        {*/}
-                        {/*            defaultMovementTags.map(dmt => (*/}
-                        {/*                <Chip*/}
-                        {/*                    key={dmt.id}*/}
-                        {/*                    icon={dmt.icon}*/}
-                        {/*                    color={~movement.findIndex(mt => mt.id === dmt.id) ? 'orange' : 'grey'}*/}
-                        {/*                    rounded*/}
-                        {/*                    onClick={() => handleMovementSelect(dmt)}*/}
-                        {/*                >*/}
-                        {/*                    {dmt.title}*/}
-                        {/*                </Chip>*/}
-                        {/*            ))*/}
-                        {/*        }*/}
-                        {/*    </div>*/}
-                        {/*</section>*/}
+                        <section className='travel-settings-movement column gap-0.5 block'>
+                            <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
+                            <div className='flex-wrap gap-1'>
+                                {
+                                    defaultMovementTags.map(dmt => (
+                                        <Chip
+                                            key={dmt.id}
+                                            icon={dmt.icon}
+                                            color={~updatedTravel.movementTypes.findIndex(mt =>  mt === dmt.id) ? 'orange' : 'grey'}
+                                            rounded
+                                            onClick={() => handleMovementSelect(dmt.id)}
+                                        >
+                                            {dmt.title}
+                                        </Chip>
+                                    ))
+                                }
+                            </div>
+                        </section>
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>

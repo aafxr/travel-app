@@ -110,10 +110,12 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
     setMembers(members: string[]) {
         this.members = members
+        this.setUpdated_at()
     }
 
     setMovementTypes(movementTypes: MovementType[]){
         this.movementTypes = movementTypes
+        this.setUpdated_at()
     }
 
     setPlaces(places: Place[]) {
@@ -188,6 +190,15 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             this.editors.includes(member.id)
     }
 
+    permitWatch(member:Member){
+        if (this.permission.public) return true
+        if (this.admins.includes(member.id)) return true
+        if (this.editors.includes(member.id)) return true
+        if (this.commentator.includes(member.id)) return true
+        return false
+
+    }
+
     permitDelete<T extends Member>(membeer: T) {
         return membeer.id === this.owner_id
     }
@@ -203,7 +214,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
     private setUpdated_at(){
         this.updated_at = new Date()
-        this.emit('update')
+        this.emit('update', [this])
     }
 
     get isPublic() {

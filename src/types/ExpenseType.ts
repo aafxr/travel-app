@@ -18,7 +18,7 @@
  * @category Types
  */
 import {DBFlagType} from "./DBFlagType";
-import {CurrencyName} from "./CurrencyName";
+import {CurrencyName} from "./CurrencyTypes";
 
 export type ExpenseVariantType = 'expenses_actual' | 'expenses_plan'
 
@@ -35,6 +35,6 @@ export interface ExpenseType{
     section_id: string
     datetime: Date
     created_at: Date
-    currency: CurrencyName
+    currency: keyof CurrencyName
     variant: ExpenseVariantType
 }
