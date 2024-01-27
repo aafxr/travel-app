@@ -113,7 +113,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    setMovementTypes(movementTypes: MovementType[]){
+    setMovementTypes(movementTypes: MovementType[]) {
         this.movementTypes = movementTypes
         this.setUpdated_at()
     }
@@ -190,13 +190,18 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             this.editors.includes(member.id)
     }
 
-    permitWatch(member:Member){
+    permitWatch(member: Member) {
         if (this.permission.public) return true
         if (this.admins.includes(member.id)) return true
         if (this.editors.includes(member.id)) return true
         if (this.commentator.includes(member.id)) return true
         return false
+    }
 
+    isAdmin<T extends Member>(member: T) {
+        if (member.id === this.owner_id) return true
+        if (this.admins.includes(member.id)) return true
+        return false
     }
 
     permitDelete<T extends Member>(membeer: T) {
@@ -212,7 +217,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return this.preference[key]
     }
 
-    private setUpdated_at(){
+    private setUpdated_at() {
         this.updated_at = new Date()
         this.emit('update', [this])
     }
@@ -221,12 +226,12 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return !!this.permission.public
     }
 
-    setDepth(depth:TravelPreference['depth']){
+    setDepth(depth: TravelPreference['depth']) {
         this.preference.depth = depth
         this.setUpdated_at()
     }
 
-    setDensity(density:TravelPreference['density']){
+    setDensity(density: TravelPreference['density']) {
         this.preference.density = density
         this.setUpdated_at()
     }

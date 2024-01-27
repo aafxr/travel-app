@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import debounce from "lodash.debounce";
-import React, {InputHTMLAttributes, useCallback, useEffect, useState} from "react";
+import React, {InputHTMLAttributes, useCallback, useEffect, useRef, useState} from "react";
 
 import './Input.css'
 
@@ -25,8 +25,12 @@ interface InputPropsType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'on
 
 export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, value, onChange, ...props}, ref) => {
     const [text, setText] = useState('')
+    const change = useRef<Function>()
     const styles = clsx('input', props.className)
 
+    useEffect(() => {
+        change.current = onChange
+    }, [onChange])
 
     useEffect(() => {
         if (value) setText(value)
@@ -47,9 +51,7 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
     }
 
     const handleChangeInput = useCallback(debounce((str: string) => {
-        if (onChange) {
-            onChange(str)
-        }
+        if(change.current)change.current(str)
 
     }, delay, {trailing: true}), [delay])
 
@@ -58,6 +60,7 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
         <input
             ref={ref}
             {...props}
+            value={text}
             className={styles}
             onKeyUp={handleEnterKeyUp}
             onChange={e => setText(e.target.value)}

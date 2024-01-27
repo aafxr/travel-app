@@ -7,4 +7,5 @@ export interface MemberType{
     username: string,
     photo: string | Blob,
     movementType: MovementType[]
+    age:number
 }

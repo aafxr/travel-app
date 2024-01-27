@@ -48,7 +48,8 @@ export class User extends Member implements UserType {
             routeFilter: this.routeFilter,
             expenseFilter: this.expenseFilter,
             dayFilter: this.dayFilter,
-            movementType: this.movementType
+            movementType: this.movementType,
+            age: this.age
         };
     }
 

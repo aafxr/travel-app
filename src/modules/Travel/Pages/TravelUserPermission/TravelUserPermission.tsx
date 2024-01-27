@@ -60,6 +60,20 @@ export default function TravelUserPermission() {
             </div>
         )
 
+    if(user && !travel.isAdmin(user))
+        return (
+            <div className='wrapper'>
+                <Container className='content pt-20 pb-20 column gap-0.5' loading={loading}>
+                    <div>У вас не достаточно прав</div>
+                </Container>
+                <Button
+                    className='close-button'
+                    onClick={handleClose}
+                >
+                    Закрыть
+                </Button>
+            </div>
+        )
 
     if (member)
         return (

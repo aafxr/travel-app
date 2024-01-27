@@ -1,30 +1,28 @@
 import {nanoid} from "nanoid";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import {ShareLinkIcon, TelegramIcon, WhatsappIcon} from "../../../../components/svg";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
+import {useUser} from "../../../../contexts/AppContextProvider";
+import {Member} from "../../../../classes/StoreEntities/Member";
 import Button from "../../../../components/ui/Button/Button";
 import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
-import constants from "../../../../static/constants";
-import createId from "../../../../utils/createId";
 
 import './TravelInviteMember.css'
-import useUserSelector from "../../../../hooks/useUserSelector";
+import {steps} from "framer-motion";
 
-/**@type{MemberType} */
-const defaultMember = {
-    id:createId(),
-    access_rights: [],
-    movementType:[],
-    name: '',
-    age: 7,
-    email: '',
-    inviteURL: '',
-    isChild: false
+
+
+
+type InviteMemberType = {
+    member: Member,
+    inviteURL: string
+    email: string
 }
 
 /**
@@ -37,68 +35,73 @@ const defaultMember = {
 export default function TravelInviteMember() {
     const navigate = useNavigate()
 
-    const user = useUserSelector()
-    const [member, setMember] = useState(() => ({
-        ...defaultMember,
-            inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`
-    }))
+    const user = useUser()!
+    const [state, setState] = useState<InviteMemberType>()
 
     const message = `${user.first_name} ${user.last_name} приглашает присоедениться к поездке`
 
-    /**
-     *  обработчик устанавливает флаг isChild
-     * @param {boolean} isChild
-     */
-    const handleChildCheckbox = (isChild) => setMember({
-        ...member,
-        isChild,
-        age: !member.age ? 7 : member.age,
-    })
-    console.log(member)
+
+    useEffect(() => {
+        const initState = {
+            member: new Member({first_name: 'asd'}),
+            inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`,
+            email: ''
+        }
+
+        const unsub = initState.member.subscribe('update', (m) => {
+            setState(prev => prev && ({...prev}))
+        })
+        setState(initState)
+        return () => unsub()
+    }, [])
+
+    const handleNameChange = (name: string) => state?.member.setFirst_name(name)
+
+
+    /** обработчик устанавливает флаг isChild */
+    const handleChildCheckbox = (isChild: boolean) => state?.member.setAge(isChild ? 7 : 18)
+
     /**
      * обработчик устанавливает возраст ребенка
      * @param {number} age 1 - 17
      */
-    const handleChildAgeChange = (age) => setMember({...member, age})
+    const handleChildAgeChange = (age: number) => state?.member.setAge(age)
 
-    /**
-     * обработчик записи EMail
-     * @param e
-     */
-    const handleEMailChange = (e) => setMember({...member, email: e.target.value})
+    /** обработчик записи EMail */
+    const handleEMailChange = (e: string) => state && setState({...state, email: e})
 
     /** обработчик для отправки приглошения */
-    function handleInviteButtonClick(){
-        pushAlertMessage({type: "info", message:'Отправка приглошения в процессе разработки'})
+    function handleInviteButtonClick() {
+        pushAlertMessage({type: "info", message: 'Отправка приглошения в процессе разработки'})
     }
 
-    /**
-     * обработчик копирует
-     * @param {Event<HTMLInputElement>} e
-     */
-    function handleCopyInviteLink(e){
-        if(
-            'navigator' in window
-            && 'clipboard' in window.navigator
-        ){
-            navigator.clipboard.writeText(e.target.value)
-            e.target.classList.add('input-highlight')
-            pushAlertMessage({type:'success', message:"Ссылка скопирована"})
-        }
+
+    /** обработчик копирует */
+    function handleCopyInviteLink(e: React.FocusEvent<HTMLInputElement>) {
+        navigator.clipboard.writeText(e.target.value)
+            .then(() => {
+                e.target.classList.add('input-highlight')
+                pushAlertMessage({type: 'success', message: "Ссылка скопирована"})
+            })
+            .catch(defaultHandleError)
     }
+
+    if (!state) return null
 
     return (
         <div className='wrapper'>
             <Container className='content pt-20 pb-20 column gap-1'>
                 <h2 className='invite-title'>Добавить в поедку</h2>
                 <Input
+                    value={state.member.first_name}
+                    onChange={handleNameChange}
                     placeholder='Имя'
                 />
-                <Checkbox checked={!!member.isChild} onChange={handleChildCheckbox}>Ребенок</Checkbox>
+                <Checkbox checked={state.member.isChild} onChange={handleChildCheckbox}>Ребенок</Checkbox>
                 {
-                    !!member.isChild && (
+                    state.member.isChild && (
                         <div className='invite-child'>
-                            <Counter min={1} max={17} initialValue={7} onChange={handleChildAgeChange}/>
+                            <Counter min={1} max={17} init={7} onChange={handleChildAgeChange}/>
                             <span>лет</span>
                         </div>
                     )
@@ -106,15 +109,16 @@ export default function TravelInviteMember() {
                 <div className='flex-stretch'>
                     <Input
                         className='br-right-0'
-                        value={member.email}
+                        value={state.email}
                         onChange={handleEMailChange}
                         placeholder='E-mail'
                     />
                     <button className='invite-button flex-0' onClick={handleInviteButtonClick}>Пригласить</button>
                 </div>
                 <Input
-                    value={member.inviteURL}
-                    onChange={() => {}}
+                    value={state.inviteURL}
+                    onChange={() => {
+                    }}
                     onFocus={handleCopyInviteLink}
                     placeholder='URL'
                 />
@@ -122,16 +126,16 @@ export default function TravelInviteMember() {
                     <div className='invite-share-title'>Поделиться ссылкой</div>
                     <div className='flex-nowrap gap-0.25'>
                         <a
-                            href={`whatsapp://send?text=${message} ${member.inviteURL}`}
+                            href={`whatsapp://send?text=${message} ${state.inviteURL}`}
                             className='share-link whatsapp-bg'
                         ><WhatsappIcon/></a>
                         <a
-                            href={`https://telegram.me/share/url?url=${member.inviteURL}&text=${message}`}
+                            href={`https://telegram.me/share/url?url=${state.inviteURL}&text=${message}`}
                             className='share-link telegram-bg'
                         ><TelegramIcon/></a>
                         <div
                             className='share-link share-link-bg'
-                            onClick={handleCopyInviteLink}
+                            // onClick={handleCopyInviteLink}
                         ><ShareLinkIcon/></div>
                     </div>
                 </div>
