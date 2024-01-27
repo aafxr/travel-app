@@ -4,7 +4,7 @@ import {Input} from "../ui";
 import DateInput from "../ui/Input/DateInput";
 
 
-type DateRangeType = { start: Date, end: Date }
+type DateRangeType = { start: Date | undefined, end: Date | undefined }
 
 
 type DateRangePropsType = {
@@ -31,15 +31,11 @@ export default function DateRange({
                                       onChange
                                   }: DateRangePropsType) {
     /*** диапазона дат */
-    const [range, setRange] = useState<DateRangeType>()
+    const [range, setRange] = useState<DateRangeType>({start: undefined, end: undefined})
 
     useEffect(() => {
         if (init) {
             setRange(init)
-        } else {
-            // const start = new Date(new Date().setHours(0, 0, 0, 0))
-            // const end = new Date(new Date().setHours(23, 59, 59, 999))
-            // setRange({start, end})
         }
     }, [])
 

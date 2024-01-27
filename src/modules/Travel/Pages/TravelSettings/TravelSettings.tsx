@@ -13,10 +13,10 @@ import Button from "../../../../components/ui/Button/Button";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
-import {Travel} from "../../../../classes/StoreEntities";
 
 import './TravelSettings.css'
 import {TravelPreference} from "../../../../types/TravelPreference";
+import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 
 
 const sightseeingTime: RadioButtonGroupItemType[] = [
@@ -38,20 +38,15 @@ const depth: RadioButtonGroupItemType[] = [
  * @category Pages
  */
 export default function TravelSettings() {
-    const [updatedTravel, setUpdatedTravel] = useState<Travel>(new Travel({}))
-    const [hasChange, setHasChange] = useState(false)
-
     const user = useUser()!
     const travel = useTravel()!
     const context = useAppContext()
     const navigate = useNavigate()
 
+    const {item: updatedTravel, change} = useCloneStoreEntity(travel)
+
     useEffect(() => {
         if (!travel.permitChange(user)) navigate(`/travel/${travel.id}/1/`)
-        const updTravel = new Travel(travel)
-        const unsub = updTravel.subscribe('update', () => hasChange ? null : setHasChange(true))
-        setUpdatedTravel(updTravel)
-        return () => unsub()
     }, [])
 
 
@@ -61,6 +56,7 @@ export default function TravelSettings() {
 
     /** добавление / удаление способа перемещения во время маршрута */
     function handleMovementSelect(movementType: MovementType) {
+        if (!updatedTravel) return;
         if (updatedTravel.movementTypes.length === 1 && movementType === updatedTravel.movementTypes[0]) return
         if (updatedTravel.movementTypes.includes(movementType))
             updatedTravel.setMovementTypes(updatedTravel.movementTypes.filter(mt => mt !== movementType))
@@ -71,30 +67,34 @@ export default function TravelSettings() {
 
     /** обработчик изменения времени */
     function handleDateRangeChange({start, end}: { start?: Date, end?: Date }) {
+        if (!updatedTravel) return;
         if (start) updatedTravel.setDate_start(start)
         if (end) updatedTravel.setDate_end(end)
     }
 
 
     function handleDensityChange(select: RadioButtonGroupItemType[]) {
+        if (!updatedTravel) return;
         updatedTravel.setDensity(select[0].id as TravelPreference['density'])
     }
 
 
     function handleDepthChange(select: RadioButtonGroupItemType[]) {
+        if (!updatedTravel) return;
         updatedTravel.setDepth(select[0].id as TravelPreference['depth'])
-
     }
 
 
     /** сохранение параметров путешествия */
     function handleSaveTravelButton() {
+        if (!updatedTravel) return;
         TravelService.update(context, updatedTravel)
             .then(() => context.setTravel(updatedTravel))
             .then(() => navigate(`/travel/${travel.id}/`))
             .catch(defaultHandleError)
     }
 
+    if (!updatedTravel) return null
 
     return (
         <>
@@ -104,18 +104,14 @@ export default function TravelSettings() {
                 </Container>
                 <Container className='content overflow-x-hidden'>
                     <div className='content column'>
-                        {
-                            updatedTravel.direction && (
-                                <section className='travel-settings-dirrection block'>
-                                    <h4 className='title-semi-bold'>Направление</h4>
-                                    <div className='travel-settings-dirrection-title row'>
-                                        <Chip color='light-orange' rounded>
-                                            {updatedTravel.direction}
-                                        </Chip>
-                                    </div>
-                                </section>
-                            )
-                        }
+                        <section className='travel-settings-dirrection block'>
+                            <h4 className='title-semi-bold'>Направление</h4>
+                            <div className='travel-settings-dirrection-title row'>
+                                <Chip color='light-orange' rounded>
+                                    {updatedTravel.direction}
+                                </Chip>
+                            </div>
+                        </section>
 
                         <section className='travel-settings-date column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Дата поездки</h4>
@@ -248,7 +244,7 @@ export default function TravelSettings() {
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton} disabled={!hasChange}>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={!change}>Построить маршрут</Button>
                 </div>
             </div>
             {/*<FlatButton*/}
