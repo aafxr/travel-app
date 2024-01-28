@@ -15,7 +15,7 @@ import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 // import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
-// import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
+import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
 import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
 // import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
@@ -144,7 +144,7 @@ function App() {
                 {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
                         <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                         <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
-                {/*        <Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
+                        {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
@@ -154,7 +154,7 @@ function App() {
                 {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
-                {/*        <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>*/}
+                        <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
                 {/*            <Route element={<ExpensesLayout/>}>*/}
                 {/*                <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>*/}
                 {/*                <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>*/}
@@ -164,7 +164,7 @@ function App() {
                 {/*            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>*/}
                 {/*            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>*/}
                 {/*            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>*/}
-                {/*        </Route>*/}
+                        </Route>
                     </Route>
                 {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                 {/*    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>*/}
