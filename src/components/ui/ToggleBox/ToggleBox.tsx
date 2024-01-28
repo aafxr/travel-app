@@ -3,6 +3,15 @@ import {useEffect, useState} from "react";
 
 import './ToggleBox.css'
 
+type ToggleBoxPropsChange = {
+    init?: boolean
+    title?: string
+    className?: string
+    subtitle?: string
+    onChange?: (enable: boolean) => unknown
+    right?: boolean
+}
+
 
 /**
  * __ToggleBox__ component
@@ -14,11 +23,17 @@ import './ToggleBox.css'
  * @param {string} className css class
  * @param {function} onChange handler, вызываеся при изменении состояниея компонента
  * @param {boolean} right default = false,
- * @param props other props
  * @returns {JSX.Element}
  * @category UI-Components
  */
-export default function ToggleBox({init, title, className, subtitle, onChange,right = false, ...props}) {
+export default function ToggleBox({
+                                      init,
+                                      title,
+                                      className,
+                                      subtitle,
+                                      onChange,
+                                      right = false
+                                  }: ToggleBoxPropsChange) {
     const [active, setActive] = useState(false)
 
     const cn = clsx(
@@ -29,7 +44,7 @@ export default function ToggleBox({init, title, className, subtitle, onChange,ri
     )
 
     useEffect(() => {
-        if(typeof init === 'boolean') setActive(init)
+        if (typeof init === 'boolean') setActive(init)
     }, [])
 
     function handleChange() {

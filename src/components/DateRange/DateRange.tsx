@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 
-import {Input} from "../ui";
 import DateInput from "../ui/Input/DateInput";
 
 

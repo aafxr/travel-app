@@ -236,6 +236,11 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
+    setPublic(val: DBFlagType | boolean){
+        this.permission.public = val ? 1 : 0
+        this.setUpdated_at()
+    }
+
     dto(): TravelType {
         return {
             id: this.id,

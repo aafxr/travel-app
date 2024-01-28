@@ -12,8 +12,8 @@ export function AppContextProvider({children}: PropsWithChildren) {
 
     useEffect(() => {
         const context = new Context()
-        const unsubscribe = context.subscribe('update', () => {
-            setContext(prev => prev ? {...prev} : prev)
+        const unsubscribe = context.subscribe('update', (ctx) => {
+            setContext({context:ctx})
         })
         setContext({context})
         return () => unsubscribe()

@@ -34,7 +34,6 @@ export default function TravelLayout({children}: PropsWithChildren) {
         }
     }, [travelCode, user])
 
-    console.log(children)
 
     if (loading) {
         return (

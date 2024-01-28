@@ -21,7 +21,7 @@ import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 // import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
-// import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
+import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 // import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 // import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
@@ -140,7 +140,7 @@ function App() {
                         <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
                         <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
                         <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
-                {/*        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>*/}
+                        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
                 {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>*/}
