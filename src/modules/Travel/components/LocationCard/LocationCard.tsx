@@ -18,7 +18,7 @@ interface LocationCardPropsCard extends PropsWithChildren {
     onAdd?: (place: Place) => unknown
     onEdite?: (place: Place) => unknown
     onDelete?: (place: Place) => unknown
-    selected?: (place: Place) => unknown
+    selected?: boolean
     onPhotoAdd?: (place: Place) => unknown
 }
 

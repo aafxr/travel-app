@@ -11,12 +11,12 @@ import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/Travel
 // import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
 import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
-// import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
+import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 // import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 // import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
-// import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
+import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
 // import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
@@ -53,7 +53,7 @@ import AuthRequired from "./hoc/AuthRequired";
 // import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
 // import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 // import {Executor} from "./classes/Executor/Executor";
-import {User, Travel, Place} from "./classes/StoreEntities/";
+import {User} from "./classes/StoreEntities/";
 import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
@@ -142,8 +142,8 @@ function App() {
                         <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
                         <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
                 {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>*/}
+                        <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
+                        <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                 {/*        <Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}

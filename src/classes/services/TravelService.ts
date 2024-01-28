@@ -1,5 +1,5 @@
 import {fetchTravels} from "../../api/fetch/fetchTravels";
-import {Action, Place, Travel, User} from "../StoreEntities";
+import {Action, Place, Travel} from "../StoreEntities";
 import {ActionName} from "../../types/ActionsType";
 import {TravelType} from "../../types/TravelType";
 import {StoreName} from "../../types/StoreName";
@@ -71,6 +71,16 @@ export class TravelService {
 
         travel.setPlaces([...travel.places, place])
         return await TravelService.update(ctx, travel)
+    }
+
+    static async addPlaces(ctx:Context, travel:Travel, places: Place[]){
+        const user = ctx.user
+
+        if(!user) throw UserError.unauthorized()
+        if(!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+
+        travel.setPlaces([...travel.places, ...places])
+        await TravelService.update(ctx, travel)
     }
 
 }

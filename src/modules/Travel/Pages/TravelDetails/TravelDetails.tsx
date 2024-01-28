@@ -47,8 +47,6 @@ export default function TravelDetails() {
         </Menu>
     )
 
-    console.log(travel)
-
 
     function handleTravelPhotoChange(photo: Blob) {
         travel.setPhoto(photo)
@@ -123,7 +121,7 @@ export default function TravelDetails() {
                         <IconButton icon={<MoneyIcon/>} title='Расходы'
                                     onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         {
-                            travel.isPublic && <IconButton
+                            travel.permit("showCheckList") && <IconButton
                                 icon={<ChecklistIcon/>}
                                 title='Чек-лист'
                                 onClick={() => navigate(`/travel/${travelCode}/checklist/`)}

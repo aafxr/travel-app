@@ -78,8 +78,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (travel.editors) this.editors = travel.editors
         if (travel.commentator) this.commentator = travel.commentator
 
-        if (travel.preference) this.preference = new Preference(travel.preference)
-        if (travel.permission) this.permission = new Permission(travel.permission)
+        if (travel.preference) Object.assign(this.preference, new Preference(travel.preference).dto())
+        if (travel.permission) Object.assign(this.permission, new Permission(travel.permission).dto())
     }
 
 
@@ -217,6 +217,10 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return this.preference[key]
     }
 
+    permit<T extends keyof TravelPermission>(key: T){
+        return !!this.permission[key]
+    }
+
     private setUpdated_at() {
         this.updated_at = new Date()
         this.emit('update', [this])
@@ -236,7 +240,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    setPublic(val: DBFlagType | boolean){
+    setPublic(val: DBFlagType | boolean) {
         this.permission.public = val ? 1 : 0
         this.setUpdated_at()
     }

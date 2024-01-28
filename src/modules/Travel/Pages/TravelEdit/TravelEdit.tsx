@@ -1,7 +1,7 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
@@ -27,10 +27,14 @@ import "./TravelEdit.css"
 export default function TravelEdit() {
     const navigate = useNavigate()
 
-    const user = useUser()
     const travel = useTravel()!
     const context = useAppContext()
     const {item: updateTravel, change} = useCloneStoreEntity(travel)
+    const [days, setDays] = useState(0)
+
+    useEffect(() => {
+        if(updateTravel) setDays(updateTravel.days)
+    },[updateTravel])
 
 
     /** обработчик нажатия на способ перемещения */
@@ -51,12 +55,6 @@ export default function TravelEdit() {
     }
 
 
-    function handleTravelDays(n: number) {
-        if (!updateTravel || n < 1) return
-        updateTravel.setDays(n)
-    }
-
-
     function handleDescriptionChange(text: string) {
         if (!updateTravel) return
         updateTravel.setDescription(text)
@@ -72,6 +70,12 @@ export default function TravelEdit() {
     function handleTitleChange(text: string) {
         if(!updateTravel) return
         updateTravel.setTitle(text)
+    }
+
+
+    function handleTravelDays(d:number){
+        setDays(d)
+        if (updateTravel) updateTravel.setDays(d)
     }
 
 
@@ -106,7 +110,7 @@ export default function TravelEdit() {
                         <div className='title-semi-bold'>Количество дней</div>
                         <NumberInput
                             // className='travel-edit-days-input'
-                            value={updateTravel.days}
+                            value={days}
                             onChange={handleTravelDays}
                             size={1}
                         />

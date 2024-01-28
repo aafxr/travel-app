@@ -20,7 +20,7 @@ export default React.forwardRef<HTMLInputElement, NumberInputPropsType>(({
 
     useEffect(() => {
         if (typeof value === 'number') setNum((value).toString())
-    }, [])
+    }, [value])
 
 
     function handleEnterKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {

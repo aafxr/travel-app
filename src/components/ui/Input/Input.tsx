@@ -33,12 +33,12 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
     }, [onChange])
 
     useEffect(() => {
-        if (value) setText(value)
+        if (typeof value === 'string' && value !== text) setText(value)
     }, [value])
 
 
     useEffect(() => {
-        if (text && onChange) handleChangeInput(text)
+        handleChangeInput(text)
     }, [text])
 
 
@@ -51,7 +51,7 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
     }
 
     const handleChangeInput = useCallback(debounce((str: string) => {
-        if(change.current)change.current(str)
+        if (change.current) change.current(str)
 
     }, delay, {trailing: true}), [delay])
 
