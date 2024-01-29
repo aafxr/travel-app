@@ -6,7 +6,7 @@ import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/Tr
 import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 // import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 // import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
-// import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
+import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
 // import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 // import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
 import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
@@ -168,7 +168,7 @@ window.Expense = Expense
                     </Route>
                 {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                     <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                {/*    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>*/}
+                    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
                 {/*    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>*/}
                 {/*    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>*/}
                 {/*    <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>*/}

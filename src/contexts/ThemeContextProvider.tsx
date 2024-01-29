@@ -1,34 +1,24 @@
-/**
- * @typedef  {'dark-theme' | 'light-theme' | 'default'} DefaultThemeType
- */
-
-/**
- * @typedef  ThemeContextType
- * @property {DefaultThemeType} theme
- * @property {(newTheme: DefaultThemeType) => unknown} setTheme
- */
-
-import {createContext, useCallback, useEffect, useState} from "react";
+import {createContext, PropsWithChildren, useEffect, useState} from "react";
 import defaultThemeClass from "../utils/defaultThemeClass";
 import {THEME} from "../static/constants";
 
-/**@type{ThemeContextType} */
+export type DefaultThemeType = 'dark-theme' | 'light-theme' | 'default'
+
+
 const defaultThemeContext = {
     theme: defaultThemeClass(),
-    setTheme: () => {
+    setTheme: (key: DefaultThemeType) => {
     }
 }
 
-/**
- * @type {React.Context<ThemeContextType>}
- */
+
 export const ThemeContext = createContext(defaultThemeContext)
 
 
-export default function ThemeContextProvider({children}) {
+export default function ThemeContextProvider({children}: PropsWithChildren) {
     const [state, setState] = useState(defaultThemeContext)
 
-    const setTheme = /**@param{DefaultThemeType} newTheme*/(newTheme) => {
+    const setTheme = (newTheme: DefaultThemeType) => {
         const themeName = newTheme === 'default' ? defaultThemeClass() : newTheme
         localStorage.setItem(THEME, newTheme.toString())
 

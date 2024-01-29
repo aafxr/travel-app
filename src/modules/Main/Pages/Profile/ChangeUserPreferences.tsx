@@ -2,39 +2,35 @@ import React, {useContext} from "react";
 
 import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import {ThemeContext} from "../../../../contexts/ThemeContextProvider";
+import {DefaultThemeType, ThemeContext} from "../../../../contexts/ThemeContextProvider";
 import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 
 const variants = [
-    {id: 1,title:'По умолчанию'},
-    {id: 2,title:'Темная'},
-    {id: 3,title:'Светлая'}
+    {id: 1, title: 'По умолчанию'},
+    {id: 2, title: 'Темная'},
+    {id: 3, title: 'Светлая'}
 ]
 
-const themeConvertor = {
+const themeConvertor: { [key: string]: DefaultThemeType } = {
     ['Темная']: 'dark-theme',
     ['Светлая']: 'light-theme',
     ['По умолчанию']: 'default',
+}
+const themeToString: Record<DefaultThemeType, string> = {
     ['dark-theme']: 'Темная',
     ['light-theme']: 'Светлая',
-    ['default']:'По умолчанию'
+    ['default']: 'По умолчанию'
 }
 
-/**
- * компонент для изменения настроек пользователя
- * @function
- * @name ChangeUserPreferences
- * @returns {JSX.Element}
- * @category Pages
- */
+/** компонент для изменения настроек пользователя */
 export default function ChangeUserPreferences() {
     const {theme, setTheme} = useContext(ThemeContext)
 
     /** обработка изменения темы приложения */
-    function handleThemeChange(newTheme) {
-        if (variants.includes(newTheme)) {
-            setTheme(themeConvertor[newTheme.title])
+    function handleThemeChange(newTheme: DefaultThemeType[]) {
+        if (variants.find(v => v.title === themeToString[newTheme[0]])) {
+            setTheme(themeConvertor[newTheme[0]] || '')
         }
     }
 
@@ -49,7 +45,7 @@ export default function ChangeUserPreferences() {
                     title={'Изменить тему'}
                     checklist={variants}
                     onChange={handleThemeChange}
-                    initValue={variants.find(v => v.title === themeConvertor[theme])}
+                    init={variants.find(v => v.title === themeConvertor[theme])}
                     position='left'
                 />
             </Container>
