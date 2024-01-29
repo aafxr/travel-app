@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 
-import RadioButtonGroup from "../../../../components/RadioButtonGroup/RadioButtonGroup";
+import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import {DefaultThemeType, ThemeContext} from "../../../../contexts/ThemeContextProvider";
 import Container from "../../../../components/Container/Container";
@@ -28,7 +28,7 @@ export default function ChangeUserPreferences() {
     const {theme, setTheme} = useContext(ThemeContext)
 
     /** обработка изменения темы приложения */
-    function handleThemeChange(newTheme: DefaultThemeType[]) {
+    function handleThemeChange(newTheme: RadioButtonGroupItemType[]) {
         if (variants.find(v => v.title === themeToString[newTheme[0]])) {
             setTheme(themeConvertor[newTheme[0]] || '')
         }
@@ -45,7 +45,7 @@ export default function ChangeUserPreferences() {
                     title={'Изменить тему'}
                     checklist={variants}
                     onChange={handleThemeChange}
-                    init={variants.find(v => v.title === themeConvertor[theme])}
+                    init={variants.find(v => v.title === themeToString[theme])}
                     position='left'
                 />
             </Container>

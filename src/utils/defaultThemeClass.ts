@@ -1,3 +1,5 @@
+import {DefaultThemeType} from "../contexts/ThemeContextProvider";
+
 /**
  *
  * @returns {string}
@@ -5,7 +7,7 @@
  * @name defaultThemeClass
  * @category Utils
  */
-export default function defaultThemeClass(){
+export default function defaultThemeClass() :DefaultThemeType{
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         return 'dark-theme'
     } else {
