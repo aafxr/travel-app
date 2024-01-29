@@ -11,9 +11,9 @@ export class ExchangeService {
     static async initExpensesExchange(expenses: Expense[], _retry = false): Promise<{
         [key: string]: CurrencyType<any>[]
     }> {
-        const min_date = Math.min(...expenses.map(e => e.created_at.getTime()))
-        const max_date = Math.max(...expenses.map(e => e.created_at.getTime()))
-        const exchande_type = await DB.getClosest<ExchangeType>(StoreName.CURRENCY, IDBKeyRange.bound(min_date, max_date), Number.MAX_SAFE_INTEGER)
+        const min_date = expenses.reduce<Date>((a, e) => a < e.created_at ? a : e.created_at, new Date()).getTime()
+        const max_date = expenses.reduce<Date>((a, e) => a > e.created_at ? a : e.created_at, new Date(0)).getTime()
+        const exchande_type = await DB.getMany<ExchangeType>(StoreName.CURRENCY, IDBKeyRange.bound(min_date, max_date))
         const exchange = exchande_type.reduce<{ [key: string]: CurrencyType<any>[] }>((a, e) => {
             const key = new Date(e.date).toLocaleDateString()
             a[key] = e.value
@@ -36,11 +36,13 @@ export class ExchangeService {
 
 
 
-        const response = await fetchExchangeCourse(min_date, max_date)
+        const response = await fetchExchangeCourse(new Date(min_date), new Date(max_date))
         for await (const [time, value] of Object.entries(response)) {
+            const [ dd,mm,yy] = time.split('.')
+            const _time = new Date([mm,dd,yy].join('.'))
             const item: ExchangeType = {
-                date: new Date(time).getTime() || -1,
-                value
+                date: new Date(_time).getTime(),
+                value: value
             }
             await DB.update(StoreName.CURRENCY, item)
         }

@@ -1,7 +1,7 @@
 import clsx from "clsx";
+import {ButtonHTMLAttributes, PropsWithChildren} from "react";
 
 import './IconButton.css'
-import {ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren} from "react";
 
 interface IconButtonPropsType extends PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>{
     icon?:JSX.Element

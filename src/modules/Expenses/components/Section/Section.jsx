@@ -25,7 +25,7 @@ import './Section.css'
  * @param {{common: TotalBySectionType, personal: TotalBySectionType}} totalBySection
  * @param {boolean} planed флаг указывает, что секция относится к планам расходов
  * @return {JSX.Element}
- * @category Expenses-Component
+ * @category ExpensesComponent-Component
  */
 function Section({
                      title,
@@ -113,7 +113,7 @@ function Section({
  * @param {Expense} expense
  * @param user_id
  * @returns {JSX.Element}
- * @category Expenses-Component
+ * @category ExpensesComponent-Component
  */
 function SectionItem({expense, user_id}) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense

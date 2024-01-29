@@ -1,6 +1,7 @@
 import {nanoid} from "nanoid";
 import {TravelPermission} from "../../types/TravelPermission";
 import {TravelPreference} from "../../types/TravelPreference";
+import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../static/constants";
 import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
@@ -10,6 +11,7 @@ import {Permission} from "../Permission";
 import {Waypoint} from "./Waypoint";
 import {Member} from "./Member";
 import {Place} from "./Place";
+import {Photo} from "./Photo";
 
 
 type TravelPropsType = Partial<TravelType> | Travel
@@ -23,14 +25,13 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     owner_id = '';
     title = '';
 
-    private photo: string | Blob = '';
-    imageURL = ''
+    photo: string = '';
+    image?: Photo
 
     days = 1
     isFromPoint: DBFlagType = 0
     children_count = 0
     members_count = 1
-    members: string[] = []
 
     created_at = new Date();
     date_end = new Date(0);
@@ -48,6 +49,9 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     preference = new Preference();
     permission: Permission = new Permission();
 
+    interests = []
+
+
     constructor(travel: TravelPropsType) {
         super()
         if (travel.id) this.id = travel.id
@@ -59,13 +63,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (travel.days) this.days = travel.days
         if (travel.description) this.description = travel.description
         if (travel.members_count && travel.members_count > 1) this.members_count = travel.members_count
-        if (travel.members) this.members = travel.members
         if (travel.movementTypes) this.movementTypes = (travel.movementTypes as any).map((mt: any) => (mt['id'] ? mt['id'] : mt) as MovementType)
-        if (travel instanceof Travel)
-            this.setPhoto(travel.imageURL || '')
-        else if (travel.photo) {
-            this.setPhoto(travel.photo)
-        }
+        if (travel.photo) this.photo = travel.photo
         if (travel.places) this.places = travel.places.map(p => new Place(p))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
 
@@ -108,9 +107,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    setMembers(members: string[]) {
-        this.members = members
-        this.setUpdated_at()
+    get members(){
+        return [this.owner_id, ...this.admins, ...this.editors, ...this.commentator]
     }
 
     setMovementTypes(movementTypes: MovementType[]) {
@@ -128,17 +126,15 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    setPhoto(photo: string | Blob) {
-        if (this.imageURL && this.photo instanceof Blob) URL.revokeObjectURL(this.imageURL)
-
-        this.photo = photo
-        if (photo instanceof Blob)
-            this.imageURL = URL.createObjectURL(photo)
-        else {
-            this.imageURL = photo
-        }
-
+    setPhoto(photo: Photo) {
+        this.image?.destroy()
+        this.image = photo
         this.setUpdated_at()
+    }
+
+    get getPhoto() {
+        if (this.image) return this.image.src
+        return DEFAULT_IMG_URL
     }
 
     setTitle(title: string) {
@@ -147,6 +143,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     }
 
     setDays(days: number) {
+        if (days < 1) return
+        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * days)
         this.days = days
         this.setUpdated_at()
     }
@@ -168,12 +166,14 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
 
     setDate_end(date_end: Date) {
-        this.date_end = new Date(date_end.setHours(23, 59, 59, 999))
+        this.date_end = new Date(date_end)
+        this.date_start = new Date(this.date_end.getTime() - MS_IN_DAY * this.days)
         this.setUpdated_at()
     }
 
     setDate_start(date_start: Date) {
-        this.date_start = new Date(date_start.setHours(0, 0, 0, 0))
+        this.date_start = new Date(date_start)
+        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * this.days)
         this.setUpdated_at()
     }
 
@@ -217,7 +217,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return this.preference[key]
     }
 
-    permit<T extends keyof TravelPermission>(key: T){
+    permit<T extends keyof TravelPermission>(key: T) {
         return !!this.permission[key]
     }
 
@@ -252,13 +252,12 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             description: this.description,
             direction: this.direction,
             owner_id: this.owner_id,
-            photo: this.photo,
+            photo: this.image?.id || this.photo,
             title: this.title,
             days: this.days,
             isFromPoint: this.isFromPoint,
             children_count: this.children_count,
             members_count: this.members_count,
-            members: this.members,
             created_at: this.created_at,
             date_end: this.date_end,
             date_start: this.date_start,
@@ -271,6 +270,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             editors: this.editors,
             commentator: this.commentator,
             permission: this.permission.dto(),
+            interests: this.interests,
         }
     }
 }

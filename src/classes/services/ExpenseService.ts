@@ -69,7 +69,7 @@ export class ExpenseService {
         const user = ctx.user
         if (!user) throw UserError.unauthorized()
 
-        const expenses_type_list = await DB.getAllFromIndex<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID)
+        const expenses_type_list = await DB.getManyFromIndex<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, travelId)
         const expenses = expenses_type_list.map(e => new Expense(e, user))
         if(!expenses.length) return []
 

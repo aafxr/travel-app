@@ -28,27 +28,27 @@ export function ShowRoute() {
                 <div className='flex-between gap-1 pt-20 pb-20'>
                     <Button
                         onClick={() => user.setRouteFilter('byDays')}
-                        active={user.routeFilter === 'byDays'}
+                        active={user.getSetting('routeFilter') === 'byDays'}
                     >по дням</Button>
                     <Button
                         onClick={() => user.setRouteFilter('onMap')}
-                        active={user.routeFilter === 'onMap'}
+                        active={user.getSetting('routeFilter') === 'onMap'}
                     >на карте</Button>
                     <Button
                         onClick={() => user.setRouteFilter('allPlaces')}
-                        active={user.routeFilter === 'allPlaces'}
+                        active={user.getSetting('routeFilter') === 'allPlaces'}
                     >все места</Button>
                 </div>
             </Container>
 
             {
-                user.routeFilter === 'allPlaces' && <ShowPlaces/>
+                user.getSetting('routeFilter') === 'allPlaces' && <ShowPlaces/>
             }
             {/*{*/}
-            {/*    user.routeFilter === 'onMap' && <ShowRouteOnMap/>*/}
+            {/*    user.getSetting('routeFilter') === 'onMap' && <ShowRouteOnMap/>*/}
             {/*}*/}
             {
-                user.routeFilter === 'byDays' && <ShowRouteByDays/>
+                user.getSetting('routeFilter') === 'byDays' && <ShowRouteByDays/>
             }
         </div>
     )

@@ -1,19 +1,12 @@
 /**
  * Handler , который вызывается telegram auth widget  для дальнейшей обработки данных пользователя
- * @name TelegramAuthHandler
  * @function TelegramAuthHandler
- * @param {UserTelegramAuthPayloadType} user полученные данные пользователя из telegram
  * @category Utils
  */
 
-import React, {createContext, useCallback, useEffect, useState} from "react";
-import defaultHandleError from "../utils/error-handlers/defaultHandleError";
-import {USER_AUTH} from "../static/constants";
+import React, {createContext} from "react";
 import {CoordinatesType} from "../types/CoordinatesType";
 import {UserType} from "../types/UserType";
-import {DB} from "../classes/db/DB";
-import {WithId} from "../types/WithId";
-import {StoreName} from "../types/StoreName";
 import {User} from "../classes/StoreEntities";
 
 type UserContextType = {

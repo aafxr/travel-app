@@ -3,7 +3,7 @@ import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 
 export const DB_NAME = 'travelAppStore'
-export const DB_VERSION = 34
+export const DB_VERSION = 36
 
 export const DB_STORES: DBStoreDescriptionType[] = [
     {
@@ -19,7 +19,7 @@ export const DB_STORES: DBStoreDescriptionType[] = [
 
     },
     {
-        name: StoreName.IMAGES,
+        name: StoreName.Photo,
         key: 'id',
         indexes: [],
     },
@@ -45,13 +45,18 @@ export const DB_STORES: DBStoreDescriptionType[] = [
         key: 'id',
         indexes: [IndexName.SECTION_ID,IndexName.PERSONAL, IndexName.PRIMARY_ENTITY_ID,IndexName.USER_ID],
     },
+    // {
+    //     name: StoreName.EXPENSES_ACTUAL,
+    //     key: 'id',
+    //     indexes: [IndexName.USER_ID, IndexName.PRIMARY_ENTITY_ID, IndexName.SECTION_ID],
+    // },
+    // {
+    //     name: StoreName.EXPENSES_PLAN,
+    //     key: 'id',
+    //     indexes: [IndexName.USER_ID, IndexName.PRIMARY_ENTITY_ID, IndexName.SECTION_ID],
+    // },
     {
-        name: StoreName.EXPENSES_ACTUAL,
-        key: 'id',
-        indexes: [IndexName.USER_ID, IndexName.PRIMARY_ENTITY_ID, IndexName.SECTION_ID],
-    },
-    {
-        name: StoreName.EXPENSES_PLAN,
+        name: StoreName.EXPENSE,
         key: 'id',
         indexes: [IndexName.USER_ID, IndexName.PRIMARY_ENTITY_ID, IndexName.SECTION_ID],
     },

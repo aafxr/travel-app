@@ -6,11 +6,17 @@ import {LimitType} from "../../types/LimitType";
 import {TravelService} from "./TravelService";
 import {TravelError} from "../errors";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
+import {IndexName} from "../../types/IndexName";
+import {UserError} from "../errors/UserError";
+import {Context} from "../Context/Context";
 
 export class LimitService {
 
-    static async create(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id'>, user: User) {
-        const newLimit = new Limit(limit, user.id)
+    static async create(context: Context, limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id'>) {
+        const user = context.user
+        if(!user) throw UserError.unauthorized()
+
+        const newLimit = new Limit(limit, user)
         const action = new Action(newLimit, user.id, StoreName.LIMIT, ActionName.ADD)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
@@ -22,7 +28,10 @@ export class LimitService {
 
     }
 
-    static async update(limit: Limit, user: User) {
+    static async update(context: Context, limit: Limit) {
+        const user = context.user
+        if(!user) throw UserError.unauthorized()
+
         if(!limit.isPersonal(user)){
             const travel = await TravelService.getById(limit.primary_entity_id)
             if(!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
@@ -51,5 +60,13 @@ export class LimitService {
         const actionStore = tx.objectStore(StoreName.ACTION)
         userStore.delete(limit.id)
         actionStore.add(action.dto())
+    }
+
+    static async getAllByTravelId(context: Context, id: string){
+        const user = context.user
+        if(!user) throw UserError.unauthorized()
+
+        const limits_obj = await DB.getManyFromIndex<LimitType>(StoreName.LIMIT, IndexName.PRIMARY_ENTITY_ID, id)
+        return limits_obj.map(l => new Limit(l, user))
     }
 }

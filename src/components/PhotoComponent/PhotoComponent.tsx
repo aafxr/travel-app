@@ -24,7 +24,7 @@ interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChang
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Photo({className, src, onChange, ...props}: PhotoPropsType) {
+export default function PhotoComponent({className, src, onChange, ...props}: PhotoPropsType) {
     const inputRef = useRef<HTMLInputElement>(null)
 
     function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {

@@ -33,29 +33,28 @@ export default function DateRange({
     const [range, setRange] = useState<DateRangeType>({start: undefined, end: undefined})
 
     useEffect(() => {
-        if (init) {
+        if (init &&
+            (init.start !== range.start || init.end !== range.end)
+        ) {
             setRange(init)
         }
-    }, [])
+    }, [init])
 
 
     /** обработчик устанавливает дату начала диапазона и смещает дату конца диапазона */
     function handleDateChange(date: Date, type: 'start' | 'end') {
         if (range) {
             if (type === 'start') {
-                date.setHours(0, 0, 0, 0)
                 const state = {...range, start: date}
                 setRange(state)
-                onChange && onChange({start: date})
+                onChange && onChange({start: new Date(date)})
             } else if (type === 'end') {
-                date.setHours(23, 59, 59, 999)
                 const state = {...range, end: date}
                 setRange(state)
                 onChange && onChange({end: date})
             }
         }
     }
-
 
 
     return (

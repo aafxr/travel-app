@@ -12,26 +12,26 @@ import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/Travel
 import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
 import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
+import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
 import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
-// import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
-import ExpensesWrapper from "./modules/Expenses/components/ExpensesWrapper";
+import ExpensesContextProvider from "./contexts/ExpensesContexts/ExpensesContextProvider";
 import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
-// import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
+// import ExpensesAdd from "./modules/ExpensesComponent/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 // import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-// import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
+// import LimitsEdit from "./modules/ExpensesComponent/Pages/LimitsEdit/LimitsEdit";
 // import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 // import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
-// import ExpensesLayout from "./modules/Expenses/layouts/ExpensesLayout";
+import ExpensesGroupsContextProvider from "./contexts/ExpensesContexts/ExpensesGroupsContextProvider";
 // import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import TravelLayout from "./layouts/TravelLayout";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 // import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
-// import Expenses from "./modules/Expenses/Pages/Expenses/Expenses";
+import ExpensesComponent from "./modules/Expenses/Pages/ExpensesComponent/ExpensesComponent";
 // import PageContainer from "./components/PageContainer/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 // import Sessions from "./modules/Main/Pages/Sessions/Sessions";
@@ -53,7 +53,7 @@ import AuthRequired from "./hoc/AuthRequired";
 // import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
 // import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 // import {Executor} from "./classes/Executor/Executor";
-import {User} from "./classes/StoreEntities/";
+import {Expense, User} from "./classes/StoreEntities/";
 import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
@@ -117,7 +117,7 @@ function App() {
 
     window.DB = DB
     window.User = User
-
+window.Expense = Expense
 
     return (
         <>
@@ -154,11 +154,11 @@ function App() {
                 {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
                 {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
-                        <Route element={<AuthRequired><ExpensesWrapper/></AuthRequired>}>
-                {/*            <Route element={<ExpensesLayout/>}>*/}
-                {/*                <Route path={'/travel/:travelCode/expenses/'} element={<Expenses/>}/>*/}
-                {/*                <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>*/}
-                {/*            </Route>*/}
+                        <Route element={<AuthRequired><ExpensesContextProvider/></AuthRequired>}>
+                            <Route element={<ExpensesGroupsContextProvider/>}>
+                                <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesComponent/>}/>
+                                <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
+                            </Route>
                 {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
                 {/*            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>*/}
                 {/*            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>*/}

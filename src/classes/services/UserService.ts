@@ -5,6 +5,8 @@ import {Action, User} from "../StoreEntities";
 import {UserType} from "../../types/UserType";
 import {DB} from "../db/DB";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
+import {PhotoService} from "./PhotoService";
+import {Photo} from "../StoreEntities/Photo";
 
 const devUser = {
             id: '12',
@@ -61,6 +63,13 @@ export class UserService {
 
     static async getById(id:string){
         const user = await DB.getOne<UserType>(StoreName.USERS, id)
-        if(user) return new User(user)
+        if(user) {
+            const userInstance = new User(user)
+            if(user.photo) {
+                const photo = await PhotoService.getById(user.photo)
+                if(photo) userInstance.setPhoto(new Photo(photo))
+            }
+            return userInstance
+        }
     }
 }

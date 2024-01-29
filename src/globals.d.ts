@@ -10,6 +10,7 @@ declare global {
         Travel: Travel.prototype
         travel: Travel
         Place: Place.prototype
+        Expense: Expense.prototype
         User:User.prototype
         context: Context
         DB: DB

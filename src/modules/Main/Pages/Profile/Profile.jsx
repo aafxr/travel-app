@@ -4,7 +4,7 @@ import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
-import Photo from "../../../../components/Photo/Photo";
+import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {PageHeader} from "../../../../components/ui";
 import storeDB from "../../../../classes/db/storeDB/storeDB";
 import Menu from "../../../../components/Menu/Menu";
@@ -38,7 +38,7 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <Photo className='photo' id={user?.photo} onChange={handlePhotoChange} />
+                        <PhotoComponent className='photo' id={user?.photo} onChange={handlePhotoChange} />
                     </div>
                     <div className='profile-user-name center'>
                         <span>{user?.first_name}</span>&nbsp;

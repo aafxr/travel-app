@@ -1,14 +1,23 @@
 import aFetch from "../../axios";
 import {CurrencyType} from "../../types/CurrencyTypes";
 
-type APICurrencyResponseType = {
-    [key: string]: CurrencyType<any>[]
+// type APICurrencyResponseType = {
+//     [key: string]: CurrencyType<any>[]
+// }
+
+type APICurrencyResponce = {
+    ok: boolean,
+    data:{
+        [key:string]: CurrencyType<any>[]
+    }
 }
 
-export async function fetchExchangeCourse(start: number, end: number) {
+export async function fetchExchangeCourse(start: Date, end: Date) {
     const payload = {
-        date_start: new Date(start).toLocaleDateString(),
-        date_end: new Date(end).toLocaleDateString()
+        date_start: start.toLocaleDateString(),
+        date_end: end.toLocaleDateString()
     }
-    return (await aFetch.post<APICurrencyResponseType>('/main/currency/getList/', payload)).data
+    const response = (await aFetch.post<APICurrencyResponce>('/main/currency/getList/', payload)).data
+    if (response.ok) return response.data
+    return {}
 }

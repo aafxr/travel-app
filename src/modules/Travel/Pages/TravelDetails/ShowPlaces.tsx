@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import React, {forwardRef, useEffect, useLayoutEffect, useRef, useState} from "react";
 
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
@@ -10,7 +10,6 @@ import {Place} from "../../../../classes/StoreEntities";
 import {Tab} from "../../../../components/ui";
 
 export default function ShowPlaces() {
-    const user = useUser()!
     const travel = useTravel()!
     const context = useAppContext()
     const {dayNumber} = useParams()

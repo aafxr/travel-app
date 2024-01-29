@@ -1,14 +1,14 @@
-import React, {useMemo, useState} from "react";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
+import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Travel} from "../../../../classes/StoreEntities";
-import {MS_IN_DAY} from "../../../../static/constants";
-import Photo from "../../../../components/Photo/Photo";
 import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
+import {useAppContext} from "../../../../contexts/AppContextProvider";
 
 interface TravelCardPropsType {
     travel: Travel,
@@ -24,6 +24,7 @@ interface TravelCardPropsType {
  */
 export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
     const navigate = useNavigate()
+    const context = useAppContext()
     const [tagsScrolling, setTextScrolling] = useState(false)
     const travelDays = travel.days === 1 ? '1 день' : `${travel.days} дней`
 
@@ -38,8 +39,10 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
     }
 
     function handleClickCard() {
+        context.setTravel(travel)
         navigate(`/travel/${travel.id}/`)
     }
+
 
 
     return (
@@ -52,7 +55,7 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
             >
                 <div className='travel-item'>
                     <div className='flex-between gap-0.5'>
-                        <Photo className={'travel-image flex-0'} src={travel.imageURL}/>
+                        <PhotoComponent className={'travel-image flex-0'} src={travel.getPhoto}/>
                         <div className='travel-content'>
                             <div className='travel-title w-full title-bold'>
                                 {travel.title || travel.direction || ''}

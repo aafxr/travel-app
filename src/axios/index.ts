@@ -1,12 +1,7 @@
 import axios, {AxiosInstance} from 'axios'
 
-import constants, {ACCESS_TOKEN, REFRESH_TOKEN, UNAUTHORIZED, USER_AUTH} from "../static/constants";
-import clearUserData from "../utils/clearUserData";
-import sleep from "../utils/sleep";
-import {StoreName} from "../types/StoreName";
-import {DB} from "../classes/db/DB";
 
-interface AxiosInstanseWithFlag extends AxiosInstance{
+interface AxiosInstanceWithFlag extends AxiosInstance{
     refresh:boolean
 }
 
@@ -17,7 +12,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL
 const aFetch = axios.create({
     baseURL,
     timeout: 2000,
-}) as AxiosInstanseWithFlag;
+}) as AxiosInstanceWithFlag;
 
 export default aFetch
 //

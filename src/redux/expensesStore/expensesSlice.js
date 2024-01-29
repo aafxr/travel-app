@@ -42,7 +42,7 @@
 //          */
 //         setExpensesActual(state,action){
 //             if(!Array.isArray(action.payload))
-//                 console.error(new Error('Expenses Actual must be array'))
+//                 console.error(new Error('ExpensesComponent Actual must be array'))
 //             state.expensesActual = action.payload
 //         },
 //
@@ -83,7 +83,7 @@
 //          */
 //         setExpensesPlan(state,action){
 //             if(!Array.isArray(action.payload))
-//                 console.error(new Error('Expenses Plan must be array'))
+//                 console.error(new Error('ExpensesComponent Plan must be array'))
 //             state.expensesPlan = action.payload
 //         },
 //
@@ -124,7 +124,7 @@
 //          */
 //         setExpensesLimit(state,action){
 //             if(!Array.isArray(action.payload))
-//                 console.error(new Error('Expenses Limits must be array'))
+//                 console.error(new Error('ExpensesComponent Limits must be array'))
 //             state.limits = action.payload
 //         },
 //
@@ -165,7 +165,7 @@
 //          */
 //         setSections(state,action){
 //             if(!Array.isArray(action.payload))
-//                 console.error(new Error('Expenses Limits must be array'))
+//                 console.error(new Error('ExpensesComponent Limits must be array'))
 //             state.sections = action.payload
 //         },
 //

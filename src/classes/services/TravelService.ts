@@ -8,6 +8,8 @@ import {DB} from "../db/DB";
 import {Context} from "../Context/Context";
 import {UserError} from "../errors/UserError";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
+import {PhotoService} from "./PhotoService";
+import {Photo} from "../StoreEntities/Photo";
 
 export class TravelService {
     static async create(ctx: Context, newTravel?: Travel) {
@@ -25,7 +27,7 @@ export class TravelService {
         return travel
     }
 
-    static async update(ctx:Context, travel: Travel) {
+    static async update(ctx: Context, travel: Travel) {
         const user = ctx.user
         if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
@@ -51,16 +53,33 @@ export class TravelService {
     }
 
     static async getById(travelId: string) {
-        const travel = await DB.getOne<TravelType>(StoreName.TRAVEL, travelId)
-        if (travel) return new Travel(travel)
-        return
+        const travel_type = await DB.getOne<TravelType>(StoreName.TRAVEL, travelId)
+        if (travel_type) {
+            const travel = new Travel(travel_type)
+            if (travel.photo) {
+                const photo = await PhotoService.getById(travel.photo)
+                if (photo) travel.setPhoto(new Photo(photo))
+            }
+            return travel
+        }
     }
 
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
-        if (fetchTravelsList.length) return fetchTravelsList
+        if (fetchTravelsList.length) {
+            for (const travel of fetchTravelsList) {
+                const photo = await PhotoService.getById(travel.photo)
+                if (photo) travel.setPhoto(new Photo(photo))
+            }
+            return fetchTravelsList
+        }
         const idb_travels = await DB.getAll<TravelType>(StoreName.TRAVEL)
-        return idb_travels.map(t => new Travel(t))
+        const travels = idb_travels.map(t => new Travel(t))
+        for (const travel of travels) {
+            const photo = await PhotoService.getById(travel.photo)
+            if (photo) travel.setPhoto(new Photo(photo))
+        }
+        return travels
     }
 
     static async addPlace(ctx: Context, place: Place) {
@@ -73,11 +92,11 @@ export class TravelService {
         return await TravelService.update(ctx, travel)
     }
 
-    static async addPlaces(ctx:Context, travel:Travel, places: Place[]){
+    static async addPlaces(ctx: Context, travel: Travel, places: Place[]) {
         const user = ctx.user
 
-        if(!user) throw UserError.unauthorized()
-        if(!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+        if (!user) throw UserError.unauthorized()
+        if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
         travel.setPlaces([...travel.places, ...places])
         await TravelService.update(ctx, travel)

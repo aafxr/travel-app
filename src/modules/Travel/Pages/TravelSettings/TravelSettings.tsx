@@ -118,9 +118,9 @@ export default function TravelSettings() {
                         <section className='travel-settings-date column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Дата поездки</h4>
                             <DateRange
-                                init={travel.date_start.getTime() > 0 ? {
-                                    start: travel.date_start,
-                                    end: travel.date_end
+                                init={updatedTravel.date_start.getTime() > 0 ? {
+                                    start: updatedTravel.date_start,
+                                    end: updatedTravel.date_end
                                 } : undefined}
                                 minDate={updatedTravel.date_start}
                                 onChange={handleDateRangeChange}
@@ -138,7 +138,7 @@ export default function TravelSettings() {
                                 <span>Взрослые</span>
                                 <Counter
                                     init={travel.members_count}
-                                    min={updatedTravel.members_count || 1}
+                                    min={updatedTravel.members.length || 1}
                                     onChange={updatedTravel.setMembers_count.bind(updatedTravel)}
                                 />
                             </div>
@@ -146,7 +146,7 @@ export default function TravelSettings() {
                                 <span>Дети</span>
                                 <Counter
                                     init={travel.children_count}
-                                    min={updatedTravel.children_count || 0}
+                                    min={0}
                                     onChange={updatedTravel.setChildren_count.bind(updatedTravel)}
                                 />
                             </div>

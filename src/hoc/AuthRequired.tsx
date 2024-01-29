@@ -1,8 +1,6 @@
-import React, {PropsWithChildren, useContext} from "react";
+import React, {PropsWithChildren} from "react";
 import {Navigate} from "react-router-dom";
-import Loader from "../components/Loader/Loader";
-import PageContainer from "../components/PageContainer/PageContainer";
-import {UserContext} from "../contexts/UserContextProvider";
+
 import {useUser} from "../contexts/AppContextProvider";
 
 /**

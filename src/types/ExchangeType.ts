@@ -5,10 +5,10 @@
  * @property {CurrencyType[]} value
  * @category Types
  */
-import {CurrencyName, CurrencyType} from "./CurrencyTypes";
+import {CurrencyType} from "./CurrencyTypes";
 
 
-export interface ExchangeType{
-    date:number
+export interface ExchangeType {
+    date: number
     value: CurrencyType<any>[]
 }

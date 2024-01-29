@@ -1,5 +1,5 @@
 export interface PhotoType {
     id: string,
-    blob: Blob,
+    blob?: Blob,
     src: string
 }

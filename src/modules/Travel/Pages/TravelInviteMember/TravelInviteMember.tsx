@@ -14,7 +14,6 @@ import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
 
 import './TravelInviteMember.css'
-import {steps} from "framer-motion";
 
 
 

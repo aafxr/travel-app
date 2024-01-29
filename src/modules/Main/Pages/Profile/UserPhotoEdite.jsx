@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import Container from "../../../../components/Container/Container";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
-import Photo from "../../../../components/Photo/Photo";
+import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {PageHeader} from "../../../../components/ui";
 import constants from "../../../../static/constants";
 import storeDB from "../../../../classes/db/storeDB/storeDB";
@@ -50,7 +50,7 @@ export default function UserPhotoEdite() {
             <Container className='content'>
                 <PageHeader arrowBack/>
                 <div className='column center gap-1 pt-20'>
-                    <Photo className='photo' id={user?.photo} onChange={handlePhotoChange}/>
+                    <PhotoComponent className='photo' id={user?.photo} onChange={handlePhotoChange}/>
                 </div>
             </Container>
             <div className='footer-btn-container footer'>

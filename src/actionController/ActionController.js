@@ -1,6 +1,6 @@
 import Model from '../model/Model';
-import constants from '../module/Expenses/db/constants';
-import actionValidationObj from '../module/Expenses/models/action/validation';
+import constants from '../module/ExpensesComponent/db/constants';
+import actionValidationObj from '../module/ExpensesComponent/models/action/validation';
 import { LocalDB } from '../db';
 import isString from '../utils/validation/isString';
 

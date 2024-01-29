@@ -6,12 +6,12 @@ import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {useUser} from "../../../../contexts/AppContextProvider";
 import {Travel} from "../../../../classes/StoreEntities";
 
-type ShowTravelsList = {
+type ShowTravelsListPropsType = {
     travels: Travel[]
     onRemove?: (travel: Travel) => unknown
 }
 
-export function ShowTravelsList({travels, onRemove}: ShowTravelsList) {
+export function ShowTravelsList({travels, onRemove}: ShowTravelsListPropsType) {
     const user = useUser()
     const navigate = useNavigate()
 

@@ -12,7 +12,7 @@ export enum StoreName{
     ROUTE = 'route',
     STORE = 'store',
     CURRENCY = 'Currency',
-    IMAGES = 'images',
+    Photo = 'Photo',
     STORE_ACTIONS = 'storeActions',
     USERS = 'User',
     UPDATE = 'update',

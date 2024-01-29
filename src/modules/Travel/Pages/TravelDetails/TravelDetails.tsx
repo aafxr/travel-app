@@ -6,6 +6,7 @@ import {ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../..
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
+import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
@@ -14,12 +15,12 @@ import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
 import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
-import Photo from "../../../../components/Photo/Photo";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelDetails.css'
+import {Photo} from "../../../../classes/StoreEntities/Photo";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -48,8 +49,8 @@ export default function TravelDetails() {
     )
 
 
-    function handleTravelPhotoChange(photo: Blob) {
-        travel.setPhoto(photo)
+    function handleTravelPhotoChange(blob: Blob) {
+        travel.setPhoto(new Photo({blob}))
         if (user)
             TravelService.update(context, travel)
                 .catch(defaultHandleError)
@@ -79,7 +80,7 @@ export default function TravelDetails() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <Photo className='img-abs' src={travel.imageURL} onChange={handleTravelPhotoChange}/>
+                            <PhotoComponent className='img-abs' src={travel.getPhoto} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'

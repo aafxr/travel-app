@@ -46,7 +46,7 @@
 // }
 //
 // function sendActions(){
-//     //=================================== проверка и попытка отправить Expenses Actions ====================================
+//     //=================================== проверка и попытка отправить ExpensesComponent Actions ====================================
 //     setInterval(async () => {
 //         try {
 //             DB.getManyFromIndex<ActionType>(StoreName.ACTION, IndexName.SYNCED, 0, (actions) => {

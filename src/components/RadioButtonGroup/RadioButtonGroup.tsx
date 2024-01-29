@@ -8,7 +8,7 @@ export type RadioButtonGroupItemType = {
     title: string
 }
 
-type RadioButtonGroup = {
+type RadioButtonGroupPropsType = {
     groupClassNames?: string
     className?: string
     title?: string
@@ -41,7 +41,7 @@ export default function RadioButtonGroup({
                                              position = 'right',
                                              multy = false,
                                              init
-                                         }:RadioButtonGroup) {
+                                         }:RadioButtonGroupPropsType) {
     const classNames = clsx('column', className)
     const isLeft = position === 'left'
     const [selected, setSelected] = useState<RadioButtonGroupItemType|RadioButtonGroupItemType[]>()

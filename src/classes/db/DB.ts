@@ -1,4 +1,4 @@
-import {StoreEntity, Travel} from "../StoreEntities";
+import {StoreEntity} from "../StoreEntities";
 import {openIDBDatabase} from "./openIDBDatabaase";
 import {StoreName} from "../../types/StoreName";
 
@@ -59,7 +59,7 @@ export class DB {
         return await index.get(query)
     }
 
-    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange): Promise<T[]> {
+    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange | IDBValidKey): Promise<T[]> {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
@@ -95,7 +95,7 @@ export class DB {
 
     static async getClosest<T>(storeName: StoreName, query: IDBKeyRange, count = 1):Promise<T[]>{
         const db = await openIDBDatabase()
-        return await db.getAll(storeName,query, count)
+        return await db.transaction(storeName).objectStore(storeName).getAll(query, count)
     }
 
 

@@ -46,9 +46,9 @@ import {TravelPermission} from "./TravelPermission";
 import {TravelPreference} from "./TravelPreference";
 import {Preference} from "../classes/Preference";
 import {Permission} from "../classes/Permission";
+import {InterestType} from "./InterestsType";
 import {MovementType} from "./MovementType";
 import {WaypointType} from "./WaypointType";
-import {DBFlagType} from "./DBFlagType";
 import {PlaceType} from "./PlaceType";
 
 /**
@@ -101,7 +101,6 @@ export type TravelType = {
     admins: string[],
     editors: string[],
     commentator: string[],
-    members: string[],
     movementTypes: MovementType[],
     waypoints: WaypointType[],
     places: PlaceType[],
@@ -110,9 +109,10 @@ export type TravelType = {
     days: number,
     members_count: number,
     children_count: number,
-    photo: string | Blob,
+    photo: string,
     isFromPoint: 0 | 1,
     preference: TravelPreference | Preference,
     permission:TravelPermission | Permission,
     // permissions: ,
+    interests: InterestType[]
 }

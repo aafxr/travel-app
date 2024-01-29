@@ -5,11 +5,11 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
+import {TravelService} from "../../../../classes/services";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Main.css'
-import {TravelService} from "../../../../classes/services";
 
 /**
  * компонент отображает главную страницу приложения

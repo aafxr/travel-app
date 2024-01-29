@@ -1,6 +1,8 @@
-import {StoreEntity} from "./StoreEntity";
-import {MemberType} from "../../types/MemberType";
+import {DEFAULT_IMG_URL} from "../../static/constants";
 import {MovementType} from "../../types/MovementType";
+import {MemberType} from "../../types/MemberType";
+import {StoreEntity} from "./StoreEntity";
+import {Photo} from "./Photo";
 
 export class Member extends StoreEntity implements MemberType {
 
@@ -8,10 +10,9 @@ export class Member extends StoreEntity implements MemberType {
     username = '';
     first_name = '';
     last_name = '';
-    photo: string | Blob = '';
-    imageURL = ''
+    photo: string = '';
+    image?: Photo
     age: number = 18;
-
 
 
     movementType: MovementType[] = [MovementType.CAR];
@@ -24,12 +25,8 @@ export class Member extends StoreEntity implements MemberType {
         if (member.username) this.username = member.username
         if (member.first_name) this.first_name = member.first_name
         if (member.last_name) this.last_name = member.last_name
-        if(member.movementType) this.movementType = member.movementType
-        if (member.photo) {
-            this.photo = member.photo
-            if (typeof this.photo === "string")
-                this.imageURL = this.photo
-        }
+        if (member.movementType) this.movementType = member.movementType
+        if (member.photo) this.photo = member.photo
     }
 
 
@@ -38,34 +35,46 @@ export class Member extends StoreEntity implements MemberType {
     }
 
 
-    setUsername(username: string){
+    setUsername(username: string) {
         this.username = username
         this.update()
     }
-    setFirst_name(first_name: string){
+
+
+    setFirst_name(first_name: string) {
         this.first_name = first_name
         this.update()
     }
-    setLast_name(last_name: string){
+
+
+    setLast_name(last_name: string) {
         this.last_name = last_name
         this.update()
     }
-    setPhoto(photo: string){
-        this.photo = photo
+
+
+    setPhoto(photo: Photo) {
+        this.photo = photo.id
+        this.image?.destroy()
+        this.image = photo
         this.update()
     }
-    setImageURL(imageURL: string){
-        this.imageURL = imageURL
-        this.update()
-    }
-    setAge(age: number){
+
+
+    setAge(age: number) {
         this.age = age
         this.update()
     }
 
 
-    update(){
-        this.emit('update',[this])
+    update() {
+        this.emit('update', [this])
+    }
+
+
+    get getPhoto() {
+        if (this.image) return this.image.toString()
+        return DEFAULT_IMG_URL
     }
 
 
@@ -75,7 +84,7 @@ export class Member extends StoreEntity implements MemberType {
             username: this.username,
             first_name: this.first_name,
             last_name: this.last_name,
-            photo: this.photo,
+            photo: this.image?.id || this.photo,
         };
     }
 

@@ -4,6 +4,7 @@ import {DBFlagType} from "../../types/DBFlagType";
 import {LimitType} from "../../types/LimitType";
 import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
+import {User} from "./User";
 
 /**
  * Класс для работы с лимитами
@@ -16,13 +17,16 @@ export class Limit extends StoreEntity implements LimitType {
     value = 0
     primary_entity_id: string;
 
+    user: User
 
 
-    constructor(limit: Partial<Limit | LimitType> & Pick<LimitType, 'primary_entity_id'>, user_id: string) {
+
+    constructor(limit: Partial<Limit | LimitType> & Pick<LimitType, 'primary_entity_id'>, user: User) {
         super()
 
+        this.user = user
         if (limit.id) this.id = limit.id
-        else this.id = `${user_id}:${nanoid(7)}`
+        else this.id = `${user.id}:${nanoid(7)}`
 
         if (limit.personal) this.personal = limit.personal
         if (limit.section_id) this.section_id = limit.section_id

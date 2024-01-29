@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 import NumberInput from "../../../../components/ui/Input/NumberInput";
@@ -73,7 +73,7 @@ export default function TravelEdit() {
     }
 
 
-    function handleTravelDays(d:number){
+    function  handleTravelDays(d:number){
         setDays(d)
         if (updateTravel) updateTravel.setDays(d)
     }
@@ -116,9 +116,9 @@ export default function TravelEdit() {
                         />
                     </div>
                     <DateRange
-                        init={updateTravel.date_start.getTime() > 0 ? {
-                            start: updateTravel.date_start,
-                            end: updateTravel.date_end
+                        init={travel.date_start.getTime() > 0 ? {
+                            start: travel.date_start,
+                            end: travel.date_end
                         } : undefined}
                         minDate={updateTravel.date_start}
                         onChange={handleDateRangeChange}

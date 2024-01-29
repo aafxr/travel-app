@@ -1,15 +1,9 @@
 import clsx from "clsx";
-import {useEffect, useState} from "react";
 
-import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import {Member} from "../../classes/StoreEntities/Member";
-import AvatarPlaceHolder from "./AvatarPlaceholder";
-import {StoreName} from "../../types/StoreName";
-import Photo from "../Photo/Photo";
-import {DB} from "../../classes/db/DB";
+import PhotoComponent from "../PhotoComponent/PhotoComponent";
+
 import './UserCard.css'
-import {UserService} from "../../classes/services";
-import {MemberService} from "../../classes/services/MemberService";
 
 
 type UserCardPropsType = {
@@ -43,7 +37,7 @@ export default function UserCard({
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
             <>
-                <Photo src={member.imageURL} className='avatar'/>
+                <PhotoComponent src={member.getPhoto} className='avatar'/>
                 {variant !== 'compact' && (
                     <>
                         <div className='user-card-info column'>

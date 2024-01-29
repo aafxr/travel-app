@@ -35,7 +35,7 @@ import ErrorReport from "../controllers/ErrorReport";
  *
  * ***
  *
- * - storeName имя хранилища с которым буде работать данная Model (напирмер бд Expenses хранилище Limits)
+ * - storeName имя хранилища с которым буде работать данная Model (напирмер бд ExpensesComponent хранилище Limits)
  *
  * ***
  *
