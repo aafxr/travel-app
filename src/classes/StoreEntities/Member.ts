@@ -72,7 +72,7 @@ export class Member extends StoreEntity implements MemberType {
     }
 
 
-    get getPhoto() {
+    get getPhotoURL() {
         if (this.image) return this.image.toString()
         return DEFAULT_IMG_URL
     }

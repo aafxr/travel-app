@@ -3,12 +3,12 @@ import {useNavigate} from "react-router-dom";
 
 import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
+import {useAppContext} from "../../../../contexts/AppContextProvider";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
 import {Travel} from "../../../../classes/StoreEntities";
 import {Chip} from "../../../../components/ui";
 
 import './TravelCard.css'
-import {useAppContext} from "../../../../contexts/AppContextProvider";
 
 interface TravelCardPropsType {
     travel: Travel,
@@ -55,7 +55,7 @@ export default function TravelCard({travel, onRemove}: TravelCardPropsType) {
             >
                 <div className='travel-item'>
                     <div className='flex-between gap-0.5'>
-                        <PhotoComponent className={'travel-image flex-0'} src={travel.getPhoto}/>
+                        <PhotoComponent className={'travel-image flex-0'} src={travel.getPhotoURL}/>
                         <div className='travel-content'>
                             <div className='travel-title w-full title-bold'>
                                 {travel.title || travel.direction || ''}

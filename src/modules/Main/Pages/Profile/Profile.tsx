@@ -1,33 +1,32 @@
 import React from "react";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
+import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
+import {PhotoService} from "../../../../classes/services/PhotoService";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";
-import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {PageHeader} from "../../../../components/ui";
-import storeDB from "../../../../classes/db/storeDB/storeDB";
 import Menu from "../../../../components/Menu/Menu";
-import constants from "../../../../static/constants";
 
 import './Profile.css'
-import useUserSelector from "../../../../hooks/useUserSelector";
 
 
-/**
- * компонент отбражает профиль пользователя
- * @function
- * @name Profile
- * @returns {JSX.Element}
- * @category Pages
- */
+/** компонент отбражает профиль пользователя  */
 export default function Profile() {
-    const user = useUserSelector()
+    const user = useUser()
+    const context = useAppContext()
 
-    /**@function {PhotoChangeFunction} */
-    function handlePhotoChange(photo){
-        storeDB.editElement(constants.store.IMAGES, photo)
+    function handlePhotoChange(blob:Blob){
+        if(!user) return
+        PhotoService.updateUserPhoto(user, blob)
+            .then(() => context.setUser(user))
+            .catch(defaultHandleError)
     }
+
+    if(!user ) return null
 
     return (
         <div className='wrapper'>
@@ -38,11 +37,11 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <PhotoComponent className='photo' id={user?.photo} onChange={handlePhotoChange} />
+                        <PhotoComponent className='photo' src={user.getPhotoURL} onChange={handlePhotoChange} />
                     </div>
                     <div className='profile-user-name center'>
-                        <span>{user?.first_name}</span>&nbsp;
-                        <span>{user?.last_name}</span>
+                        <span>{user.first_name}</span>&nbsp;
+                        <span>{user.last_name}</span>
                     </div>
                 </div>
                 <Curtain minOffset={54} maxOpenPercent={.6} defaultOffsetPercents={.6}>

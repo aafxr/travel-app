@@ -36,7 +36,7 @@ import ExpensesComponent from "./modules/Expenses/Pages/ExpensesComponent/Expens
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 // import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 // import {UserContext} from "./contexts/UserContextProvider";
-// import Profile from "./modules/Main/Pages/Profile/Profile";
+import Profile from "./modules/Main/Pages/Profile/Profile";
 // import CheckList from "./components/CheckList/CheckList";
 import Events from "./modules/Main/Pages/Events/Events";
 import TelegramAuth from "./modules/Main/TelegramAuth";
@@ -167,7 +167,7 @@ window.Expense = Expense
                         </Route>
                     </Route>
                 {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
-                {/*    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>*/}
+                    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
                 {/*    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>*/}
                 {/*    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>*/}
                 {/*    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>*/}

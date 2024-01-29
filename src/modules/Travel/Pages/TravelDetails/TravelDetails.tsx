@@ -80,7 +80,7 @@ export default function TravelDetails() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <PhotoComponent className='img-abs' src={travel.getPhoto} onChange={handleTravelPhotoChange}/>
+                            <PhotoComponent className='img-abs' src={travel.getPhotoURL} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'

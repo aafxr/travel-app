@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 
-import combineExpensesForSectionComponent from "../../helpers/combineExpensesForSectionComponent";
 import {useExpensesGroupPlan} from "../../../../contexts/ExpensesContexts/useExpensesGroupPlan";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";

@@ -16,7 +16,15 @@ const devUser = {
 
 export class UserService {
     static async getLoggedInUser() {
-        if (location.hostname === 'localhost') return new User(devUser)
+        if (location.hostname === 'localhost') {
+            const dev_user = await DB.getOne<UserType>(StoreName.USERS, devUser.id)
+            const user = new User(dev_user || devUser)
+            if (user.photo) {
+                const pt = await PhotoService.getById(user.photo)
+                if(pt) user.setPhoto(new Photo(pt))
+            }
+            return user
+        }
 
         if ('localStorage' in global) {
             try {

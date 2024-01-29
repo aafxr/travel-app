@@ -132,7 +132,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    get getPhoto() {
+    get getPhotoURL() {
         if (this.image) return this.image.src
         return DEFAULT_IMG_URL
     }

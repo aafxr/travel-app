@@ -37,7 +37,7 @@ export default function UserCard({
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
             <>
-                <PhotoComponent src={member.getPhoto} className='avatar'/>
+                <PhotoComponent src={member.getPhotoURL} className='avatar'/>
                 {variant !== 'compact' && (
                     <>
                         <div className='user-card-info column'>
