@@ -1,8 +1,8 @@
 import React, {createContext, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from "react";
-import ymaps from "ymaps";
+import {Map} from "ymaps";
 
 type YMapContextType = {
-    map: ymaps.Map | null
+    map: Map | null
 }
 
 const defaultState: YMapContextType = {map: null}
@@ -20,11 +20,11 @@ export default function YandexMapContainer({children, id, ...props}: YandexMapCo
 
     useEffect(() => {
         if (!ref.current) return
-        ymaps.ready(() => {
+        window.ymaps.ready(() => {
             const node = document.getElementById(id || MAP_ID)
             if (!node) return
 
-            const map = new ymaps.Map(node, {
+            const map = new window.ymaps.Map(node, {
                 center: [37.64, 55.76],
                 zoom: 10
             })
