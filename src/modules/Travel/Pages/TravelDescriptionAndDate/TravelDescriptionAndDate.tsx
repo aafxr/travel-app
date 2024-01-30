@@ -109,7 +109,7 @@ export default function TravelEdit() {
                     <div className='travel-edit-days'>
                         <div className='title-semi-bold'>Количество дней</div>
                         <NumberInput
-                            // className='travel-edit-days-input'
+                            className='travel-edit-days-input'
                             value={days}
                             onChange={handleTravelDays}
                             size={1}

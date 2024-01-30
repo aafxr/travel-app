@@ -7,10 +7,13 @@
 }
 
 .travel-edit-days-input{
+    padding: 0;
     text-align: center;
     font-size: 1rem;
-    border: none;
+    border: transparent;
+    width: auto;
+    border-radius: unset;
     border-bottom: 2px solid var(--color-grey);
-    background-color: var(--color-background);
+    background-color: inherit;
     outline: none;
 }

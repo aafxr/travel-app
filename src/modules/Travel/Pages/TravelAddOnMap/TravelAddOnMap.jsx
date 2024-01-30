@@ -3,13 +3,13 @@ import {useEffect, useState} from "react";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
+import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
-import useTravelContext from "../../../../hooks/useTravelContext";
-import useUserSelector from "../../../../hooks/useUserSelector";
 import Button from "../../../../components/ui/Button/Button";
 import {PageHeader} from "../../../../components/ui";
 import useDragPoint from "../../hooks/useDragPoint";
 import StartPointInput from "./StartPointInput";
+import IMap from "../../../../api/map/IMap";
 
 import './TravelAddOnMap.css'
 
@@ -23,10 +23,9 @@ import './TravelAddOnMap.css'
  */
 export default function TravelAddOnMap() {
     const navigate = useNavigate()
-    const {travel, travelObj} = useTravelContext()
-    const user = useUserSelector()
-    const [map, setMap] = useState(/**@type{IMap}*/ null)
-
+    const travel = useTravel()
+    const user = useUser()
+    const [map, setMap] = useState<IMap | null>( null)
 
     // const {points, setPoints} = usePoints(map)
 
