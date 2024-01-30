@@ -1,7 +1,15 @@
-import React from "react";
+import React, {ReactNode} from "react";
 import clsx from "clsx";
 
 import './ListItem.css'
+
+type ListItemPropsType = {
+    className?: string
+    topDescription?: string
+    icon?: JSX.Element
+    children: ReactNode
+    time?:Date
+}
 
 /**
  * Компонент предназначен для отображения элемента списка (используется на странице с последними действиями)
@@ -13,7 +21,7 @@ import './ListItem.css'
  * @returns {JSX.Element}
  * @category Components
  */
-export default function ListItem({className, topDescription = '', time = '', children, icon}){
+export default function ListItem({className, topDescription = '', time, children, icon}: ListItemPropsType){
     return (
         <div className={clsx('list-item flex-between', className)}>
             <div className='column'>
@@ -21,7 +29,7 @@ export default function ListItem({className, topDescription = '', time = '', chi
                 <div className='list-item-title'>{children}</div>
             </div>
             <div className='column'>
-                <div className='list-item-time'>{time}</div>
+                <div className='list-item-time'>{time?.toLocaleString() || ''}</div>
                 {!!icon && <span className='list-item-icon'>{icon}</span>}
             </div>
         </div>

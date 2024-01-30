@@ -20,12 +20,12 @@ import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
 // import ExpensesAdd from "./modules/ExpensesComponent/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
-// import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
+import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 // import LimitsEdit from "./modules/ExpensesComponent/Pages/LimitsEdit/LimitsEdit";
-// import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
-// import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
+import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
+import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesGroupsContextProvider from "./contexts/ExpensesContexts/ExpensesGroupsContextProvider";
 // import WorkerContextProvider from "./contexts/WorkerContextProvider";
 import TravelLayout from "./layouts/TravelLayout";
@@ -34,7 +34,7 @@ import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 import ExpensesComponent from "./modules/Expenses/Pages/ExpensesComponent/ExpensesComponent";
 // import PageContainer from "./components/PageContainer/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
-// import Sessions from "./modules/Main/Pages/Sessions/Sessions";
+import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 // import {UserContext} from "./contexts/UserContextProvider";
 import Profile from "./modules/Main/Pages/Profile/Profile";
 // import CheckList from "./components/CheckList/CheckList";
@@ -169,10 +169,10 @@ window.Expense = Expense
                 {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                     <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
                     <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
-                {/*    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>*/}
-                {/*    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>*/}
-                {/*    <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>*/}
-                {/*    <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>*/}
+                    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
+                    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
+                    <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
+                    <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
                 {/*    <Route path={'/login/'} element={<Login/>}/>*/}
                 {/*</Route>*/}
                 {/*<Route path={'/error/'} element={<ErrorPage/>}/>*/}

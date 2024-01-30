@@ -66,7 +66,6 @@ export default function ExpensesContextProvider() {
             .finally(() => setState(prev => ({...prev, loading: false})))
     }, [travelCode])
 
-    console.log(state)
 
     if (state.loading) {
         return (

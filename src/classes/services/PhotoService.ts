@@ -20,6 +20,11 @@ export class PhotoService{
         return photo
     }
 
+    /**
+     * метод обновляет фото пользователя в бд, оюновляет данные о пользователе и генерирует экшен
+     * @param user
+     * @param blob
+     */
     static async updateUserPhoto(user: User, blob: Blob){
         const photo = new Photo({blob})
         if(user.photo) photo.id = user.photo

@@ -1,10 +1,16 @@
 import clsx from "clsx";
 import React from "react";
 
-import browserName from "../../utils/browserName";
+import {SessionType} from "../../modules/Main/Pages/Sessions/Sessions";
 import dateToStringFormat from "../../utils/dateToStringFormat";
+import browserName from "../../utils/browserName";
 
 import './SessionItem.css'
+
+type SessionItemPropsType = {
+    className?: string
+    sessionData: SessionType
+}
 
 /**
  * Компонент отображает элемент списка на странице активных сессий (Session)
@@ -13,7 +19,7 @@ import './SessionItem.css'
  * @returns {JSX.Element}
  * @category Components
  */
-export default function SessionItem({className, sessionData}) {
+export default function SessionItem({className, sessionData}:SessionItemPropsType) {
     const browser = browserName(sessionData.created_user_agent)
 
     let browserClass;

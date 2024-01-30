@@ -34,7 +34,6 @@ export default React.forwardRef<HTMLInputElement, NumberInputPropsType>(({
 
     const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const n = parseInt(e.target.value)
-        console.log(e.target.value)
         setNum(e.target.value)
         if (onChange) onChange(n || 0)
     }

@@ -117,8 +117,8 @@ export default function TravelEdit() {
                     </div>
                     <DateRange
                         init={travel.date_start.getTime() > 0 ? {
-                            start: travel.date_start,
-                            end: travel.date_end
+                            start: updateTravel.date_start,
+                            end: updateTravel.date_end
                         } : undefined}
                         minDate={updateTravel.date_start}
                         onChange={handleDateRangeChange}

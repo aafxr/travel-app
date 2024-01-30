@@ -1,28 +1,45 @@
 import React, {useEffect, useState} from "react";
 
-import {PageHeader} from "../../../../components/ui";
-import Swipe from "../../../../components/ui/Swipe/Swipe";
-import Container from "../../../../components/Container/Container";
 import SessionItem from "../../../../components/SessionItem/SessionItem";
+import {REFRESH_TOKEN} from "../../../../static/constants";
+import Container from "../../../../components/Container/Container";
+import useUserSelector from "../../../../hooks/useUserSelector";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
 import Loader from "../../../../components/Loader/Loader";
+import {PageHeader} from "../../../../components/ui";
 
 import aFetch from "../../../../axios";
-import storeDB from "../../../../classes/db/storeDB/storeDB";
-import constants, {REFRESH_TOKEN} from "../../../../static/constants";
-import useUserSelector from "../../../../hooks/useUserSelector";
+
+type ResponseSessionType = {
+    ok: boolean
+    data: SessionType[]
+}
+
+export type SessionType ={
+    SessionDataType: string
+    created_at: string
+    created_ip: string
+    created_location: string
+    created_user_agent: string
+    uid: string
+    update_location: string
+    updated_at: string
+    updated_ip: string
+    active: boolean
+}
 
 
 /**
- * @typedef {object} SessionDataType
- * @property {string} created_at
- * @property {string} created_ip
- * @property {string} created_location
- * @property {string} created_user_agent
- * @property {string} uid
- * @property {string} update_location
- * @property {string} updated_at
- * @property {string} updated_ip
- * @property {boolean} active
+ * @typedef {object}    SessionDataType
+ * @property {string}   created_at
+ * @property {string}   created_ip
+ * @property {string}   created_location
+ * @property {string}   created_user_agent
+ * @property {string}   uid
+ * @property {string}   update_location
+ * @property {string}   updated_at
+ * @property {string}   updated_ip
+ * @property {boolean}  active
  */
 
 
@@ -36,32 +53,29 @@ import useUserSelector from "../../../../hooks/useUserSelector";
 export default function Sessions() {
     const user = useUserSelector()
 
-    const [currentSession, setCurrentSession] = useState(null)
-    const [authList, setAuthList] = useState([])
+    const [currentSession, setCurrentSession] = useState<SessionType>()
+    const [authList, setAuthList] = useState<SessionType[]>([])
     const [loading, setLoading] = useState(true)
 
 
     useEffect(() => {
         if (user) {
-            storeDB.getOne(constants.store.STORE, REFRESH_TOKEN)
-                .then(rt => {
-                    aFetch.post('/user/auth/getList/', {[REFRESH_TOKEN]: rt?.value || ''})
+                    aFetch.post<ResponseSessionType>('/user/auth/getList/', {[REFRESH_TOKEN]: user.refresh_token || ''})
                         .then(res => res.data)
                         .then(({ok, data}) => {
                             console.log({ok, data})
                             if (ok) {
-                                setCurrentSession(data.find(a => a.active))
-                                setAuthList(data.filter(a => !a.active).sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)))
+                                setCurrentSession(data.find(a => a.active) )
+                                setAuthList(data.filter(a => !a.active).sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()))
                                 setLoading(false)
                             }
                         })
                         .catch(console.error)
-                })
         }
     }, [user])
 
 
-    function removeSessionHandler(auth) {
+    function removeSessionHandler(auth:SessionType) {
         aFetch.post('/user/auth/remove/', {uid: auth.uid})
             .then((res) => {
                 console.log(res)

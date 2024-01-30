@@ -29,8 +29,9 @@ export default function ChangeUserPreferences() {
 
     /** обработка изменения темы приложения */
     function handleThemeChange(newTheme: RadioButtonGroupItemType[]) {
-        if (variants.find(v => v.title === themeToString[newTheme[0]])) {
-            setTheme(themeConvertor[newTheme[0]] || '')
+        const key = newTheme[0].title as DefaultThemeType
+        if (variants.find(v => v.title === themeToString[key])) {
+            setTheme(themeConvertor[newTheme[0].title] || '')
         }
     }
 
@@ -45,7 +46,7 @@ export default function ChangeUserPreferences() {
                     title={'Изменить тему'}
                     checklist={variants}
                     onChange={handleThemeChange}
-                    init={variants.find(v => v.title === themeToString[theme])}
+                    init={variants.find(v => v.title === themeToString[theme])!}
                     position='left'
                 />
             </Container>
