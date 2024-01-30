@@ -32,6 +32,7 @@ export class TravelService {
         if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
+        if (travel.image) await PhotoService.save(travel.image)
         const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.UPDATE)
         await DB.writeAll([travel, action])
         return travel

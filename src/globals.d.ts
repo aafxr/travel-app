@@ -18,4 +18,8 @@ declare global {
             dataOnauth: (user) => unknown,
         }
     }
+
+    interface GlobalEventHandlersEventMap{
+        'expense': Event
+    }
 }

@@ -23,16 +23,18 @@ export class Photo extends StoreEntity implements PhotoType {
         if (this.src) URL.revokeObjectURL(this.src)
     }
 
-    toString(){
+    toString() {
         return this.src
     }
 
     dto(): PhotoType {
-        return {
+        const data = {
             id: this.id,
             blob: this.blob,
             src: this.src,
-        };
+        }
+        if (data.blob) data.src = ''
+        return data;
     }
 
 }

@@ -49,13 +49,9 @@ export class UserService {
     }
 
     static async update(user: User) {
-        const action = new Action(user, user.id, StoreName.USERS, ActionName.UPDATE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
-        const userStore = tx.objectStore(StoreName.USERS)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        userStore.put(user.dto())
-        actionStore.add(action.dto())
+        if (user.image) await PhotoService.save(user.image)
+        const action = new Action(user, user.id, StoreName.TRAVEL, ActionName.UPDATE)
+        await DB.writeAll([user, action])
         return user
     }
 

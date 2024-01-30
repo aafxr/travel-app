@@ -38,4 +38,14 @@ export class PhotoService{
     static async save(photo:Photo){
         await DB.update(StoreName.Photo, photo.dto())
     }
+
+    static async initPhoto<T extends {photo: string, setPhoto:(photo:Photo) => unknown}>(items:T[]){
+        for (const item of items){
+            if (item.photo){
+                const photo_type = await DB.getOne<PhotoType>(StoreName.Photo, item.photo)
+                if (photo_type) item.setPhoto(new Photo(photo_type))
+            }
+        }
+        return items
+    }
 }

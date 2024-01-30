@@ -1,12 +1,12 @@
-import React, {PropsWithChildren} from "react";
-import {Navigate} from "react-router-dom";
+import React from "react";
+import {Navigate, Outlet} from "react-router-dom";
 
 import {useAppContext} from "../contexts/AppContextProvider";
 
 /**
  * hoc component обертка, если пользователь не авторизован перенаправляет пользователя на страницу авторизации
  */
-export default function AuthRequired({children}:PropsWithChildren) {
+export default function AuthRequired() {
     const context = useAppContext()
 
     // if (loading) {
@@ -18,7 +18,7 @@ export default function AuthRequired({children}:PropsWithChildren) {
     // }
 
     if (context.user) {
-        return <>{children}</>
+        return <Outlet/>
     }
 
     return <Navigate to={'/login/'}/>

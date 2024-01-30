@@ -11,9 +11,11 @@
  */
 export default class EventEmitter {
     events: Map<string, ((ctx: this) => unknown)[]>
+    upd:number
 
     constructor() {
         this.events = new Map()
+        this.upd = -1
     }
 
     /**
@@ -30,7 +32,6 @@ export default class EventEmitter {
         this.events.get(eventName)!.push(callback)
 
         return () => {
-            console.warn(this)
             if (this.events.has(eventName)) {
                 const callbacks = this.events.get(eventName)!.filter(cb => cb !== callback)
                 this.events.set(eventName, callbacks)

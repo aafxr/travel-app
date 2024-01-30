@@ -42,7 +42,7 @@ export default function TravelPeople({
                 .then(setMembers)
                 .catch(defaultHandleError)
         }
-    }, [peopleList])
+    }, [])
 
     const className = clsx('travel-details-people',
         {

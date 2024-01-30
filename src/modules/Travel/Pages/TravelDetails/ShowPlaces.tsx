@@ -41,7 +41,7 @@ export default function ShowPlaces() {
 
     return (
         <>
-            <TabsGroup ref={tabs_ref} count={travel.days}/>
+            {/*<TabsGroup ref={tabs_ref} count={travel.days}/>*/}
             <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     placesAtDay.map(p => (

@@ -12,6 +12,8 @@ import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Profile.css'
+import {Photo} from "../../../../classes/StoreEntities/Photo";
+import {UserService} from "../../../../classes/services";
 
 
 /** компонент отбражает профиль пользователя  */
@@ -21,7 +23,8 @@ export default function Profile() {
 
     function handlePhotoChange(blob:Blob){
         if(!user) return
-        PhotoService.updateUserPhoto(user, blob)
+        user.setPhoto(new Photo({blob}))
+        UserService.update(user)
             .then(() => context.setUser(user))
             .catch(defaultHandleError)
     }

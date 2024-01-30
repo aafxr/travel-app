@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "target": "ES6",
+    "target": "es2015",
     "lib": [
-      "es2017",
+      "es2015",
       "webworker",
       "dom",
       "dom.iterable",
@@ -23,8 +23,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "typeRoots": [
-      "./src/types"
-    ]
+      "./src/types",
+      "./node_modules/@types/yandex-maps"
+    ],
+    "paths": {
+      "ymaps/*": ["./node_modules/@types/yandex-maps/*"]
+    }
   },
   "include": [
     "src"

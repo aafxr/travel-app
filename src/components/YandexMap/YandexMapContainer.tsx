@@ -1,37 +1,42 @@
-import React, {createContext, HTMLAttributes, PropsWithChildren, useEffect, useState} from "react";
-import {YMap} from "ymaps3";
+import React, {createContext, HTMLAttributes, PropsWithChildren, useEffect, useRef, useState} from "react";
+import ymaps from "ymaps";
 
 type YMapContextType = {
-    map: YMap | null
+    map: ymaps.Map | null
 }
 
 const defaultState: YMapContextType = {map: null}
 
 export const YMapContext = createContext(defaultState)
 
-interface YandexMapContainerType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>> {}
+interface YandexMapContainerType extends PropsWithChildren<HTMLAttributes<HTMLDivElement>> {
+}
 
 const MAP_ID = 'YMapsID'
 
-export default function YandexMap({children, id, ...props}: YandexMapContainerType) {
+export default function YandexMapContainer({children, id, ...props}: YandexMapContainerType) {
     const [state, setState] = useState(defaultState)
+    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const node = document.getElementById(id || MAP_ID)
-        if (!node) return
+        if (!ref.current) return
+        ymaps.ready(() => {
+            const node = document.getElementById(id || MAP_ID)
+            if (!node) return
 
-        const map = new ymaps3.YMap(node, {
-            location: {
-                zoom: 10,
-            }
+            const map = new ymaps.Map(node, {
+                center: [37.64, 55.76],
+                zoom: 10
+            })
+
+            setState({map})
         })
-        setState({map})
     }, [])
 
 
     return (
         <YMapContext.Provider value={state}>
-            <div id={id || MAP_ID} {...props}>{children}</div>
+            <div ref={ref} id={id || MAP_ID} {...props}>{children}</div>
         </YMapContext.Provider>
     )
 }

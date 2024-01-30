@@ -179,7 +179,7 @@ export default class YMap extends IMap {
 
     /**
      * метод пытается получить координаты средствами браузера или средствами yandex maps api
-     * @method YMap.getUserLocation
+     * @method YandexMap.getUserLocation
      * @returns {Promise<[number, number]>}
      */
     getUserLocation() {

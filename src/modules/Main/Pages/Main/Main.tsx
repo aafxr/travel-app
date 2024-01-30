@@ -10,6 +10,8 @@ import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Main.css'
+import YandexMapContainer from "../../../../components/YandexMap/YandexMapContainer";
+import YPlaceMark from "../../../../components/YandexMap/YPlaceMark";
 
 /**
  * компонент отображает главную страницу приложения
@@ -50,6 +52,9 @@ export default function Main() {
                         {user ? 'Новая поездка' : 'Авторизоваться'}
                     </button>
                 </div>
+                <YandexMapContainer>
+                    <YPlaceMark coordinates={[50,50]} />
+                </YandexMapContainer>
                 {/*<PopularSection/>*/}
                 {/*<RecommendSection/>*/}
 

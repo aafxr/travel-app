@@ -31,7 +31,7 @@ export default function PhotoComponent({className, src, onChange, ...props}: Pho
         if (!e.target.files) return
 
         const file = e.target.files[0]
-
+        if (!file) return
         /*** передаем обновленные данные о фото в компонент родитель */
         onChange && onChange(file)
     }
@@ -40,7 +40,8 @@ export default function PhotoComponent({className, src, onChange, ...props}: Pho
         <>
             <img {...props} className={className} src={src || DEFAULT_IMG_URL} alt="Фото"
                  onClick={e => inputRef.current?.click()}/>
-            {!!onChange && <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/*'}/>}
+            {!!onChange &&
+                <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/jpeg,image/png'}/>}
         </>
     )
 }

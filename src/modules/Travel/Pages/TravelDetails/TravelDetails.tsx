@@ -42,9 +42,9 @@ export default function TravelDetails() {
 
     const menu = (
         <Menu>
-            <LinkComponent to={`/travel/${travelCode}/params/`} title={'Детали путешествия'}/>
-            <LinkComponent to={`/travel/${travelCode}/edite/`} title={'Основные настройки'}/>
-            <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Редактировать детали'}/>
+            <LinkComponent to={`/travel/${travelCode}/description/`} title={'Описание и дата'}/>
+            {/*<LinkComponent to={`/travel/${travelCode}/permissions/`} title={'Права'}/>*/}
+            {/*<LinkComponent to={`/travel/${travelCode}/settings/`} title={'Редактировать детали'}/>*/}
         </Menu>
     )
 
@@ -53,6 +53,7 @@ export default function TravelDetails() {
         travel.setPhoto(new Photo({blob}))
         if (user)
             TravelService.update(context, travel)
+                .then(() => context.setTravel(travel))
                 .catch(defaultHandleError)
     }
 
@@ -106,7 +107,7 @@ export default function TravelDetails() {
                             </div>
                         }
                         <div>
-                            <TravelPeople peopleList={travel.people} compact={compact}/>
+                            <TravelPeople peopleList={travel.members} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>

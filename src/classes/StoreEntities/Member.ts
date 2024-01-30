@@ -27,6 +27,10 @@ export class Member extends StoreEntity implements MemberType {
         if (member.last_name) this.last_name = member.last_name
         if (member.movementType) this.movementType = member.movementType
         if (member.photo) this.photo = member.photo
+
+        if(member instanceof Member){
+            if (member.image) this.setPhoto(member.image)
+        }
     }
 
 
@@ -54,7 +58,9 @@ export class Member extends StoreEntity implements MemberType {
 
 
     setPhoto(photo: Photo) {
-        this.photo = photo.id
+        if (this.photo) photo.id = this.photo
+        else this.photo = photo.id
+
         this.image?.destroy()
         this.image = photo
         this.update()

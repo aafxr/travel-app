@@ -21,7 +21,7 @@ import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
-import TravelEdit from "./modules/Travel/Pages/TravelEdit/TravelEdit";
+import TravelDescriptionAndDate from "./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 // import LimitsEdit from "./modules/ExpensesComponent/Pages/LimitsEdit/LimitsEdit";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
@@ -53,10 +53,12 @@ import AuthRequired from "./hoc/AuthRequired";
 // import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
 // import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 // import {Executor} from "./classes/Executor/Executor";
-import {Expense, User} from "./classes/StoreEntities/";
+import {Expense, Travel, User} from "./classes/StoreEntities/";
 import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
+import TravelPermissions from "./modules/Travel/Pages/TravelPermissions/TravelPermissions";
+import ymaps from "yandex-maps";
 
 
 function App() {
@@ -103,6 +105,7 @@ function App() {
     // }
 
 
+    // document.addEventListener('ex')
     //===========================================================
 
 
@@ -117,7 +120,9 @@ function App() {
 
     window.DB = DB
     window.User = User
-window.Expense = Expense
+    window.Expense = Expense
+    window.Travel = Travel
+
 
     return (
         <>
@@ -125,54 +130,57 @@ window.Expense = Expense
                 {/*<Route element={<WorkerContextProvider/>}>*/}
                 <Route path={'/'} element={<Main/>}/>
                 {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
-                    <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                    <Route path={'/events/'} element={<Events/>}/>
-                    <Route path={'/favorite/'} element={<Favorite/>}/>
-                    <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
+                <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                <Route path={'/events/'} element={<Events/>}/>
+                <Route path={'/favorite/'} element={<Favorite/>}/>
+                <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
-                    <Route path={'/travel/add/'} element={<AuthRequired><TravelAdd/></AuthRequired>}/>
+                <Route element={<AuthRequired/>}>
+                    <Route path={'/travel/add/'} element={<TravelAdd/>}/>
                     <Route element={<TravelLayout/>}>
-                {/*        <Route path={'/travel/:travelCode/map/'} element={<AuthRequired><TravelAddOnMap/></AuthRequired>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
+                                {/*<Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
                         {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
-                        <Route path={'/travel/:travelCode/settings/'} element={<AuthRequired><TravelSettings/></AuthRequired>}/>
-                        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<AuthRequired><TravelUserPermission/></AuthRequired>}/>
-                        <Route path={'/travel/:travelCode/settings/invite/'} element={<AuthRequired><TravelInviteMember/></AuthRequired>}/>
-                        <Route path={'/travel/:travelCode/edite/'} element={<TravelEdit/>}/>
-                {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
+                        <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
+                        <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
+                        <Route path={'/travel/:travelCode/settings/invite/'} element={<TravelInviteMember/>}/>
+                        <Route path={'/travel/:travelCode/description/'} element={<TravelDescriptionAndDate/>}/>
+                        <Route path={'/travel/:travelCode/permissions/'} element={<TravelPermissions/>}/>
+                        {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
                         <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
                         <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                         {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
-                {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
-                        <Route element={<AuthRequired><ExpensesContextProvider/></AuthRequired>}>
+                        {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
+                        {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
+                        <Route element={<ExpensesContextProvider/>}>
                             <Route element={<ExpensesGroupsContextProvider/>}>
                                 <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesComponent/>}/>
                                 <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                             </Route>
-                {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
-                {/*            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>*/}
-                {/*            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>*/}
-                {/*            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>*/}
-                {/*            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>*/}
+                            {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
+                            {/*            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>*/}
+                            {/*            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>*/}
+                            {/*            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>*/}
+                            {/*            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>*/}
                         </Route>
                     </Route>
-                {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
-                    <Route path={'/profile/'} element={<AuthRequired><Profile/></AuthRequired>}/>
-                    <Route path={'/profile/settings/user/'} element={<AuthRequired><ChangeUserPreferences/></AuthRequired>}/>
-                    <Route path={'/profile/settings/user/name/edite/'} element={<AuthRequired><UserNameEdite/></AuthRequired>}/>
-                    <Route path={'/profile/settings/user/photo/edite/'} element={<AuthRequired><UserPhotoEdite/></AuthRequired>}/>
-                    <Route path={'/profile/actions/'} element={<AuthRequired><ActionsList/></AuthRequired>}/>
-                    <Route path={'/profile/sessions/'} element={<AuthRequired><Sessions/></AuthRequired>}/>
+                    {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
+                    <Route path={'/profile/'} element={<Profile/>}/>
+                    <Route path={'/profile/settings/user/'} element={<ChangeUserPreferences/>}/>
+                    <Route path={'/profile/settings/user/name/edite/'} element={<UserNameEdite/>}/>
+                    <Route path={'/profile/settings/user/photo/edite/'} element={<UserPhotoEdite/>}/>
+                    <Route path={'/profile/actions/'} element={<ActionsList/>}/>
+                    <Route path={'/profile/sessions/'} element={<Sessions/>}/>
+                </Route>
                 {/*    <Route path={'/login/'} element={<Login/>}/>*/}
                 {/*</Route>*/}
                 {/*<Route path={'/error/'} element={<ErrorPage/>}/>*/}

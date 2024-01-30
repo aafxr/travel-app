@@ -107,7 +107,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    get members(){
+    get members() {
         return [this.owner_id, ...this.admins, ...this.editors, ...this.commentator]
     }
 
@@ -121,12 +121,21 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
+
     removePlace(place: Place) {
         this.places = this.places.filter(p => p !== place)
         this.setUpdated_at()
     }
 
+    setWaypoints(waypoints: Waypoint[]){
+        this.waypoints = waypoints
+        this.setUpdated_at()
+    }
+
     setPhoto(photo: Photo) {
+        if (this.photo) photo.id = this.photo
+        else this.photo = photo.id
+
         this.image?.destroy()
         this.image = photo
         this.setUpdated_at()
@@ -177,11 +186,10 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    get people() {
-        const list: string[] = []
-        if (this.owner_id) list.push(this.owner_id)
-        if (this.members.length) list.push(...this.members)
-        return list
+    getMemberRole<T extends Member>(member: T) {
+        if (this.isAdmin(member)) return 'admin'
+        if (this.isEditor(member)) return 'editor'
+        return 'commentator'
     }
 
     permitChange<T extends Member>(member: T) {
@@ -202,6 +210,10 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (member.id === this.owner_id) return true
         if (this.admins.includes(member.id)) return true
         return false
+    }
+
+    isEditor<T extends Member>(member: T) {
+        return this.editors.includes(member.id);
     }
 
     permitDelete<T extends Member>(membeer: T) {

@@ -4,6 +4,7 @@ import {Member} from "../../classes/StoreEntities/Member";
 import PhotoComponent from "../PhotoComponent/PhotoComponent";
 
 import './UserCard.css'
+import {useTravel} from "../../contexts/AppContextProvider";
 
 
 type UserCardPropsType = {
@@ -28,11 +29,13 @@ export default function UserCard({
                                      variant = 'horizontal',
                                      onClick,
                                  }: UserCardPropsType) {
-
+    const travel = useTravel()
 
     function handleUserCardClick() {
         onClick && onClick(member)
     }
+
+    if (!travel) return null
 
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
@@ -46,9 +49,9 @@ export default function UserCard({
                                 {/*{!!vehicle && <img src={vehicle} alt='vehicle'/>}*/}
                             </div>
                             {/* статус юзера (в поездке / на месте ...)*/}
-                            {/*{!!status && <div className='user-card-status'>{status}</div>}*/}
+                            {/*<div className='user-card-status'>{}</div>*/}
                         </div>
-                        {/*{!!role && <div className='user-card-role flex-0'>{role}</div>}*/}
+                        <div className='user-card-role flex-0'>{travel.getMemberRole(member)}</div>
                     </>
                 )}
             </>

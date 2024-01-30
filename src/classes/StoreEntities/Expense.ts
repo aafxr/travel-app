@@ -131,6 +131,10 @@ class Expense extends StoreEntity implements ExpenseType {
         })
     }
 
+    valueOf(){
+        return this.value * this.coeff
+    }
+
     dto(): Omit<ExpenseType, 'variant'> {
         return {
             id: this.id,
@@ -149,6 +153,8 @@ class Expense extends StoreEntity implements ExpenseType {
         }
     }
 }
+
+
 
 class ExpenseActual extends Expense {
     variant: ExpenseVariantType = "expenses_actual";

@@ -3,9 +3,9 @@ import {fetchUser} from "../../api/fetch/fetchUser";
 import {MemberType} from "../../types/MemberType";
 import {StoreName} from "../../types/StoreName";
 import {Member} from "../StoreEntities/Member";
-import {DB} from "../db/DB";
-import {PhotoService} from "./PhotoService";
 import {Photo} from "../StoreEntities/Photo";
+import {PhotoService} from "./PhotoService";
+import {DB} from "../db/DB";
 
 
 export class MemberService {
@@ -16,26 +16,20 @@ export class MemberService {
 
         if (member) {
             const memberinstance = new Member(member)
-            if(memberinstance.photo){
+            if (memberinstance.photo) {
                 const photo = await PhotoService.getById(memberinstance.photo)
-                if(photo) memberinstance.setPhoto(new Photo(photo))
+                if (photo) memberinstance.setPhoto(new Photo(photo))
             }
             return memberinstance
         }
     }
 
     static async getManyByIds(ids: string[]) {
-        let members_types = await fetchUsers(ids)
-        if (members_types) await DB.writeAllToStore(StoreName.USERS, members_types)
+        let members_types
+            members_types = await fetchUsers(ids)
+        if (members_types.length) await DB.writeAllToStore(StoreName.USERS, members_types)
         else members_types = await DB.getManyByIds<MemberType>(StoreName.USERS, ids)
-        const members =  members_types.map(m => new Member(m))
-        for (const member  of members){
-            if(member.photo){
-                const photo = await PhotoService.getById(member.photo)
-                if(photo) member.setPhoto(new Photo(photo))
-            }
-        }
-        return members
-
+        const members = members_types.map(m => new Member(m))
+        return await PhotoService.initPhoto(members)
     }
 }

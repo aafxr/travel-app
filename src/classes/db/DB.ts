@@ -76,15 +76,15 @@ export class DB {
     }
 
 
-    static async getManyByIds<T extends {id: string}>(storeName:StoreName, ids:string[]):Promise<T[]>{
-        if(!ids.length) return []
+    static async getManyByIds<T extends { id: string }>(storeName: StoreName, ids: string[]): Promise<T[]> {
+        if (!ids.length) return []
         const list = new Set(ids)
         const cursor = DB.openCursor<T>(storeName)
-        const result:T[] = []
-        while(list.size){
+        const result: T[] = []
+        while (list.size) {
             const item = (await cursor.next()).value as T
-            if(!item) break
-            if(list.has(item.id)){
+            if (!item) break
+            if (list.has(item.id)) {
                 list.delete(item.id)
                 result.push(item)
             }
@@ -93,7 +93,7 @@ export class DB {
     }
 
 
-    static async getClosest<T>(storeName: StoreName, query: IDBKeyRange, count = 1):Promise<T[]>{
+    static async getClosest<T>(storeName: StoreName, query: IDBKeyRange, count = 1): Promise<T[]> {
         const db = await openIDBDatabase()
         return await db.transaction(storeName).objectStore(storeName).getAll(query, count)
     }
@@ -111,8 +111,8 @@ export class DB {
     }
 
 
-    static async writeAllToStore<T>(storeName:StoreName, items: T[]){
-        if(!items.length) return
+    static async writeAllToStore<T>(storeName: StoreName, items: T[]) {
+        if (!items.length) return
         const db = await openIDBDatabase()
         const store = db.transaction(storeName, 'readwrite').objectStore(storeName)
         await Promise.all(items.map(item => store.put(item)))

@@ -15,16 +15,16 @@ import Button from "../../../../components/ui/Button/Button";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
 
-import "./TravelEdit.css"
+import "./TravelDescriptionAndDate.css"
 
 
 /**
  * Компонент редактирования параметров путешествия
  * @function
- * @name TravelEdit
+ * @name TravelDescriptionAndDate
  * @category Pages
  */
-export default function TravelEdit() {
+export default function TravelDescriptionAndDate() {
     const navigate = useNavigate()
 
     const travel = useTravel()!
