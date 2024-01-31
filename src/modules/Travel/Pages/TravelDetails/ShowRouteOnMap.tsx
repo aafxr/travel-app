@@ -71,7 +71,7 @@ export default function ShowRouteOnMap() {
                     title={'Детальный маршрут'}
                     className="map-detail-route-button" small
                 />
-                <YandexMapContainer>
+                <YandexMapContainer style={{height: '100%'}}>
                     {travel.places.map((p, idx) => (
                         <YPlacemark coordinates={p.coords} iconContent={`${idx + 1}`}/>
                     ))}
