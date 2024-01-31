@@ -19,3 +19,9 @@ export default function defaultHandleError(err, message){
             pushAlertMessage({type:"info", message: message || err.message})
         }
 }
+
+
+function saveErrorToDB(e:Error){
+    
+    DB.
+}
