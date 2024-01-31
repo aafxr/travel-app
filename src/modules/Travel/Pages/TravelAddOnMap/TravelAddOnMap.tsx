@@ -1,17 +1,20 @@
 import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React from "react";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
-import YandexMapContainer from "../../../../components/YandexMapContainer/YandexMapContainer";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {YandexMapContainer, YPlacemark} from "../../../../components/YandexMap";
+import {useAppContext} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
+import {useTravelState} from "../../../../hooks/useTravelState";
 import Button from "../../../../components/ui/Button/Button";
+import {WaypointType} from "../../../../types/WaypointType";
+import {TravelService} from "../../../../classes/services";
 import {PageHeader} from "../../../../components/ui";
-import useDragPoint from "../../hooks/useDragPoint";
 import StartPointInput from "./StartPointInput";
-import IMap from "../../../../api/map/IMap";
 
 import './TravelAddOnMap.css'
+import {Waypoint} from "../../../../classes/StoreEntities";
 
 
 /**
@@ -22,89 +25,64 @@ import './TravelAddOnMap.css'
  * @category Pages
  */
 export default function TravelAddOnMap() {
+    const context = useAppContext()
+    const currentTravel = context.travel
     const navigate = useNavigate()
-    const travel = useTravel()
-    const user = useUser()
-    const [map, setMap] = useState<IMap | null>( null)
+    const [state, setState] = useTravelState(context.travel)
 
     // const {points, setPoints} = usePoints(map)
 
-    const draggedPoint = useDragPoint()
-
-    useEffect(() => {
-        if (map && travelObj && travelObj.waypoints.length) {
-            window.map = map
-            const waypoints = travelObj.waypoints
-            map.clearMap()
-            waypoints.forEach(/**@param{WaypointType} p*/(p, idx) => map.addPoint({
-                id: p.id,
-                coords: p.coords
-            }, {markerType: "exist", iconText: idx + 1}))
-            map.showRoute(waypoints)
-            map.autoZoom()
-        }
-    }, [travel, map])
-
-    //обработка изменения положения точки после взаимодейсвия ==========================================================
-    // useEffect(() => {
-    //     if (draggedPoint) {
-    //         const newPoints = points.map(p => ({...p}))
-    //         newPoints[draggedPoint.index].text = draggedPoint.dragPoint.address
-    //         newPoints[draggedPoint.index].point = draggedPoint.dragPoint
-    //         setPoints(newPoints)
-    //     }
-    // }, [draggedPoint])
-
-
-    //==================================================================================================================
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
-        travel.change = true
-        travel
-            .save(user.id)
-            .then(() => navigate(`/travel/${travelObj.id}/settings/`))
-            .catch(console.error)
+        const travel = context.travel
+        if (!travel) return
+        if (!state) return
+        if (!state.change) return
+
+        Object.assign(travel, state.travel)
+
+        const waypoints  = Array.from({length: 3}).map(() => new Waypoint({}).dto())
+
+        setState({travel: {...state.travel, waypoints }, change: false})
+
+        TravelService.update(context, travel)
+            .then(() => navigate(`/travel/${travel.id}/settings/`))
+            .catch(defaultHandleError)
     }
 
 
-    /**
-     * обработка изменения списка точек ( добавлена / удалена / переставленна)
-     * @param {WaypointType[]} newPoints
-     */
-    function handlePointListChange(newPoints) {
-        travel.isFromPoint
-            ? travel.setWaypoints([travelObj.waypoints[0], ...newPoints])
-            : travel.setWaypoints(newPoints)
-
-        map
-            .clearMap()
-            .showRoute(travelObj.waypoints, {})
-            .showPolyRoute(travelObj.waypoints.map(p => p.coords),{})
-            .autoZoom(travelObj.waypoints.length > 1 ? undefined : 12)
+    /** обработка изменения списка точек ( добавлена / удалена / переставленна) */
+    function handlePointListChange(waypoints: WaypointType[]) {
+        if (!state) return
+        setState({...state, travel: {...state.travel, waypoints}})
     }
 
+
+    if(!state || !currentTravel) return null
 
     return (
         <div className='wrapper'>
             <Container className='travel-map pb-20'>
                 <PageHeader arrowBack title={'Куда вы хотите поехать?'}/>
                 <div className='column gap-0.5'>
-                    <StartPointInput map={map}/>
+                    <StartPointInput
+                        waypoint={state.travel.isFromPoint ? state.travel.waypoints[0] : undefined}
+                        onChange={console.log}
+                        onRemove={console.log}
+                    />
                     <MapPointsInputList
-                        map={map}
-                        pointsList={travelObj.isFromPoint ? travelObj.waypoints.slice(1) : travelObj.waypoints}
-                        onListChange={handlePointListChange}
+                        waypoints={state.travel.isFromPoint ? state.travel.waypoints.slice(1) : state.travel.waypoints}
+                        onChange={handlePointListChange}
                     />
                 </div>
             </Container>
-            <div className='content'>
-                <YandexMapContainer onMapReadyCB={setMap}/>
-            </div>
+                <YandexMapContainer className={'content'}>
+                    {state.travel.waypoints.map(w => (
+                        <YPlacemark key={w.id} coordinates={w.coords}/>
+                    ))}
+                </YandexMapContainer>
             <div className='fixed-bottom-button'>
-                <Button
-                    onClick={handleRouteSubmit}
-                    // disabled={!map ||travel.waypoints.length === 0}
-                >
+                <Button onClick={handleRouteSubmit} disabled={state ? state.change : true}>
                     Продолжить
                 </Button>
             </div>

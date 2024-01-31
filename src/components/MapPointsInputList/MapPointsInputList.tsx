@@ -1,132 +1,113 @@
-import {useNavigate} from "react-router-dom";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
-import useTravelContext from "../../hooks/useTravelContext";
-import useUserSelector from "../../hooks/useUserSelector";
-import ErrorReport from "../../controllers/ErrorReport";
-import {pushAlertMessage} from "../Alerts/Alerts";
-import DragIcon from "../svg/DragIcon";
-import Swipe from "../ui/Swipe/Swipe";
-import sleep from "../../utils/sleep";
-import {Input} from "../ui";
-import defaultPoint from "../../utils/default-values/defaultPoint";
-import PointInput from "./PointInput";
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
+import {WaypointType} from "../../types/WaypointType";
+import {Waypoint} from "../../classes/StoreEntities";
+import {findByAddress} from "../YandexMap";
+import PointInput from "./PointInput";
 
-/**
- * @typedef {{address: string, id: string}} PointsListChangeType
- */
-/**
- * @typedef {Function} PointsListChangeFunction
- * @param {WaypointType[]} points
- */
+import './MapPointsInoutList.css'
+
+
+type MapPointsInputListPropsType = {
+    waypoints?: WaypointType[],
+    onChange: (waypoints: WaypointType[]) => unknown
+    min?: number
+}
+
+const dwp = [
+    new Waypoint({}).dto(),
+    new Waypoint({}).dto(),
+    new Waypoint({}).dto(),
+    new Waypoint({}).dto()
+]
 
 /**
  * Компонент отображает список HTMLInputElement-ов (полей ввода желаемых мест для посещения)
- * @param {IMap} map интерфейс для взаимодействия с api карты
- * @param {WaypointType[]} pointsList список предпологаемых мест для посещения
- * @param {PointsListChangeFunction} onListChange обработчик на изменение порядка или введенной локации
+ * @param {WaypointType[]} [waypoints] список предпологаемых мест для посещения
+ * @param onChange обработчик на изменение порядка или введенной локации
+ * @param min минимальное чило отображаемых полей
  * @returns {JSX.Element}
  * @category Components
  */
-export default function MapPointsInputList({map, pointsList, onListChange}) {
-    const navigate = useNavigate()
-    // const user = useUserSelector()
-    const {travel, travelObj} = useTravelContext()
-    // const travelState = useTravelStateSelector()
-    const [points, setPoints] = useState(/**@type{WaypointType[]} */ [])
+export default function MapPointsInputList({waypoints = dwp, onChange, min = 2}: MapPointsInputListPropsType) {
+
+// const user = useUserSelector()
+// const {travel, travelObj} = useTravelContext()
+// const travelState = useTravelStateSelector()
+
+    const [points, setPoints] = useState<WaypointType[]>([])
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
-    const drag = useRef({})
+    const drag = useRef<{ draggingPoint?: WaypointType, draggOverPoint?: WaypointType }>({})
 
     /*** clone - react ref  на HTMLElement, который планируем перетаскивать */
-    const clone = useRef(null)
+    const clone = useRef<HTMLDivElement>()
 
     /*** react ref, содержит поля top, right (смещение относительно верхнего правого угда элемента)*/
-    const offset = useRef(null)
+    const offset = useRef<{ top: number, right: number } | null>(null)
 
     useEffect(() => {
-        if (pointsList && pointsList.length) setPoints(pointsList)
-    }, [pointsList])
+        setPoints(waypoints)
+    }, [waypoints])
 
 
-    // обработка ввода input ===========================================================================================
+// обработка ввода input ===========================================================================================
     /***
      * при нажатии Enter (keyCode = 13) добавляет точку на карту
      * @param {KeyboardEvent<HTMLInputElement>} e
      * @param {PointsListChangeType} item - элемент из массива points
      * @returns {Promise<void>}
      */
-    async function handleKeyDown(e, item) {
-        if (e.keyCode === 13) {
+    async function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>, item: WaypointType) {
+        if (e.key === 'Enter') {
             updatePointData(item)
                 .catch(defaultHandleError)
         }
     }
 
-    /***
-     *
-     * @param {WaypointType} item
-     * @returns {Promise<void>}
-     */
-    async function updatePointData(item) {
-        const idx = points.findIndex(p => p.id === item.id)
-        const {address, id} = item
-        /**@type{GeoObjectPropertiesType[]}*/
-        const pointsProperty = await map.getPointByAddress(address)
-        if (pointsProperty.length > 0) {
-            const marker = pointsProperty[0]
-            console.log(marker)
-            /*** обновляем адресс в массиве points по полученным данным от api карты */
-            item.address = marker.name
-            item.coords = marker.boundedBy[0]
-            item.kind = marker.metaDataProperty.GeocoderMetaData.kind
-            item.locality = marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea?.Locality?.LocalityName
-            || marker.metaDataProperty.GeocoderMetaData.AddressDetails.Country.AdministrativeArea.AdministrativeAreaName
 
-            let newPointsArray
-            if (~idx) {
-                newPointsArray = [...points]
-            } else {
-                newPointsArray = [...points, {...item}]
-            }
-
-            setPoints(newPointsArray)
-            onListChange && onListChange(newPointsArray)
-        } else {
-            pushAlertMessage({type: "warning", message: 'не удалось определить адрес'})
+    async function updatePointData(item: WaypointType) {
+        const {address} = item
+        const pointsProperty = await findByAddress(address)
+        if('address' in pointsProperty){
+            item.address = pointsProperty.address
+            item.coords = pointsProperty.boundedBy[0]
+            setPoints([...points])
         }
     }
 
-    /**
-     * обработка input event
-     * @param {InputEvent} e
-     * @param item - элемент из массива points
-     */
-    function handleInputChange(e, item) {
-        item.address = e.target.value
-        setPoints([...points])
+
+    function handleInputChange(text:string, item: WaypointType) {
+        text = text.trim()
+        if(text) {
+            item.address = text
+            findByAddress(text)
+                .then(response => {
+                    if('address' in response) {
+                        item.address = response.address
+                        item.coords = response.boundedBy[0]
+                        setPoints(prev => ([...prev]))
+                    }
+                })
+                .catch(defaultHandleError)
+            setPoints([...points])
+        }
     }
 
+    console.log(points)
 
-    // обработка перетаскивания ========================================================================================
-    function handleDragStart(item) {
+// обработка перетаскивания ========================================================================================
+    function handleDragStart(item: WaypointType) {
         drag.current.draggingPoint = item
     }
 
     /**
      * @param {WaypointType} item - точка, которую перетаскивали
      */
-    function handleDragEnd(item) {
-        /**
-         * индекс перетаскиваемого элемента
-         * @type {number}
-         */
+    function handleDragEnd(item: WaypointType) {
         const draggingIDX = points.findIndex(p => !!drag.current.draggingPoint && p.id === drag.current.draggingPoint.id)
-        /**
-         * индекс элемента, на который навели
-         * @type {number}
-         */
+        /** индекс элемента, на который навели */
         const overIDX = points.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
@@ -141,27 +122,28 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
              */
             drag.current = {}
             setPoints(newPoints)
-            onListChange && onListChange(newPoints)
+            onChange(newPoints)
         }
     }
 
 
-    function handleDragOver(item) {
+    function handleDragOver(item: WaypointType) {
         drag.current.draggOverPoint = item
     }
 
-    function handleDragLeave(item) {
+    function handleDragLeave(item: WaypointType) {
     }
 
 
-    function handleTouchStart(e, item) {
+    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>, item: WaypointType) {
         document.documentElement.classList.add('disable-reload')
-        const el = e.target.closest('.travel-map-input-container')
+        const $input = e.target as HTMLInputElement
+        const el = $input.closest<HTMLDivElement>('.travel-map-input-container')
         if (el) {
             const elRect = el.getBoundingClientRect()
             /*** создаем копию элемента */
-            clone.current = cloneNode(el)
-            document.body.appendChild(clone.current)
+            clone.current = cloneNode(el as unknown as HTMLStyleElement) as unknown as HTMLDivElement
+            document.body.appendChild(clone.current!)
 
             const {clientX, clientY} = e.changedTouches[0]
             /*** смещение относительно правого верхнего угла блока-контейнерв */
@@ -177,7 +159,7 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      * обработчик для позиционирования клона перемещаемого объекта
      * @param {TouchEvent} e
      */
-    function handleTouchMove(e) {
+    function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
         if (clone.current) {
             const {clientX, clientY} = e.changedTouches[0]
             clone.current.style.right = window.innerWidth - clientX + (offset.current?.right || 0) + 'px'
@@ -185,13 +167,13 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
         }
     }
 
-    function handleTouchEnd(e, p) {
+    function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>, p: WaypointType) {
         if (clone.current) clone.current.remove()
 
         document.documentElement.classList.remove('disable-reload')
         const {clientX, clientY} = e.changedTouches[0]
         /*** поиск обертки input элемента  */
-        const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container')
+        const container = document.elementFromPoint(clientX, clientY)?.closest('.travel-map-input-container') as HTMLDivElement
         if (container) {
             /*** достаем id  из data-атрибута id */
             const pointID = container.dataset.id
@@ -207,55 +189,41 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
      * удаление точки с карты
      * @param {WaypointType} item
      */
-    function handleRemovePoint(item) {
-        if (map) {
-            /***
-             * индекс удаляемой точки
-             * @type{number}
-             */
-            const pointIdx = pointsList.findIndex(p => p.id === item.id)
-            /*** проверка на  pointIdx !== -1 */
-            if (~pointIdx) {
-                /*** удаляемая точка с карты */
-                const point = pointsList[pointIdx]
-                /*** point может не существовать (если не нажата кнопка Enter) */
-                point && map.removePoint(point.id)
-                /*** обновленный массив точек */
-                const list = points.filter((p) => p.id !== point.id)
-                /*** обновляем зум карты */
-                map.autoZoom()
-                /*** если массив точек пуст добавляем пустое поле для новой точки */
-                    // list.length === 0 && list.push({id: createId(user.id), text: '', point: undefined})
-                const newPoints = pointsList.filter((p) => p.id !== point.id)
-                setPoints(list)
-                onListChange && onListChange(newPoints)
-            }
+    function handleRemovePoint(item: WaypointType) {
+        /***
+         * индекс удаляемой точки
+         */
+        const pointIdx = waypoints.findIndex(p => p.id === item.id)
+        /*** проверка на  pointIdx !== -1 */
+        if (~pointIdx) {
+            /*** удаляемая точка с карты */
+            const point = waypoints[pointIdx]
+            /*** обновленный массив точек */
+            const list = points.filter((p) => p.id !== point.id)
+            /*** если массив точек пуст добавляем пустое поле для новой точки */
+                // list.length === 0 && list.push({id: createId(user.id), text: '', point: undefined})
+            const newPoints = waypoints.filter((p) => p.id !== point.id)
+            setPoints(list)
+            onChange(newPoints)
         }
     }
 
-    function handleFocus(e) {
+    function handleFocus(item: WaypointType) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
-        document.activeElement.classList.add('input-highlight')
+        document.activeElement?.classList.add('input-highlight')
     }
 
-    function handleSearchClick(item) {
+    function handleBlur(item: WaypointType) {
+        const elems = document.querySelectorAll('input[data-id]')
+        elems.forEach(el => el.classList.remove('input-highlight'))
+    }
+
+    function handleSearchClick(item: WaypointType) {
         updatePointData(item)
             .catch(defaultHandleError)
     }
 
-    // добавление новой точки ==========================================================================================
-    function handleSubmitNewPoint() {
-        const newPoint = defaultPoint(travelObj.id)
-        travel.addWaypoint(newPoint)
-        navigate(`/travel/${travelObj.id}/add/waypoint/${newPoint.id}/`)
-    }
-
-    function handleBlur(point) {
-        document.getElementById(point.id)?.classList.remove('input-highlight')
-    }
-
-    console.log(travelObj)
 
     return (
         <>
@@ -276,36 +244,11 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onKeyDown={handleKeyDown}
-                        onInputChange={handleInputChange}
+                        onInputChange={(text => handleInputChange(text, p))}
                     />
                 ))
             }
-            {
-                points.length === 0 && (
-                    <PointInput
-                        onRemovePoint={handleRemovePoint}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        onSearchClick={handleSearchClick}
-                        onTouchStart={handleTouchStart}
-                        onTouchEnd={handleTouchEnd}
-                        onTouchMove={handleTouchMove}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                        onKeyDown={handleKeyDown}
-                        onInputChange={handleInputChange}
-                    />
-                )
-            }
-            <div
-                className='link'
-                onClick={handleSubmitNewPoint}
-            >
-                + Добавить точку маршрута
-            </div>
-        </>
+            </>
     )
 }
 
@@ -314,17 +257,19 @@ export default function MapPointsInputList({map, pointsList, onListChange}) {
  * @param {HTMLElement} el
  * @returns {HTMLElement}
  */
-function cloneNode(el) {
+function cloneNode<T extends HTMLStyleElement>(el: T) {
     if (!el) return null
 
     const elRect = el.getBoundingClientRect()
-    const clone = el.cloneNode(true)
-    clone.style.opacity = 0.7
+    const clone = el.cloneNode(true) as T
+    clone.style.opacity = '0.7'
     clone.style.position = 'fixed'
     clone.style.overflow = 'hidden'
-    clone.style.zIndex = 1000
+    clone.style.zIndex = '1000'
     clone.style.width = elRect.width + 'px'
     clone.style.height = elRect.height + 'px'
 
     return clone
 }
+
+

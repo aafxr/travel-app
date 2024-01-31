@@ -33,9 +33,8 @@ export default function TravelAdd() {
         }
         if (title.length && user) {
             const travel = new Travel({title, owner_id: user.id})
-            console.log(travel)
             TravelService.create(context, travel)
-                .then(() => navigate('/travels/current/'))
+                .then(() => navigate(`/travel/${travel.id}/map/`))
                 .catch(defaultHandleError)
 
         }

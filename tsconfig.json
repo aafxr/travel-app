@@ -27,7 +27,7 @@
       "./node_modules/@types/yandex-maps"
     ],
     "paths": {
-      "ymaps": ["./node_modules/@types/yandex-maps"]
+      "ymaps/*": ["./node_modules/@types/yandex-maps/*"]
     }
   },
   "include": [

@@ -7,7 +7,7 @@ import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/Travel
 // import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 // import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
 import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
-// import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
+import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 // import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
 import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings";
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
@@ -58,7 +58,6 @@ import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
 import TravelPermissions from "./modules/Travel/Pages/TravelPermissions/TravelPermissions";
-import ymaps from "yandex-maps";
 
 
 function App() {
@@ -138,7 +137,7 @@ function App() {
                 <Route element={<AuthRequired/>}>
                     <Route path={'/travel/add/'} element={<TravelAdd/>}/>
                     <Route element={<TravelLayout/>}>
-                                {/*<Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>*/}
+                                <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                         {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>

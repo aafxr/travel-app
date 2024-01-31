@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect} from 'react'
 import useMap from "../../hooks/useMap";
-import MapControls from "../MapControls/MapControls";
+import MapControls from "../YandexMap/YMapControls/YMapControls";
 
 /**
  * @typedef {function} HandleMapSelected

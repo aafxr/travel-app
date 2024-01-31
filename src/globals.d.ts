@@ -1,6 +1,7 @@
 import {Place, Travel, User} from "./classes/StoreEntities";
 import {DB} from "./classes/db/DB";
 import {Context} from "./classes/Context/Context";
+import ymaps from "ymaps/index";
 
 
 declare global {
@@ -17,6 +18,7 @@ declare global {
         TelegramLoginWidget: {
             dataOnauth: (user) => unknown,
         }
+        ymaps:ymaps
     }
 
     interface GlobalEventHandlersEventMap{

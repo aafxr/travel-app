@@ -6,6 +6,7 @@ import Button from "../../../../components/ui/Button/Button";
 import ShowRouteByDays from "./ShowRouteByDays";
 import ShowPlaces from "./ShowPlaces";
 import debounce from "lodash.debounce";
+import ShowRouteOnMap from "./ShowRouteOnMap";
 
 export function ShowRoute() {
     const user = useUser()!
@@ -44,9 +45,9 @@ export function ShowRoute() {
             {
                 user.getSetting('routeFilter') === 'allPlaces' && <ShowPlaces/>
             }
-            {/*{*/}
-            {/*    user.getSetting('routeFilter') === 'onMap' && <ShowRouteOnMap/>*/}
-            {/*}*/}
+            {
+                user.getSetting('routeFilter') === 'onMap' && <ShowRouteOnMap/>
+            }
             {
                 user.getSetting('routeFilter') === 'byDays' && <ShowRouteByDays/>
             }

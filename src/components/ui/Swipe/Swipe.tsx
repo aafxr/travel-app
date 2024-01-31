@@ -10,7 +10,7 @@ import './Swipe.css'
 let defaultMargin = 40
 
 interface SwipePropsType extends PropsWithChildren{
-    className: string
+    className?: string
     onClick?: Function
     onRemove?: Function
     onConfirm?: Function
