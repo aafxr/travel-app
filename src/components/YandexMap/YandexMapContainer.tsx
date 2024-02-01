@@ -1,4 +1,12 @@
-import React, {createContext, HTMLAttributes, PropsWithChildren, useEffect, useState} from "react";
+import React, {
+    createContext,
+    HTMLAttributes,
+    PropsWithChildren,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState
+} from "react";
 import {YMapControls} from "./YMapControls/YMapControls";
 import type {IMapState, Map} from "ymaps/index";
 
@@ -18,6 +26,7 @@ const MAP_ID = 'YMapsID'
 export function YandexMapContainer({children, id, zoom, center, ...props}: YandexMapContainerType) {
     const [state, setState] = useState(defaultState)
 
+
     useEffect(() => {
         window.ymaps.ready(() => {
             const node = document.getElementById(id || MAP_ID)
@@ -28,8 +37,25 @@ export function YandexMapContainer({children, id, zoom, center, ...props}: Yande
                 zoom: zoom || 10
             })
 
+            const handleGeoObjectsChange = async () => {
+                const bounds = map.geoObjects.getBounds()
+                const zoom = map.getZoom()
+                await map.setBounds(bounds).catch(console.error)
+                if (map.getZoom() > zoom)
+                    await map.setZoom(zoom).catch(console.error)
+                map.container.fitToViewport()
+            }
+
+            map.geoObjects.events.add('add', handleGeoObjectsChange)
+
+            map.geoObjects.events.add('remove', handleGeoObjectsChange)
+
             setState({map})
         })
+
+        return () => {
+            state && state.map?.destroy()
+        }
     }, [])
 
 

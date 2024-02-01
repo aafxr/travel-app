@@ -123,7 +123,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
 
     removePlace(place: Place) {
-        this.places = this.places.filter(p => p !== place)
+        this.places = this.places.filter(p => p._id !== place._id)
         this.setUpdated_at()
     }
 

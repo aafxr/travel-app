@@ -28,7 +28,8 @@ export default function ShowPlaces() {
 
     function handleRemovePLace(place: Place) {
         travel.removePlace(place)
-        TravelService.addPlace(context, place)
+        TravelService.update(context, travel)
+            .then( () => context.setTravel(travel))
             .catch(defaultHandleError)
     }
 

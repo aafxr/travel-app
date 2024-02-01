@@ -56,7 +56,6 @@ export default function ShowRouteOnMap() {
 
 
     if (!travel) return null
-    console.log(travel.places)
 
     return (
         <>

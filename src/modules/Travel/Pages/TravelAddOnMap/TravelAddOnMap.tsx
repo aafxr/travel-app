@@ -179,8 +179,10 @@ export default function TravelAddOnMap() {
                     </div>
                 </div>
             </Container>
-            <YandexMapContainer className={'content'} center={hoverWaypoint ? hoverWaypoint.coords : undefined}>
-                {state.travel.waypoints.map(w => (
+            <YandexMapContainer className={'content'} center={hoverWaypoint ? hoverWaypoint.coords : undefined} >
+                {state.travel.waypoints
+                    .filter(w => Boolean(~w.coords[0]))
+                    .map(w => (
                     <YPlacemark key={w.id} coordinates={w.coords}/>
                 ))}
             </YandexMapContainer>

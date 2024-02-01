@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useTravelState, UseTravelStateType} from "../../../../hooks/useTravelState";
 import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
-import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 import NumberInput from "../../../../components/ui/Input/NumberInput";
 import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
 import TextArea from "../../../../components/ui/TextArea/TextArea";
@@ -14,6 +14,8 @@ import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
+import {Travel} from "../../../../classes/StoreEntities";
+import {MS_IN_DAY} from "../../../../static/constants";
 
 import "./TravelDescriptionAndDate.css"
 
@@ -29,65 +31,105 @@ export default function TravelDescriptionAndDate() {
 
     const travel = useTravel()!
     const context = useAppContext()
-    const {item: updateTravel, change} = useCloneStoreEntity(travel)
-    const [days, setDays] = useState(0)
+    const [state, setState] = useTravelState(travel)
+    const [days, setDays] = useState(state?.travel.days || 0)
 
-    useEffect(() => {
-        if(updateTravel) setDays(updateTravel.days)
-    },[updateTravel])
+
+    function getNewState(state: UseTravelStateType): UseTravelStateType {
+        return {...state, travel: {...state.travel}}
+    }
 
 
     /** обработчик нажатия на способ перемещения */
     function handleTagClick(mt: MovementType) {
-        if (!updateTravel) return
-        if (!updateTravel.movementTypes.includes(mt))
-            updateTravel.setMovementTypes([...updateTravel.movementTypes, mt])
-        else if (updateTravel.movementTypes.length > 1)
-            updateTravel.setMovementTypes(updateTravel.movementTypes.filter(m => m !== mt))
+        if (!state) return
+        const newState = getNewState(state)
+        if (!newState.travel.movementTypes.includes(mt))
+            newState.travel.movementTypes = [...newState.travel.movementTypes, mt]
+        else if (newState.travel.movementTypes.length > 1)
+            newState.travel.movementTypes = newState.travel.movementTypes.filter(m => m !== mt)
+        setState(newState)
     }
 
 
     /** измененный диапазрн дат (начало - конец) */
     function handleDateRangeChange({start, end}: { start?: Date, end?: Date }) {
-        if (!updateTravel) return
-        if (start) updateTravel.setDate_start(start)
-        if (end) updateTravel.setDate_end(end)
+        if (!state) return
+        const newState = getNewState(state)
+        if (start) {
+            const date_start = new Date(start)
+            newState.travel.date_start = new Date(date_start)
+            newState.travel.date_end = new Date(date_start.getTime() + MS_IN_DAY * newState.travel.days)
+            newState.travel.date_start = date_start
+        }
+        if (end) {
+            const date_end = new Date(end)
+            newState.travel.date_start = new Date(date_end.getTime() - MS_IN_DAY * newState.travel.days)
+            newState.travel.date_end = date_end
+        }
+        setState(newState)
     }
 
 
     function handleDescriptionChange(text: string) {
-        if (!updateTravel) return
-        updateTravel.setDescription(text)
+        if (!state) return
+        const newState = getNewState(state)
+        newState.travel.description = text
+        setState(newState)
     }
 
 
     function handleToggleBoxChanged(isPublic: boolean) {
-        if(!updateTravel) return
-        updateTravel.setPublic(isPublic)
+        if (!state) return
+        const newState = getNewState(state)
+        newState.travel.permission.public = isPublic ? 1 : 0
+        setState(newState)
     }
 
 
     function handleTitleChange(text: string) {
-        if(!updateTravel) return
-        updateTravel.setTitle(text)
+        if (!state) return
+        const newState = getNewState(state)
+        newState.travel.title = text
+        setState(newState)
     }
 
 
-    function  handleTravelDays(d:number){
+    function handleTravelDays(d: number) {
         setDays(d)
-        if (updateTravel) updateTravel.setDays(d)
+        if (!state) return
+        if (d < 1) return
+
+        const newState = getNewState(state)
+        newState.travel.date_end = new Date(newState.travel.date_start.getTime() + MS_IN_DAY * d)
+        newState.travel.days = d
+        setState(newState)
     }
 
 
     function handleSave() {
-        if (change && updateTravel)
-            TravelService.update(context, updateTravel)
-                .then(() => navigate(`/travel/${updateTravel.id}/`))
-                .then(() => context.setTravel(updateTravel))
+        if (!state) return
+        if (state.change) {
+            const updatedTravel = new Travel(state.travel)
+            TravelService.update(context, updatedTravel)
+                .then(() => navigate(`/travel/${updatedTravel.id}/`))
+                .then(() => context.setTravel(updatedTravel))
                 .catch(defaultHandleError)
+        }
     }
 
-    if (!updateTravel) return null
+    function initDateRange() {
+        if (!state) return
+        if (state.travel.date_start.getTime() < Date.now() / 2) {
+            const start = new Date()
+            start.setHours(0, 0, 0, 0)
+            const end = new Date(start.getTime() + MS_IN_DAY * state.travel.days)
+            return {start, end}
+        }
+        return {start: state.travel.date_start, end: state.travel.date_end}
+    }
+
+    if (!state) return null
 
     return (
         <div className='wrapper'>
@@ -100,7 +142,7 @@ export default function TravelDescriptionAndDate() {
                     <Input
                         type='text'
                         placeholder={'Название поездки'}
-                        value={updateTravel.title}
+                        value={state.travel.title}
                         onChange={handleTitleChange}
                     />
                 </div>
@@ -116,11 +158,8 @@ export default function TravelDescriptionAndDate() {
                         />
                     </div>
                     <DateRange
-                        init={travel.date_start.getTime() > 0 ? {
-                            start: updateTravel.date_start,
-                            end: updateTravel.date_end
-                        } : undefined}
-                        minDate={updateTravel.date_start}
+                        init={initDateRange()}
+                        minDate={state.travel.date_start}
                         onChange={handleDateRangeChange}
                     />
                 </div>
@@ -132,7 +171,7 @@ export default function TravelDescriptionAndDate() {
                                 <Chip
                                     key={t.id}
                                     icon={t.icon}
-                                    color={~updateTravel.movementTypes.findIndex(mt => mt === t.id) ? 'orange' : 'grey'}
+                                    color={~state.travel.movementTypes.findIndex(mt => mt === t.id) ? 'orange' : 'grey'}
                                     rounded
                                     onClick={() => handleTagClick(t.id)}
                                 >
@@ -144,7 +183,8 @@ export default function TravelDescriptionAndDate() {
                 </div>
                 <div className='block column gap-0.5'>
                     <div className='title-bold'>Описание</div>
-                    <TextArea init={updateTravel.description} onChange={handleDescriptionChange} placeholder='Описание'/>
+                    <TextArea init={state.travel.description} onChange={handleDescriptionChange}
+                              placeholder='Описание'/>
                 </div>
                 <ToggleBox
                     className='block'
@@ -154,7 +194,7 @@ export default function TravelDescriptionAndDate() {
                 />
             </Container>
             <div className='footer-btn-container footer'>
-                <Button onClick={handleSave} disabled={!change}>
+                <Button onClick={handleSave} disabled={!state.change}>
                     Сохранить
                 </Button>
             </div>

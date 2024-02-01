@@ -88,6 +88,7 @@ export class Place implements PlaceType, WithDTOMethod {
             time_start: this.time_start,
             time_end: this.time_end,
             visited: this.visited,
+            photos: this.photos,
         }
     }
 

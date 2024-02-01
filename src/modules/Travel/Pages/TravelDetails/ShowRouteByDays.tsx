@@ -8,6 +8,7 @@ import {Place} from "../../../../classes/StoreEntities";
 import {MS_IN_DAY} from "../../../../static/constants";
 import {PlusIcon} from "../../../../components/svg";
 import {Tab} from "../../../../components/ui";
+import LocationCard from "../../components/LocationCard/LocationCard";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
@@ -50,7 +51,7 @@ export default function ShowRouteByDays() {
                 {
                     dayPlane.length
                         ? dayPlane.map(p =>
-                            <PlaceCard2 key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
+                            <LocationCard key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
                         )
                         : <Link className='link align-center gap-1'
                                 to={`/travel/${travel.id}/add/place/${dayNumber}/`}><PlusIcon

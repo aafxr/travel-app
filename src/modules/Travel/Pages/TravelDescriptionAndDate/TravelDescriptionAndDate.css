@@ -8,12 +8,13 @@
 
 .travel-edit-days-input{
     padding: 0;
+    width: auto;
+    color: var(--color-text);
     text-align: center;
     font-size: 1rem;
+    background-color: inherit;
     border: transparent;
-    width: auto;
     border-radius: unset;
     border-bottom: 2px solid var(--color-grey);
-    background-color: inherit;
     outline: none;
 }
