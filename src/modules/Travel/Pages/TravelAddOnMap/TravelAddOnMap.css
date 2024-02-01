@@ -1,31 +1,35 @@
-.travel-map{
+.travel-map {
     color: var(--color-black);
     background-color: var(--color-background-alt);
 }
 
-#map{
+#map {
     height: 100%;
     overflow: hidden;
 }
 
-.travel-controls{
+.travel-controls {
     position: fixed;
     top: 65%;
     right: 12px;
 }
 
 
-.travel-map-input-container{
+.travel-map-input-container {
     position: relative;
+    color: var(--color-text-secondary);
 }
 
+.travel-map-input-container .input {
+    padding: 6px 40px 6px 16px;
+}
 
-.travel-map-input{
+.travel-map-input {
     padding-right: 40px;
     background-color: var(--color-background-alt);
 }
 
-.travel-map-search{
+.travel-map-search {
     position: absolute;
     top: 50%;
     right: 4px;
@@ -36,7 +40,7 @@
     cursor: pointer;
 }
 
-.travel-map-drag-icon{
+.travel-map-drag-icon {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -51,7 +55,7 @@
     cursor: grab;
 }
 
-.travel-map-drag-icon svg{
+.travel-map-drag-icon svg {
     width: var(--icon-size);
     height: var(--icon-size);
     pointer-events: none;

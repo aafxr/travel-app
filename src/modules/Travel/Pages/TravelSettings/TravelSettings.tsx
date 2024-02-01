@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import {TravelPreference} from "../../../../types/TravelPreference";
@@ -17,7 +18,6 @@ import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
 
 import './TravelSettings.css'
-import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 
 
 const sightseeingTime: RadioButtonGroupItemType[] = [

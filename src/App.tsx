@@ -5,7 +5,6 @@ import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/Tr
 // import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import TravelInviteMember from "./modules/Travel/Pages/TravelInviteMember/TravelInviteMember";
 // import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
-// import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddWaypoint/TravelAddWaypoint";
 import ChangeUserPreferences from "./modules/Main/Pages/Profile/ChangeUserPreferences";
 import TravelAddOnMap from "./modules/Travel/Pages/TravelAddOnMap/TravelAddOnMap";
 // import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
@@ -58,64 +57,23 @@ import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
 import TravelPermissions from "./modules/Travel/Pages/TravelPermissions/TravelPermissions";
+import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddOnMap/TravelAddWaypoint";
+import defaultHandleError from "./utils/error-handlers/defaultHandleError";
 
 
 function App() {
     const context = useAppContext()
     const user = useUser()
-    // const navigate = useNavigate()
-    // const {initUser} = useContext(UserContext)
-    // // const [state, setState] = useState()
-    // const ready = useDBReady()
-
-    // useEffect(() => {
-    //     storeDB.subscribe(() => setState(storeDB.getState()))
-    // }, [])
-
-    // useEffect(() => {
-    //     if(!'indexedDB' in window)
-    //         navigate('/not-supported/')
-    // }, [])
-
-    //===========================================================
 
     useEffect(() => {
-        // const user = process.env.NODE_ENV === 'development'
-        //     ? {
-        //         id: '12',
-        //         first_name: 'Иван',
-        //         last_name: 'Алексеев'
-        //     }
-        //     : JSON.parse(localStorage.getItem(USER_AUTH) || '')
-        if (!user)
+        if(!user) {
             UserService.getLoggedInUser()
                 .then((user) => {
                     if (user) context.setUser(user)
                 })
+                .catch(defaultHandleError)
+        }
     }, [])
-
-
-    // if (!ready || userLoading) {
-    //     return (
-    //         <PageContainer center>
-    //             <Loader className='loader'/>
-    //         </PageContainer>
-    //     )
-    // }
-
-
-    // document.addEventListener('ex')
-    //===========================================================
-
-
-    // useEffect(() => {
-    //     const prefetch = [
-    //         process.env.REACT_APP_SERVER_URL + '/expenses/getSections/',
-    //         process.env.REACT_APP_SERVER_URL + '/main/currency/getList/',
-    //     ]
-    //
-    //     prefetch.forEach(url => aFetch.get(url).catch(console.error))
-    // }, [])
 
     window.DB = DB
     window.User = User
@@ -129,16 +87,16 @@ function App() {
                 {/*<Route element={<WorkerContextProvider/>}>*/}
                 <Route path={'/'} element={<Main/>}/>
                 {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
-                <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                <Route path={'/events/'} element={<Events/>}/>
-                <Route path={'/favorite/'} element={<Favorite/>}/>
                 <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
                 <Route element={<AuthRequired/>}>
+                    <Route path={'/favorite/'} element={<Favorite/>}/>
+                    <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                    <Route path={'/events/'} element={<Events/>}/>
                     <Route path={'/travel/add/'} element={<TravelAdd/>}/>
                     <Route element={<TravelLayout/>}>
-                                <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
-                        {/*        <Route path={'/travel/:travelCode/add/waypoint/:pointCode/'} element={<AuthRequired><TravelAddWaypoint/></AuthRequired>}/>*/}
+                        <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
+                                <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
                         {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}

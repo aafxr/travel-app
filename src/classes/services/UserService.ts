@@ -9,7 +9,7 @@ import {PhotoService} from "./PhotoService";
 import {Photo} from "../StoreEntities/Photo";
 
 const devUser = {
-            id: '12',
+            id: 'dev',
             first_name: 'Иван',
             last_name: 'Алексеев'
         }
@@ -18,6 +18,7 @@ export class UserService {
     static async getLoggedInUser() {
         if (location.hostname === 'localhost') {
             const dev_user = await DB.getOne<UserType>(StoreName.USERS, devUser.id)
+            if(!dev_user) DB.add(StoreName.USERS, devUser)
             const user = new User(dev_user || devUser)
             if (user.photo) {
                 const pt = await PhotoService.getById(user.photo)

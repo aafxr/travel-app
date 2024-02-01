@@ -4,5 +4,4 @@ export type APIPlaceType = {
         photos?: string[],
         formatted_address: string,
         location: [number, number],
-        coords: [number, number],
 }

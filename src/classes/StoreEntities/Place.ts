@@ -20,7 +20,6 @@ export class Place implements PlaceType, WithDTOMethod {
     day?: number;
     photos: string[] = []
     location: CoordinatesType = [-1, -1];
-    coords: CoordinatesType = [-1, -1];
     time_start: Date = new Date(0);
     time_end: Date = new Date(0);
     visited: DBFlagType = 0;
@@ -33,7 +32,6 @@ export class Place implements PlaceType, WithDTOMethod {
         if (place.type) this.type = place.type
         if (place.day) this.day = place.day
         if (place.photos) this.photos = place.photos
-        if (place.coords) this.coords = place.coords
         if (place.location) this.location = place.location
         if (place.visited) this.visited = place.visited
 
@@ -65,9 +63,6 @@ export class Place implements PlaceType, WithDTOMethod {
         this.location = location
     }
 
-    setCoords(coords: CoordinatesType) {
-        this.coords = coords
-    }
 
     setTime_start(time_start: Date) {
         this.time_start = new Date(time_start)
@@ -90,7 +85,6 @@ export class Place implements PlaceType, WithDTOMethod {
             type: this.type,
             day: this.day,
             location: this.location,
-            coords: this.coords,
             time_start: this.time_start,
             time_end: this.time_end,
             visited: this.visited,

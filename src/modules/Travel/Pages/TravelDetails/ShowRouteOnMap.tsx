@@ -56,6 +56,7 @@ export default function ShowRouteOnMap() {
 
 
     if (!travel) return null
+    console.log(travel.places)
 
     return (
         <>
@@ -73,7 +74,7 @@ export default function ShowRouteOnMap() {
                 />
                 <YandexMapContainer style={{height: '100%'}}>
                     {travel.places.map((p, idx) => (
-                        <YPlacemark coordinates={p.coords} iconContent={`${idx + 1}`}/>
+                        <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>
                     ))}
                 </YandexMapContainer>
             </div>

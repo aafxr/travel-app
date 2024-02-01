@@ -44,17 +44,16 @@ export default function Main() {
                 <PageHeader title={'Главная страница'} MenuEl={<Menu/>}/>
             </Container>
              <Container className='content pb-20'>
-            {/*<div className='banner'>*/}
-            {/*    <h2 className='banner-title'>Спланируйте поездку за минуты</h2>*/}
-            {/*    <button*/}
-            {/*        className='banner-button'*/}
-            {/*        onClick={handleNewTravel}*/}
-            {/*    >*/}
-            {/*        {user ? 'Новая поездка' : 'Авторизоваться'}*/}
-            {/*    </button>*/}
-            {/*</div>*/}
+            <div className='banner'>
+                <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
+                <button
+                    className='banner-button'
+                    onClick={handleNewTravel}
+                >
+                    {user ? 'Новая поездка' : 'Авторизоваться'}
+                </button>
+            </div>
 
-            <MapPointsInputList onChange={console.log} />
 
 
             {/*<PopularSection/>*/}

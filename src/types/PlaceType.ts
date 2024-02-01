@@ -47,7 +47,6 @@ export interface  PlaceType {
     photos?: string[],
     formatted_address: string,
     location: [number, number],
-    coords: [number, number],
     time_start: Date,
     time_end: Date,
     visited: DBFlagType

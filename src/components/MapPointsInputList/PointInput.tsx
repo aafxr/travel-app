@@ -22,6 +22,7 @@ type PointInputPropsType = {
     onDragEnd?: (waypoint:WaypointType) => unknown,
     onKeyDown?: (e:React.KeyboardEvent<HTMLDivElement>, waypoint:WaypointType) => unknown,
     onInputChange?: (text: string, waypoint:WaypointType) => unknown,
+    onHover?: (hoverWaypoint: WaypointType) => unknown
 }
 
 /**
@@ -41,6 +42,7 @@ type PointInputPropsType = {
  * @param {(point: WaypointType) => unknown} [onDragEnd]
  * @param {(event: InputEvent, point: WaypointType) => unknown} [onKeyDown]
  * @param {(event: InputEvent, point: WaypointType) => unknown} [onInputChange]
+ * @param {(event: InputEvent, point: WaypointType) => unknown} [onHover]
  * @returns {JSX.Element|null}
  * @category Components
  */
@@ -60,15 +62,11 @@ export default function PointInput(
         onDragEnd,
         onKeyDown,
         onInputChange,
+        onHover
     }: PointInputPropsType
 ) {
-    const [p, setPoint] = useState<WaypointType>()
     const inputRef = useRef<HTMLInputElement>(null)
     const isFocus = inputRef.current === document.activeElement
-
-    useEffect(() => {
-        if (point) setPoint(point)
-    }, [point])
 
     const handleRemovePoint = (point:WaypointType) => onRemovePoint && onRemovePoint(point)
 
@@ -82,7 +80,10 @@ export default function PointInput(
 
     const handleSearchClick = (point:WaypointType) => onSearchClick && onSearchClick(point)
 
-    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => onTouchStart && onTouchStart(event, point)
+    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => {
+        onTouchStart && onTouchStart(event, point)
+        onHover && onHover(point)
+    }
 
     const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => onTouchEnd && onTouchEnd(event, point)
 
@@ -94,54 +95,56 @@ export default function PointInput(
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, point:WaypointType) => onKeyDown && onKeyDown(event, point)
 
-    const handleInputChange = (text:string, point:WaypointType) => onInputChange && onInputChange(text, point)
+    const handleInputChange = (text:string, point:WaypointType) => {
+        if(text !== point.address)
+        onInputChange && onInputChange(text, point)
+    }
 
+    const handleHover = (point:WaypointType) => onHover && onHover(point)
 
-    if (!p) return null
 
     return (
         <Swipe
-            key={p.id}
-            onRemove={() => handleRemovePoint(p)}
+            key={point.id}
+            onRemove={() => handleRemovePoint(point)}
             rightButton
         >
             <div
                 onClick={() => {
                 }}
-                className='travel-map-input-container relative'
-                onDragOver={() => handleDragOver(p)}
-                onDragLeave={() => handleDragLeave(p)}
-                data-id={p.id}
+                className='travel-map-input-container'
+                onDragOver={() => handleDragOver(point)}
+                onDragLeave={() => handleDragLeave(point)}
+                data-id={point.id}
             >
                 <Input
                     ref={inputRef}
-                    id={p.id}
+                    id={point.id}
                     className='input'
                     placeholder={"Найдите регион или город"}
-                    value={p.address}
-                    onKeyDown={(e) => handleKeyDown(e, p)}
-                    onChange={(text) => handleInputChange(text, p)}
+                    value={point.address}
+                    onKeyDown={(e) => handleKeyDown(e, point)}
+                    onChange={(text) => handleInputChange(text, point)}
                     autoComplete='off'
-                    data-id={p.id}
-                    onFocus={() => handleFocus(p)}
-                    onBlur={() => handleBlur(p)}
+                    data-id={point.id}
+                    onFocus={() => handleFocus(point)}
+                    onBlur={() => handleBlur(point)}
+                    onMouseOver={() => handleHover(point)}
                     delay={1500}
-                    //() => sleep(200).then(() => setFocusInputId(null))
-                    // onBlur={(e) => handleBlur(e, p)}
                 />
                 {
                     isFocus
-                        ? <SearchIcon className='travel-map-search' onClick={() => handleSearchClick(p)}/>
+                        ? <SearchIcon className='travel-map-search' onClick={() => handleSearchClick(point)}/>
                         : (
                             <div
                                 className='travel-map-drag-icon'
                                 onClick={() => {
                                 }}
-                                onTouchStart={(e) => handleTouchStart(e, p)}
-                                onTouchEnd={(e) => handleTouchEnd(e, p)}
-                                onTouchMove={e => handleTouchMove(e, p)}
-                                onDragStart={() => handleDragStart(p)}
-                                onDragEnd={() => handleDragEnd(p)}
+                                onTouchStart={(e) => handleTouchStart(e, point)}
+                                onTouchEnd={(e) => handleTouchEnd(e, point)}
+                                onTouchMove={e => handleTouchMove(e, point)}
+                                onDragStart={() => handleDragStart(point)}
+                                onDragEnd={() => handleDragEnd(point)}
                                 draggable
                             >
                                 <DragIcon/>

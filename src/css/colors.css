@@ -1,4 +1,4 @@
-:root {
+:root, .light-theme {
     --color-green: #52CF37;
     --color-primary: #FF8E09;
     --color-primary-text: #FFF;
@@ -50,7 +50,7 @@
     :root {
         --color-primary: #FF8E09;
         --color-secondary: #000;
-        --color-text-secondary: var(--color-grey-light);
+        --color-text-secondary: var(--color-grey);
         --color-text-light: #E1E1E1;
 
         --color-text: #fff;
@@ -66,25 +66,15 @@
     }
 }
 
-.light-theme{
-    --color-text: #000;
-    --color-text-50: rgba(30, 30, 30, 0.50);
-
-    --color-background: #fff;
-    --color-background-alt: var(--color-grey-light);
-    --color-navigation-bg: var(--color-background);
-    --color-icon: var(--color-text);
-    --color-icon-alt: #000;
-    --box-shadow: 0 0 16px rgba(205,205,205, .7);
-    --alert-shadow-color: rgba(0,0,0,.3);
-    --color-blur-backdrop: rgba(255,255,255,.4);
-}
 
 .dark-theme{
-    --color-text: #fff;
-    --color-text-secondary: var(--color-grey-light);
-    --color-text-50: rgba(235, 235, 235, 0.50);
+    --color-primary: #FF8E09;
+    --color-secondary: #000;
+    --color-text-secondary: var(--color-grey);
+    --color-text-light: #E1E1E1;
 
+    --color-text: #fff;
+    --color-text-50: rgba(235, 235, 235, 0.50);
     --color-background: rgb(30,30,30);
     --color-background-alt: var(--color-grey-light);
     --color-navigation-bg: rgb(30,30,30);
