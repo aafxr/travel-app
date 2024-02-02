@@ -50,6 +50,8 @@ import {InterestType} from "./InterestsType";
 import {MovementType} from "./MovementType";
 import {WaypointType} from "./WaypointType";
 import {PlaceType} from "./PlaceType";
+import {Road} from "../classes/StoreEntities";
+import {RoadType} from "./RoadType";
 
 /**
  * @category Types
@@ -104,6 +106,7 @@ export type TravelType = {
     movementTypes: MovementType[],
     waypoints: WaypointType[],
     places: PlaceType[],
+    road: RoadType[],
     date_start:  Date,
     date_end: Date ,
     days: number,

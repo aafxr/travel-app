@@ -10,6 +10,7 @@
 export enum MovementType{
     WALK,
     CAR,
-    PUBLICK_TRANSPORT,
+    PUBLIC_TRANSPORT,
     FLIGHT,
+    TAXI
 }

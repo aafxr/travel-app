@@ -1,0 +1,13 @@
+.road-card {
+    --road-card-pading: 40px;
+    position: relative;
+    margin-left: 40px;
+    padding-left: var(--road-card-pading);
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-left: 2px dashed var(--color-grey);
+}
+
+.distance {
+    margin-left: calc(-1 * var(--road-card-pading));
+}

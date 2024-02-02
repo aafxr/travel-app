@@ -1,32 +1,41 @@
 import {Link, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
+import ShowRoadCard from "../../components/ShowRoadCard/ShowRoadCard";
+import {Place, Road, Travel} from "../../../../classes/StoreEntities";
 import Container from "../../../../components/Container/Container";
-import {useTravel} from "../../../../contexts/AppContextProvider";
-import PlaceCard2 from "../../components/PlaceCard2/PlaceCard2";
-import {Place} from "../../../../classes/StoreEntities";
+import PlaceCard from "../../components/PlaceCard/PlaceCard";
+import {TravelService} from "../../../../classes/services";
 import {MS_IN_DAY} from "../../../../static/constants";
-import {PlusIcon} from "../../../../components/svg";
 import {Tab} from "../../../../components/ui";
-import LocationCard from "../../components/LocationCard/LocationCard";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
-    const travel = useTravel()!
-    const [dayPlane, setDayPlane] = useState<Place[]>([])
+    const context = useAppContext()
+    const travel = useTravel()
+    const [dayPlane, setDayPlane] = useState<Array<Place | Road>>([])
 
 
     useEffect(() => {
-        const start = new Date(travel.date_start.getTime() + Number(dayNumber) * MS_IN_DAY)
-        const end = new Date(start.getTime() + MS_IN_DAY)
-        const places = travel.places.filter(p => p.time_start > start && p.time_start < end)
+        if (!travel) return
+        if (!dayNumber) return
+
+        const start = new Date(0)
+        start.setHours(0, 0, 0, 0)
+        start.setTime(start.getTime() + MS_IN_DAY * (Number(dayNumber) - 1))
+        const end = new Date(start.getTime() + MS_IN_DAY - 1)
+        const places = [...travel.places, ...travel.road]
+            .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
+            .filter(p => p.time_start >= start && p.time_start <= end)
         setDayPlane(places)
     }, [dayNumber, travel])
 
 
     let showHotel = false
     const lastPlannedActivity = dayPlane[dayPlane.length - 1]
-    if (lastPlannedActivity) {
+    if (lastPlannedActivity && travel) {
         const freeTime = dayPlane.length > travel.preference.density
         if (freeTime)
             showHotel = true
@@ -35,8 +44,15 @@ export default function ShowRouteByDays() {
     const lastPlace = dayPlane[dayPlane.length - 1]
 
     function handleRemovePlace(place: Place) {
-        travel.removePlace(place)
+        if (!travel) return
+        const newTravel = new Travel(travel)
+        newTravel.removePlace(place)
+        TravelService.update(context, newTravel)
+            .then(() => context.setTravel(newTravel))
+            .catch(defaultHandleError)
     }
+
+    if (!travel) return null
 
     return (
         <>
@@ -50,33 +66,22 @@ export default function ShowRouteByDays() {
             <Container className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
                     dayPlane.length
-                        ? dayPlane.map(p =>
-                            <LocationCard key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
+                        ? dayPlane.map(p => {
+                                if (p instanceof Place)
+                                    return <PlaceCard key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
+                                return <ShowRoadCard key={p.id} road={p}/>
+
+                            }
                         )
-                        : <Link className='link align-center gap-1'
-                                to={`/travel/${travel.id}/add/place/${dayNumber}/`}><PlusIcon
-                            className='icon'/>&nbsp;Добавить локацию</Link>
-                    // activitiesList
-                    //     ? travel.routeBuilder.getActivitiesAtDay(+dayNumber).map((a, idx) => (
-                    //         <React.Fragment key={idx}>
-                    //             <div>
-                    //                 {<ShowActivity activity={a} index={idx} activitiesList={activitiesList}/>}
-                    //                 {<ShowAdvice prevActivity={a} nextActivity={activitiesList[idx + 1]}/>}
-                    //             </div>
-                    //         </React.Fragment>))
-                    //     : travel.places.length === 0
-                    //         ? (
-                    //             <div>
-                    //                 <Link className='link' to={`/travel/${travel.id}/add/place/`}>Добавить место</Link>
-                    //             </div>
-                    //         )
-                    //         : <div>PageContainer...</div>
+                        : <Link className='link align-center gap-1' to={`/travel/${travel.id}/add/place/`}>
+                            +&nbsp;Добавить локацию
+                        </Link>
                 }
                 {showHotel &&
                     <Link
                         className='link align-center gap-1'
-                        to={`/travel/${travel.id}/add/place/${dayNumber}/?place=${lastPlace?._id}`}>
-                        <PlusIcon className='icon'/>&nbsp;Добавить отель
+                        to={`/travel/${travel.id}/add/place/${dayNumber}/`}>
+                        +&nbsp;Добавить отель
                     </Link>}
 
             </Container>

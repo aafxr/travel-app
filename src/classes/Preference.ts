@@ -1,6 +1,9 @@
 import {TravelPreference} from "../types/TravelPreference";
 
 export class Preference implements TravelPreference{
+    static base_density = 2
+    static base_depth = 2
+    static base_duration = 45 * 60 * 1000
     density: 1 | 2 | 3 = 2;
     depth: 1 | 2 | 3 = 2;
 

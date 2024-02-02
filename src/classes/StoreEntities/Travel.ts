@@ -1,7 +1,8 @@
 import {nanoid} from "nanoid";
+import getDistanceFromTwoPoints from "../../utils/getDistanceFromTwoPoints";
+import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../static/constants";
 import {TravelPermission} from "../../types/TravelPermission";
 import {TravelPreference} from "../../types/TravelPreference";
-import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../static/constants";
 import {MovementType} from "../../types/MovementType";
 import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
@@ -12,9 +13,18 @@ import {Waypoint} from "./Waypoint";
 import {Member} from "./Member";
 import {Place} from "./Place";
 import {Photo} from "./Photo";
+import {Road} from "./Road";
 
 
 type TravelPropsType = Partial<TravelType> | Travel
+
+
+const zero_time = new Date(0)
+zero_time.setHours(0, 0, 0, 0)
+
+const HOUR_IN_MS = MS_IN_DAY / 24
+const MIDDLE_TIME = HOUR_IN_MS * 13
+
 
 export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
@@ -40,6 +50,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     movementTypes: MovementType[] = [MovementType.CAR];
     updated_at = new Date();
     places: Place[] = [];
+    road: Road[] = [];
     waypoints: Waypoint[] = [];
 
     admins: string[] = [];
@@ -66,6 +77,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (travel.movementTypes) this.movementTypes = (travel.movementTypes as any).map((mt: any) => (mt['id'] ? mt['id'] : mt) as MovementType)
         if (travel.photo) this.photo = travel.photo
         if (travel.places) this.places = travel.places.map(p => new Place(p))
+        if (travel.road) this.road = travel.road.map(r => new Road(r))
         if (travel.waypoints) this.waypoints = travel.waypoints.map(w => new Waypoint(w))
 
         if (travel.created_at) this.created_at = new Date(travel.created_at)
@@ -116,6 +128,43 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
+    addPlace(place: Place) {
+        if (!this.places.length) {
+            let start = new Date(0)
+            start.setTime(zero_time.getTime() + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
+            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            place.time_start = start
+            place.time_end = end
+            this.places.push(place)
+        } else {
+            const last = this.places[this.places.length - 1]
+            const dist = getDistanceFromTwoPoints(place.location, last.location)
+            const road = new Road({
+                time_start: last.time_end,
+                distance: dist,
+                from: last.location,
+                to: place.location
+            })
+            let r_idx = 0
+            this.road.forEach(r => r.time_start > road.time_start && r_idx++)
+            this.road.splice(r_idx, 0, road)
+            let start: Date
+            if (road.time_end.getHours() < 16) {
+                start = new Date(road.time_end)
+            } else {
+                const t = new Date(road.time_end)
+                t.setHours(0, 0, 0, 0)
+                t.setTime(t.getTime() + MS_IN_DAY + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
+                start = t
+            }
+
+            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            place.time_start = start
+            place.time_end = end
+            this.places.push(place)
+        }
+    }
+
     setPlaces(places: Place[]) {
         this.places = places
         this.setUpdated_at()
@@ -124,10 +173,27 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
     removePlace(place: Place) {
         this.places = this.places.filter(p => p._id !== place._id)
+        this.road = []
+        if (this.places.length > 1) {
+            for (let i = 1; i < this.places.length; i++) {
+                const place_1 = this.places[i - 1]
+                const place_2 = this.places[i]
+                const dist = getDistanceFromTwoPoints(place_1.location, place_2.location)
+                const road = new Road({
+                    time_start: place_1.time_end,
+                    distance: dist,
+                    from: place_1.location,
+                    to: place_2.location
+                })
+                let r_idx = 0
+                this.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
+                this.road[r_idx] = road
+            }
+        }
         this.setUpdated_at()
     }
 
-    setWaypoints(waypoints: Waypoint[]){
+    setWaypoints(waypoints: Waypoint[]) {
         this.waypoints = waypoints
         this.setUpdated_at()
     }
@@ -275,6 +341,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             date_start: this.date_start,
             movementTypes: this.movementTypes,
             places: this.places.map(p => p.dto()),
+            road: this.road.map(r => r.dto()),
             preference: this.preference.dto(),
             waypoints: this.waypoints.map(w => w.dto()),
             updated_at: this.updated_at,

@@ -10,7 +10,7 @@ import Button from "../../../../components/ui/Button/Button";
 import {APIPlaceType} from "../../../../types/APIPlaceType";
 import {Input, PageHeader} from "../../../../components/ui";
 import {TravelService} from "../../../../classes/services";
-import {Place} from "../../../../classes/StoreEntities";
+import {Place, Travel} from "../../../../classes/StoreEntities";
 
 type TravelAddPlaceStateType = {
     search: string
@@ -27,7 +27,7 @@ type TravelAddPlaceStateType = {
  * @category Pages
  */
 export default function TravelAddPlace() {
-    const travel = useTravel()!
+    const travel = useTravel()
     const context = useAppContext()
     const navigate = useNavigate()
 
@@ -54,8 +54,13 @@ export default function TravelAddPlace() {
 
 
     function handleSave() {
+        if(!travel) return
+        const newTravel = new Travel(travel)
         const list = Array.from(state.selected.values()).map(p => new Place(p))
-        TravelService.addPlaces(context, travel, list)
+        for(const pl of list)
+            newTravel.addPlace(pl)
+        TravelService.update(context, newTravel)
+            .then(() => context.setTravel(newTravel))
             .then(() => navigate(`/travel/${travel.id}/1/`))
             .catch(defaultHandleError)
     }
