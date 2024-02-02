@@ -66,11 +66,11 @@ export default function ShowRouteOnMap() {
                 className='flex-1 relative'
                 style={{height: '100%'}}
             >
-                <IconButton
-                    icon={<MapIcon/>}
-                    title={'Детальный маршрут'}
-                    className="map-detail-route-button" small
-                />
+                {/*<IconButton*/}
+                {/*    icon={<MapIcon/>}*/}
+                {/*    title={'Детальный маршрут'}*/}
+                {/*    className="map-detail-route-button" small*/}
+                {/*/>*/}
                 <YandexMapContainer style={{height: '100%'}}>
                     {travel.places.map((p, idx) => (
                         <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>

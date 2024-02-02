@@ -22,10 +22,10 @@
     z-index: 0;
 }
 
-.travel-details-backface svg{
-    color: var(--color-black);
-    stroke: var(--color-black);
-}
+/*.travel-details-backface svg{*/
+/*    color: var(--color-black);*/
+/*    stroke: var(--color-black);*/
+/*}*/
 
 .travel-details img{
     border-radius: var(--br-20);
@@ -41,12 +41,12 @@
     font-size: 1.6rem;
 }
 
-.travel-details-icon.public svg{
+.travel-details-icon.public{
     color: var(--color-green)!important;
     stroke: none;
 }
 
-.travel-details-icon.private svg{
+.travel-details-icon.private{
     color: var(--color-grey)!important;
     stroke: none;
 
@@ -84,4 +84,8 @@
     position: fixed;
     right: 20px;
     bottom: 20px;
+}
+
+.travel-details-button{
+    padding: 8px 0;
 }
