@@ -149,7 +149,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             this.road.forEach(r => r.time_start > road.time_start && r_idx++)
             this.road.splice(r_idx, 0, road)
             let start: Date
-            if (road.time_end.getHours() < 16) {
+            const hh = road.time_end.getHours()
+            if (hh < 16 && hh > 9) {
                 start = new Date(road.time_end)
             } else {
                 const t = new Date(road.time_end)
@@ -192,6 +193,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         }
         this.setUpdated_at()
     }
+
 
     setWaypoints(waypoints: Waypoint[]) {
         this.waypoints = waypoints

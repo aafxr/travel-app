@@ -11,7 +11,7 @@ type ShowRoadCardPropsType = {
     road: Road
 }
 
-const formatter = Intl.NumberFormat('RU-ru', {maximumFractionDigits: 3,})
+const formatter = Intl.NumberFormat('RU-ru', {maximumFractionDigits: 2,})
 
 export default function ShowRoadCard({road}: ShowRoadCardPropsType) {
     let icon: JSX.Element

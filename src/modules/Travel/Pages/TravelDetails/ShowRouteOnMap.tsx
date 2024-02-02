@@ -2,7 +2,7 @@ import React, {useLayoutEffect, useRef} from "react";
 
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import {useTravel} from "../../../../contexts/AppContextProvider";
-import {YPlacemark, YandexMapContainer} from "../../../../components/YandexMap";
+import {YPlacemark, YandexMapContainer, YPolyline} from "../../../../components/YandexMap";
 import {MapIcon} from "../../../../components/svg";
 
 export default function ShowRouteOnMap() {
@@ -75,6 +75,7 @@ export default function ShowRouteOnMap() {
                     {travel.places.map((p, idx) => (
                         <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>
                     ))}
+                    <YPolyline rout={travel.places.map(p => p.location)} strokeColor={'#FF8E09'} strokeWidth={2}/>
                 </YandexMapContainer>
             </div>
         </>

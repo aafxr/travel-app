@@ -1,5 +1,5 @@
 import {Link, useParams} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
@@ -10,36 +10,36 @@ import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import {TravelService} from "../../../../classes/services";
 import {MS_IN_DAY} from "../../../../static/constants";
 import {Tab} from "../../../../components/ui";
+import {PlaceKind} from "../../../../types/PlaceKindType";
+import {useGroupAtDay} from "./useGroupAtDay";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
     const context = useAppContext()
     const travel = useTravel()
-    const [dayPlane, setDayPlane] = useState<Array<Place | Road>>([])
+    const {items:dayPlane} = useGroupAtDay(dayNumber)
+
+    const hotel = useMemo<Place | undefined>(() => {
+        for (const item of dayPlane) {
+            if (item instanceof Place && item.type === PlaceKind.hotel) return item
+        }
+    }, [dayPlane])
 
 
-    useEffect(() => {
-        if (!travel) return
-        if (!dayNumber) return
+    // useEffect(() => {
+    //     if (!travel) return
+    //     if (!dayNumber) return
+    //
+    //     const start = new Date(0)
+    //     start.setHours(0, 0, 0, 0)
+    //     start.setTime(start.getTime() + MS_IN_DAY * (Number(dayNumber) - 1))
+    //     const end = new Date(start.getTime() + MS_IN_DAY - 1)
+    //     const places = [...travel.places, ...travel.road]
+    //         .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
+    //         .filter(p => p.time_start >= start && p.time_start <= end)
+    //     setDayPlane(places)
+    // }, [dayNumber, travel])
 
-        const start = new Date(0)
-        start.setHours(0, 0, 0, 0)
-        start.setTime(start.getTime() + MS_IN_DAY * (Number(dayNumber) - 1))
-        const end = new Date(start.getTime() + MS_IN_DAY - 1)
-        const places = [...travel.places, ...travel.road]
-            .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
-            .filter(p => p.time_start >= start && p.time_start <= end)
-        setDayPlane(places)
-    }, [dayNumber, travel])
-
-
-    let showHotel = false
-    const lastPlannedActivity = dayPlane[dayPlane.length - 1]
-    if (lastPlannedActivity && travel) {
-        const freeTime = dayPlane.length > travel.preference.density
-        if (freeTime)
-            showHotel = true
-    }
 
     const lastPlace = dayPlane[dayPlane.length - 1]
 
@@ -77,13 +77,13 @@ export default function ShowRouteByDays() {
                             +&nbsp;Добавить локацию
                         </Link>
                 }
-                {showHotel &&
+                {!hotel &&
                     <Link
                         className='link align-center gap-1'
                         to={`/travel/${travel.id}/add/place/${dayNumber}/`}>
                         +&nbsp;Добавить отель
-                    </Link>}
-
+                    </Link>
+                }
             </Container>
         </>
     )
