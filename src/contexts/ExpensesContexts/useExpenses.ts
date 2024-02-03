@@ -1,7 +1,7 @@
-import {ExpensesContext, ExpensesWrapperStateType} from "./ExpensesContextProvider";
+import {ExpensesContext, ExpensesContextStateType} from "./ExpensesContextProvider";
 import {useContext} from "react";
 
-export function useExpenses<T extends keyof Omit<ExpensesWrapperStateType, 'loading'>>(key: T): ExpensesWrapperStateType[T]{
+export function useExpenses<T extends keyof Omit<ExpensesContextStateType, 'loading'>>(key: T): ExpensesContextStateType[T]{
     const context = useContext(ExpensesContext)
     return context[key]
 }

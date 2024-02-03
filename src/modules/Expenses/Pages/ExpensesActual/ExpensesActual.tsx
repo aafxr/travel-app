@@ -1,33 +1,38 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 
 import {useExpensesGroupActual} from "../../../../contexts/ExpensesContexts/useExpensesGroupActual";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
 
 
 /** страница отображает текущие расходы с лимитами пользователя (если указаны) */
-export default function ExpensesComponent() {
+export default function ExpensesActual() {
     const user = useUser()!
     const travel = useTravel()!
-    const group = useExpensesGroupActual(user.getSetting('expensesFilter'))
+    const groupMap = useExpensesGroupActual(user.getSetting('expensesFilter'))
 
 
-    useEffect(() => {
-        for (const g  of group.entries())
-            console.log(g[0], g[1])
-    }, [group])
+    // useEffect(() => {
+    //     for (const g  of groupMap.entries())
+    //         console.log(g[0], g[1])
+    // }, [groupMap])
 
-
+    console.log(groupMap)
 
     return (
         <>
             <Container className='pt-20 content column gap-1'>
                 <AddButton to={`/travel/${travel.id}/expenses/add/`}>Записать расходы</AddButton>
-
+                {
+                    Array.from(groupMap.entries()).map(([section_id, expensesList]) => (
+                        <Section section_id={section_id} expenses={expensesList} />
+                    ))
+                }
             </Container>
             {
                 travel.members_count > 1 && (

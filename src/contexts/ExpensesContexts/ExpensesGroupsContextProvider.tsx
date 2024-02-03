@@ -5,26 +5,27 @@ import Container from "../../components/Container/Container";
 import {PageHeader, Tab} from "../../components/ui";
 import {Expense} from "../../classes/StoreEntities";
 import {useGroupExpensesState} from "./useGroupExpensesState";
-import {ExpenseFilterType} from "../../types/filtersTypes";
 
 export type ExpensesGroupsContextStateType = {
-    plan: Record<ExpenseFilterType, Map<string, Expense[]>>,
-    actual: Record<ExpenseFilterType, Map<string, Expense[]>>,
-    group: boolean
+    plan: {
+        personal: Map<string, Expense[]>
+        common: Map<string, Expense[]>
+    },
+    actual: {
+        personal: Map<string, Expense[]>
+        common: Map<string, Expense[]>
+    },
 }
 
 export const ExpensesGroupsContext = createContext<ExpensesGroupsContextStateType>({
     plan: {
         personal: new Map(),
         common: new Map(),
-        all: new Map(),
     },
     actual: {
         personal: new Map(),
         common: new Map(),
-        all: new Map(),
     },
-    group: true
 })
 
 /**

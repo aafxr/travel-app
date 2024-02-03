@@ -10,7 +10,7 @@ import '../../modules/Expenses/css/Expenses.css'
 import PageContainer from "../../components/PageContainer/PageContainer";
 import Loader from "../../components/Loader/Loader";
 
-export type ExpensesWrapperStateType = {
+export type ExpensesContextStateType = {
     actual: Expense[]
     plan: Expense[]
     limits: {
@@ -20,7 +20,7 @@ export type ExpensesWrapperStateType = {
     loading: boolean
 }
 
-const initialValue: ExpensesWrapperStateType = {
+const initialValue: ExpensesContextStateType = {
     actual: [],
     plan: [],
     limits: {
@@ -30,17 +30,16 @@ const initialValue: ExpensesWrapperStateType = {
     loading: true
 }
 
-export const ExpensesContext = createContext<ExpensesWrapperStateType>(initialValue)
-
+export const ExpensesContext = createContext<ExpensesContextStateType>(initialValue)
 /**
- * обертка для молуля ExpensesComponent
+ * обертка для молуля ExpensesActual
  * оборачивает в ExpensesContext
  */
 export default function ExpensesContextProvider() {
     const user = useUser()!
     const context = useAppContext()
     const {travelCode} = useParams()
-    const [state, setState] = useState<ExpensesWrapperStateType>(initialValue)
+    const [state, setState] = useState<ExpensesContextStateType>(initialValue)
 
 
     useEffect(() => {

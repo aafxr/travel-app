@@ -6,7 +6,7 @@
 // import storeDB from "../db/storeDB/storeDB";
 // import {pushAlertMessage} from "../components/Alerts/Alerts";
 // import Subscription from "./Subscription";
-// import {defaultFilterValue} from "../modules/ExpensesComponent/static/vars";
+// import {defaultFilterValue} from "../modules/ExpensesActual/static/vars";
 // import {Section, Expense} from "./StoreEntities/";
 // import defaultHandleError from "../utils/error-handlers/defaultHandleError";
 // import aFetch from "../axios";

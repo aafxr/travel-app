@@ -16,13 +16,13 @@ import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 import ExpensesContextProvider from "./contexts/ExpensesContexts/ExpensesContextProvider";
 import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
-// import ExpensesAdd from "./modules/ExpensesComponent/Pages/ExpensesAdd/ExpensesAdd";
+// import ExpensesAdd from "./modules/ExpensesActual/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import TravelDescriptionAndDate from "./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate";
 // import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
-// import LimitsEdit from "./modules/ExpensesComponent/Pages/LimitsEdit/LimitsEdit";
+// import LimitsEdit from "./modules/ExpensesActual/Pages/LimitsEdit/LimitsEdit";
 import UserNameEdite from "./modules/Main/Pages/Profile/UserNameEdite";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import ExpensesGroupsContextProvider from "./contexts/ExpensesContexts/ExpensesGroupsContextProvider";
@@ -30,7 +30,6 @@ import ExpensesGroupsContextProvider from "./contexts/ExpensesContexts/ExpensesG
 import TravelLayout from "./layouts/TravelLayout";
 import TravelAdd from "./modules/Travel/Pages/TravelAdd/TravelAdd";
 // import TravelWaypoint from "./modules/Travel/Pages/TravelWaypoint";
-import ExpensesComponent from "./modules/Expenses/Pages/ExpensesComponent/ExpensesComponent";
 // import PageContainer from "./components/PageContainer/PageContainer";
 import Favorite from "./modules/Main/Pages/Favorite/Favorite";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
@@ -59,6 +58,7 @@ import {useAppContext, useUser} from "./contexts/AppContextProvider";
 import TravelPermissions from "./modules/Travel/Pages/TravelPermissions/TravelPermissions";
 import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddOnMap/TravelAddWaypoint";
 import defaultHandleError from "./utils/error-handlers/defaultHandleError";
+import ExpensesActual from "./modules/Expenses/Pages/ExpensesActual/ExpensesActual";
 
 
 function App() {
@@ -120,7 +120,7 @@ function App() {
                         {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
                         <Route element={<ExpensesContextProvider/>}>
                             <Route element={<ExpensesGroupsContextProvider/>}>
-                                <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesComponent/>}/>
+                                <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
                                 <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                             </Route>
                             {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
