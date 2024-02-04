@@ -1,10 +1,14 @@
-import {nanoid} from "nanoid";
-
 import {DBFlagType} from "../../types/DBFlagType";
 import {LimitType} from "../../types/LimitType";
 import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
 import {User} from "./User";
+
+interface LimitOptionsType extends Partial<LimitType> {
+    id:string
+    section_id:string
+    primary_entity_id:string
+}
 
 /**
  * Класс для работы с лимитами
@@ -21,18 +25,19 @@ export class Limit extends StoreEntity implements LimitType {
 
 
 
-    constructor(limit: Partial<Limit | LimitType> & Pick<LimitType, 'primary_entity_id'>, user: User) {
+    constructor(options: LimitOptionsType, user: User) {
         super()
 
         this.user = user
-        if (limit.id) this.id = limit.id
-        else this.id = `${user.id}:${nanoid(7)}`
+        this.id = options.id
 
-        if (limit.personal) this.personal = limit.personal
-        if (limit.section_id) this.section_id = limit.section_id
-        if (limit.value) this.value = limit.value
-        this.primary_entity_id = limit.primary_entity_id
+        if (options.personal) this.personal = options.personal
+        this.section_id = options.section_id
+        if (options.value) this.value = options.value
+        this.primary_entity_id = options.primary_entity_id
     }
+
+
 
     setPersonal(personal: DBFlagType) {
         this.personal = personal
@@ -61,7 +66,7 @@ export class Limit extends StoreEntity implements LimitType {
     }
 
     isPersonal<T extends Member>(user: T) {
-        return this.personal === 1 && this.id.split(':').pop() === user.id
+        return this.personal === 1 && this.id.startsWith(user.id)
     }
 
 

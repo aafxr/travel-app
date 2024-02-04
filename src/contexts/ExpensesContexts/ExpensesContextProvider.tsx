@@ -13,20 +13,14 @@ import Loader from "../../components/Loader/Loader";
 export type ExpensesContextStateType = {
     actual: Expense[]
     plan: Expense[]
-    limits: {
-        common: Map<string, Limit>
-        personal: Map<string, Limit>
-    }
+    limits: Map<string, Limit>
     loading: boolean
 }
 
 const initialValue: ExpensesContextStateType = {
     actual: [],
     plan: [],
-    limits: {
-        personal: new Map(),
-        common: new Map()
-    },
+    limits: new Map(),
     loading: true
 }
 
@@ -51,21 +45,16 @@ export default function ExpensesContextProvider() {
             .then(([expenses_list, limits_list]: [Expense[], Limit[]]) => {
                 const actual: Expense[] = []
                 const plan: Expense[] = []
-                expenses_list.forEach(e=> console.log(e.variant))
                 expenses_list.forEach(e => e.variant === "expenses_actual" ? actual.push(e) : plan.push(e))
 
                 for (const limit of limits_list) {
-                    if (limit.isPersonal(user))
-                        state.limits.personal.set(limit.section_id, limit)
-                    else
-                        state.limits.common.set(limit.section_id, limit)
+                        state.limits.set(limit.id, limit)
                 }
                 setState({...state, actual, plan})
             })
             .catch(defaultHandleError)
             .finally(() => setState(prev => ({...prev, loading: false})))
     }, [travelCode])
-
 
 
     if (state.loading) {

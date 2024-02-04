@@ -38,7 +38,7 @@ function Section({
     const travel = useTravel()
 
     const [section, setSection] = useState<SectionEntity>()
-    const limit = useLimit(section_id, user?.settings.expensesFilter)
+    const limit = useLimit(section_id)
     const total = useMemo(() => expenses.reduce((a, e) => a + e.valueOf(), 0), [expenses])
 
     useEffect(() => {

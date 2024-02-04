@@ -3,21 +3,22 @@ import {ExpenseType} from "../../types/ExpenseType";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ExpenseError, TravelError} from "../errors";
 import {ActionName} from "../../types/ActionsType";
+import {Exchange} from "../StoreEntities/Exchange";
+import {ExchangeService} from "./ExchangeService";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 import {UserError} from "../errors/UserError";
 import {TravelService} from "./TravelService";
+import {LimitService} from "./LimitService";
 import {Context} from "../Context/Context";
 import {DB} from "../db/DB";
-import {ExchangeService} from "./ExchangeService";
-import {Exchange} from "../StoreEntities/Exchange";
 
 export class ExpenseService {
 
     static async create(expense: Expense, user: User) {
-        let newExpense: Expense
         const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.ADD)
         await DB.writeAll([expense,action])
+        await LimitService.updateWithNewExpense(expense, user)
         return expense
 
     }
@@ -35,6 +36,7 @@ export class ExpenseService {
         const actionStore = tx.objectStore(StoreName.ACTION)
         expenseStore.put(expense.dto())
         actionStore.add(action.dto())
+        await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
 

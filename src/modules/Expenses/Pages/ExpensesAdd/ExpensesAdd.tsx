@@ -159,6 +159,7 @@ export default function ExpensesAdd() {
 
     if (!travel || !user || !expense) return null
 
+
     return (
         <div className='wrapper'>
             <div className='content'>
@@ -190,7 +191,7 @@ export default function ExpensesAdd() {
                                         <Input
                                             ref={inputNameRef}
                                             type={'text'}
-                                            value={String(expense?.title)}
+                                            value={expense.title}
                                             onChange={handleNameChange}
                                         />
                                     </div>

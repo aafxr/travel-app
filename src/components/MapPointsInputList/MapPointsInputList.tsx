@@ -1,9 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useRef} from "react";
 
-import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import {WaypointType} from "../../types/WaypointType";
-import {Waypoint} from "../../classes/StoreEntities";
-import {findByAddress} from "../YandexMap";
 import PointInput from "./PointInput";
 
 import './MapPointsInoutList.css'
@@ -23,6 +20,9 @@ type MapPointsInputListPropsType = {
 
 /**
  * Компонент отображает список HTMLInputElement-ов (полей ввода желаемых мест для посещения)
+ *
+ * отображает список перетаскиваемых input элементов
+ *
  * @param {WaypointType[]} [waypoints] список предпологаемых мест для посещения
  * @param onChange обработчик на изменение порядка или введенной локации
  * @param min минимальное чило отображаемых полей

@@ -1,6 +1,7 @@
 import {StoreEntity} from "../StoreEntities";
 import {openIDBDatabase} from "./openIDBDatabaase";
 import {StoreName} from "../../types/StoreName";
+import {IndexName} from "../../types/IndexName";
 
 
 export class DB {
@@ -39,7 +40,7 @@ export class DB {
         return await store.get(id)
     }
 
-    static async getMany<T>(storeName: StoreName, range: IDBKeyRange): Promise<T[]> {
+    static async getMany<T>(storeName: StoreName, range: IDBKeyRange | IDBValidKey): Promise<T[]> {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
@@ -124,6 +125,16 @@ export class DB {
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
         let cursor = await store.openCursor(query, direction)
+        while (cursor) {
+            yield cursor.value as T
+            cursor = await cursor.continue()
+        }
+    }
+
+    static async* openIndexCursor<T>(storeName: StoreName,indexName: IndexName, query?: IDBValidKey | IDBKeyRange, direction?: IDBCursorDirection) {
+        const db = await openIDBDatabase()
+        const index = db.transaction(storeName).objectStore(storeName).index(indexName)
+        let cursor = await index.openCursor(query, direction)
         while (cursor) {
             yield cursor.value as T
             cursor = await cursor.continue()
