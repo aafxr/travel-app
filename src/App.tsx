@@ -16,7 +16,7 @@ import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 import ExpensesContextProvider from "./contexts/ExpensesContexts/ExpensesContextProvider";
 import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
-// import ExpensesAdd from "./modules/ExpensesActual/Pages/ExpensesAdd/ExpensesAdd";
+import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
 import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
@@ -66,7 +66,7 @@ function App() {
     const user = useUser()
 
     useEffect(() => {
-        if(!user) {
+        if (!user) {
             UserService.getLoggedInUser()
                 .then((user) => {
                     if (user) context.setUser(user)
@@ -96,7 +96,7 @@ function App() {
                     <Route path={'/travel/add/'} element={<TravelAdd/>}/>
                     <Route element={<TravelLayout/>}>
                         <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
-                                <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
+                        <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
                         <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
                         {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
@@ -123,12 +123,12 @@ function App() {
                                 <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
                                 <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
                             </Route>
-                            {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
-                            {/*            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'actual'}/>}/>*/}
-                            {/*            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType='actual' edit/>}/>*/}
-                            {/*            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd primary_entity_type={'travel'} expensesType={'planned'}/>}/>*/}
-                            {/*            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd primary_entity_type={'travel'} edit/>}/>*/}
                         </Route>
+                        {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
+                        <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd/>}/>
+                        <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd/>}/>
+                        <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                     </Route>
                     {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                     <Route path={'/profile/'} element={<Profile/>}/>

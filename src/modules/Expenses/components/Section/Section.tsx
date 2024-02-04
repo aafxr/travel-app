@@ -1,19 +1,20 @@
 import clsx from "clsx";
-import React, {useMemo} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {Expense, Section as SectionEntity} from "../../../../classes/StoreEntities";
+import {ExpenseService, SectionService} from "../../../../classes/services";
+import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import {formatter} from "../../../../utils/currencyFormat";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
+import {currencySymbol} from "../../static/vars";
 import Line from "../Line/Line";
 
 import './Section.css'
-import {Expense} from "../../../../classes/StoreEntities";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
-import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
-import {ExpenseService} from "../../../../classes/services";
 
 type SectionPropsType = {
     section_id: string,
@@ -35,8 +36,16 @@ function Section({
                  }: SectionPropsType) {
     const user = useUser()
     const travel = useTravel()
+
+    const [section, setSection] = useState<SectionEntity>()
     const limit = useLimit(section_id, user?.settings.expensesFilter)
     const total = useMemo(() => expenses.reduce((a, e) => a + e.valueOf(), 0), [expenses])
+
+    useEffect(() => {
+        SectionService.getSectionById(section_id)
+            .then(setSection)
+            .catch(defaultHandleError)
+    }, [])
 
 
     let percent = 0
@@ -53,7 +62,7 @@ function Section({
             <div>
                 <Link to={`/travel/${travel.id}/expenses/limit/${section_id}/`}>
                     <div className='flex-between'>
-                        <div className='section-title'>{section_id}</div>
+                        <div className='section-title'>{section?.title}</div>
                         <div className='section-title'>{formatter.format(total)} ₽</div>
                     </div>
                 </Link>
@@ -68,7 +77,7 @@ function Section({
                                         ?
                                         <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
                                         : <div
-                                            className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} ₽</div>
+                                            className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} {currencySymbol.get(user.currency)}</div>
                                     }
                                 </div>
                             )
@@ -142,7 +151,7 @@ function SectionItem({expense}: { expense: Expense }) {
                     <span>{time}</span>
                 </div>
 
-                <div>{formatter.format(value)} {expense.currency}</div>
+                <div>{formatter.format(value)} {currencySymbol.get(expense.currency)}</div>
             </div>
         </Swipe>
     )

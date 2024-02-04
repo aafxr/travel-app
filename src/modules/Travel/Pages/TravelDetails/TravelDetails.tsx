@@ -104,16 +104,12 @@ export default function TravelDetails() {
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>
-                            <span
-                                className='link'
-                                onClick={() => setCompact(!compact)}
-                            >
+                            <span className='link' onClick={() => setCompact(!compact)}>
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                    </div>
-                    <div className='flex-between flex-nowrap gap-0.5 pb-20 footer'>
-                        <IconButton icon={<MoneyIcon/>} title='Расходы'
+                    <div className='flex-between flex-nowrap gap-0.5 pb-20'>
+                        <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
                                     onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         {
                             travel.permit("showCheckList") && <IconButton
@@ -123,6 +119,7 @@ export default function TravelDetails() {
                             />
                         }
                         {/*<IconButton icon={<ChatIcon badge/>}/>*/}
+                    </div>
                     </div>
                 </div>
             </Container>

@@ -1,5 +1,5 @@
-import {Action, Expense, ExpenseActual, ExpensePlan, User} from "../StoreEntities";
-import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
+import {Action, Expense, User} from "../StoreEntities";
+import {ExpenseType} from "../../types/ExpenseType";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ExpenseError, TravelError} from "../errors";
 import {ActionName} from "../../types/ActionsType";
@@ -14,23 +14,11 @@ import {Exchange} from "../StoreEntities/Exchange";
 
 export class ExpenseService {
 
-    static async create(ctx:Context, expense: Partial<ExpenseType> | undefined, user: User, variant: ExpenseVariantType = "expenses_actual") {
+    static async create(expense: Expense, user: User) {
         let newExpense: Expense
-        if (expense) {
-            if (variant === "expenses_actual") newExpense = new ExpenseActual(expense, user)
-            else newExpense = new ExpensePlan(expense, user)
-        } else {
-            newExpense = new Expense({}, user)
-        }
-
-        const action = new Action(newExpense, newExpense.id, newExpense.variant as StoreName, ActionName.ADD)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.EXPENSE)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.add(newExpense.dto())
-        actionStore.add(action.dto())
-        return newExpense
+        const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.ADD)
+        await DB.writeAll([expense,action])
+        return expense
 
     }
 
@@ -38,7 +26,7 @@ export class ExpenseService {
         if (!expense.isPersonal(user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
-            if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
+            if (!travel.isMember(user)) throw ExpenseError.permissionDenied()
         }
         const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.UPDATE)
         const db = await openIDBDatabase()
@@ -82,5 +70,10 @@ export class ExpenseService {
         }
 
         return expenses
+    }
+
+    static async getById(id:string, user: User){
+        const ex = await DB.getOne<ExpenseType>(StoreName.EXPENSE, id)
+        if(ex) return new Expense(ex, user)
     }
 }

@@ -17,46 +17,17 @@ export default function ExpensesActual() {
     const groupMap = useExpensesGroupActual(user.getSetting('expensesFilter'))
 
 
-    // useEffect(() => {
-    //     for (const g  of groupMap.entries())
-    //         console.log(g[0], g[1])
-    // }, [groupMap])
-
-    console.log(groupMap)
-
     return (
         <>
             <Container className='pt-20 content column gap-1'>
                 <AddButton to={`/travel/${travel.id}/expenses/add/`}>Записать расходы</AddButton>
                 {
                     Array.from(groupMap.entries()).map(([section_id, expensesList]) => (
-                        <Section section_id={section_id} expenses={expensesList} />
+                        <Section key={section_id} section_id={section_id} expenses={expensesList}/>
                     ))
                 }
             </Container>
-            {
-                travel.members_count > 1 && (
-                    <ExpensesFilterVariant
-                        className='footer'
-                        value={user.getSetting('expensesFilter')}
-                        onChange={console.log}
-                    />
-                )
-            }
+            {travel.members_count > 1 && (<ExpensesFilterVariant className='footer'/>)}
         </>
     )
 }
-
-
-// {
-//     sectionComponentData.length > 0
-//         ? sectionComponentData.map(sk => (
-//             <Section
-//                 key={sk}
-//                 {...sk}
-//                 user_id={user.id}
-//                 line
-//             />
-//         ))
-//         : <div>{noDataMessage}</div>
-// }

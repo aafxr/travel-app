@@ -52,6 +52,7 @@ class Expense extends StoreEntity implements ExpenseType {
         if (expense.datetime) this.datetime = expense.datetime
         if (expense.personal) this.personal = expense.personal
         if (expense.value) this.value = expense.value
+        if (expense.variant) this.variant = expense.variant
 
         this.setExchanger(new Exchange())
 
@@ -135,7 +136,7 @@ class Expense extends StoreEntity implements ExpenseType {
         return this.value * this.coeff
     }
 
-    dto(): Omit<ExpenseType, 'variant'> {
+    dto(): ExpenseType {
         return {
             id: this.id,
             entity_id: this.entity_id,
@@ -150,6 +151,7 @@ class Expense extends StoreEntity implements ExpenseType {
             datetime: this.datetime,
             personal: this.personal,
             value: this.value,
+            variant: this.variant
         }
     }
 }

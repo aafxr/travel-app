@@ -1,6 +1,7 @@
 .icon-button {
     position: relative;
     padding: 12px 18px;
+    color: var(--color-text);
     stroke: var(--color-text);
     border-radius: 2rem;
     border: none;

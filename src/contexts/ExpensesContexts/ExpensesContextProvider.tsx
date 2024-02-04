@@ -51,6 +51,7 @@ export default function ExpensesContextProvider() {
             .then(([expenses_list, limits_list]: [Expense[], Limit[]]) => {
                 const actual: Expense[] = []
                 const plan: Expense[] = []
+                expenses_list.forEach(e=> console.log(e.variant))
                 expenses_list.forEach(e => e.variant === "expenses_actual" ? actual.push(e) : plan.push(e))
 
                 for (const limit of limits_list) {
@@ -64,6 +65,7 @@ export default function ExpensesContextProvider() {
             .catch(defaultHandleError)
             .finally(() => setState(prev => ({...prev, loading: false})))
     }, [travelCode])
+
 
 
     if (state.loading) {

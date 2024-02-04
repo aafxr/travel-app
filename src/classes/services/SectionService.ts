@@ -15,9 +15,9 @@ export class SectionService {
         return sections.find(s => s.id === section_id)
     }
 
-    static async getAll(){
-         const sectionsObj = await DB.getAll<SectionType>(StoreName.SECTION)
-        if(sectionsObj.length) return sectionsObj.map(s => new Section(s))
+    static async getAll() {
+        const sectionsObj = await DB.getAll<SectionType>(StoreName.SECTION)
+        if (sectionsObj.length) return sectionsObj.map(s => new Section(s))
 
         const sections = await fetchSections()
         await DB.writeAll(sections)

@@ -5,7 +5,6 @@ import {Expense} from "../../classes/StoreEntities";
 
 export function useExpensesGroupActual(key: ExpenseFilterType): Map<string, Expense[]>{
     const context = useContext(ExpensesGroupsContext)
-    console.log(key, context)
     switch (key){
         case "personal":
             return context.actual.personal

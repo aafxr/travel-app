@@ -1,10 +1,10 @@
 import React, {createContext} from 'react'
 import {Outlet, useLocation, useParams} from "react-router-dom";
 
+import {useGroupExpensesState} from "./useGroupExpensesState";
 import Container from "../../components/Container/Container";
 import {PageHeader, Tab} from "../../components/ui";
 import {Expense} from "../../classes/StoreEntities";
-import {useGroupExpensesState} from "./useGroupExpensesState";
 
 export type ExpensesGroupsContextStateType = {
     plan: {

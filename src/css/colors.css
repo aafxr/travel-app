@@ -56,7 +56,7 @@
         --color-text: #fff;
         --color-text-50: rgba(235, 235, 235, 0.50);
         --color-background: rgb(30,30,30);
-        --color-background-alt: var(--color-grey-light);
+        --color-background-alt: #333;
         --color-navigation-bg: rgb(30,30,30);
         --color-icon: var(--color-text);
         --color-icon-alt: #000;
@@ -76,7 +76,7 @@
     --color-text: #fff;
     --color-text-50: rgba(235, 235, 235, 0.50);
     --color-background: rgb(30,30,30);
-    --color-background-alt: var(--color-grey-light);
+    --color-background-alt: #333;
     --color-navigation-bg: rgb(30,30,30);
     --color-icon: var(--color-text);
     --color-icon-alt: #000;

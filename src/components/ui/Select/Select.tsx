@@ -5,6 +5,17 @@ import useOutside from "../../../hooks/useOutside";
 
 import './Select.css'
 
+
+interface SelectPropsType  {
+    defaultValue: string
+    value: string
+    options: string[]
+    className: string
+    size?: number
+    border?: boolean
+    onChange: (value: string) => void
+}
+
 /**
  * Компонент-селектор
  * @kind component
@@ -17,25 +28,23 @@ import './Select.css'
  * @param {boolean} border флаг, добавляет стиль border
  * @param {(value: string) => void} onChange callback, вызывается при изменении состояния компонента
  * @param props other props
- * @param {React.Ref} ref react ref
  * @returns {JSX.Element}
  * @category UI-Components
  * @name Select
  */
-function Select({
+export default function Select(this:Function, {
                     defaultValue = '',
                     value,
                     options,
                     className,
                     size = 4,
                     border,
-                    onChange,
-                    ...props},
-                ref) {
+                    onChange
+                }: SelectPropsType) {
     const [selected, setSelected] = useState(defaultValue)
     const [active, setActive] = useState(false)
-    const {ref: selectMainRef} = useOutside(active, setActive.bind(this, () => false))
-    const headerRef = useRef()
+    const {ref: selectMainRef} = useOutside<HTMLDivElement>(active, setActive.bind(this, () => false))
+    const headerRef = useRef<HTMLDivElement>(null)
 
     useEffect(()=>{
         value && setSelected(value)
@@ -49,7 +58,7 @@ function Select({
         }
     }, [selectMainRef.current, headerRef.current, active])
 
-    function onSelectHandler(value, e) {
+    function onSelectHandler(value: string, e: React.MouseEvent<HTMLDivElement>) {
         e.stopPropagation()
         if (active) {
             setSelected(value)
@@ -96,11 +105,9 @@ function Select({
                 }
             </div>
             <select
-                ref={ref}
                 value={selected}
                 onChange={(e) => e.stopPropagation()}
                 hidden
-                {...props}
             >
                 {
                     options && options.length && options.map(o => (
@@ -112,10 +119,8 @@ function Select({
     )
 }
 
-export default React.forwardRef(Select)
 
-
-function ChevronDown({className}){
+function ChevronDown({className}: { className?: string }){
 
      return (
          <svg className={className} viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">

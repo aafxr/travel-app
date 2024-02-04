@@ -2,9 +2,10 @@ import React from 'react'
 
 import {useExpensesGroupPlan} from "../../../../contexts/ExpensesContexts/useExpensesGroupPlan";
 import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
+import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
 
@@ -19,25 +20,17 @@ import '../../css/Expenses.css'
 export default function ExpensesPlan() {
     const user = useUser()!
     const travel = useTravel()!
-    const group = useExpensesGroupPlan(user.getSetting('expensesFilter'))
-
-    console.log(group)
+    const groupMap = useExpensesGroupPlan(user.getSetting('expensesFilter'))
 
     return (
         <>
             <Container className='pt-20 content column gap-1'>
                 <AddButton to={`/travel/${travel.id}/expenses/plan/add/`}>Запланировать расходы</AddButton>
-
+                {Array.from(groupMap.entries()).map(([section_id, expensesList]) => (
+                    <Section key={section_id} section_id={section_id} expenses={expensesList}/>
+                ))}
             </Container>
-            {
-                travel.members_count > 1 && (
-                    <ExpensesFilterVariant
-                        className='footer'
-                        value={user.getSetting("expensesFilter")}
-                        onChange={console.log}
-                    />
-                )
-            }
+            { travel.members_count > 1 && ( <ExpensesFilterVariant className='footer' /> ) }
 
         </>
     )
