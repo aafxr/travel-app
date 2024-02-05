@@ -8,12 +8,12 @@ type YAPIResponseType = {
 }
 
 export async function findByAddress(address: string): Promise<YAPIResponseType>{
-    return {
-        address:"Moscow area",
-        boundedBy:[[54,35], [54,35]]
-    }
-    // const result: IGeocodeResult = await window.ymaps.geocode(address)
-    // return extractAPIData(result)
+    // return {
+    //     address:"Moscow area",
+    //     boundedBy:[[54,35], [54,35]]
+    // }
+    const result: IGeocodeResult = await window.ymaps.geocode(address)
+    return extractAPIData(result)
 }
 
 
