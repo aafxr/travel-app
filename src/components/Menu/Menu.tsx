@@ -3,13 +3,13 @@ import {ReactNode, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
+import {useAppContext, useUser} from "../../contexts/AppContextProvider";
 import MenuIconList from "../MenuIconList/MenuIconList";
 import {UserService} from "../../classes/services";
 import useOutside from "../../hooks/useOutside";
 import {MenuIcon} from "../svg";
 
 import './Menu.css'
-import {useUser} from "../../contexts/AppContextProvider";
 
 type MenuPropsType = {
     children?: ReactNode,
@@ -25,6 +25,7 @@ type MenuPropsType = {
  */
 export default function Menu({children, className}: MenuPropsType) {
     const user = useUser()
+    const context = useAppContext()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside<HTMLDivElement>(false, setIsOpen)
@@ -32,6 +33,7 @@ export default function Menu({children, className}: MenuPropsType) {
     function handleLogin() {
         if (user) {
             UserService.logOut(user)
+                .then(() => context.setUser(user))
                 .then(() => navigate('/'))
                 .catch(defaultHandleError)
         } else {
