@@ -3,8 +3,10 @@ import {MovementType} from "../../types/MovementType";
 import {MemberType} from "../../types/MemberType";
 import {StoreEntity} from "./StoreEntity";
 import {Photo} from "./Photo";
+import {StoreName} from "../../types/StoreName";
 
 export class Member extends StoreEntity implements MemberType {
+    storeName = StoreName.USERS
 
     id = '';
     username = '';

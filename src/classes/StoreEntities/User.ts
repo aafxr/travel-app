@@ -4,11 +4,13 @@ import {ExtendType} from "../../types/ExtendType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {UserSettingsType, UserType} from "../../types/UserType";
 import {Member} from "./Member";
+import {StoreName} from "../../types/StoreName";
 
 type UserConstructorPropsType = Partial<UserType> | User
 
 
 export class User extends Member implements UserType {
+    storeName = StoreName.USERS
 
     token = '';
     refresh_token = '';

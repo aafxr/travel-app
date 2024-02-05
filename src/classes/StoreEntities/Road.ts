@@ -3,6 +3,7 @@ import {RoadType} from "../../types/RoadType";
 import {MovementType} from "../../types/MovementType";
 import {nanoid} from "nanoid";
 import {CoordinatesType} from "../../types/CoordinatesType";
+import {StoreName} from "../../types/StoreName";
 
 interface RoadOptionsType extends Partial<RoadType> {
     distance: number
@@ -14,6 +15,7 @@ interface RoadOptionsType extends Partial<RoadType> {
 const MS_IN_HOUR = 60 * 60 * 1000
 
 export class Road extends StoreEntity implements RoadType {
+    storeName = StoreName.ROAD
     id = nanoid(7);
     distance: number;
     movementType: MovementType = MovementType.WALK;

@@ -14,6 +14,7 @@ import {Member} from "./Member";
 import {Place} from "./Place";
 import {Photo} from "./Photo";
 import {Road} from "./Road";
+import {StoreName} from "../../types/StoreName";
 
 
 type TravelPropsType = Partial<TravelType> | Travel
@@ -27,6 +28,7 @@ const MIDDLE_TIME = HOUR_IN_MS * 13
 
 
 export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
+    storeName = StoreName.TRAVEL
 
     id = nanoid(8);
     code = '';
@@ -325,11 +327,11 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.setUpdated_at()
     }
 
-    isMember<T extends Member>(member:T){
-        if(member.id === this.owner_id) return true
-        if(this.isAdmin(member)) return true
-        if(this.isEditor(member)) return true
-        if(this.members.includes(member.id)) return true
+    isMember<T extends Member>(member: T) {
+        if (member.id === this.owner_id) return true
+        if (this.isAdmin(member)) return true
+        if (this.isEditor(member)) return true
+        if (this.members.includes(member.id)) return true
         return false
     }
 

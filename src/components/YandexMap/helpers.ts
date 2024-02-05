@@ -2,7 +2,8 @@ import type {IGeocodeResult} from "ymaps/index";
 
 type YAPIResponseType = {
     address: string,
-    boundedBy: [[number, number], [number, number]]
+    boundedBy: [[number, number], [number, number]],
+    description: string
 } | {
     empty: true
 }
@@ -27,7 +28,8 @@ function extractAPIData(response: IGeocodeResult): YAPIResponseType {
     const address = response.geoObjects.get(0).properties.get('text', {}) as string | object
     if(typeof address === 'string'){
         const boundedBy = response.geoObjects.get(0).properties.get('boundedBy', {}) as [[number, number], [number, number]]
-        return {address, boundedBy}
+        const description = response.geoObjects.get(0).properties.get('description', {}) as unknown as string
+        return {address, boundedBy, description}
     }
     return {empty:true}
 }

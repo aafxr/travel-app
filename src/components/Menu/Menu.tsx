@@ -33,7 +33,7 @@ export default function Menu({children, className}: MenuPropsType) {
     function handleLogin() {
         if (user) {
             UserService.logOut(user)
-                .then(() => context.setUser(user))
+                .then(() => context.setUser(null))
                 .then(() => navigate('/'))
                 .catch(defaultHandleError)
         } else {

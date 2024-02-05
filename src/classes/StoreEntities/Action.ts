@@ -6,6 +6,7 @@ import {StoreName} from "../../types/StoreName";
 import {StoreEntity} from "./StoreEntity";
 
 export class Action<T extends StoreEntity> extends StoreEntity implements ActionType {
+    storeName = StoreName.ACTION
 
     id = nanoid(16);
     action: ActionName;

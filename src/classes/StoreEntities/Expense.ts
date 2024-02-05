@@ -7,12 +7,14 @@ import {Member} from "./Member";
 import {CurrencyName} from "../../types/CurrencyTypes";
 import {Exchange} from "./Exchange";
 import {User} from "./User";
+import {StoreName} from "../../types/StoreName";
 
 
 /**
  * данный класс позволяет работать с расходами
  */
 class Expense extends StoreEntity implements ExpenseType {
+    storeName = StoreName.EXPENSE
 
     id: string;
     entity_id = '';

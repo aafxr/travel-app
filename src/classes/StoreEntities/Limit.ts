@@ -3,6 +3,7 @@ import {LimitType} from "../../types/LimitType";
 import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
 import {User} from "./User";
+import {StoreName} from "../../types/StoreName";
 
 interface LimitOptionsType extends Partial<LimitType> {
     id:string
@@ -14,6 +15,7 @@ interface LimitOptionsType extends Partial<LimitType> {
  * Класс для работы с лимитами
  */
 export class Limit extends StoreEntity implements LimitType {
+    storeName = StoreName.LIMIT
 
     id: string
     personal: DBFlagType = 0

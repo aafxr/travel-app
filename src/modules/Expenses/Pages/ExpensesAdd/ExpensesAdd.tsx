@@ -14,9 +14,9 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
 import Select from "../../../../components/ui/Select/Select";
 import Button from "../../../../components/ui/Button/Button";
+import {currencySymbol} from "../../static/vars";
 
 import '../../css/Expenses.css'
-import {currencySymbol} from "../../static/vars";
 
 
 
@@ -59,7 +59,7 @@ export default function ExpensesAdd() {
                     if (e) setExpense(e)
                     else setExpense(new Expense({
                         section_id: 'misc',
-                        variant: isPlan ? "expenses_plan" : "expenses_plan",
+                        variant: isPlan ? "expenses_plan" : "expenses_actual",
                         primary_entity_id: travel.id
                     }, user))
                 })
@@ -68,7 +68,7 @@ export default function ExpensesAdd() {
         } else {
             setExpense(new Expense({
                 section_id: 'misc',
-                variant: isPlan ? "expenses_plan" : "expenses_plan",
+                variant: isPlan ? "expenses_plan" : "expenses_actual",
                 primary_entity_id: travel.id
             }, user))
         }

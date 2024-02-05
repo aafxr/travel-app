@@ -1,17 +1,14 @@
-import {PropsWithChildren, useEffect, useState} from "react";
+import {PropsWithChildren, useState} from "react";
 
 import PhotoCarousel from "../../../../components/PhotoCarousel/PhotoCarousel";
 import ChipInput from "../../../../components/ui/ChipInput/ChipInput";
-import useTravelContext from "../../../../hooks/useTravelContext";
 import {EditePencil, PhotoIcon, TrashIcon} from "../../../../components/svg";
 import {DEFAULT_IMG_URL} from "../../../../static/constants";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
+import {Place} from "../../../../classes/StoreEntities";
 import {Chip} from "../../../../components/ui";
 
 import './PlaceCard.css'
-import useUserSelector from "../../../../hooks/useUserSelector";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {Place} from "../../../../classes/StoreEntities";
 
 interface PlaceCardPropsType extends PropsWithChildren {
     place: Place

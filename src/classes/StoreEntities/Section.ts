@@ -8,6 +8,8 @@ import {DB} from "../db/DB";
  * класс для работы с сущностью Section
  */
 export class Section extends StoreEntity implements SectionType{
+    storeName = StoreName.SECTION
+
     id = '';
     color = '';
     title = '';

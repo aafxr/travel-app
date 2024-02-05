@@ -100,13 +100,14 @@ export class DB {
     }
 
 
-    static async writeAll<T extends Pick<StoreEntity, 'dto'>>(elements: T[] = []) {
+    static async writeAll<T extends Pick<StoreEntity, 'dto' | 'storeName'>>(elements: T[] = []) {
         if (!elements.length) return
-        const storeNames = elements.map(el => el.constructor.name)
+        const storeNames = elements.map(el => el.storeName)
+        const set = new Set(storeNames)
         const db = await openIDBDatabase()
-        const tx = db.transaction(storeNames, 'readwrite')
+        const tx = db.transaction([...set], 'readwrite')
         for (const el of elements) {
-            const store = tx.objectStore(el.constructor.name)
+            const store = tx.objectStore(el.storeName)
             store.put(el.dto())
         }
     }

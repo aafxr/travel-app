@@ -9,6 +9,7 @@ export async function findAddress(wp: WaypointType) {
             // const waypoint = newState.travel.waypoints[idx]
             waypoint.address = response.address
             waypoint.coords = response.boundedBy[0]
+            waypoint.locality = response.description
             return waypoint
         }
     } catch (e) {}

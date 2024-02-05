@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Routes, Route, Navigate} from "react-router-dom";
+import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 
 import TravelUserPermission from "./modules/Travel/Pages/TravelUserPermission/TravelUserPermission";
 // import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
@@ -63,8 +63,9 @@ import {TelegramAuthPayloadType} from "./types/TelegramAuthPayloadType";
 
 
 function App() {
-    const context = useAppContext()
     const user = useUser()
+    const context = useAppContext()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (!user) {
@@ -84,6 +85,7 @@ function App() {
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)
             .then(user => { if (user) context.setUser(user) })
+            .then(() => navigate(-1))
             .catch(defaultHandleError)
     }
 

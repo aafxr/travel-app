@@ -54,7 +54,8 @@ export default function StartPointInput({waypoint, onChange, onRemove}: StartPoi
                     if('address' in response){
                         const address = response.address
                         const coords = response.boundedBy[0]
-                        const newPoint = {...wp, address, coords}
+                        const locality = response.description
+                        const newPoint = {...wp, address, coords, locality}
                         onChange(newPoint)
                     }
                 })

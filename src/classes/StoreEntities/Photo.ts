@@ -1,9 +1,12 @@
 import {StoreEntity} from "./StoreEntity";
 import {PhotoType} from "../../types/PhotoType";
 import {nanoid} from "nanoid";
+import {StoreName} from "../../types/StoreName";
 
 
 export class Photo extends StoreEntity implements PhotoType {
+    storeName = StoreName.Photo
+
     blob?: Blob;
     id: string = nanoid(16);
     src: string = '';

@@ -13,6 +13,8 @@ enum ExchangeStatus {
 }
 
 export class Exchange extends StoreEntity implements ExchangeType {
+    storeName = StoreName.CURRENCY
+
     date: number = 0;
     value: CurrencyType<any>[] = [];
     status: ExchangeStatus = ExchangeStatus.pure

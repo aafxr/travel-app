@@ -15,12 +15,12 @@ export class Context extends EventEmitter {
     }
 
 
-    setUser(user: User) {
+    setUser(user: User | null) {
         this.user = user
         this.emit('update', [this])
     }
 
-    setTravel(travel: Travel) {
+    setTravel(travel: Travel | null) {
         this.travel = travel
         this.emit('update', [this])
     }
