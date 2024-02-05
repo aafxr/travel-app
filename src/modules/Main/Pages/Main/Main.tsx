@@ -1,16 +1,16 @@
 import React from 'react'
 import {useNavigate} from "react-router-dom";
 
-import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
+import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
+import {Travel} from '../../../../classes/StoreEntities'
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Main.css'
-import Navigation from "../../../../components/Navigation/Navigation";
 
 
 
@@ -27,7 +27,7 @@ export default function Main() {
 
     async function handleNewTravel() {
         if (user) {
-            TravelService.create(context)
+            TravelService.create(new Travel({}), user)
                 .then((travel) => {
                     context.setTravel(travel)
                     navigate(`/travel/add/`)

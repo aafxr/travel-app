@@ -3,13 +3,13 @@ import React, {useRef, useState} from "react";
 
 import MapPointsInputList from "../../../../components/MapPointsInputList/MapPointsInputList";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {findByAddress, YandexMapContainer, YPlacemark} from "../../../../components/YandexMap";
+import {YandexMapContainer, YPlacemark} from "../../../../components/YandexMap";
 import {useAppContext} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
 import {useTravelState, UseTravelStateType} from "../../../../hooks/useTravelState";
 import Button from "../../../../components/ui/Button/Button";
 import {WaypointType} from "../../../../types/WaypointType";
-import {Travel, Waypoint} from "../../../../classes/StoreEntities";
+import {Waypoint} from "../../../../classes/StoreEntities";
 import {TravelService} from "../../../../classes/services";
 import {TravelType} from "../../../../types/TravelType";
 import {PageHeader} from "../../../../components/ui";
@@ -35,6 +35,7 @@ const initialCallback = (t: TravelType):Partial<TravelType> => {
 export default function TravelAddOnMap() {
     const context = useAppContext()
     const currentTravel = context.travel
+    const user = context.user
     const navigate = useNavigate()
     const [state, setState] = useTravelState(context.travel, initialCallback )
     const currentWaypoint = useRef<WaypointType | undefined>()
@@ -58,15 +59,16 @@ export default function TravelAddOnMap() {
     /** добавление маршрута с заданными местами для посещения */
     function handleRouteSubmit() {
         const travel = context.travel
-        if (!travel) return
+        if (!user) return
         if (!state) return
+        if (!travel) return
         if (!state.change) return
 
         travel.waypoints =  state.travel.waypoints
             .filter(w => Boolean(~w.coords[0]) && Boolean(w.address.length))
             .map(w => new Waypoint(w))
 
-        TravelService.update(context, travel)
+        TravelService.update(travel, user)
             .then(() => navigate(`/travel/${travel.id}/settings/`))
             .catch(defaultHandleError)
     }

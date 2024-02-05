@@ -65,6 +65,6 @@ export default function Chip({
                 }
             </span>
         )}
-        <span>{children}</span>
+        <span className='chip-text'>{children}</span>
     </div>
 }

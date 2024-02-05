@@ -1,11 +1,10 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
-import {useCloneStoreEntity} from "../../../../hooks/useCloneStoreEntity";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import {TravelPreference} from "../../../../types/TravelPreference";
 import Container from "../../../../components/Container/Container";
@@ -18,6 +17,9 @@ import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
 
 import './TravelSettings.css'
+import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
+import {useTravelState} from "../../../../hooks/useTravelState";
+import {Travel} from "../../../../classes/StoreEntities";
 
 
 const sightseeingTime: RadioButtonGroupItemType[] = [
@@ -44,11 +46,7 @@ export default function TravelSettings() {
     const context = useAppContext()
     const navigate = useNavigate()
 
-    const {item: updatedTravel, change} = useCloneStoreEntity(travel)
-
-    useEffect(() => {
-        if (!travel.permitChange(user)) navigate(`/travel/${travel.id}/1/`)
-    }, [])
+    const [state, updateState] = useTravelState(travel)
 
 
     /** обработка нажатия на карточку пользователя */
@@ -57,45 +55,73 @@ export default function TravelSettings() {
 
     /** добавление / удаление способа перемещения во время маршрута */
     function handleMovementSelect(movementType: MovementType) {
-        if (!updatedTravel) return;
-        if (updatedTravel.movementTypes.length === 1 && movementType === updatedTravel.movementTypes[0]) return
-        if (updatedTravel.movementTypes.includes(movementType))
-            updatedTravel.setMovementTypes(updatedTravel.movementTypes.filter(mt => mt !== movementType))
+        if (!state) return;
+        if (state.travel.movementTypes.length === 1 && movementType === state.travel.movementTypes[0]) return
+        if (state.travel.movementTypes.includes(movementType))
+            state.travel.movementTypes = state.travel.movementTypes.filter(mt => mt !== movementType)
         else
-            updatedTravel.setMovementTypes([...updatedTravel.movementTypes, movementType])
+            state.travel.movementTypes = [...state.travel.movementTypes, movementType]
+        updateState({...state})
     }
 
 
     /** обработчик изменения времени */
     function handleDateRangeChange({start, end}: { start?: Date, end?: Date }) {
-        if (!updatedTravel) return;
-        if (start) updatedTravel.setDate_start(start)
-        if (end) updatedTravel.setDate_end(end)
+        if (!state) return;
+        const t = new Travel(state.travel)
+        if (start) t.setDate_start(start)
+        if (end) t.setDate_end(end)
+        updateState({...state, travel: t.dto()})
     }
 
 
     function handleDensityChange(select: RadioButtonGroupItemType[]) {
-        if (!updatedTravel) return;
-        updatedTravel.setDensity(select[0].id as TravelPreference['density'])
+        if (!state) return;
+        state.travel.preference.density = select[0].id as TravelPreference['density']
+        updateState({...state})
     }
 
 
     function handleDepthChange(select: RadioButtonGroupItemType[]) {
-        if (!updatedTravel) return;
-        updatedTravel.setDepth(select[0].id as TravelPreference['depth'])
+        if (!state) return;
+        state.travel.preference.depth = select[0].id as TravelPreference['depth']
+        updateState({...state})
     }
 
 
     /** сохранение параметров путешествия */
     function handleSaveTravelButton() {
-        if (!updatedTravel) return;
-        TravelService.update(context, updatedTravel)
-            .then(() => context.setTravel(updatedTravel))
+        if(!user) return
+        if (!state) return;
+        const t = new Travel(state.travel)
+        TravelService.update(t, user)
+            .then(() => context.setTravel(t))
             .then(() => navigate(`/travel/${travel.id}/`))
             .catch(defaultHandleError)
     }
 
-    if (!updatedTravel) return null
+
+    function handleToggleBoxChanged(isPublic: boolean) {
+        if (!state) return
+        state.travel.permission.public = isPublic ? 1 : 0
+        updateState({...state})
+    }
+
+
+    function handleMembersCountChange(num: number){
+        if(!state) return
+        state.travel.members_count = num
+        updateState({...state})
+    }
+
+    function handleChildrenCountChange(num: number){
+        if(!state) return
+        state.travel.children_count = num
+        updateState({...state})
+    }
+
+
+    if (!state) return null
 
 
     return (
@@ -110,7 +136,7 @@ export default function TravelSettings() {
                             <h4 className='title-semi-bold'>Направление</h4>
                             <div className='travel-settings-dirrection-title row'>
                                 <Chip color='light-orange' rounded>
-                                    {updatedTravel.direction}
+                                    {state.travel.direction}
                                 </Chip>
                             </div>
                         </section>
@@ -118,18 +144,46 @@ export default function TravelSettings() {
                         <section className='travel-settings-date column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Дата поездки</h4>
                             <DateRange
-                                init={updatedTravel.date_start.getTime() > 0 ? {
-                                    start: updatedTravel.date_start,
-                                    end: updatedTravel.date_end
+                                init={state.travel.date_start.getTime() > 0 ? {
+                                    start: state.travel.date_start,
+                                    end: state.travel.date_end
                                 } : undefined}
-                                minDate={updatedTravel.date_start}
+                                minDate={state.travel.date_start}
                                 onChange={handleDateRangeChange}
+                            />
+                        </section>
+
+                        <section className='travel-settings-movement column gap-0.5 block'>
+                            <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
+                            <div className='flex-wrap gap-1'>
+                                {
+                                    defaultMovementTags.map(dmt => (
+                                        <Chip
+                                            key={dmt.id}
+                                            icon={dmt.icon}
+                                            color={~state.travel.movementTypes.findIndex(mt =>  mt === dmt.id) ? 'orange' : 'grey'}
+                                            rounded
+                                            onClick={() => handleMovementSelect(dmt.id)}
+                                        >
+                                            {dmt.title}
+                                        </Chip>
+                                    ))
+                                }
+                            </div>
+                        </section>
+
+                        <section className='block'>
+                            <ToggleBox
+                                className='block'
+                                init={travel.isPublic}
+                                onChange={handleToggleBoxChanged}
+                                title={"Сделать видимым для всех"}
                             />
                         </section>
 
                         <section className='travel-settings-members column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Участники</h4>
-                            <TravelPeople peopleList={updatedTravel.members} onClick={handleUserClick}/>
+                            <TravelPeople peopleList={[...state.travel.admins, ...state.travel.editors, ...state.travel.commentator]} onClick={handleUserClick}/>
                             <div className='center'>
                                 {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
                                 {/*    участника</AddButton>*/}
@@ -138,8 +192,8 @@ export default function TravelSettings() {
                                 <span>Взрослые</span>
                                 <Counter
                                     init={travel.members_count}
-                                    min={updatedTravel.members.length || 1}
-                                    onChange={updatedTravel.setMembers_count.bind(updatedTravel)}
+                                    min={state.travel.admins.length + state.travel.editors.length + state.travel.commentator.length || 1}
+                                    onChange={handleMembersCountChange}
                                 />
                             </div>
                             <div className='flex-between'>
@@ -147,7 +201,7 @@ export default function TravelSettings() {
                                 <Counter
                                     init={travel.children_count}
                                     min={0}
-                                    onChange={updatedTravel.setChildren_count.bind(updatedTravel)}
+                                    onChange={handleChildrenCountChange}
                                 />
                             </div>
                         </section>
@@ -168,6 +222,14 @@ export default function TravelSettings() {
                                 onChange={handleDepthChange}
                                 init={depth.find(d => d.id === travel.preference.depth)!}
                             />
+                        </section>
+
+                        <section className='block'>
+                            <div className='title-semi-bold'>Интересы</div>
+                        </section>
+
+                        <section className='block'>
+                            <div className='link' onClick={() => navigate(`/travel/${travel.id}/details/`)}>+ Добавить детали поездки</div>
                         </section>
 
                         {/*{*/}
@@ -225,28 +287,11 @@ export default function TravelSettings() {
                         {/*    )*/}
                         {/*}*/}
 
-                        <section className='travel-settings-movement column gap-0.5 block'>
-                            <h4 className='title-semi-bold'>Предпочитаемый способ передвижения</h4>
-                            <div className='flex-wrap gap-1'>
-                                {
-                                    defaultMovementTags.map(dmt => (
-                                        <Chip
-                                            key={dmt.id}
-                                            icon={dmt.icon}
-                                            color={~updatedTravel.movementTypes.findIndex(mt =>  mt === dmt.id) ? 'orange' : 'grey'}
-                                            rounded
-                                            onClick={() => handleMovementSelect(dmt.id)}
-                                        >
-                                            {dmt.title}
-                                        </Chip>
-                                    ))
-                                }
-                            </div>
-                        </section>
+
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton} disabled={!change}>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={state ? !state.change : true }>Построить маршрут</Button>
                 </div>
             </div>
             {/*<FlatButton*/}

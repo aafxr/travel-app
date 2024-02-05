@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import {fetchPlaces} from "../../../../api/fetch/fetchPlaces";
@@ -15,7 +15,7 @@ import {Place, Travel} from "../../../../classes/StoreEntities";
 type TravelAddPlaceStateType = {
     search: string
     places: APIPlaceType[]
-    selected: Map<string, APIPlaceType>
+    selected: APIPlaceType[]
 }
 
 
@@ -28,17 +28,20 @@ type TravelAddPlaceStateType = {
  */
 export default function TravelAddPlace() {
     const travel = useTravel()
+    const user = useUser()
     const context = useAppContext()
     const navigate = useNavigate()
 
-    const [state, setState] = useState<TravelAddPlaceStateType>({search: '', places: [], selected: new Map()})
+    const [state, setState] = useState<TravelAddPlaceStateType>({search: '', places: [], selected: []})
+    const selected_id_list = state.selected.map(s => s.id)
 
 
     function handleSelectPlace(item: APIPlaceType) {
         const places_map = state.selected
-        if (places_map.has(item.id)) places_map.delete(item.id)
-        else places_map.set(item.id, item)
-        setState({...state})
+        if (selected_id_list.includes(item.id)) {
+            const pl = places_map.filter(p => p.id !== item.id)
+            setState({...state, selected: pl})
+        } else setState({...state, selected: [...places_map, item]})
     }
 
 
@@ -48,18 +51,20 @@ export default function TravelAddPlace() {
             fetchPlaces(search)
                 .then(list => setState({...state, places: list}))
                 .catch(defaultHandleError)
-        else if(!search) setState({...state, places:[], search: name})
-        else setState({...state, places:[], search: name})
+        else if (!search) setState({...state, places: [], search: name})
+        else setState({...state, places: [], search: name})
     }
 
 
     function handleSave() {
-        if(!travel) return
+        if (!user) return
+        if (!travel) return
+
         const newTravel = new Travel(travel)
         const list = Array.from(state.selected.values()).map(p => new Place(p))
-        for(const pl of list)
+        for (const pl of list)
             newTravel.addPlace(pl)
-        TravelService.update(context, newTravel)
+        TravelService.update(newTravel, user)
             .then(() => context.setTravel(newTravel))
             .then(() => navigate(`/travel/${travel.id}/1/`))
             .catch(defaultHandleError)
@@ -98,16 +103,16 @@ export default function TravelAddPlace() {
                             <LocationCard
                                 key={p.id}
                                 place={new Place(p)}
-                                selected={state.selected.has(p.id)}
+                                selected={selected_id_list.includes(p.id)}
                                 onAdd={handleSelectPlace}
                             />
                         ))
-                        : state.selected.size
+                        : state.selected.length
                             ? [...state.selected.values()].map(p => (
                                 <LocationCard
                                     key={p.id}
                                     place={new Place(p)}
-                                    selected={state.selected.has(p.id)}
+                                    selected={selected_id_list.includes(p.id)}
                                     onAdd={handleSelectPlace}
                                 />
                             ))

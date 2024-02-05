@@ -1,21 +1,21 @@
 import {fetchTravels} from "../../api/fetch/fetchTravels";
-import {Action, Place, Travel} from "../StoreEntities";
+import {Action, Place, Travel, User} from "../StoreEntities";
+import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ActionName} from "../../types/ActionsType";
 import {TravelType} from "../../types/TravelType";
 import {StoreName} from "../../types/StoreName";
+import {UserError} from "../errors/UserError";
+import {Photo} from "../StoreEntities/Photo";
+import {PhotoService} from "./PhotoService";
+import {Context} from "../Context/Context";
 import {TravelError} from "../errors";
 import {DB} from "../db/DB";
-import {Context} from "../Context/Context";
-import {UserError} from "../errors/UserError";
-import {openIDBDatabase} from "../db/openIDBDatabaase";
-import {PhotoService} from "./PhotoService";
-import {Photo} from "../StoreEntities/Photo";
 
 export class TravelService {
-    static async create(ctx: Context, newTravel?: Travel) {
-        if (!ctx.user || !ctx.user.isLogIn()) throw UserError.unauthorized()
+    static async create(newTravel: Travel, user: User) {
+        if (!user.isLogIn()) throw UserError.unauthorized()
 
-        const owner = ctx.user
+        const owner = user
         const travel = new Travel({...newTravel, owner_id: owner.id})
         const action = new Action(travel, owner.id, StoreName.TRAVEL, ActionName.ADD)
         const db = await openIDBDatabase()
@@ -27,8 +27,7 @@ export class TravelService {
         return travel
     }
 
-    static async update(ctx: Context, travel: Travel) {
-        const user = ctx.user
+    static async update(travel: Travel, user: User) {
         if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
@@ -38,9 +37,7 @@ export class TravelService {
         return travel
     }
 
-    static async delete(ctx: Context, travel: Travel) {
-        const user = ctx.user
-
+    static async delete(travel: Travel, user: User) {
         if (!user) throw UserError.unauthorized()
         if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
 
@@ -90,7 +87,7 @@ export class TravelService {
         if (!place || place.id) throw TravelError.unexpectedPlace(place?.id)
 
         travel.setPlaces([...travel.places, place])
-        return await TravelService.update(ctx, travel)
+        return await TravelService.update(travel, user)
     }
 
     static async addPlaces(ctx: Context, travel: Travel, places: Place[]) {
@@ -100,7 +97,7 @@ export class TravelService {
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
         travel.setPlaces([...travel.places, ...places])
-        await TravelService.update(ctx, travel)
+        await TravelService.update(travel, user)
     }
 
 }

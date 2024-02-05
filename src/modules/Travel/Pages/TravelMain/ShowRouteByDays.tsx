@@ -1,23 +1,23 @@
 import {Link, useParams} from "react-router-dom";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo} from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import ShowRoadCard from "../../components/ShowRoadCard/ShowRoadCard";
-import {Place, Road, Travel} from "../../../../classes/StoreEntities";
+import {Place, Travel} from "../../../../classes/StoreEntities";
 import Container from "../../../../components/Container/Container";
 import PlaceCard from "../../components/PlaceCard/PlaceCard";
 import {TravelService} from "../../../../classes/services";
-import {MS_IN_DAY} from "../../../../static/constants";
-import {Tab} from "../../../../components/ui";
 import {PlaceKind} from "../../../../types/PlaceKindType";
+import {Tab} from "../../../../components/ui";
 import {useGroupAtDay} from "./useGroupAtDay";
 
 export default function ShowRouteByDays() {
     const {dayNumber} = useParams()
-    const context = useAppContext()
+    const user = useUser()
     const travel = useTravel()
-    const {items:dayPlane} = useGroupAtDay(dayNumber)
+    const context = useAppContext()
+    const {items: dayPlane} = useGroupAtDay(dayNumber)
 
     const hotel = useMemo<Place | undefined>(() => {
         for (const item of dayPlane) {
@@ -41,14 +41,29 @@ export default function ShowRouteByDays() {
     // }, [dayNumber, travel])
 
 
-    const lastPlace = dayPlane[dayPlane.length - 1]
-
     function handleRemovePlace(place: Place) {
+        if (!user) return
         if (!travel) return
         const newTravel = new Travel(travel)
         newTravel.removePlace(place)
-        TravelService.update(context, newTravel)
+        TravelService.update(newTravel, user)
             .then(() => context.setTravel(newTravel))
+            .catch(defaultHandleError)
+    }
+
+    function handlePLaceTimeChange(place: Place, date: Date, type: 'start' | 'end') {
+        if (!travel) return
+        if (!user) return
+        const t = new Travel(travel)
+        const p = new Place(place)
+        if (type === 'start') {
+            place.setTime_start(date)
+        } else if (type === 'end') {
+            place.setTime_end(date)
+        }
+        const placesList = t.places.map(item => item._id === p._id ? p : item)
+        t.setPlaces(placesList)
+        TravelService.update(t, user)
             .catch(defaultHandleError)
     }
 
@@ -68,7 +83,15 @@ export default function ShowRouteByDays() {
                     dayPlane.length
                         ? dayPlane.map(p => {
                                 if (p instanceof Place)
-                                    return <PlaceCard key={p._id} place={p} onDelete={() => handleRemovePlace(p)}/>
+                                    return (
+                                        <PlaceCard
+                                            key={p._id}
+                                            place={p}
+                                            onDelete={() => handleRemovePlace(p)}
+                                            onTimeStartChange={(place, date) => handlePLaceTimeChange(place, date, "start")}
+                                            onTimeEndChange={(place, date) => handlePLaceTimeChange(place, date, "end")}
+                                        />
+                                    )
                                 return <ShowRoadCard key={p.id} road={p}/>
 
                             }

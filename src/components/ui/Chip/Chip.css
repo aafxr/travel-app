@@ -20,6 +20,11 @@
     padding: 4px 9px;
 }
 
+.chip-text{
+    position: relative;
+    top: -0.07rem;
+}
+
 .chip-icon{
     position: relative;
     flex: 0 0 auto;

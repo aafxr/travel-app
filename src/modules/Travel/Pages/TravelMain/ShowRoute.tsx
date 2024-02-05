@@ -1,17 +1,17 @@
-import React, {createContext, useEffect, useMemo, useState} from "react";
+import React, {createContext, useEffect, useMemo} from "react";
 
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {CalendarIcon, FlagIcon, MapIcon} from "../../../../components/svg";
 import Container from "../../../../components/Container/Container";
 import {Place, Road} from "../../../../classes/StoreEntities";
 import Button from "../../../../components/ui/Button/Button";
+import {MS_IN_DAY} from "../../../../static/constants";
 import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
 import debounce from "lodash.debounce";
 import ShowPlaces from "./ShowPlaces";
 
-import './TravelDetails.css'
-import {MS_IN_DAY} from "../../../../static/constants";
+import './TravelMain.css'
 
 export type DayGroupType = {
     items: Array<Place | Road>
@@ -21,6 +21,18 @@ export type DayGroupType = {
 type DayGroupContextType = { dayGroups: Map<string, DayGroupType> }
 
 export const DaysGroupContext = createContext<DayGroupContextType>({dayGroups: new Map()})
+
+
+
+
+
+const colors = [
+    '#7bece7',
+    '#5f72dc',
+    '#bb3cbb',
+    '#a53170',
+    '#782135'
+]
 
 
 export function ShowRoute() {
@@ -33,14 +45,14 @@ export function ShowRoute() {
 
         const newGroupState: DayGroupContextType = {dayGroups: new Map()}
         const itemsList = [...travel.places, ...travel.road]
-            .sort((a,b) => a.time_start.getTime() - b.time_start.getTime())
+            .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
         const items = new Set(itemsList)
         const t = new Date(0)
         t.setHours(0, 0, 0, 0)
         let d_start = t.getTime()
         let d_end = d_start + MS_IN_DAY
         for (let i = 0; i < travel.days; i++) {
-            const group: DayGroupType = {items: [], color: '#FF8E09'}
+            const group: DayGroupType = {items: [], color: colors[i % colors.length]}
 
             Array.from(items.values()).forEach(item => {
                 if (item.time_start.getTime() >= d_start && item.time_start.getTime() <= d_end) {
@@ -109,7 +121,6 @@ export function ShowRoute() {
                 </div>
             </Container>
             <DaysGroupContext.Provider value={newGroupState}>
-
                 {
                     user.getSetting('routeFilter') === 'allPlaces' && <ShowPlaces/>
                 }

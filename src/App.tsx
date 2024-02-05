@@ -12,10 +12,10 @@ import TravelSettings from "./modules/Travel/Pages/TravelSettings/TravelSettings
 // import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
 import TravelAddPlace from "./modules/Travel/Pages/TravelAddPlace/TravelAddPlace";
 import ExpensesPlan from "./modules/Expenses/Pages/ExpensesPlan/ExpensesPlan";
-import TravelDetails from "./modules/Travel/Pages/TravelDetails/TravelDetails";
+import TravelMain from "./modules/Travel/Pages/TravelMain/TravelMain";
 // import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 import ExpensesContextProvider from "./contexts/ExpensesContexts/ExpensesContextProvider";
-import TravelParams from "./modules/Travel/Pages/TravelParams/TravelParams";
+import TravelDetails from "./modules/Travel/Pages/TravelParams/TravelDetails";
 import ExpensesAdd from "./modules/Expenses/Pages/ExpensesAdd/ExpensesAdd";
 // import HotelDetails from "./modules/Hotel/Pages/HotelDetails/HotelDetails";
 import TravelRoutes from "./modules/Main/Pages/TravelRoutes/TravelRoutes";
@@ -59,6 +59,7 @@ import TravelPermissions from "./modules/Travel/Pages/TravelPermissions/TravelPe
 import TravelAddWaypoint from "./modules/Travel/Pages/TravelAddOnMap/TravelAddWaypoint";
 import defaultHandleError from "./utils/error-handlers/defaultHandleError";
 import ExpensesActual from "./modules/Expenses/Pages/ExpensesActual/ExpensesActual";
+import {TelegramAuthPayloadType} from "./types/TelegramAuthPayloadType";
 
 
 function App() {
@@ -80,6 +81,12 @@ function App() {
     window.Expense = Expense
     window.Travel = Travel
 
+    function handleAuth(payload: TelegramAuthPayloadType) {
+        UserService.logIn(payload)
+            .then(user => { if (user) context.setUser(user) })
+            .catch(defaultHandleError)
+    }
+
 
     return (
         <>
@@ -87,7 +94,7 @@ function App() {
                 {/*<Route element={<WorkerContextProvider/>}>*/}
                 <Route path={'/'} element={<Main/>}/>
                 {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
-                <Route path={'/auth/'} element={<TelegramAuth handleAuth={console.log}/>}/>
+                <Route path={'/auth/'} element={<TelegramAuth handleAuth={handleAuth}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
                 <Route element={<AuthRequired/>}>
                     <Route path={'/favorite/'} element={<Favorite/>}/>
@@ -97,8 +104,8 @@ function App() {
                     <Route element={<TravelLayout/>}>
                         <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                         <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
-                        <Route path={'/travel/:travelCode/'} element={<TravelDetails/>}/>
-                        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelDetails/>}/>
+                        <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
+                        <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
                         {/*<Route path={'/travel/:travelCode/checklist/'} element={<AuthRequired><CheckList/></AuthRequired>}/>*/}
                         <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
                         <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
@@ -106,7 +113,7 @@ function App() {
                         <Route path={'/travel/:travelCode/description/'} element={<TravelDescriptionAndDate/>}/>
                         <Route path={'/travel/:travelCode/permissions/'} element={<TravelPermissions/>}/>
                         {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
-                        <Route path={'/travel/:travelCode/params/'} element={<TravelParams/>}/>
+                        <Route path={'/travel/:travelCode/details/'} element={<TravelDetails/>}/>
                         <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                         {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
                         {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}

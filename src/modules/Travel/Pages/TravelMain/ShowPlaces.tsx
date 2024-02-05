@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import React, {forwardRef, useEffect, useLayoutEffect, useRef, useState} from "react";
 
-import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
@@ -10,7 +10,8 @@ import {Place} from "../../../../classes/StoreEntities";
 import {Tab} from "../../../../components/ui";
 
 export default function ShowPlaces() {
-    const travel = useTravel()!
+    const travel = useTravel()
+    const user = useUser()
     const context = useAppContext()
     const {dayNumber} = useParams()
     const tabs_ref = useRef<HTMLDivElement>(null)
@@ -20,15 +21,18 @@ export default function ShowPlaces() {
     // const activeDays = travel.routeBuilder.getActivityDays()
 
     useEffect(() => {
-        // const days = travel.routeBuilder.getActivityDays()
-        const places = travel.places//travel.routeBuilder.getPlacesAtDay(+dayNumber || days[0] || 1)
+        if(!travel) return
+        const places = travel.places
         setPlacesAtDay(places)
-    }, [dayNumber, travel.places])
+    }, [dayNumber, travel?.places])
 
 
     function handleRemovePLace(place: Place) {
+        if(!user) return
+        if(!travel) return
+
         travel.removePlace(place)
-        TravelService.update(context, travel)
+        TravelService.update( travel, user)
             .then( () => context.setTravel(travel))
             .catch(defaultHandleError)
     }

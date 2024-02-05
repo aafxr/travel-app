@@ -91,9 +91,8 @@ export class LimitService {
         const cursor = DB.openIndexCursor<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, expense.primary_entity_id)
         let expenseObj = (await cursor.next()).value
         let total = 0
-debugger
+
         while (expenseObj) {
-            console.log(expenseObj)
             if (expenseObj.variant !== "expenses_plan") {
                 expenseObj = (await cursor.next()).value
                 continue

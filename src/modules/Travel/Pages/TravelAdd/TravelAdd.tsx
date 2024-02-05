@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
+import {useUser} from "../../../../contexts/AppContextProvider";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
@@ -21,7 +21,6 @@ import '../../css/Travel.css'
 export default function TravelAdd() {
     const navigate = useNavigate()
     const user = useUser()
-    const context = useAppContext()
 
     const [title, setTitle] = useState('')
 
@@ -33,7 +32,7 @@ export default function TravelAdd() {
         }
         if (title.length && user) {
             const travel = new Travel({title, owner_id: user.id})
-            TravelService.create(context, travel)
+            TravelService.create(travel, user)
                 .then(() => navigate(`/travel/${travel.id}/map/`))
                 .catch(defaultHandleError)
 

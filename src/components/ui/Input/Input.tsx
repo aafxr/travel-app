@@ -33,7 +33,7 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
     }, [onChange])
 
     useEffect(() => {
-        if ((typeof value === 'string' || value) && value !== text) setText(value)
+        setText(value || '')
     }, [value])
 
 

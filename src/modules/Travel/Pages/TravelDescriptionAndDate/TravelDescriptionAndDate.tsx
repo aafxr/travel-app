@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useTravelState, UseTravelStateType} from "../../../../hooks/useTravelState";
-import {useAppContext, useTravel} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import NumberInput from "../../../../components/ui/Input/NumberInput";
-import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
 import TextArea from "../../../../components/ui/TextArea/TextArea";
 import DateRange from "../../../../components/DateRange/DateRange";
 import Container from "../../../../components/Container/Container";
@@ -29,10 +28,10 @@ import "./TravelDescriptionAndDate.css"
 export default function TravelDescriptionAndDate() {
     const navigate = useNavigate()
 
-    const travel = useTravel()!
+    const travel = useTravel()
+    const user = useUser()
     const context = useAppContext()
     const [state, setState] = useTravelState(travel)
-    const [days, setDays] = useState(state?.travel.days || 0)
 
 
     function getNewState(state: UseTravelStateType): UseTravelStateType {
@@ -79,14 +78,6 @@ export default function TravelDescriptionAndDate() {
     }
 
 
-    function handleToggleBoxChanged(isPublic: boolean) {
-        if (!state) return
-        const newState = getNewState(state)
-        newState.travel.permission.public = isPublic ? 1 : 0
-        setState(newState)
-    }
-
-
     function handleTitleChange(text: string) {
         if (!state) return
         const newState = getNewState(state)
@@ -96,7 +87,6 @@ export default function TravelDescriptionAndDate() {
 
 
     function handleTravelDays(d: number) {
-        setDays(d)
         if (!state) return
         if (d < 1) return
 
@@ -108,10 +98,13 @@ export default function TravelDescriptionAndDate() {
 
 
     function handleSave() {
+        if (!user) return
+        if (!travel) return
         if (!state) return
+
         if (state.change) {
             const updatedTravel = new Travel(state.travel)
-            TravelService.update(context, updatedTravel)
+            TravelService.update(updatedTravel, user)
                 .then(() => navigate(`/travel/${updatedTravel.id}/`))
                 .then(() => context.setTravel(updatedTravel))
                 .catch(defaultHandleError)
@@ -130,6 +123,7 @@ export default function TravelDescriptionAndDate() {
     }
 
     if (!state) return null
+    if (!travel) return null
 
     return (
         <div className='wrapper'>
@@ -149,10 +143,10 @@ export default function TravelDescriptionAndDate() {
                 <div className='block column gap-0.5'>
                     <div className='title-bold'>Дата поездки</div>
                     <div className='travel-edit-days'>
-                        <div className='title-semi-bold'>Количество дней</div>
+                        <span className='title-semi-bold'>Количество дней</span>
                         <NumberInput
                             className='travel-edit-days-input'
-                            value={days}
+                            value={state.travel.days}
                             onChange={handleTravelDays}
                             size={1}
                         />
@@ -186,12 +180,6 @@ export default function TravelDescriptionAndDate() {
                     <TextArea init={state.travel.description} onChange={handleDescriptionChange}
                               placeholder='Описание'/>
                 </div>
-                <ToggleBox
-                    className='block'
-                    init={travel.isPublic}
-                    onChange={handleToggleBoxChanged}
-                    title={"Сделать видимым для всех"}
-                />
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave} disabled={!state.change}>

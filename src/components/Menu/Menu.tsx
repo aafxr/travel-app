@@ -1,18 +1,15 @@
 import clsx from "clsx";
-import {ReactNode, useContext, useState} from "react";
+import {ReactNode, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {REFRESH_TOKEN} from "../../static/constants";
-import {UserContext} from "../../contexts/UserContextProvider";
 import MenuIconList from "../MenuIconList/MenuIconList";
+import {UserService} from "../../classes/services";
 import useOutside from "../../hooks/useOutside";
-import aFetch from "../../axios";
 import {MenuIcon} from "../svg";
 
 import './Menu.css'
-import {DB} from "../../classes/db/DB";
-import {StoreName} from "../../types/StoreName";
+import {useUser} from "../../contexts/AppContextProvider";
 
 type MenuPropsType = {
     children?: ReactNode,
@@ -26,23 +23,17 @@ type MenuPropsType = {
  * @returns {JSX.Element}
  * @category Components
  */
-export default function Menu({children, className}:MenuPropsType) {
-    const {logout, user} = useContext(UserContext)
+export default function Menu({children, className}: MenuPropsType) {
+    const user = useUser()
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
     const {ref} = useOutside<HTMLDivElement>(false, setIsOpen)
 
     function handleLogin() {
         if (user) {
-            DB.getOne<any>(StoreName.STORE, REFRESH_TOKEN)
-                .then(refresh_token => {
-                    aFetch.post('/user/auth/remove/', {
-                        [REFRESH_TOKEN]: refresh_token?.value
-                    })
-                        .then(() => navigate('/'))
-                        .catch(defaultHandleError)
-                })
-            logout()
+            UserService.logOut(user)
+                .then(() => navigate('/'))
+                .catch(defaultHandleError)
         } else {
             navigate('/login/')
         }
@@ -58,7 +49,7 @@ export default function Menu({children, className}:MenuPropsType) {
                     <MenuIconList/>
                 </div>
                 {children}
-                <div className='menu-item title-semi-bold' onClick={handleLogin} >
+                <div className='menu-item title-semi-bold' onClick={handleLogin}>
                     {user ? 'Выйти' : 'Войти'}
                 </div>
             </div>

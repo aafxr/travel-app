@@ -1,4 +1,4 @@
-import constants, {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../static/constants";
+import {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../static/constants";
 import {StoreName} from "../types/StoreName";
 import {DB} from '../classes/db/DB'
 
@@ -11,7 +11,7 @@ import {DB} from '../classes/db/DB'
 export default function clearUserData(){
     if (window) {
         // window?.location.reload()
-        window?.localStorage.setItem(USER_AUTH, null)
+        window?.localStorage.removeItem(USER_AUTH)
     }
     Promise.all([
         DB.delete(StoreName.STORE, ACCESS_TOKEN),
@@ -19,6 +19,5 @@ export default function clearUserData(){
     ])
         .catch(err => {
             console.error(err)
-            // ErrorReport.sendError(err)
         })
 }
