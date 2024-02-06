@@ -98,50 +98,50 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     }
 
 
-    setId(id: string) {
-        this.id = id
-        this.setUpdated_at()
+    static setId(travel: Travel, id: string) {
+        travel.id = id
+        Travel.setUpdated_at(travel)
     }
 
-    setCode(code: string) {
-        this.code = code
-        this.setUpdated_at()
+    static setCode(travel: Travel, code: string) {
+        travel.code = code
+        Travel.setUpdated_at(travel)
     }
 
-    setDescription(description: string) {
-        this.description = description
-        this.setUpdated_at()
+    static setDescription(travel: Travel, description: string) {
+        travel.description = description
+        Travel.setUpdated_at(travel)
     }
 
-    setDirection(direction: string) {
-        this.direction = direction
-        this.setUpdated_at()
+    static setDirection(travel: Travel, direction: string) {
+        travel.direction = direction
+        Travel.setUpdated_at(travel)
     }
 
-    setOwner_id(owner_id: string) {
-        this.owner_id = owner_id
-        this.setUpdated_at()
+    static setOwner_id(travel: Travel, owner_id: string) {
+        travel.owner_id = owner_id
+        Travel.setUpdated_at(travel)
     }
 
     get members() {
         return [this.owner_id, ...this.admins, ...this.editors, ...this.commentator]
     }
 
-    setMovementTypes(movementTypes: MovementType[]) {
-        this.movementTypes = movementTypes
-        this.setUpdated_at()
+    static setMovementTypes(travel: Travel, movementTypes: MovementType[]) {
+        travel.movementTypes = movementTypes
+        Travel.setUpdated_at(travel)
     }
 
-    addPlace(place: Place) {
-        if (!this.places.length) {
+    static addPlace(travel: Travel, place: Place) {
+        if (!travel.places.length) {
             let start = new Date(0)
-            start.setTime(zero_time.getTime() + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
-            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            start.setTime(zero_time.getTime() + MIDDLE_TIME - HOUR_IN_MS * (travel.preference.density / Preference.base_density))
+            const end = new Date(start.getTime() + Preference.base_duration * (travel.preference.depth / Preference.base_depth))
             place.time_start = start
             place.time_end = end
-            this.places.push(place)
+            travel.places.push(place)
         } else {
-            const last = this.places[this.places.length - 1]
+            const last = travel.places[travel.places.length - 1]
             const dist = getDistanceFromTwoPoints(place.location, last.location)
             const road = new Road({
                 time_start: last.time_end,
@@ -150,8 +150,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
                 to: place.location
             })
             let r_idx = 0
-            this.road.forEach(r => r.time_start > road.time_start && r_idx++)
-            this.road.splice(r_idx, 0, road)
+            travel.road.forEach(r => r.time_start > road.time_start && r_idx++)
+            travel.road.splice(r_idx, 0, road)
             let start: Date
             const hh = road.time_end.getHours()
             if (hh < 16 && hh > 9) {
@@ -159,30 +159,33 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             } else {
                 const t = new Date(road.time_end)
                 t.setHours(0, 0, 0, 0)
-                t.setTime(t.getTime() + MS_IN_DAY + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
+                t.setTime(t.getTime() + MS_IN_DAY + MIDDLE_TIME - HOUR_IN_MS * (travel.preference.density / Preference.base_density))
                 start = t
             }
 
-            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            const end = new Date(start.getTime() + Preference.base_duration * (travel.preference.depth / Preference.base_depth))
             place.time_start = start
             place.time_end = end
-            this.places.push(place)
+            travel.places.push(place)
         }
     }
 
-    setPlaces(places: Place[]) {
-        this.places = places
-        this.setUpdated_at()
+    static setPlaces(travel: Travel, places: Place[]) {
+        travel.road = []
+        travel.places = []
+        for (const place of places)
+            Travel.addPlace(travel, place)
+        Travel.setUpdated_at(travel)
     }
 
 
-    removePlace(place: Place) {
-        this.places = this.places.filter(p => p._id !== place._id)
-        this.road = []
-        if (this.places.length > 1) {
-            for (let i = 1; i < this.places.length; i++) {
-                const place_1 = this.places[i - 1]
-                const place_2 = this.places[i]
+    static removePlace(travel : Travel,place: Place) {
+        travel.places = travel.places.filter(p => p._id !== place._id)
+        travel.road = []
+        if (travel.places.length > 1) {
+            for (let i = 1; i < travel.places.length; i++) {
+                const place_1 = travel.places[i - 1]
+                const place_2 = travel.places[i]
                 const dist = getDistanceFromTwoPoints(place_1.location, place_2.location)
                 const road = new Road({
                     time_start: place_1.time_end,
@@ -191,26 +194,26 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
                     to: place_2.location
                 })
                 let r_idx = 0
-                this.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
-                this.road[r_idx] = road
+                travel.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
+                travel.road[r_idx] = road
             }
         }
-        this.setUpdated_at()
+        Travel.setUpdated_at(travel)
     }
 
 
-    setWaypoints(waypoints: Waypoint[]) {
-        this.waypoints = waypoints
-        this.setUpdated_at()
+    static setWaypoints(travel: Travel, waypoints: Waypoint[]) {
+        travel.waypoints = waypoints
+        Travel.setUpdated_at(travel)
     }
 
-    setPhoto(photo: Photo) {
-        if (this.photo) photo.id = this.photo
-        else this.photo = photo.id
+    static setPhoto(travel: Travel, photo: Photo) {
+        if (travel.photo) photo.id = travel.photo
+        else travel.photo = photo.id
 
-        this.image?.destroy()
-        this.image = photo
-        this.setUpdated_at()
+        travel.image?.destroy()
+        travel.image = photo
+        Travel.setUpdated_at(travel)
     }
 
     get getPhotoURL() {
@@ -218,44 +221,44 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return DEFAULT_IMG_URL
     }
 
-    setTitle(title: string) {
-        this.title = title
-        this.setUpdated_at()
+    static setTitle(travel: Travel, title: string) {
+        travel.title = title
+        Travel.setUpdated_at(travel)
     }
 
-    setDays(days: number) {
-        if (days < 1) return
-        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * days)
-        this.days = days
-        this.setUpdated_at()
+    static setDays(travel: Travel, days: number) {
+        if(days < 1) return
+        travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * days)
+        travel.days = days
+        Travel.setUpdated_at(travel)
     }
 
-    setIsFromPoint(isFromPoint: DBFlagType) {
-        this.isFromPoint = isFromPoint
-        this.setUpdated_at()
+    static setIsFromPoint(travel: Travel, isFromPoint: DBFlagType) {
+        travel.isFromPoint = isFromPoint
+        Travel.setUpdated_at(travel)
     }
 
-    setChildren_count(children_count: number) {
-        this.children_count = children_count
-        this.setUpdated_at()
+    static setChildren_count(travel: Travel, children_count: number) {
+        travel.children_count = children_count
+        Travel.setUpdated_at(travel)
     }
 
-    setMembers_count(members_count: number) {
-        this.members_count = members_count
-        this.setUpdated_at()
+    static setMembers_count(travel: Travel, members_count: number) {
+        travel.members_count = members_count
+        Travel.setUpdated_at(travel)
     }
 
 
-    setDate_end(date_end: Date) {
-        this.date_end = new Date(date_end)
-        this.date_start = new Date(this.date_end.getTime() - MS_IN_DAY * this.days)
-        this.setUpdated_at()
+    static setDate_end(travel: Travel, date_end: Date) {
+        travel.date_end = new Date(date_end)
+        travel.date_start = new Date(travel.date_end.getTime() - MS_IN_DAY * travel.days)
+        Travel.setUpdated_at(travel)
     }
 
-    setDate_start(date_start: Date) {
-        this.date_start = new Date(date_start)
-        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * this.days)
-        this.setUpdated_at()
+    static setDate_start(travel: Travel, date_start: Date) {
+        travel.date_start = new Date(date_start)
+        travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * travel.days)
+        Travel.setUpdated_at(travel)
     }
 
     getMemberRole<T extends Member>(member: T) {
@@ -305,28 +308,27 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return !!this.permission[key]
     }
 
-    private setUpdated_at() {
-        this.updated_at = new Date()
-        this.emit('update', [this])
+    static setUpdated_at(travel: Travel) {
+        travel.updated_at = new Date()
     }
 
     get isPublic() {
         return !!this.permission.public
     }
 
-    setDepth(depth: TravelPreference['depth']) {
-        this.preference.depth = depth
-        this.setUpdated_at()
+    static setDepth(travel: Travel, depth: TravelPreference['depth']) {
+        travel.preference.depth = depth
+        Travel.setUpdated_at(travel)
     }
 
-    setDensity(density: TravelPreference['density']) {
-        this.preference.density = density
-        this.setUpdated_at()
+    static setDensity(travel: Travel, density: TravelPreference['density']) {
+        travel.preference.density = density
+        Travel.setUpdated_at(travel)
     }
 
-    setPublic(val: DBFlagType | boolean) {
-        this.permission.public = val ? 1 : 0
-        this.setUpdated_at()
+    static setPublic(travel: Travel, val: DBFlagType | boolean) {
+        travel.permission.public = val ? 1 : 0
+        Travel.setUpdated_at(travel)
     }
 
     isMember<T extends Member>(member: T) {

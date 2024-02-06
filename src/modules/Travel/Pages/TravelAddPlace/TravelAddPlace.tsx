@@ -60,12 +60,11 @@ export default function TravelAddPlace() {
         if (!user) return
         if (!travel) return
 
-        const newTravel = new Travel(travel)
         const list = Array.from(state.selected.values()).map(p => new Place(p))
         for (const pl of list)
-            newTravel.addPlace(pl)
-        TravelService.update(newTravel, user)
-            .then(() => context.setTravel(newTravel))
+            Travel.addPlace(travel, pl);
+        TravelService.update(travel, user)
+            .then(() => context.setTravel(travel))
             .then(() => navigate(`/travel/${travel.id}/1/`))
             .catch(defaultHandleError)
     }

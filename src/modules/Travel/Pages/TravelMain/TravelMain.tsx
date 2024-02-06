@@ -21,6 +21,7 @@ import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelMain.css'
+import {Travel, User} from "../../../../classes/StoreEntities";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -50,7 +51,7 @@ export default function TravelMain() {
 
 
     function handleTravelPhotoChange(blob: Blob) {
-        travel.setPhoto(new Photo({blob}))
+        Travel.setPhoto(travel, new Photo({blob}))
         if (user)
             TravelService.update(travel, user)
                 .then(() => context.setTravel(travel))
@@ -63,7 +64,7 @@ export default function TravelMain() {
     }, [travel])
 
     function handleCurtain(val = true) {
-        user.setCurtain(val)
+        User.setCurtain(user, val)
         setCurtainOpen(val)
     }
 
@@ -81,13 +82,16 @@ export default function TravelMain() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <PhotoComponent className='img-abs' src={travel.getPhotoURL} onChange={handleTravelPhotoChange}/>
+                            <PhotoComponent className='img-abs' src={travel.getPhotoURL}
+                                            onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'
                                 onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
-                                { travel.title || (<span className='travel-details-title--empty'>Добавить название</span>) }
-                                    {travel.isPublic ? <VisibilityIcon className='travel-details-icon icon public'/> : <VisibilityOffIcon className='travel-details-icon icon private'/>}
+                                {travel.title || (
+                                    <span className='travel-details-title--empty'>Добавить название</span>)}
+                                {travel.isPublic ? <VisibilityIcon className='travel-details-icon icon public'/> :
+                                    <VisibilityOffIcon className='travel-details-icon icon private'/>}
                             </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
                         </div>
@@ -108,18 +112,18 @@ export default function TravelMain() {
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                    <div className='flex-between flex-nowrap gap-0.5 pb-20'>
-                        <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
-                                    onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
-                        {
-                            travel.permit("showCheckList") && <IconButton
-                                icon={<ChecklistIcon/>}
-                                title='Чек-лист'
-                                onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
-                            />
-                        }
-                        {/*<IconButton icon={<ChatIcon badge/>}/>*/}
-                    </div>
+                        <div className='flex-between flex-nowrap gap-0.5 pb-20'>
+                            <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
+                                        onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
+                            {
+                                travel.permit("showCheckList") && <IconButton
+                                    icon={<ChecklistIcon/>}
+                                    title='Чек-лист'
+                                    onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
+                                />
+                            }
+                            {/*<IconButton icon={<ChatIcon badge/>}/>*/}
+                        </div>
                     </div>
                 </div>
             </Container>

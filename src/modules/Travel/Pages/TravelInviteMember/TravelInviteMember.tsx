@@ -16,8 +16,6 @@ import Input from "../../../../components/ui/Input/Input";
 import './TravelInviteMember.css'
 
 
-
-
 type InviteMemberType = {
     member: Member,
     inviteURL: string
@@ -42,29 +40,35 @@ export default function TravelInviteMember() {
 
     useEffect(() => {
         const initState = {
-            member: new Member({first_name: 'asd'}),
+            member: new Member({}),
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`,
             email: ''
         }
-
-        const unsub = initState.member.subscribe('update', (m) => {
-            setState(prev => prev && ({...prev}))
-        })
         setState(initState)
-        return () => unsub()
     }, [])
 
-    const handleNameChange = (name: string) => state?.member.setFirst_name(name)
+    const handleNameChange = (name: string) => {
+        if (!state) return
+        Member.setFirst_name(state.member, name)
+        setState({...state})
+    }
 
 
     /** обработчик устанавливает флаг isChild */
-    const handleChildCheckbox = (isChild: boolean) => state?.member.setAge(isChild ? 7 : 18)
+    const handleChildCheckbox = (isChild: boolean) => {
+        if (!state) return
+        Member.setAge(state.member, isChild ? 7 : 18)
+        setState({...state})
+    }
 
     /**
      * обработчик устанавливает возраст ребенка
      * @param {number} age 1 - 17
      */
-    const handleChildAgeChange = (age: number) => state?.member.setAge(age)
+    const handleChildAgeChange = (age: number) => {
+        if (!state) return
+        Member.setAge(state.member, age)
+    }
 
     /** обработчик записи EMail */
     const handleEMailChange = (e: string) => state && setState({...state, email: e})
@@ -96,9 +100,9 @@ export default function TravelInviteMember() {
                     onChange={handleNameChange}
                     placeholder='Имя'
                 />
-                <Checkbox checked={state.member.isChild} onChange={handleChildCheckbox}>Ребенок</Checkbox>
+                <Checkbox checked={Member.isChild(state.member)} onChange={handleChildCheckbox}>Ребенок</Checkbox>
                 {
-                    state.member.isChild && (
+                    Member.isChild(state.member) && (
                         <div className='invite-child'>
                             <Counter min={1} max={17} init={7} onChange={handleChildAgeChange}/>
                             <span>лет</span>

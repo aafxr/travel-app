@@ -3,7 +3,7 @@ import React, {useEffect, useMemo, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {Expense, Section as SectionEntity} from "../../../../classes/StoreEntities";
+import {Expense, Section as SectionEntity, User} from "../../../../classes/StoreEntities";
 import {ExpenseService, SectionService} from "../../../../classes/services";
 import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
@@ -68,7 +68,7 @@ function Section({
                 </Link>
                 {
                     <>
-                        <Line value={user.getSetting('expensesFilter') !== "all" ? percent : 0} color={color}/>
+                        <Line value={User.getSetting(user, 'expensesFilter') !== "all" ? percent : 0} color={color}/>
                         {
                             !!limit && (
                                 <div className={'flex-between'}>

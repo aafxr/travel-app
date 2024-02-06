@@ -35,52 +35,51 @@ export class Member extends StoreEntity implements MemberType {
         if (member.photo) this.photo = member.photo
 
         if(member instanceof Member){
-            if (member.image) this.setPhoto(member.image)
+            if (member.image) Member.setPhoto(this, member.image)
         }
     }
 
 
-    get isChild() {
-        return this.age < 18
+    static isChild(member: Member) {
+        return member.age < 18
     }
 
 
-    setUsername(username: string) {
-        this.username = username
-        this.update()
+    static setUsername(member: Member, username: string) {
+        member.username = username
+        member.update()
     }
 
 
-    setFirst_name(first_name: string) {
-        this.first_name = first_name
-        this.update()
+    static setFirst_name(member: Member, first_name: string) {
+        member.first_name = first_name
+        member.update()
     }
 
 
-    setLast_name(last_name: string) {
-        this.last_name = last_name
-        this.update()
+    static setLast_name(member: Member, last_name: string) {
+        member.last_name = last_name
+        member.update()
     }
 
 
-    setPhoto(photo: Photo) {
-        if (this.photo) photo.id = this.photo
-        else this.photo = photo.id
+    static setPhoto(member: Member, photo: Photo) {
+        if (member.photo) photo.id = member.photo
+        else member.photo = photo.id
 
-        this.image?.destroy()
-        this.image = photo
-        this.update()
+        member.image?.destroy()
+        member.image = photo
+        member.update()
     }
 
 
-    setAge(age: number) {
-        this.age = age
-        this.update()
+    static setAge(member: Member, age: number) {
+        member.age = age
+        member.update()
     }
 
 
     update() {
-        this.emit('update', [this])
     }
 
 

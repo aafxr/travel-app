@@ -31,10 +31,9 @@ export default function ShowPlaces() {
         if(!user) return
         if(!travel) return
 
-        const t = new Travel(travel)
-        t.removePlace(place)
-        TravelService.update( t, user)
-            .then( () => context.setTravel(t))
+        Travel.removePlace(travel,place)
+        TravelService.update( travel, user)
+            .then( () => context.setTravel(travel))
             .catch(defaultHandleError)
     }
 

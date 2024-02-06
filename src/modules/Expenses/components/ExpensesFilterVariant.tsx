@@ -5,6 +5,7 @@ import Button from "../../../components/ui/Button/Button";
 import Container from "../../../components/Container/Container";
 import {useAppContext, useUser} from "../../../contexts/AppContextProvider";
 import {ExpenseFilterType} from "../../../types/filtersTypes";
+import {User} from "../../../classes/StoreEntities";
 
 
 export default function ExpensesFilterVariant({className}: { className?: string }) {
@@ -13,7 +14,7 @@ export default function ExpensesFilterVariant({className}: { className?: string 
 
     function setExpensesFilter(variant: ExpenseFilterType) {
         if (!user) return
-        user.setExpenseFilter(variant)
+        User.setExpenseFilter(user, variant)
         context.setUser(user)
     }
 
@@ -25,7 +26,7 @@ export default function ExpensesFilterVariant({className}: { className?: string 
                 filterType.map(f => (
                     <Button
                         key={f} className='center'
-                        active={f === user.getSetting('expensesFilter')}
+                        active={f === User.getSetting(user, 'expensesFilter')}
                         onClick={() => setExpensesFilter(f)}
                     >
                         {local[f]}

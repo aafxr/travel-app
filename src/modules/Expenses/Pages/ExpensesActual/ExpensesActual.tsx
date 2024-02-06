@@ -8,13 +8,14 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
+import {User} from "../../../../classes/StoreEntities";
 
 
 /** страница отображает текущие расходы с лимитами пользователя (если указаны) */
 export default function ExpensesActual() {
     const user = useUser()!
     const travel = useTravel()!
-    const groupMap = useExpensesGroupActual(user.getSetting('expensesFilter'))
+    const groupMap = useExpensesGroupActual(User.getSetting(user, 'expensesFilter'))
 
 
     return (

@@ -69,9 +69,9 @@ export default function TravelSettings() {
     function handleDateRangeChange({start, end}: { start?: Date, end?: Date }) {
         if (!state) return;
         const t = new Travel(state.travel)
-        if (start) t.setDate_start(start)
-        if (end) t.setDate_end(end)
-        updateState({...state, travel: t.dto()})
+        if (start) Travel.setDate_start(t,start)
+        if (end) Travel.setDate_end(t,end)
+        updateState({...state, travel: t})
     }
 
 

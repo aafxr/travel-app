@@ -61,62 +61,62 @@ export class User extends Member implements UserType {
     }
 
 
-    setId(id: string) {
-        this.id = id
-        this.setUpdate_at()
+    static setId(user:User, id: string) {
+        user.id = id
+        User.setUpdate_at(user)
     }
 
 
-    setUsername(username: string) {
-        this.username = username
-        this.setUpdate_at()
+    static setUsername(user:User, username: string) {
+        user.username = username
+        User.setUpdate_at(user)
     }
 
 
-    setFirst_name(first_name: string) {
-        this.first_name = first_name
-        this.setUpdate_at()
+    static setFirst_name(user:User, first_name: string) {
+        user.first_name = first_name
+        User.setUpdate_at(user)
     }
 
 
-    setLast_name(last_name: string) {
-        this.last_name = last_name
-        this.setUpdate_at()
+    static setLast_name(user:User, last_name: string) {
+        user.last_name = last_name
+        User.setUpdate_at(user)
     }
 
 
-    setToken(token: string) {
-        this.token = token
-        this.setUpdate_at()
+    static setToken(user:User, token: string) {
+        user.token = token
+        User.setUpdate_at(user)
     }
 
 
-    setRefresh_token(refresh_token: string) {
-        this.refresh_token = refresh_token
-        this.setUpdate_at()
+    static setRefresh_token(user:User, refresh_token: string) {
+        user.refresh_token = refresh_token
+        User.setUpdate_at(user)
     }
 
 
-    getSetting<T extends keyof UserSettingsType>(key: T): UserSettingsType[T]{
-        return this.settings[key]
+    static getSetting<T extends keyof UserSettingsType>(user: User, key: T): UserSettingsType[T]{
+        return user.settings[key]
     }
 
 
-    setRouteFilter(filter: RouteFilterType) {
-        this.settings.routeFilter = filter
-        this.setUpdate_at()
+    static setRouteFilter(user:User, filter: RouteFilterType) {
+        user.settings.routeFilter = filter
+        User.setUpdate_at(user)
     }
 
 
-    setCurtain(isOpen: DBFlagType | boolean) {
-        this.settings.curtain = isOpen ? 1 : 0
-        this.setUpdate_at()
+    static setCurtain(user:User, isOpen: DBFlagType | boolean) {
+        user.settings.curtain = isOpen ? 1 : 0
+        User.setUpdate_at(user)
     }
 
 
-    setExpenseFilter(filter: ExpenseFilterType) {
-        this.settings.expensesFilter = filter
-        this.setUpdate_at()
+    static setExpenseFilter(user:User, filter: ExpenseFilterType) {
+        user.settings.expensesFilter = filter
+        User.setUpdate_at(user)
     }
 
 
@@ -126,8 +126,7 @@ export class User extends Member implements UserType {
     }
 
 
-    setUpdate_at(){
-        this.emit('update', [this])
+    static setUpdate_at(user:User ) {
     }
 
 

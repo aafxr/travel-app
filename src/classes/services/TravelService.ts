@@ -4,7 +4,7 @@ import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ActionName} from "../../types/ActionsType";
 import {TravelType} from "../../types/TravelType";
 import {StoreName} from "../../types/StoreName";
-import {UserError} from "../errors/UserError";
+import {UserError} from "../errors/";
 import {Photo} from "../StoreEntities/Photo";
 import {PhotoService} from "./PhotoService";
 import {Context} from "../Context/Context";
@@ -56,7 +56,7 @@ export class TravelService {
             const travel = new Travel(travel_type)
             if (travel.photo) {
                 const photo = await PhotoService.getById(travel.photo)
-                if (photo) travel.setPhoto(new Photo(photo))
+                if (photo) Travel.setPhoto(travel, new Photo(photo))
             }
             return travel
         }
@@ -67,7 +67,7 @@ export class TravelService {
         if (fetchTravelsList.length) {
             for (const travel of fetchTravelsList) {
                 const photo = await PhotoService.getById(travel.photo)
-                if (photo) travel.setPhoto(new Photo(photo))
+                if (photo) Travel.setPhoto(travel, new Photo(photo))
             }
             return fetchTravelsList
         }
@@ -75,7 +75,7 @@ export class TravelService {
         const travels = idb_travels.map(t => new Travel(t))
         for (const travel of travels) {
             const photo = await PhotoService.getById(travel.photo)
-            if (photo) travel.setPhoto(new Photo(photo))
+            if (photo) Travel.setPhoto(travel, new Photo(photo))
         }
         return travels
     }
@@ -86,7 +86,7 @@ export class TravelService {
         if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!place || place.id) throw TravelError.unexpectedPlace(place?.id)
 
-        travel.setPlaces([...travel.places, place])
+        Travel.setPlaces(travel, [...travel.places, place])
         return await TravelService.update(travel, user)
     }
 
@@ -96,7 +96,7 @@ export class TravelService {
         if (!user) throw UserError.unauthorized()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
-        travel.setPlaces([...travel.places, ...places])
+        Travel.setPlaces(travel, [...travel.places, ...places])
         await TravelService.update(travel, user)
     }
 

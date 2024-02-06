@@ -18,7 +18,7 @@ export class MemberService {
             const memberinstance = new Member(member)
             if (memberinstance.photo) {
                 const photo = await PhotoService.getById(memberinstance.photo)
-                if (photo) memberinstance.setPhoto(new Photo(photo))
+                if (photo) Member.setPhoto(memberinstance, new Photo(photo))
             }
             return memberinstance
         }
@@ -26,10 +26,16 @@ export class MemberService {
 
     static async getManyByIds(ids: string[]) {
         let members_types
-            members_types = await fetchUsers(ids)
+        members_types = await fetchUsers(ids)
         if (members_types.length) await DB.writeAllToStore(StoreName.USERS, members_types)
         else members_types = await DB.getManyByIds<MemberType>(StoreName.USERS, ids)
-        const members = members_types.map(m => new Member(m))
-        return await PhotoService.initPhoto(members)
+        const members: Member[] = members_types.map(m => new Member(m))
+        const photos = await PhotoService.initPhoto(members)
+        const map = new Map(photos.map(p => ([p.id, p])))
+        for(const member of members){
+            if(map.has(member.photo))
+                Member.setPhoto(member, map.get(member.photo)!)
+        }
+        return members
     }
 }

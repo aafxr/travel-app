@@ -3,7 +3,7 @@ import React, {createContext, useEffect, useMemo} from "react";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {CalendarIcon, FlagIcon, MapIcon} from "../../../../components/svg";
 import Container from "../../../../components/Container/Container";
-import {Place, Road} from "../../../../classes/StoreEntities";
+import {Place, Road, User} from "../../../../classes/StoreEntities";
 import Button from "../../../../components/ui/Button/Button";
 import {MS_IN_DAY} from "../../../../static/constants";
 import ShowRouteByDays from "./ShowRouteByDays";
@@ -37,7 +37,6 @@ const colors = [
 
 export function ShowRoute() {
     const user = useUser()!
-    const context = useAppContext()
     const travel = useTravel()
 
     const newGroupState: DayGroupContextType = useMemo(() => {
@@ -75,23 +74,14 @@ export function ShowRoute() {
     }, [travel])
 
 
-    useEffect(() => {
-        const debouncedUpdate = debounce(() => {
-            context.setUser(user)
-        }, 50, {trailing: true})
-        const unsubscribe = user.subscribe('update', debouncedUpdate)
-        return () => unsubscribe()
-    })
-
-
     return (
         <div className='h-full relative column'>
             <Container className='flex-0'>
                 <div className='flex-between gap-1 pt-20 pb-20'>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('byDays')}
-                        active={user.getSetting('routeFilter') === 'byDays'}
+                        onClick={() => User.setRouteFilter(user, 'byDays')}
+                        active={User.getSetting(user, 'routeFilter') === 'byDays'}
                     >
                         <div className='column center'>
                             <CalendarIcon className='icon'/>
@@ -100,8 +90,8 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('onMap')}
-                        active={user.getSetting('routeFilter') === 'onMap'}
+                        onClick={() => User.setRouteFilter(user, 'onMap')}
+                        active={User.getSetting(user, 'routeFilter') === 'onMap'}
                     >
                         <div className='column center'>
                             <MapIcon className='icon'/>
@@ -110,8 +100,8 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('allPlaces')}
-                        active={user.getSetting('routeFilter') === 'allPlaces'}
+                        onClick={() => User.setRouteFilter(user, 'allPlaces')}
+                        active={User.getSetting(user, 'routeFilter') === 'allPlaces'}
                     >
                         <div className='column center'>
                             <FlagIcon className='icon'/>
@@ -122,13 +112,13 @@ export function ShowRoute() {
             </Container>
             <DaysGroupContext.Provider value={newGroupState}>
                 {
-                    user.getSetting('routeFilter') === 'allPlaces' && <ShowPlaces/>
+                    User.getSetting(user, 'routeFilter') === 'allPlaces' && <ShowPlaces/>
                 }
                 {
-                    user.getSetting('routeFilter') === 'onMap' && <ShowRouteOnMap/>
+                    User.getSetting(user, 'routeFilter') === 'onMap' && <ShowRouteOnMap/>
                 }
                 {
-                    user.getSetting('routeFilter') === 'byDays' && <ShowRouteByDays/>
+                    User.getSetting(user, 'routeFilter') === 'byDays' && <ShowRouteByDays/>
                 }
             </DaysGroupContext.Provider>
         </div>
