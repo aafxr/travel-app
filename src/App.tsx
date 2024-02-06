@@ -51,7 +51,7 @@ import AuthRequired from "./hoc/AuthRequired";
 // import TravelPhotoGallery from "./modules/Travel/Pages/TravelPhotoGalery/TravelPhotoGallery";
 // import TravelAddPhoto from "./modules/Travel/Pages/TravelAddPhoto/TravelAddPhoto";
 // import {Executor} from "./classes/Executor/Executor";
-import {Expense, Travel, User} from "./classes/StoreEntities/";
+import {Expense, Place, Travel, User} from "./classes/StoreEntities/";
 import {DB} from "./classes/db/DB";
 import {UserService} from "./classes/services";
 import {useAppContext, useUser} from "./contexts/AppContextProvider";
@@ -81,6 +81,7 @@ function App() {
     window.User = User
     window.Expense = Expense
     window.Travel = Travel
+    window.Place = Place
 
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)

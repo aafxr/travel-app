@@ -7,6 +7,21 @@ import {WithDTOMethod} from "../../types/WithDTOMethod";
 
 /**
  * представление места маршрута
+ *
+ * Содержит поля:
+ *
+ * ___id__,
+ * __id__,
+ * __name__,
+ * __formatted_address__,
+ * __type__,
+ * __day__,
+ * __photos__,
+ * __location__,
+ * __time_start__,
+ * __time_end__,
+ * __visited__
+ *
  * @class
  * @name Place
  * @extends Entity

@@ -28,6 +28,35 @@ const MIDDLE_TIME = HOUR_IN_MS * 13
 
 /**
  * представление основной сущности путешествия
+ *
+ * Содержит поля:
+ *
+ * __id__,
+ * __code__,
+ * __description__,
+ * __direction__,
+ * __owner_id__,
+ * __title__,
+ * __photo__,
+ * __image__,
+ * __days__,
+ * __isFromPoint__,
+ * __children_count__,
+ * __members_count__,
+ * __created_at__,
+ * __date_end__,
+ * __date_start__,
+ * __movementTypes__,
+ * __updated_at__,
+ * __places__,
+ * __road__,
+ * __waypoints__,
+ * __admins__,
+ * __editors__,
+ * __commentator__,
+ * __preference__,
+ * __permission__,
+ * __interests__
  */
 export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     storeName = StoreName.TRAVEL

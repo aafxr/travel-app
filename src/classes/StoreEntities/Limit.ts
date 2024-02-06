@@ -17,6 +17,14 @@ interface LimitOptionsType extends Partial<LimitType> {
  * id лимита формируется как:
  * - "section_id:primary_entity_id" для общих лимитов
  * - "user_id:section_id:primary_entity_id" для общих личных
+ *
+ * Содержи поля:
+ *
+ * __id__,
+ * __personal__,
+ * __section_id__,
+ * __value__,
+ * __primary_entity_id__
  */
 export class Limit extends StoreEntity implements LimitType {
     storeName = StoreName.LIMIT

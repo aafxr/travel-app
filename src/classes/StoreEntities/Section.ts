@@ -6,6 +6,14 @@ import {DB} from "../db/DB";
 
 /**
  * класс для работы с сущностью Section
+ *
+ * Содержит поля:
+ *
+ * __id__
+ * __color__
+ * __title__
+ * __hidden__
+ *
  */
 export class Section extends StoreEntity implements SectionType{
     storeName = StoreName.SECTION

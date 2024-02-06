@@ -9,6 +9,14 @@ import {StoreEntity} from "./StoreEntity";
  *
  * предпологается, что если представление содержит Blob,
  * то изображение еще не отправленно
+ *
+ *
+ * Содержит поля:
+ *
+ * __id__,
+ * __src__,
+ * __blob__(опционально)
+ *
  */
 export class Photo extends StoreEntity implements PhotoType {
     storeName = StoreName.Photo

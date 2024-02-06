@@ -8,6 +8,16 @@ import {Photo} from "./Photo";
 
 /**
  * представление пользователя приложения
+ *
+ * Содержит поля:
+ *
+ * __id__,
+ * __username__,
+ * __first_name__,
+ * __last_name__,
+ * __photo__,
+ * __movementType__,
+ * __age__,
  */
 export class Member extends StoreEntity implements MemberType {
     storeName = StoreName.USERS

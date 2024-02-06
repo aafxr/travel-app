@@ -12,6 +12,23 @@ import {StoreName} from "../../types/StoreName";
 
 /**
  * данный класс позволяет работать с расходами
+ *
+ * Содержит поля:
+ *
+ * __id__,
+ * __entity_id__,
+ * __entity_type__,
+ * __primary_entity_id__,
+ * __primary_entity_type__,
+ * __section_id__,
+ * __title__,
+ * __user_id__,
+ * __currency__,
+ * __created_at__,
+ * __datetime__,
+ * __personal__,
+ * __value__,
+ * __variant__
  */
 class Expense extends StoreEntity implements ExpenseType {
     storeName = StoreName.EXPENSE

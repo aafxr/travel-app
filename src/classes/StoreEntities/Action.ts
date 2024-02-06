@@ -15,6 +15,16 @@ import {StoreEntity} from "./StoreEntity";
  * -  кем совершено изменение (__user_id__)
  *
  * synced - флаг, сигнализирует о том, что action доставлен
+ *
+ * содержит поля:
+ *
+ * __id__,
+ * __action__,
+ * __data__,
+ * __datetime__,
+ * __entity__,
+ * __synced__,
+ * __user_id__,
  */
 export class Action<T extends StoreEntity> extends StoreEntity implements ActionType {
     storeName = StoreName.ACTION

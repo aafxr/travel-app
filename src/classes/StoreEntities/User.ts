@@ -14,6 +14,21 @@ type UserConstructorPropsType = Partial<UserType> | User
  * - token
  * - refresh_token
  * - settings текущие выбранные настройки / фильтры пользователя
+ *
+ * Содержит поля:
+ *
+ * __id__,
+ * __username__,
+ * __first_name__,
+ * __last_name__,
+ * __photo__,
+ * __token__,
+ * __refresh_token__,
+ * __movementType__,
+ * __age__,
+ * __settings__
+ *
+ *
  * @class User
  * @extends Member
  */
