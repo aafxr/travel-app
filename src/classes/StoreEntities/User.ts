@@ -8,15 +8,7 @@ import {StoreName} from "../../types/StoreName";
 
 type UserConstructorPropsType = Partial<UserType> | User
 
-/**
- * представление пользователя приложения
- * дополняет класс Member полями:
- * - token
- * - refresh_token
- * - settings текущие выбранные настройки / фильтры пользователя
- * @class User
- * @extends Member
- */
+
 export class User extends Member implements UserType {
     storeName = StoreName.USERS
 

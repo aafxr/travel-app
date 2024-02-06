@@ -14,10 +14,6 @@ interface RoadOptionsType extends Partial<RoadType> {
 
 const MS_IN_HOUR = 60 * 60 * 1000
 
-
-/**
- * представление описывает перемещение между локациями
- */
 export class Road extends StoreEntity implements RoadType {
     storeName = StoreName.ROAD
     id = nanoid(7);

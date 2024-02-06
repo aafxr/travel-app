@@ -1,3 +1,4 @@
+import EventEmitter from "../EventEmmiter";
 import {StoreName} from "../../types/StoreName";
 
 
@@ -7,7 +8,7 @@ import {StoreName} from "../../types/StoreName";
  * - storeName имя стор в бд
  * - dto() метод возвращает представление, которое будет записанно в бд
  */
-export abstract class StoreEntity {
+export abstract class StoreEntity extends EventEmitter {
     abstract storeName: StoreName
 
     abstract dto(): { id: string, [key: string]: any }

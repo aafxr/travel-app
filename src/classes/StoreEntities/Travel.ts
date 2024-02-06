@@ -26,9 +26,7 @@ zero_time.setHours(0, 0, 0, 0)
 const HOUR_IN_MS = MS_IN_DAY / 24
 const MIDDLE_TIME = HOUR_IN_MS * 13
 
-/**
- * представление основной сущности путешествия
- */
+
 export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     storeName = StoreName.TRAVEL
 

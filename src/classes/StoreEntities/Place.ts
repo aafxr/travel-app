@@ -6,7 +6,6 @@ import {CoordinatesType} from "../../types/CoordinatesType";
 import {WithDTOMethod} from "../../types/WithDTOMethod";
 
 /**
- * представление места маршрута
  * @class
  * @name Place
  * @extends Entity

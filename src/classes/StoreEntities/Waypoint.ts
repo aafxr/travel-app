@@ -1,12 +1,8 @@
-import {nanoid} from "nanoid";
-import {CoordinatesType} from "../../types/CoordinatesType";
-import {WithDTOMethod} from "../../types/WithDTOMethod";
 import {WaypointType} from "../../types/WaypointType";
+import {CoordinatesType} from "../../types/CoordinatesType";
+import {nanoid} from "nanoid";
+import {WithDTOMethod} from "../../types/WithDTOMethod";
 
-
-/**
- * представление Waypoint маршрута
- */
 export class Waypoint implements WaypointType, WithDTOMethod {
     address = '';
     id = nanoid(6);

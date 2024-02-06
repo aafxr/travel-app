@@ -5,17 +5,6 @@ import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 import {StoreEntity} from "./StoreEntity";
 
-
-/**
- * представление совершенного действия
- *
- * Содержит информацию о:
- * -  времени, когда было совершено действие (__datetime__)
- * -  имени сущности, которую изменили (__entity__)
- * -  кем совершено изменение (__user_id__)
- *
- * synced - флаг, сигнализирует о том, что action доставлен
- */
 export class Action<T extends StoreEntity> extends StoreEntity implements ActionType {
     storeName = StoreName.ACTION
 
