@@ -1,6 +1,10 @@
 import {CustomError} from "./CustomError";
 import {ErrorCode} from "./ErrorCode";
 
+
+/**
+ * класс с набором статических методов для создания инстансов ошибки с кратким описанием и кодом ошибки
+ */
 export class TravelError extends CustomError {
     static permissionDeniedToChangeTravel() {
         return new TravelError('У вас нет прав на изменение', ErrorCode.PERMISSION_DENIED_TO_CHANGE_TRAVEL)

@@ -1,9 +1,15 @@
-import {StoreEntity} from "./StoreEntity";
-import {PhotoType} from "../../types/PhotoType";
 import {nanoid} from "nanoid";
+import {PhotoType} from "../../types/PhotoType";
 import {StoreName} from "../../types/StoreName";
+import {StoreEntity} from "./StoreEntity";
 
 
+/**
+ * представление информации о фото в бд
+ *
+ * предпологается, что если представление содержит Blob,
+ * то изображение еще не отправленно
+ */
 export class Photo extends StoreEntity implements PhotoType {
     storeName = StoreName.Photo
 

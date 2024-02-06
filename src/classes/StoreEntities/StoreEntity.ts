@@ -1,6 +1,13 @@
 import EventEmitter from "../EventEmmiter";
 import {StoreName} from "../../types/StoreName";
 
+
+/**
+ * абстракция для объектов, которые в планах хранить в indexeddb
+ *
+ * - storeName имя стор в бд
+ * - dto() метод возвращает представление, которое будет записанно в бд
+ */
 export abstract class StoreEntity extends EventEmitter {
     abstract storeName: StoreName
 

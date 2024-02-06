@@ -12,6 +12,10 @@ enum ExchangeStatus {
     done
 }
 
+
+/**
+ * представление записи курса валют в бд
+ */
 export class Exchange extends StoreEntity implements ExchangeType {
     storeName = StoreName.CURRENCY
 

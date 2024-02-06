@@ -3,6 +3,13 @@ import {DB_NAME, DB_STORES, DB_VERSION} from "./db-constants";
 import {pushAlertMessage} from "../../components/Alerts/Alerts";
 import {openDB} from "idb";
 
+
+/**
+ * метод открывает соединение с indexeddb и при необходимости делает upgrade бд
+ * @param dbname
+ * @param version
+ * @param stores список представляет описание стор (ключи и список индексов )
+ */
 export async function openIDBDatabase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
