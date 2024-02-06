@@ -208,22 +208,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     removePlace(place: Place) {
         this.places = this.places.filter(p => p._id !== place._id)
         this.road = []
-        if (this.places.length > 1) {
-            for (let i = 1; i < this.places.length; i++) {
-                const place_1 = this.places[i - 1]
-                const place_2 = this.places[i]
-                const dist = getDistanceFromTwoPoints(place_1.location, place_2.location)
-                const road = new Road({
-                    time_start: place_1.time_end,
-                    distance: dist,
-                    from: place_1.location,
-                    to: place_2.location
-                })
-                let r_idx = 0
-                this.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
-                this.road[r_idx] = road
-            }
-        }
+        debugger
+
         this.setUpdated_at()
     }
 
@@ -240,6 +226,26 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         this.image?.destroy()
         this.image = photo
         this.setUpdated_at()
+    }
+
+    private updateRoad(){
+        this.road = []
+        if (this.places.length > 1) {
+            for (let i = 1; i < this.places.length; i++) {
+                const place_1 = this.places[i - 1]
+                const place_2 = this.places[i]
+                const dist = getDistanceFromTwoPoints(place_1.location, place_2.location)
+                const road = new Road({
+                    time_start: place_1.time_end,
+                    distance: dist,
+                    from: place_1.location,
+                    to: place_2.location
+                })
+                let r_idx = 0
+                this.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
+                this.road.splice(r_idx, 0 , road)
+            }
+        }
     }
 
     get getPhotoURL() {

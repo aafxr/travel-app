@@ -40,6 +40,9 @@ export default function ShowRouteOnMap() {
     if (!travel) return null
 
     // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
+    // @ts-ignore
     return (
         <>
 
@@ -64,9 +67,23 @@ export default function ShowRouteOnMap() {
                             <YPolyline rout={places.map(p => p.location)} strokeColor={color} strokeWidth={4}/>
                         ))
                     }
-
                 </YandexMapContainer>
             </div>
         </>
     )
 }
+
+// {
+//     lines.map(([day, places, color], i) => (
+//         <div
+//             key={i}
+//             className='center'
+//             style={{
+//                 backgroundColor:'#fff',
+//                 borderRadius: '2rem'
+//             }}>
+//             <span style={{backgroundColor: color as string, width:'15px', height: '3px'}}></span>
+//             &nbsp;День {day}
+//         </div>
+//     ))
+// }
