@@ -6,7 +6,7 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
-import {Place} from "../../../../classes/StoreEntities";
+import {Place, Travel} from "../../../../classes/StoreEntities";
 import {Tab} from "../../../../components/ui";
 
 export default function ShowPlaces() {
@@ -31,9 +31,10 @@ export default function ShowPlaces() {
         if(!user) return
         if(!travel) return
 
-        travel.removePlace(place)
-        TravelService.update( travel, user)
-            .then( () => context.setTravel(travel))
+        const t = new Travel(travel)
+        t.removePlace(place)
+        TravelService.update( t, user)
+            .then( () => context.setTravel(t))
             .catch(defaultHandleError)
     }
 
