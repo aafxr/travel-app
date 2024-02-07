@@ -16,13 +16,15 @@ export default function ShowRouteOnMap() {
 
         for (let i = 1; i < list.length; i++) {
             const l1 = list[i - 1][1] as Array<Place>
-            const l2 = list[i][1]as Array<Place>
+            const l2 = list[i][1] as Array<Place>
             l2.unshift(l1[l1.length - 1])
         }
 
         return list as unknown as [string, Array<Place | Road>, string]
 
     }, [groups.dayGroups])
+
+    console.log(lines)
 
 
     useLayoutEffect(() => {
@@ -59,9 +61,10 @@ export default function ShowRouteOnMap() {
                         <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>
                     ))}
                     {
-                        lines.map(([day, places, color])=> (
+                        lines.map(([day, places, color]) => (
                             //@ts-ignore
-                            <YPolyline rout={places.map(p => p.location)} strokeColor={color} strokeWidth={4}/>
+                            <YPolyline rout={places.filter(p => Boolean(p)).map(p => p.location)} strokeColor={color}
+                                       strokeWidth={4}/>
                         ))
                     }
 

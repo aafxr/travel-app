@@ -13,7 +13,7 @@ import {DB} from "../db/DB";
 
 export class TravelService {
     static async create(newTravel: Travel, user: User) {
-        if (!user.isLogIn()) throw UserError.unauthorized()
+        if (!User.isLogIn(user)) throw UserError.unauthorized()
 
         const owner = user
         const travel = new Travel({...newTravel, owner_id: owner.id})

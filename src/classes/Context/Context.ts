@@ -26,7 +26,7 @@ export class Context extends EventEmitter {
     }
 
     get isLogIn(){
-        return !!(this.user && this.user.isLogIn());
+        return !!(this.user && User.isLogIn( this.user));
 
 
     }

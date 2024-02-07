@@ -20,7 +20,7 @@ import {IndexName} from "../../types/IndexName";
  * - __getManyFromIndex__   возвращает все записи по указанномку индексу удовлетворяющие запросу из стор или []
  * - __getAllFromIndex__    возвращает все записи по указанномку индексу из стор или []
  * - __getManyByIds__       возвращает все найденые записи из стор по полученному списку id из стор или []
- * - __getClosest__         возвращает ближайшую запись удовлетворяющую запросу или undefined
+ * - __getClosest__         возвращает массив ближайших записей (по умолчанию 1) удовлетворяющую запросу или undefined
  * - __writeAll__           принимает массив инстансов __наследников класса StoreEntity__ и записывает все элементы в соответствующий массив
  * - __writeAllToStore__    записывает список обектов в указанный стор
  * - __openCursor__         возвращает курсор, позволяет пройтись по всем записям в бд
@@ -88,11 +88,11 @@ export class DB {
      * @param storeName
      * @param range
      */
-    static async getMany<T>(storeName: StoreName, range: IDBKeyRange | IDBValidKey): Promise<T[]> {
+    static async getMany<T>(storeName: StoreName, range: IDBKeyRange | IDBValidKey, count?:number): Promise<T[]> {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
-        return await store.getAll(range)
+        return await store.getAll(range, count)
     }
 
     /**
@@ -125,12 +125,12 @@ export class DB {
      * @param indexName
      * @param query
      */
-    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange | IDBValidKey): Promise<T[]> {
+    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange | IDBValidKey, count?:number): Promise<T[]> {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
         const index = store.index(indexName as string)
-        return await index.getAll(query)
+        return await index.getAll(query, count)
     }
 
     /**
@@ -171,7 +171,7 @@ export class DB {
 
 
     /**
-     * возвращает ближайшую запись удовлетворяющую запросу или undefined
+     * возвращает массив ближайших записей (по умолчанию 1) удовлетворяющую запросу или undefined
      * @param storeName
      * @param query
      * @param count

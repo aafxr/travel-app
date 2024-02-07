@@ -25,7 +25,7 @@ export class UserService {
             const user = new User(dev_user || devUser)
             if (user.photo) {
                 const pt = await PhotoService.getById(user.photo)
-                if (pt) user.setPhoto(new Photo(pt))
+                if (pt) User.setPhoto(user, new Photo(pt))
             }
             return user
         }
@@ -76,7 +76,7 @@ export class UserService {
             const userInstance = new User(user)
             if (user.photo) {
                 const photo = await PhotoService.getById(user.photo)
-                if (photo) userInstance.setPhoto(new Photo(photo))
+                if (photo) User.setPhoto(userInstance, new Photo(photo))
             }
             return userInstance
         }

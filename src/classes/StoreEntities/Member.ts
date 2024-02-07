@@ -36,46 +36,46 @@ export class Member extends StoreEntity implements MemberType {
     }
 
 
-    static isChild(member: Member) {
+    static isChild<T extends Member>(member: T) {
         return member.age < 18
     }
 
 
-    static setUsername(member: Member, username: string) {
+    static setUsername<T extends Member>(member: T, username: string) {
         member.username = username
-        member.update()
+        Member.update(member)
     }
 
 
-    static setFirst_name(member: Member, first_name: string) {
+    static setFirst_name<T extends Member>(member: T, first_name: string) {
         member.first_name = first_name
-        member.update()
+        Member.update(member)
     }
 
 
-    static setLast_name(member: Member, last_name: string) {
+    static setLast_name<T extends Member>(member: T, last_name: string) {
         member.last_name = last_name
-        member.update()
+        Member.update(member)
     }
 
 
-    static setPhoto(member: Member, photo: Photo) {
+    static setPhoto<T extends Member>(member: T, photo: Photo) {
         if (member.photo) photo.id = member.photo
         else member.photo = photo.id
 
         member.image?.destroy()
         member.image = photo
-        member.update()
+        Member.update(member)
     }
 
 
-    static setAge(member: Member, age: number) {
+    static setAge<T extends Member>(member: T, age: number) {
         member.age = age
-        member.update()
+        Member.update(member)
     }
 
 
-    update() {
+    static update<T extends Member>(member: T) {
     }
 
 

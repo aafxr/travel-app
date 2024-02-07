@@ -16,14 +16,14 @@ export default function ShowPlaces() {
     const {dayNumber} = useParams()
     const tabs_ref = useRef<HTMLDivElement>(null)
     const container_ref = useRef<HTMLDivElement>(null)
-    const [placesAtDay, setPlacesAtDay] = useState<Place[]>([])
+    const [places, setPlaces] = useState<Place[]>([])
 
     // const activeDays = travel.routeBuilder.getActivityDays()
 
     useEffect(() => {
         if(!travel) return
         const places = travel.places
-        setPlacesAtDay(places)
+        setPlaces(places)
     }, [dayNumber, travel?.places])
 
 
@@ -49,7 +49,7 @@ export default function ShowPlaces() {
             {/*<TabsGroup ref={tabs_ref} count={travel.days}/>*/}
             <Container ref={container_ref} className='column overflow-x-hidden pt-20 pb-20 gap-1 flex-1'>
                 {
-                    placesAtDay.map(p => (
+                    places.map(p => (
                         <LocationCard
                             key={p._id || p.id}
                             place={p}

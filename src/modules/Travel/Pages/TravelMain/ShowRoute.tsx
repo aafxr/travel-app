@@ -1,4 +1,4 @@
-import React, {createContext, useEffect, useMemo} from "react";
+import React, {createContext, useMemo} from "react";
 
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {CalendarIcon, FlagIcon, MapIcon} from "../../../../components/svg";
@@ -8,10 +8,10 @@ import Button from "../../../../components/ui/Button/Button";
 import {MS_IN_DAY} from "../../../../static/constants";
 import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
-import debounce from "lodash.debounce";
 import ShowPlaces from "./ShowPlaces";
 
 import './TravelMain.css'
+import {RouteFilterType} from "../../../../types/filtersTypes";
 
 export type DayGroupType = {
     items: Array<Place | Road>
@@ -21,9 +21,6 @@ export type DayGroupType = {
 type DayGroupContextType = { dayGroups: Map<string, DayGroupType> }
 
 export const DaysGroupContext = createContext<DayGroupContextType>({dayGroups: new Map()})
-
-
-
 
 
 const colors = [
@@ -36,11 +33,13 @@ const colors = [
 
 
 export function ShowRoute() {
-    const user = useUser()!
+    const user = useUser()
     const travel = useTravel()
+    const context = useAppContext()
 
-    const newGroupState: DayGroupContextType = useMemo(() => {
+    const group = () => {
         if (!travel) return {dayGroups: new Map()}
+        if (!travel.places.length) return {dayGroups: new Map()}
 
         const newGroupState: DayGroupContextType = {dayGroups: new Map()}
         const itemsList = [...travel.places, ...travel.road]
@@ -69,10 +68,28 @@ export function ShowRoute() {
             console.log(rest)
             newGroupState.dayGroups.set('-1', {items: rest, color: '#ff0000'})
         }
-
         return newGroupState
-    }, [travel])
+    }
+    const newGroupState: DayGroupContextType = group()
+    console.log(newGroupState)
 
+    function handleFilterTypeChange(type: RouteFilterType) {
+        if (!user) return
+        switch (type) {
+            case "byDays":
+                User.setRouteFilter(user, 'byDays')
+                break
+            case "onMap":
+                User.setRouteFilter(user, 'onMap')
+                break
+            case "allPlaces":
+                User.setRouteFilter(user, 'allPlaces')
+                break
+        }
+        context.setUser(user)
+    }
+
+    if (!user) return null
 
     return (
         <div className='h-full relative column'>
@@ -80,7 +97,7 @@ export function ShowRoute() {
                 <div className='flex-between gap-1 pt-20 pb-20'>
                     <Button
                         className='travel-details-button'
-                        onClick={() => User.setRouteFilter(user, 'byDays')}
+                        onClick={() => handleFilterTypeChange("byDays")}
                         active={User.getSetting(user, 'routeFilter') === 'byDays'}
                     >
                         <div className='column center'>
@@ -90,7 +107,7 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => User.setRouteFilter(user, 'onMap')}
+                        onClick={() => handleFilterTypeChange("onMap")}
                         active={User.getSetting(user, 'routeFilter') === 'onMap'}
                     >
                         <div className='column center'>
@@ -100,7 +117,7 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => User.setRouteFilter(user, 'allPlaces')}
+                        onClick={() => handleFilterTypeChange("allPlaces")}
                         active={User.getSetting(user, 'routeFilter') === 'allPlaces'}
                     >
                         <div className='column center'>

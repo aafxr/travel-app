@@ -45,6 +45,7 @@ export default function ShowRouteByDays() {
         if (!user) return
         if (!travel) return
         Travel.removePlace(travel, place)
+        console.log(travel.places)
         TravelService.update(travel, user)
             .then(() => context.setTravel(travel))
             .catch(defaultHandleError)
@@ -63,6 +64,7 @@ export default function ShowRouteByDays() {
         const placesList = t.places.map(item => item._id === p._id ? p : item)
         Travel.setPlaces(t, placesList)
         TravelService.update(t, user)
+            .then(() => context.setTravel(travel))
             .catch(defaultHandleError)
     }
 

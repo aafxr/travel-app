@@ -9,7 +9,7 @@ import {StoreName} from "../../types/StoreName";
 type UserConstructorPropsType = Partial<UserType> | User
 
 
-export class User extends Member implements UserType {
+class User extends Member implements UserType {
     storeName = StoreName.USERS
 
     token = '';
@@ -59,24 +59,6 @@ export class User extends Member implements UserType {
     }
 
 
-    static setUsername(user:User, username: string) {
-        user.username = username
-        User.setUpdate_at(user)
-    }
-
-
-    static setFirst_name(user:User, first_name: string) {
-        user.first_name = first_name
-        User.setUpdate_at(user)
-    }
-
-
-    static setLast_name(user:User, last_name: string) {
-        user.last_name = last_name
-        User.setUpdate_at(user)
-    }
-
-
     static setToken(user:User, token: string) {
         user.token = token
         User.setUpdate_at(user)
@@ -112,9 +94,9 @@ export class User extends Member implements UserType {
     }
 
 
-    isLogIn() {
+    static isLogIn(user:User) {
         if (location.hostname === 'localhost') return true
-        return Boolean(this.token && this.refresh_token)
+        return Boolean(user.token && user.refresh_token)
     }
 
 
@@ -123,3 +105,5 @@ export class User extends Member implements UserType {
 
 
 }
+
+export {User}
