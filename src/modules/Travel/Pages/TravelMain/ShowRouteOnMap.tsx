@@ -64,7 +64,7 @@ export default function ShowRouteOnMap() {
                     {
                         lines.map(([day, places, color])=> (
                             //@ts-ignore
-                            <YPolyline rout={places.map(p => p.location)} strokeColor={color} strokeWidth={4}/>
+                            <YPolyline rout={places.filter(p => Boolean(p)).map(p => p.location)} strokeColor={color} strokeWidth={4}/>
                         ))
                     }
                 </YandexMapContainer>
