@@ -7,10 +7,10 @@ import {useCallback, useEffect, useState} from "react";
  * @param {boolean} stopPropagation default = false
  * @returns {number[]}
  */
-export function useKeyPress(keyCodes = [], stopPropagation = false) {
+export function useKeyPress(keyCodes: number[] = [], stopPropagation = false) {
     const [keys, setKeys] = useState(new Array(keyCodes.length).fill(null));
 
-    const isCurrentKey = useCallback(function (e) {
+    const isCurrentKey = useCallback<(e: KeyboardEvent) => unknown>(function (e: KeyboardEvent) {
         stopPropagation && e.stopPropagation();
         const newState = new Array(keyCodes.length).fill(null);
 

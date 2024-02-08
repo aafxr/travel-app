@@ -5,6 +5,6 @@ import {useState} from "react";
  * @returns {function(): void}
  */
 export default function useUpdate(){
-    const [_, update] = useState()
+    const [_, update] = useState<object>()
     return () => update({})
 }

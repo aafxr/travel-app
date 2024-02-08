@@ -4,7 +4,6 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
 import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
-import {PhotoService} from "../../../../classes/services/PhotoService";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import Curtain from "../../../../components/Curtain/Curtain";

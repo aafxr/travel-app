@@ -1,28 +1,27 @@
-import React, {useContext, useLayoutEffect, useMemo, useRef} from "react";
+import React, {useContext, useLayoutEffect, useRef} from "react";
 
 import {YPlacemark, YandexMapContainer, YPolyline} from "../../../../components/YandexMap";
 import {useTravel} from "../../../../contexts/AppContextProvider";
 import {DaysGroupContext} from "./ShowRoute";
-import {Place, Road} from "../../../../classes/StoreEntities";
 
 export default function ShowRouteOnMap() {
     const travel = useTravel()
     const groups = useContext(DaysGroupContext)
     const ref = useRef<HTMLDivElement>(null)
 
-    const lines: [string, Array<Place | Road>, string] = useMemo(() => {
-        let list = [...groups.dayGroups.entries()].map(([day, g]) => ([day, g.items, g.color]))
-        list = list.map(([day, g, color]) => ([day, (g as (Place | Road)[]).filter(i => i instanceof Place), color]))
-
-        for (let i = 1; i < list.length; i++) {
-            const l1 = list[i - 1][1] as Array<Place>
-            const l2 = list[i][1]as Array<Place>
-            l2.unshift(l1[l1.length - 1])
-        }
-
-        return list as unknown as [string, Array<Place | Road>, string]
-
-    }, [groups.dayGroups])
+    // const lines: [string, Array<Place | Road>, string] = useMemo(() => {
+    //     let list = [...groups.dayGroups.entries()].map(([day, g]) => ([day, g.items, g.color]))
+    //     list = list.map(([day, g, color]) => ([day, (g as (Place | Road)[]).filter(i => i instanceof Place), color]))
+    //
+    //     for (let i = 1; i < list.length; i++) {
+    //         const l1 = list[i - 1][1] as Array<Place>
+    //         const l2 = list[i][1]as Array<Place>
+    //         l2.unshift(l1[l1.length - 1])
+    //     }
+    //
+    //     return list as unknown as [string, Array<Place | Road>, string]
+    //
+    // }, [groups.dayGroups])
 
 
     useLayoutEffect(() => {
@@ -39,10 +38,6 @@ export default function ShowRouteOnMap() {
 
     if (!travel) return null
 
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
     return (
         <>
 
@@ -61,12 +56,7 @@ export default function ShowRouteOnMap() {
                     {travel.places.map((p, idx) => (
                         <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>
                     ))}
-                    {
-                        lines.map(([day, places, color])=> (
-                            //@ts-ignore
-                            <YPolyline rout={places.filter(p => Boolean(p)).map(p => p.location)} strokeColor={color} strokeWidth={4}/>
-                        ))
-                    }
+                    <YPolyline rout={travel.places.map(p => p.location)} strokeWidth={4}/>
                 </YandexMapContainer>
             </div>
         </>

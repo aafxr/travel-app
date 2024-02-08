@@ -1,11 +1,12 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
+import {CheckListServise} from "../../classes/services/CheckListServise";
+import {useTravel, useUser} from "../../contexts/AppContextProvider";
+import {Checklist} from "../../classes/StoreEntities/Checklist";
 import Container from "../Container/Container";
-import storeDB from "../../classes/db/storeDB/storeDB";
-import constants from "../../static/constants";
 import Checkbox from "../ui/Checkbox/Checkbox";
-import createId from "../../utils/createId";
 import Button from "../ui/Button/Button";
 import {Input, PageHeader} from "../ui";
 import {PlusIcon} from "../svg";
@@ -13,76 +14,52 @@ import {PlusIcon} from "../svg";
 import './CheckList.css'
 
 /**
- * @typedef {Object} ChecklistItemType
- * @property {string} id
- * @property {string} title
- * @property {0 | 1} checked
- */
-
-/**
- * @typedef {Object} ChecklistType
- * @property {string} id
- * @property {string} primary_entity_id
- * @property {ChecklistType[]} items
- */
-
-/**
  * Компонент отображает чеклист путешествия
  * @returns {JSX.Element}
  * @category Pages
  */
-export default function CheckList() {
+export default function CheckListComponent() {
+    const user = useUser()
+    const travel = useTravel()
     const navigate = useNavigate()
     const {travelCode} = useParams()
     /*** значение в input */
     const [value, setValue] = useState('')
     /*** сущность чеклист полученная из локальной бд либо сгенерированная (если в бд отсутствует) */
-    const [checkList, setCheckList] = useState(/**@type{ChecklistType[] | null} */null)
-    /*** список неободимого для поездки */
-    const [checkListItems, setCheckListItems] = useState(/**@type{ChecklistItemType[]} */[])
+    const [checkList, setCheckList] = useState<Checklist>()
     /*** флаг указывает на то, что чеклист изменен */
     const [changed, setChanged] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     //загрузка чеклистаиз хранилища ===================================================================================
     useEffect(() => {
-        if (travelCode) {
-            storeDB.getOneFromIndex(constants.store.CHECKLIST, constants.indexes.PRIMARY_ENTITY_ID, travelCode)
-                .then( /*** @param {ChecklistType} list */ list => {
-                    if (list) {
-                        setCheckList(list)
-                        setCheckListItems(list.items || [])
-                    } else {
-                        const newList = {
-                            id: createId(),
-                            primary_entity_id: travelCode,
-                            items: []
-                        }
-                        setCheckList(newList)
-                        setCheckListItems(newList.items)
-                        setChanged(true)
-                    }
-                })
+        if (!user) return
+        if (!travel) return
+        if (travelCode && travelCode !== travel.id) {
+            setLoading(true)
+            CheckListServise.getCheckList(travel, user)
+                .then(chl => setCheckList(chl))
+                .catch(defaultHandleError)
+                .finally(() => setLoading(false))
         }
-    }, [travelCode])
+    }, [travelCode, user, travel])
 
     // созранение измененного чеклиста ===============================================================================
     function handleSubmit() {
-        if (changed) {
-            const newList = {
-                ...checkList,
-                items: checkListItems
-            }
-            storeDB.editElement(constants.store.CHECKLIST, newList)
+        if (checkList && changed) {
+            CheckListServise.updateChecklist(checkList)
                 .then(() => navigate(-1))
+                .catch(defaultHandleError)
         }
     }
 
     // добавление нового поля в чпичок чеклиста =======================================================================
-    function handleKeyDown(e) {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (!checkList) return
         e.stopPropagation()
         if (e.keyCode === 13 && value.length) {
-            const newItem = {id: createId(), title: value, checked: 0}
-            setCheckListItems([...checkListItems, newItem])
+            Checklist.setRecord(checkList, value, false)
+            setCheckList(new Checklist(checkList))
             setChanged(true)
             setValue('')
         }
@@ -90,44 +67,48 @@ export default function CheckList() {
 
 
     // обработка клика по чекбоксу, обновление текущих полей из списка чеклиста ======================================
-    function handleItemCheckChange(item) {
-        const idx = checkListItems.findIndex(el => el === item)
-        checkListItems[idx].checked = !item.checked
-        setCheckListItems([...checkListItems])
+    function handleItemCheckChange(record: string) {
+        if (!checkList) return
+        const prevRecordValue = Checklist.getRecordValue(checkList, record)
+        Checklist.setRecord(checkList, record, !prevRecordValue)
+        setCheckList(new Checklist(checkList))
         !changed && setChanged(true)
     }
 
-    function handleRemoveCheckListItem(e, item) {
+    function handleRemoveCheckListItem(e: React.MouseEvent | React.TouchEvent, record: string) {
+        if (!checkList) return
         e.stopPropagation()
-        const newList = checkListItems.filter(el => el !== item)
-        setCheckListItems(newList)
+        Checklist.removeRecord(checkList, record)
+        setCheckList(new Checklist(checkList))
         !changed && setChanged(true)
     }
 
+
+    if (!checkList) return null
 
     return (
-        <Container className='check-list wrapper pb-20'>
-            <PageHeader arrowBack title='Чек лист' />
+        <Container className='check-list wrapper pb-20' loading={loading}>
+            <PageHeader arrowBack title='Чек лист'/>
             <Input
                 value={value}
-                onChange={e => setValue(e.target.value)}
+                onChange={setValue}
                 onKeyDown={handleKeyDown}
                 placeholder='Добавить запись'
             />
             <div className='content checkbox-content'>
                 {
-                    checkListItems.map(c => (
+                    Checklist.getRecords(checkList).map(rec => (
                         <Checkbox
-                            key={c.id}
-                            checked={c.checked}
+                            key={rec}
+                            checked={Checklist.getRecordValue(checkList, rec)}
                             left
-                            onChange={() => handleItemCheckChange(c)}
+                            onChange={() => handleItemCheckChange(rec)}
                         >
                             <div className='flex-between align-center'>
-                                    <span>{c.title}</span>
+                                <span>{rec}</span>
                                 <PlusIcon
                                     className='check-list-item-remove center flex-0'
-                                    onClick={(e) => handleRemoveCheckListItem(e, c)}
+                                    onClick={(e) => handleRemoveCheckListItem(e, rec)}
                                 />
                             </div>
                         </Checkbox>
