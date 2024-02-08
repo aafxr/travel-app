@@ -6,22 +6,15 @@ import {DefaultThemeType, ThemeContext} from "../../../../contexts/ThemeContextP
 import Container from "../../../../components/Container/Container";
 import {PageHeader} from "../../../../components/ui";
 
-const variants = [
-    {id: 1, title: 'По умолчанию'},
-    {id: 2, title: 'Темная'},
-    {id: 3, title: 'Светлая'}
-]
+const variants = new Map<RadioButtonGroupItemType, DefaultThemeType>([
+    [{id: 1, title: 'По умолчанию'}, "default"],
+    [{id: 2, title: 'Темная'}, "dark-theme"],
+    [{id: 3, title: 'Светлая'}, "light-theme"]
+    ]
+)
 
-const themeConvertor: { [key: string]: DefaultThemeType } = {
-    ['Темная']: 'dark-theme',
-    ['Светлая']: 'light-theme',
-    ['По умолчанию']: 'default',
-}
-const themeToString: Record<DefaultThemeType, string> = {
-    ['dark-theme']: 'Темная',
-    ['light-theme']: 'Светлая',
-    ['default']: 'По умолчанию'
-}
+const variantList = [...variants.keys()]
+
 
 /** компонент для изменения настроек пользователя */
 export default function ChangeUserPreferences() {
@@ -29,10 +22,8 @@ export default function ChangeUserPreferences() {
 
     /** обработка изменения темы приложения */
     function handleThemeChange(newTheme: RadioButtonGroupItemType[]) {
-        const key = newTheme[0].title as DefaultThemeType
-        if (variants.find(v => v.title === themeToString[key])) {
-            setTheme(themeConvertor[newTheme[0].title] || '')
-        }
+        const selectedTheme = variants.get(newTheme[0])
+            setTheme(selectedTheme || 'default')
     }
 
     return (
@@ -44,9 +35,9 @@ export default function ChangeUserPreferences() {
                 <RadioButtonGroup
                     groupClassNames='pt-20'
                     title={'Изменить тему'}
-                    checklist={variants}
+                    checklist={variantList}
                     onChange={handleThemeChange}
-                    init={variants.find(v => v.title === themeToString[theme])!}
+                    init={variantList.find(key => variants.get(key) === theme) || []}
                     position='left'
                 />
             </Container>

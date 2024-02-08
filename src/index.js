@@ -26,13 +26,13 @@ const root = ReactDOM.createRoot(document.querySelector('#root'));
 
 root.render(
     <AppContextProvider>
-        {/*<ThemeContextProvider>*/}
-        {/*    <UserContextProvider>*/}
+        <ThemeContextProvider>
+            {/*<UserContextProvider>*/}
                 <BrowserRouter>
                     <App/>
                 </BrowserRouter>
         {/*    </UserContextProvider>*/}
-        {/*</ThemeContextProvider>*/}
+        </ThemeContextProvider>
     </AppContextProvider>
 );
 
