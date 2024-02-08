@@ -34,7 +34,7 @@ export default function Main() {
                 })
                 .catch(defaultHandleError)
         } else {
-            navigate('/auth/')
+            navigate('/login/')
         }
     }
 

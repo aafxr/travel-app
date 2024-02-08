@@ -38,7 +38,7 @@ import Profile from "./modules/Main/Pages/Profile/Profile";
 import CheckList from "./components/CheckList/CheckList";
 import Events from "./modules/Main/Pages/Events/Events";
 import TelegramAuth from "./modules/Main/TelegramAuth";
-// import Login from "./modules/Main/Pages/Login/Login";
+import Login from "./modules/Main/Pages/Login/Login";
 import Main from "./modules/Main/Pages/Main/Main";
 // import ErrorPage from "./modules/OtherPages/ErrorPage";
 // import Loader from "./components/Loader/Loader";
@@ -85,7 +85,9 @@ function App() {
 
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)
-            .then(user => { if (user) context.setUser(user) })
+            .then(user => {
+                if (user) context.setUser(user)
+            })
             .then(() => navigate(-1))
             .catch(defaultHandleError)
     }
@@ -96,7 +98,6 @@ function App() {
             <Routes>
                 {/*<Route element={<WorkerContextProvider/>}>*/}
                 <Route path={'/'} element={<Main/>}/>
-                {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
                 <Route path={'/auth/'} element={<TelegramAuth handleAuth={handleAuth}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
                 <Route element={<AuthRequired/>}>
@@ -148,7 +149,7 @@ function App() {
                     <Route path={'/profile/actions/'} element={<ActionsList/>}/>
                     <Route path={'/profile/sessions/'} element={<Sessions/>}/>
                 </Route>
-                {/*    <Route path={'/login/'} element={<Login/>}/>*/}
+                <Route path={'/login/'} element={<Login/>}/>
                 {/*</Route>*/}
                 {/*<Route path={'/error/'} element={<ErrorPage/>}/>*/}
                 {/*<Route path={'/not-supported/'} element={<ErrorPage/>}/>*/}

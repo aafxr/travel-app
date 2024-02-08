@@ -8,6 +8,10 @@ import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../TelegramAuth";
 import sleep from "../../../../utils/sleep";
 import aFetch from "../../../../axios";
+import {TelegramAuthPayloadType} from "../../../../types/TelegramAuthPayloadType";
+import {UserService} from "../../../../classes/services";
+import {useAppContext} from "../../../../contexts/AppContextProvider";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * компонент реализует способы авторизации пользователя
@@ -18,24 +22,22 @@ import aFetch from "../../../../axios";
  */
 export default function Login() {
     const navigate = useNavigate()
-    const {login} = useContext(UserContext)
+    const context = useAppContext()
 
     /**
      * обработчик, получает от telegram инфо о авторизации пользователя и отправляет на удаленный сервер
-     * @param {UserTelegramAuthPayloadType} user
+     * @param authPayload
      */
-    function tgAuthHandler(user) {
-        aFetch.post('/user/auth/tg/', user)
-            .then(res => res.data)
-            .then(res => {
-                const {ok, data} = res
-                if (ok) {
-                    /** после успешной отправки данные пользователя записываются в store */
-                    login(data)
-                    sleep(500).then(() => navigate(-1))
+    function tgAuthHandler(authPayload: TelegramAuthPayloadType) {
+        UserService.logIn(authPayload)
+            .then(user => {
+                if(user) context.setUser(user)
+                else {
+                    context.setUser(null)
+                    navigate('/')
                 }
             })
-            .catch(err => console.error(err))
+            .catch(defaultHandleError)
     }
 
     return (
