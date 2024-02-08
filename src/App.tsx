@@ -95,7 +95,6 @@ function App() {
             <Routes>
                 {/*<Route element={<WorkerContextProvider/>}>*/}
                 <Route path={'/'} element={<Main/>}/>
-                {/*<Route path={'/'} element={<AuthRequired><Main/></AuthRequired>}/>*/}
                 <Route path={'/auth/'} element={<TelegramAuth handleAuth={handleAuth}/>}/>
                 {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
                 <Route element={<AuthRequired/>}>

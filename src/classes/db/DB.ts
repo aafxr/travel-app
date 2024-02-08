@@ -2,6 +2,7 @@ import {StoreEntity} from "../StoreEntities";
 import {openIDBDatabase} from "./openIDBDatabaase";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
+import {StoreError} from "../errors/StoreError";
 
 /**
  * @class DB
@@ -41,7 +42,7 @@ export class DB {
             if (data instanceof StoreEntity) store.add(data.dto())
             else store.add(data)
         } catch (e) {
-            console.error(e)
+            throw StoreError.addAlredyExistingRecord(storeName, data)
         }
     }
 

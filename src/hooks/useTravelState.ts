@@ -17,6 +17,7 @@ type  InitialStateType = Partial<TravelType> | InitFunctionType
 
 export function useTravelState(travel: Travel | undefined | null, initialize?: InitialStateType): useTravelStateReturnType {
     const [state, setState] = useState<UseTravelStateType>()
+
     const updateState = (update: UseTravelStateType) => {
         if (!update.change) update.change = true
         setState(update)

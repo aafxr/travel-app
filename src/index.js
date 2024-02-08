@@ -1,19 +1,19 @@
 import './css/reset.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
+
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
+import {AppContextProvider} from "./contexts/AppContextProvider/AppContextProvider";
+import {pushAlertMessage} from "./components/Alerts/Alerts";
 import {CACHE_VERSION, THEME} from "./static/constants";
 import errorReport from "./controllers/ErrorReport";
 import setFixedVH from "./utils/setFixedVH";
 
-import {pushAlertMessage} from "./components/Alerts/Alerts";
 import App from './App';
 import './css/index.css';
-import UserContextProvider from "./contexts/UserContextProvider";
-import ThemeContextProvider from "./contexts/ThemeContextProvider";
-import {AppContextProvider} from "./contexts/AppContextProvider/AppContextProvider";
 
 
 let theme = localStorage.getItem(THEME)
