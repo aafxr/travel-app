@@ -2,9 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {CheckListServise} from "../../classes/services/CheckListServise";
 import {useTravel, useUser} from "../../contexts/AppContextProvider";
-import {Checklist} from "../../classes/StoreEntities/Checklist";
+import {CheckListServise} from "../../classes/services";
+import {Checklist} from "../../classes/StoreEntities";
 import Container from "../Container/Container";
 import Checkbox from "../ui/Checkbox/Checkbox";
 import Button from "../ui/Button/Button";

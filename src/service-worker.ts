@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 /* eslint-disable no-restricted-globals */
 
 // This service worker can be customized!
@@ -9,17 +11,21 @@
 
 
 import {precacheAndRoute, createHandlerBoundToURL} from 'workbox-precaching';
-import {StaleWhileRevalidate,  CacheFirst} from 'workbox-strategies';
+import {StaleWhileRevalidate, CacheFirst, NetworkFirst} from 'workbox-strategies';
 import {ExpirationPlugin} from 'workbox-expiration';
 import {registerRoute} from 'workbox-routing';
 
 import {CACHE_VERSION, GLOBAL_DB_VERSION} from "./static/constants";
 
-self.addEventListener('install', e => {
+declare let self: ServiceWorkerGlobalScope
+
+
+self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.keys().then(cacheNames => {
             cacheNames.forEach(cacheName => {
-                caches.delete(cacheName);
+                caches.delete(cacheName)
+                    .catch(console.error);
             })
         })
     )
@@ -78,13 +84,15 @@ registerRoute(
 
 registerRoute(
     ({url}) => url.origin === self.location.origin && url.origin.includes('yandex'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
-    new StaleWhileRevalidate({
+    new CacheFirst({
         cacheName: 'map',
         plugins: [
-            new CacheFirst({maxAgeSeconds: 29 * 24 * 60 * 60}),
-        ],
-    })
+            new ExpirationPlugin({maxAgeSeconds: 29 * 24 * 60 * 60})
+        ]
+    }),
 )
+
+
 registerRoute(
     ({url}) => url.origin === self.location.origin && /api\./.test(location.origin), // Customize this strategy as needed, e.g., by changing to CacheFirst.
     new StaleWhileRevalidate({
@@ -99,25 +107,43 @@ const apiCache = [
     '/main/currency/getList/',
     '/expenses/getSections/'
 ]
+
 registerRoute(
     ({url}) => url.origin === self.location.origin && apiCache.includes(url.pathname),
     new CacheFirst({
         cacheName: 'api',
-        plugins: [
-            new ExpirationPlugin({maxAgeSeconds:  24 * 60 * 60}),
-        ],
+        plugins: [ new ExpirationPlugin({maxAgeSeconds: 24 * 60 * 60}),],
     })
 );
 
+registerRoute(
+    ({url}) => url.origin === self.location.origin,
+    new NetworkFirst({
+        cacheName: 'api',
+        plugins: [ new ExpirationPlugin({maxAgeSeconds: 30 * 24 * 60 * 60}),],
+    })
+);
 
 
 // This allows the web app to trigger skipWaiting via
 // registration.waiting.postMessage({type: 'SKIP_WAITING'})
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
+        return self.skipWaiting();
     }
 });
 
 // Any other custom service worker logic can go here.
+
+self.addEventListener("push", (e) => {
+    const msg = e.data ? e.data.text() : ''
+    if(msg){
+        e.waitUntil(
+            self.registration.showNotification('notification', {
+                body: msg,
+                vibrate: [500, 100, 500],
+            })
+        )
+    }
+});
 

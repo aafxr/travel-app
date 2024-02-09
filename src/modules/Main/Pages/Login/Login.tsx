@@ -31,11 +31,9 @@ export default function Login() {
     function tgAuthHandler(authPayload: TelegramAuthPayloadType) {
         UserService.logIn(authPayload)
             .then(user => {
-                if(user) context.setUser(user)
-                else {
-                    context.setUser(null)
-                    navigate('/')
-                }
+                if (user) context.setUser(user)
+                else context.setUser(null)
+                navigate('/')
             })
             .catch(defaultHandleError)
     }
