@@ -2,9 +2,9 @@ import React, {createContext, useEffect, useState} from 'react'
 import {Outlet, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {useAppContext, useUser} from "../AppContextProvider";
 import {ExpenseService, LimitService} from "../../classes/services";
 import {Expense, Limit} from "../../classes/StoreEntities";
+import {useAppContext} from "../AppContextProvider";
 
 import '../../modules/Expenses/css/Expenses.css'
 import PageContainer from "../../components/PageContainer/PageContainer";
@@ -30,7 +30,6 @@ export const ExpensesContext = createContext<ExpensesContextStateType>(initialVa
  * оборачивает в ExpensesContext
  */
 export default function ExpensesContextProvider() {
-    const user = useUser()!
     const context = useAppContext()
     const {travelCode} = useParams()
     const [state, setState] = useState<ExpensesContextStateType>(initialValue)

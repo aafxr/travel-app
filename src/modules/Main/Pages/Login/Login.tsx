@@ -1,17 +1,13 @@
-import {useContext} from "react";
 import {useNavigate} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {TelegramAuthPayloadType} from "../../../../types/TelegramAuthPayloadType";
 import Navigation from "../../../../components/Navigation/Navigation";
-import {UserContext} from "../../../../contexts/UserContextProvider";
+import {useAppContext} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
+import {UserService} from "../../../../classes/services";
 import {PageHeader} from "../../../../components/ui";
 import TelegramAuth from "../../TelegramAuth";
-import sleep from "../../../../utils/sleep";
-import aFetch from "../../../../axios";
-import {TelegramAuthPayloadType} from "../../../../types/TelegramAuthPayloadType";
-import {UserService} from "../../../../classes/services";
-import {useAppContext} from "../../../../contexts/AppContextProvider";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 /**
  * компонент реализует способы авторизации пользователя

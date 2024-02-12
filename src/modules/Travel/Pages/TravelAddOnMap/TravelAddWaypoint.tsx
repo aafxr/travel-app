@@ -5,7 +5,6 @@ import PointInput from "../../../../components/MapPointsInputList/PointInput";
 import {useAppContext} from "../../../../contexts/AppContextProvider";
 import {YandexMapContainer} from "../../../../components/YandexMap";
 import Container from "../../../../components/Container/Container";
-import {useTravelState} from "../../../../hooks/useTravelState";
 import Button from "../../../../components/ui/Button/Button";
 import {WaypointType} from "../../../../types/WaypointType";
 import {YPlacemark} from "../../../../components/YandexMap";

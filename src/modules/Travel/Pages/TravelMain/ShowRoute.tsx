@@ -54,6 +54,7 @@ export function ShowRoute() {
         for (let i = 0; i < travel.days; i++) {
             const group: DayGroupType = {items: [], color: colors[i % colors.length]}
 
+            // eslint-disable-next-line no-loop-func
             Array.from(items.values()).forEach(item => {
                 if (item.time_start.getTime() >= d_start && item.time_start.getTime() <= d_end) {
                     group.items.push(item)

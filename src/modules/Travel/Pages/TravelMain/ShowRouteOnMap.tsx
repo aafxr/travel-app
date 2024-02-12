@@ -1,12 +1,10 @@
-import React, {useContext, useLayoutEffect, useRef} from "react";
+import React, {useRef} from "react";
 
 import {YPlacemark, YandexMapContainer, YPolyline} from "../../../../components/YandexMap";
 import {useTravel} from "../../../../contexts/AppContextProvider";
-import {DaysGroupContext} from "./ShowRoute";
 
 export default function ShowRouteOnMap() {
     const travel = useTravel()
-    const groups = useContext(DaysGroupContext)
     const ref = useRef<HTMLDivElement>(null)
 
     // const lines: [string, Array<Place | Road>, string] = useMemo(() => {
@@ -24,16 +22,16 @@ export default function ShowRouteOnMap() {
     // }, [groups.dayGroups])
 
 
-    useLayoutEffect(() => {
-        if (ref.current) {
-            ref.current.style.height = '100%'
-            const parent = ref.current.parentElement
-            if (parent) {
-                const delta = parent.scrollHeight - parent.clientHeight
-                ref.current.style.height = ref.current.offsetHeight - delta + 'px'
-            }
-        }
-    })
+    // useLayoutEffect(() => {
+    //     if (ref.current) {
+    //         ref.current.style.height = '100%'
+    //         const parent = ref.current.parentElement
+    //         if (parent) {
+    //             const delta = parent.scrollHeight - parent.clientHeight
+    //             ref.current.style.height = ref.current.offsetHeight - delta + 'px'
+    //         }
+    //     }
+    // })
 
 
     if (!travel) return null

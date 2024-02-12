@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getMessaging } from "firebase/messaging";
+import firebase from "firebase/compat";
 
 // TODO: Replace the following with your app's Firebase project configuration
 const firebaseConfig = {
@@ -12,4 +12,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app)
+const messaging = firebase.messaging()
+messaging.getToken()
+    .then(currentToken => {
+
+    })
+

@@ -13,7 +13,6 @@ import Menu from "../../../../components/Menu/Menu";
 import './Main.css'
 
 
-
 /**
  * компонент отображает главную страницу приложения
  * @function
@@ -38,33 +37,32 @@ export default function Main() {
         }
     }
 
+
     return (
         <div className='wrapper'>
             <Container>
                 <PageHeader title={'Главная страница'} MenuEl={<Menu/>}/>
             </Container>
-             <Container className='content pb-20'>
-            <div className='banner'>
-                <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
-                <button
-                    className='banner-button'
-                    onClick={handleNewTravel}
-                >
-                    {user ? 'Новая поездка' : 'Авторизоваться'}
-                </button>
-            </div>
+            <Container className='content pb-20'>
+                <div className='banner'>
+                    <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
+                    <button
+                        className='banner-button'
+                        onClick={handleNewTravel}
+                    >
+                        {user ? 'Новая поездка' : 'Авторизоваться'}
+                    </button>
+                </div>
 
+                {/*<PopularSection/>*/}
+                {/*<RecommendSection/>*/}
 
-
-            {/*<PopularSection/>*/}
-            {/*<RecommendSection/>*/}
-
-            {/*<IconButton*/}
-            {/*    border={false}*/}
-            {/*    title='+ Добавить'*/}
-            {/*    className='link'*/}
-            {/*    onClick={() => navigate('/travel/add/')}*/}
-            {/*/>*/}
+                {/*<IconButton*/}
+                {/*    border={false}*/}
+                {/*    title='+ Добавить'*/}
+                {/*    className='link'*/}
+                {/*    onClick={() => navigate('/travel/add/')}*/}
+                {/*/>*/}
             </Container>
             {/*<YandexMapContainer className='content'>*/}
             {/*    {test_places.map((p, idx) => (*/}
