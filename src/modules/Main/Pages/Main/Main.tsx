@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
+import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
+import {APIRouteType, fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
-import {APIRouteType, fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
@@ -12,7 +13,6 @@ import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Main.css'
-import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
 
 
 /**
@@ -44,8 +44,8 @@ export default function Main() {
     function adviceRoutes(){
         fetchRouteAdvice({
             days: 7,
-            density: 2,
-            depth: 2,
+            density: 3,
+            depth: 3,
             location: 1,
             preference:{active:1,nature:1}
         })

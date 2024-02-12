@@ -14,7 +14,7 @@
     padding: 0.5rem;
     line-height: 1.2;
     border-radius: var(--br-10);
-    box-shadow: var(--box-shadow);
+    /*box-shadow: var(--box-shadow);*/
 }
 
 

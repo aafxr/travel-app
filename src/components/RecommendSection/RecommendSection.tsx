@@ -21,7 +21,7 @@ function RecommendSection({routes}: RecommendSectionPropsType) {
             <ul className='recommend-cards-list'>
                 {
                     routes.map(r => (
-                        <div className='route column gap-0.5'>
+                        <div className='route column gap-0.25'>
                             <div>Подходит на {r.score}%</div>
                             <div>Дорога {formatter.format(r.road.distance)}&nbsp;км</div>
                             <div>Время в дороге {r.road.time}&nbsp;мин</div>
