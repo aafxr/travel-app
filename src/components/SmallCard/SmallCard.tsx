@@ -1,9 +1,16 @@
-import React from 'react';
+import React, {HTMLAttributes} from 'react';
 import clsx from "clsx";
 
 import {DEFAULT_IMG_URL} from "../../static/constants";
 
 import './SmallCard.css'
+
+
+interface SmallCardPropsType extends HTMLAttributes<HTMLDivElement>{
+    imgURL?:string,
+    subtitle:string,
+    title: string
+}
 
 /**
  * @function
@@ -14,7 +21,7 @@ import './SmallCard.css'
  * @param {React.HTMLAttributes<HTMLDivElement>} props
  * @return {JSX.Element}
  */
-function SmallCard({imgURL, subtitle, title, ...props}) {
+function SmallCard({imgURL, subtitle, title, ...props}: SmallCardPropsType) {
     return (
         <div {...props} className={clsx('small-card', props.className)}>
             <div className='small-card-image'>

@@ -4,6 +4,12 @@ import clsx from "clsx";
 
 import './TitleAndMore.css'
 
+interface TitleAndMorePropsTpye extends React.HTMLAttributes<HTMLHeadingElement>{
+    title:string
+    linkTitle?: string,
+    to: string
+}
+
 /**
  * @function
  * @name TitleAndMore
@@ -13,7 +19,7 @@ import './TitleAndMore.css'
  * @param {React.HTMLAttributes<HTMLHeadingElement>} props
  * @return {JSX.Element}
  */
-function TitleAndMore({title,linkTitle,  to, ...props}) {
+function TitleAndMore({title,linkTitle,  to, ...props}: TitleAndMorePropsTpye) {
     return (
         <h2  {...props} className={clsx('title-and-more', props.className)}>{title}
             {to && <Link className='link' to={to}>{linkTitle || "Все"}</Link>}

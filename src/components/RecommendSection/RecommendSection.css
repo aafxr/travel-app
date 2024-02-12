@@ -8,3 +8,16 @@
     grid-gap: 0.8rem;
     margin-top: 1rem;
 }
+
+.route{
+    background-color: var(--color-grey-light);
+    padding: 0.5rem;
+    line-height: 1.2;
+    border-radius: var(--br-10);
+    box-shadow: var(--box-shadow);
+}
+
+
+.route.selected{
+    background-color: var(--color-primary);
+}

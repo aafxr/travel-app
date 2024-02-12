@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser} from "../../../../contexts/AppContextProvider";
@@ -9,7 +9,6 @@ import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
 import {TravelService} from "../../../../classes/services";
 import {Travel} from "../../../../classes/StoreEntities";
-import {MapIcon} from "../../../../components/svg";
 
 import '../../css/Travel.css'
 
@@ -50,17 +49,17 @@ export default function TravelAdd() {
                                 className='travel-destination-input'
                                 value={title}
                                 onChange={setTitle}
-                                placeholder='Куда едем?'
+                                placeholder='Название поездки'
                             />
                         </div>
                     </PageHeader>
                     <div className='column gap-1'>
-                        <Link className='travel-link' to={'/travel/add/map/'}>
-                            <div className='icon'>
-                                <MapIcon/>
-                            </div>
-                            Указать на карте
-                        </Link>
+                        {/*<Link className='travel-link' to={'/travel/add/map/'}>*/}
+                        {/*    <div className='icon'>*/}
+                        {/*        <MapIcon/>*/}
+                        {/*    </div>*/}
+                        {/*    Указать на карте*/}
+                        {/*</Link>*/}
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>

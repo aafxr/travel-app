@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
+import {APIRouteType, fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
@@ -11,6 +12,7 @@ import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
 import './Main.css'
+import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
 
 
 /**
@@ -24,6 +26,8 @@ export default function Main() {
     const user = useUser()
     const context = useAppContext()
 
+    const [routes, setRoutes] = useState<APIRouteType[]>([])
+
     async function handleNewTravel() {
         if (user) {
             TravelService.create(new Travel({}), user)
@@ -35,6 +39,20 @@ export default function Main() {
         } else {
             navigate('/login/')
         }
+    }
+
+    function adviceRoutes(){
+        fetchRouteAdvice({
+            days: 7,
+            density: 2,
+            depth: 2,
+            location: 1,
+            preference:{active:1,nature:1}
+        })
+            .then(({routes}) => {
+                setRoutes(routes)
+            })
+            .catch(defaultHandleError)
     }
 
 
@@ -54,8 +72,10 @@ export default function Main() {
                     </button>
                 </div>
 
+                <button onClick={adviceRoutes}>make request</button>
+
                 {/*<PopularSection/>*/}
-                {/*<RecommendSection/>*/}
+                <RecommendSection routes={routes}/>
 
                 {/*<IconButton*/}
                 {/*    border={false}*/}
