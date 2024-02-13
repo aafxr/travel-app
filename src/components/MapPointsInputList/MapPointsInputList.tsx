@@ -1,20 +1,20 @@
 import React, { useRef} from "react";
 
-import {WaypointType} from "../../types/WaypointType";
+import {Waypoint} from "../../classes/StoreEntities";
 import PointInput from "./PointInput";
 
 import './MapPointsInoutList.css'
 
 
 type MapPointsInputListPropsType = {
-    waypoints: WaypointType[],
-    onFocus: (currentWaypoint:WaypointType) => unknown
-    onBlur: (blurtWaypoint:WaypointType) => unknown
-    onSubmit: (submitWaypoint:WaypointType) => unknown
-    onShuffle: (waypointsSequence: WaypointType[]) => unknown
-    onRemove: (removeWaypoint: WaypointType) => unknown
-    onChange: (changedWaypoint: WaypointType) => unknown
-    onHover?: (hoverWaypoint: WaypointType) => unknown
+    waypoints: Waypoint[],
+    onFocus: (currentWaypoint:Waypoint) => unknown
+    onBlur: (blurtWaypoint:Waypoint) => unknown
+    onSubmit: (submitWaypoint:Waypoint) => unknown
+    onShuffle: (waypointsSequence: Waypoint[]) => unknown
+    onRemove: (removeWaypoint: Waypoint) => unknown
+    onChange: (changedWaypoint: Waypoint) => unknown
+    onHover?: (hoverWaypoint: Waypoint) => unknown
 }
 
 
@@ -23,7 +23,7 @@ type MapPointsInputListPropsType = {
  *
  * отображает список перетаскиваемых input элементов
  *
- * @param {WaypointType[]} [waypoints] список предпологаемых мест для посещения
+ * @param {Waypoint[]} [waypoints] список предпологаемых мест для посещения
  * @param onChange обработчик на изменение порядка или введенной локации
  * @param min минимальное чило отображаемых полей
  * @returns {JSX.Element}
@@ -32,7 +32,7 @@ type MapPointsInputListPropsType = {
 export default function MapPointsInputList({waypoints, onChange, onFocus, onSubmit, onShuffle, onRemove, onBlur, onHover}: MapPointsInputListPropsType) {
 
     /*** переменная для хранения информации о draggingPoint и dragOverPoint */
-    const drag = useRef<{ draggingPoint?: WaypointType, draggOverPoint?: WaypointType }>({})
+    const drag = useRef<{ draggingPoint?: Waypoint, draggOverPoint?: Waypoint }>({})
 
     /*** clone - react ref  на HTMLElement, который планируем перетаскивать */
     const clone = useRef<HTMLDivElement>()
@@ -48,14 +48,14 @@ export default function MapPointsInputList({waypoints, onChange, onFocus, onSubm
      * @param item - элемент из массива points
      * @returns {Promise<void>}
      */
-    async function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>, item: WaypointType) {
+    async function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>, item: Waypoint) {
         if (e.key === 'Enter') {
             onSubmit && onSubmit(item)
         }
     }
 
 
-    function handleInputChange(text:string, item: WaypointType) {
+    function handleInputChange(text:string, item: Waypoint) {
         text = text.trim()
         if(text) {
             item.address = text
@@ -65,20 +65,20 @@ export default function MapPointsInputList({waypoints, onChange, onFocus, onSubm
 
 
 // обработка перетаскивания ========================================================================================
-    function handleDragStart(item: WaypointType) {
+    function handleDragStart(item: Waypoint) {
         drag.current.draggingPoint = item
     }
 
     /**
-     * @param {WaypointType} item - точка, которую перетаскивали
+     * @param {Waypoint} item - точка, которую перетаскивали
      */
-    function handleDragEnd(item: WaypointType) {
+    function handleDragEnd(item: Waypoint) {
         const draggingIDX = waypoints.findIndex(p => !!drag.current.draggingPoint && p.id === drag.current.draggingPoint.id)
         /** индекс элемента, на который навели */
         const overIDX = waypoints.findIndex(p => !!drag.current.draggOverPoint && p.id === drag.current.draggOverPoint.id)
         /***  если оба индекса существуют ( индексы !== -1), то меняем элементы местами */
         if (~draggingIDX && ~overIDX) {
-            /**@type{WaypointType[]}*/
+            /**@type{Waypoint[]}*/
             const newPoints = waypoints.map((p, i, arr) => {
                 if (i === draggingIDX) return arr[overIDX]
                 if (i === overIDX) return arr[draggingIDX]
@@ -90,15 +90,15 @@ export default function MapPointsInputList({waypoints, onChange, onFocus, onSubm
     }
 
 
-    function handleDragOver(item: WaypointType) {
+    function handleDragOver(item: Waypoint) {
         drag.current.draggOverPoint = item
     }
 
-    function handleDragLeave(item: WaypointType) {
+    function handleDragLeave(item: Waypoint) {
     }
 
 
-    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>, item: WaypointType) {
+    function handleTouchStart(e: React.TouchEvent<HTMLDivElement>, item: Waypoint) {
         document.documentElement.classList.add('disable-reload')
         const $input = e.target as HTMLInputElement
         const el = $input.closest<HTMLDivElement>('.travel-map-input-container')
@@ -132,7 +132,7 @@ export default function MapPointsInputList({waypoints, onChange, onFocus, onSubm
     }
 
 
-    function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>, p: WaypointType) {
+    function handleTouchEnd(e: React.TouchEvent<HTMLDivElement>, p: Waypoint) {
         if (clone.current) clone.current.remove()
 
         document.documentElement.classList.remove('disable-reload')
@@ -151,28 +151,28 @@ export default function MapPointsInputList({waypoints, onChange, onFocus, onSubm
     }
 
     /** удаление точки с карты */
-    function handleRemovePoint(item: WaypointType) {
+    function handleRemovePoint(item: Waypoint) {
         onRemove(item)
     }
 
-    function handleFocus(item: WaypointType) {
+    function handleFocus(item: Waypoint) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
         document.activeElement?.classList.add('input-highlight')
         onFocus(item)
     }
 
-    function handleBlur(item: WaypointType) {
+    function handleBlur(item: Waypoint) {
         const elems = document.querySelectorAll('input[data-id]')
         elems.forEach(el => el.classList.remove('input-highlight'))
         onBlur(item)
     }
 
-    function handleSearchClick(item: WaypointType) {
+    function handleSearchClick(item: Waypoint) {
         onSubmit(item)
     }
 
-    function handleHover(item:WaypointType){
+    function handleHover(item:Waypoint){
         onHover && onHover(item)
     }
 

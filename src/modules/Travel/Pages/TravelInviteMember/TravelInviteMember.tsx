@@ -8,10 +8,10 @@ import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {useUser} from "../../../../contexts/AppContextProvider";
-import {Member} from "../../../../classes/StoreEntities/Member";
 import Button from "../../../../components/ui/Button/Button";
 import Counter from "../../../../components/Counter/Counter";
 import Input from "../../../../components/ui/Input/Input";
+import {Member} from "../../../../classes/StoreEntities";
 
 import './TravelInviteMember.css'
 
@@ -46,12 +46,7 @@ export default function TravelInviteMember() {
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`,
             email: ''
         }
-
-        const unsub = initState.member.subscribe('update', (m) => {
-            setState(prev => prev && ({...prev}))
-        })
         setState(initState)
-        return () => unsub()
     }, [])
 
     const handleNameChange = (name: string) => state?.member.setFirst_name(name)

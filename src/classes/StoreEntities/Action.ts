@@ -3,7 +3,6 @@ import {nanoid} from "nanoid";
 import {ActionName, ActionType} from "../../types/ActionsType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import {StoreEntity} from "./StoreEntity";
 
 
 /**
@@ -26,8 +25,7 @@ import {StoreEntity} from "./StoreEntity";
  * __synced__,
  * __user_id__,
  */
-export class Action<T extends StoreEntity> extends StoreEntity implements ActionType {
-    storeName = StoreName.ACTION
+export class Action<T extends object> {
 
     id = nanoid(16);
     action: ActionName;
@@ -38,24 +36,10 @@ export class Action<T extends StoreEntity> extends StoreEntity implements Action
     user_id = '';
 
     constructor(data: T, user_id: string, entity: StoreName, action: ActionName) {
-        super()
-
         this.data = data
         this.user_id = user_id
         this.entity = entity
         this.action = action
-    }
-
-    dto(): ActionType{
-        return {
-            id: this.id,
-            action: this.action,
-            data: this.data.dto(),
-            datetime: this.datetime,
-            entity: this.entity,
-            synced: this.synced,
-            user_id: this.user_id,
-        }
     }
 }
 

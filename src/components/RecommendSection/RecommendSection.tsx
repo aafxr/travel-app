@@ -1,12 +1,12 @@
 import React from 'react';
 
+import {Route} from "../../classes/StoreEntities/route/Route";
 import TitleAndMore from "../TitleAndMore/TitleAndMore";
-import {APIRouteType} from "../../api/fetch/fetchRouteAdvice";
 
 import './RecommendSection.css'
 
 type RecommendSectionPropsType = {
-    routes: APIRouteType[]
+    routes: Route[]
 }
 
 const formatter = Intl.NumberFormat(navigator.language, {maximumFractionDigits: 2, minimumFractionDigits: 2})

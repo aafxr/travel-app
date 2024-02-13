@@ -1,21 +1,20 @@
 import {Action, Expense, Limit, User} from "../StoreEntities";
-import {StoreName} from "../../types/StoreName";
-import {ActionName} from "../../types/ActionsType";
-import {DB} from "../db/DB";
-import {LimitType} from "../../types/LimitType";
-import {TravelService} from "./TravelService";
-import {TravelError} from "../errors";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
-import {IndexName} from "../../types/IndexName";
-import {UserError} from "../errors/UserError";
-import {Context} from "../Context/Context";
 import {ExpenseType} from "../../types/ExpenseType";
-import {LimitError} from "../errors/LimitError";
+import {ActionName} from "../../types/ActionsType";
+import {StoreName} from "../../types/StoreName";
+import {IndexName} from "../../types/IndexName";
+import {LimitType} from "../../types/LimitType";
+import {UserError, LimitError} from "../errors";
+import {TravelService} from "./TravelService";
+import {Context} from "../Context/Context";
+import {TravelError} from "../errors";
+import {DB} from "../db/DB";
 
 
 async function getValidLimit(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User) {
     const newLimit = new Limit(limit, user)
-    const personalLimitFlag = newLimit.isPersonal(user)
+    const personalLimitFlag = Limit.isPersonal(newLimit, user)
     const cursor = await DB.openCursor<ExpenseType>(StoreName.EXPENSE)
     let next_exp = (await cursor.next()).value
     let total = 0
@@ -26,8 +25,8 @@ async function getValidLimit(limit: Partial<LimitType> & Pick<LimitType, 'sectio
             continue
         }
         const exp: Expense = new Expense(next_exp, user)
-        if (personalLimitFlag && exp.isPersonal(user)) total += exp.valueOf()
-        else if (!personalLimitFlag && !exp.isPersonal(user)) total += exp.valueOf()
+        if (personalLimitFlag && Expense.isPersonal(exp, user)) total += exp.valueOf()
+        else if (!personalLimitFlag && !Expense.isPersonal(exp, user)) total += exp.valueOf()
         next_exp = (await cursor.next()).value
     }
     if (limit.value < total) throw LimitError.limitPlanMustBeGreaterThen(total, user.currency)
@@ -41,8 +40,7 @@ export class LimitService {
         if (!user) throw UserError.unauthorized()
 
         const newLimit = await getValidLimit(limit, user)
-        const action = new Action(newLimit, user.id, StoreName.LIMIT, ActionName.ADD)
-        await DB.writeAll([newLimit, action])
+        await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.ADD)
         return newLimit
     }
 
@@ -51,8 +49,7 @@ export class LimitService {
         if (!user) throw UserError.unauthorized()
 
         const newLimit = await getValidLimit(limit, user)
-        const action = new Action(limit, user.id, StoreName.LIMIT, ActionName.UPDATE)
-        await DB.writeAll([newLimit, action])
+        await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.UPDATE)
         return user
     }
 
@@ -61,7 +58,7 @@ export class LimitService {
         const user = context.user
         if (!user) throw UserError.unauthorized()
 
-        if (!limit.isPersonal(user)) {
+        if (!Limit.isPersonal(limit, user)) {
             const travel = await TravelService.getById(limit.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
             if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
@@ -72,7 +69,7 @@ export class LimitService {
         const limitStore = tx.objectStore(StoreName.LIMIT)
         const actionStore = tx.objectStore(StoreName.ACTION)
         limitStore.delete(limit.id)
-        actionStore.add(action.dto())
+        actionStore.add(action)
     }
 
 
@@ -99,7 +96,7 @@ export class LimitService {
             }
 
             const e = new Expense(expenseObj, user)
-            if (expense.section_id !== e.section_id && expense.isPersonal(user) !== e.isPersonal(user)) {
+            if (expense.section_id !== e.section_id && Expense.isPersonal(expense, user) !== Expense.isPersonal(e, user)) {
                 expenseObj = (await cursor.next()).value
                 continue
             }
@@ -107,11 +104,11 @@ export class LimitService {
             expenseObj = (await cursor.next()).value
         }
         let limit: LimitType | undefined
-        if (expense.isPersonal(user)) limit = await DB.getOne<LimitType>(StoreName.LIMIT, `${user.id}:${expense.primary_entity_id}`)
+        if (Expense.isPersonal(expense, user)) limit = await DB.getOne<LimitType>(StoreName.LIMIT, `${user.id}:${expense.primary_entity_id}`)
         else limit = await DB.getOne<LimitType>(StoreName.LIMIT, `${expense.section_id}:${expense.primary_entity_id}`)
 
         if (!limit) {
-            const id = expense.isPersonal(user)
+            const id = Expense.isPersonal(expense,user)
                 ? `${user.id}:${expense.section_id}:${expense.primary_entity_id}`
                 : `${expense.section_id}:${expense.primary_entity_id}`
 
@@ -120,17 +117,15 @@ export class LimitService {
                 section_id: expense.section_id,
                 value: total,
                 primary_entity_id: expense.primary_entity_id,
-                personal: expense.isPersonal(user) ? 1 : 0
+                personal: Expense.isPersonal(expense, user) ? 1 : 0
             }, user)
 
-            const action = new Action(newLimit, user.id, StoreName.LIMIT, ActionName.ADD)
-            await DB.writeAll([newLimit, action])
+            await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.ADD)
         } else {
             if (limit.value < total) {
                 limit.value = total
                 const l = new Limit(limit, user)
-                const action = new Action(l, user.id, StoreName.LIMIT, ActionName.UPDATE)
-                await DB.writeAll([l, action])
+                await DB.writeWithAction(StoreName.LIMIT, l, user.id, ActionName.UPDATE)
             }
         }
 

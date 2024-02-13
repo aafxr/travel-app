@@ -1,7 +1,4 @@
 import {nanoid} from "nanoid";
-import {PhotoType} from "../../types/PhotoType";
-import {StoreName} from "../../types/StoreName";
-import {StoreEntity} from "./StoreEntity";
 
 
 /**
@@ -18,40 +15,34 @@ import {StoreEntity} from "./StoreEntity";
  * __blob__(опционально)
  *
  */
-export class Photo extends StoreEntity implements PhotoType {
-    storeName = StoreName.Photo
+export class Photo {
 
     blob?: Blob;
     id: string = nanoid(16);
     src: string = '';
+    blobUrl = ''
 
 
-    constructor(photo: Partial<PhotoType>) {
-        super();
-
+    constructor(photo: Partial<Photo>) {
         if (photo.id) this.id = photo.id
         if (photo.src) this.src = photo.src
         if (photo.blob) this.blob = photo.blob
 
-        if (this.blob && !this.src) this.src = URL.createObjectURL(this.blob)
+        if (photo.destroy) photo.destroy()
+
+        if (this.blob && !this.src) this.blobUrl = URL.createObjectURL(this.blob)
     }
 
     destroy() {
-        if (this.src) URL.revokeObjectURL(this.src)
+        if (this.blobUrl) {
+            URL.revokeObjectURL(this.blobUrl)
+            this.blobUrl = ''
+        }
     }
 
     toString() {
-        return this.src
+        console.log(1)
+        console.log(typeof this.blobUrl)
+        return this.src || this.blobUrl
     }
-
-    dto(): PhotoType {
-        const data = {
-            id: this.id,
-            blob: this.blob,
-            src: this.src,
-        }
-        if (data.blob) data.src = ''
-        return data;
-    }
-
 }

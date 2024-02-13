@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import {UserType} from "../types/UserType";
 
 type UserStateType = {
-    user: UserType
+    user: User
     change: boolean
 }
 
@@ -19,7 +19,7 @@ export function useUserState(user: User | undefined | null, initialize?: Partial
     useEffect(() => {
         if (!user) return
 
-        const newState = user.dto()
+        const newState = new User(user)
         if (initialize)
             Object.assign(newState, initialize)
         setState({user: newState, change: false})

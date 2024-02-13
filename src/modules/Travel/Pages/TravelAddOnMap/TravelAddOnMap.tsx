@@ -8,19 +8,17 @@ import {useAppContext} from "../../../../contexts/AppContextProvider";
 import Container from "../../../../components/Container/Container";
 import {useTravelState, UseTravelStateType} from "../../../../hooks/useTravelState";
 import Button from "../../../../components/ui/Button/Button";
-import {WaypointType} from "../../../../types/WaypointType";
-import {Waypoint} from "../../../../classes/StoreEntities";
+import {Travel, Waypoint} from "../../../../classes/StoreEntities";
 import {TravelService} from "../../../../classes/services";
-import {TravelType} from "../../../../types/TravelType";
 import {PageHeader} from "../../../../components/ui";
 import {findAddress} from "./findAddress";
 
 import './TravelAddOnMap.css'
 
 
-const initialCallback = (t: TravelType):Partial<TravelType> => {
+const initialCallback = (t: Travel):Partial<Travel> => {
     const waypoints = [...t.waypoints]
-    while (waypoints.length < 2)waypoints.push(new Waypoint({}).dto())
+    while (waypoints.length < 2)waypoints.push(new Waypoint({}))
     return {waypoints}
 }
 
@@ -38,13 +36,13 @@ export default function TravelAddOnMap() {
     const user = context.user
     const navigate = useNavigate()
     const [state, setState] = useTravelState(context.travel, initialCallback )
-    const currentWaypoint = useRef<WaypointType | undefined>()
-    const [hoverWaypoint, setHoverWaypoint] = useState<WaypointType>()
+    const currentWaypoint = useRef<Waypoint | undefined>()
+    const [hoverWaypoint, setHoverWaypoint] = useState<Waypoint>()
 
 
-    async function getNewState(wp:WaypointType){
+    async function getNewState(wp:Waypoint){
         if (!state) return
-        const newState: UseTravelStateType = {...state, travel: {...state.travel}}
+        const newState: UseTravelStateType = {...state, travel: new Travel(state.travel)}
         const idx = newState.travel.waypoints.findIndex(w => w.id === wp.id)
         if (~idx) {
             const waypoint = await findAddress(wp)
@@ -74,9 +72,9 @@ export default function TravelAddOnMap() {
     }
 
 
-    function handleRemove(wp: WaypointType) {
+    function handleRemove(wp: Waypoint) {
         if (!state) return
-        const newState: UseTravelStateType = {...state, travel: {...state.travel}}
+        const newState: UseTravelStateType = {...state, travel: new Travel(state.travel)}
         if (wp.id === newState.travel.waypoints[0].id) newState.travel.isFromPoint = 0
         const waypoints = newState.travel.waypoints.filter(w => w.id !== wp.id)
         while (waypoints.length < 2) waypoints.push(new Waypoint({}))
@@ -84,7 +82,7 @@ export default function TravelAddOnMap() {
         setState(newState)
     }
 
-    async function handleBlur(wp: WaypointType) {
+    async function handleBlur(wp: Waypoint) {
         setHoverWaypoint(undefined)
         if (!currentWaypoint.current) return
         if (currentWaypoint.current.address !== wp.address) {
@@ -97,23 +95,23 @@ export default function TravelAddOnMap() {
         }
     }
 
-    function handleFocus(wp: WaypointType) {
-        currentWaypoint.current = {...wp}
+    function handleFocus(wp: Waypoint) {
+        currentWaypoint.current = new Waypoint(wp)
         if (~wp.coords[0]) setHoverWaypoint(wp)
     }
 
-    function handleHover(wp: WaypointType) {
+    function handleHover(wp: Waypoint) {
         if (~wp.coords[0]) setHoverWaypoint(wp)
     }
 
-    function handleShuffle(wps: WaypointType[]) {
+    function handleShuffle(wps: Waypoint[]) {
         if (!state) return
-        const newState: UseTravelStateType = {...state, travel: {...state.travel}}
+        const newState: UseTravelStateType = {...state, travel: new Travel(state.travel)}
         newState.travel.waypoints = wps
         setState(newState)
     }
 
-    async function handleSubmit(wp: WaypointType) {
+    async function handleSubmit(wp: Waypoint) {
         const newState = await getNewState(wp)
         if (newState) {
             setState(newState)
@@ -121,7 +119,7 @@ export default function TravelAddOnMap() {
         }
     }
 
-    async function handleChange(wp: WaypointType) {
+    async function handleChange(wp: Waypoint) {
         const newState = await getNewState(wp)
         if (newState) {
             setState(newState)
@@ -131,9 +129,9 @@ export default function TravelAddOnMap() {
 
     async function handleAddStartPoint() {
         if (!state) return
-        const newState: UseTravelStateType = {...state, travel: {...state.travel}}
+        const newState: UseTravelStateType = {...state, travel: new Travel(state.travel)}
         newState.travel.isFromPoint = 1
-        newState.travel.waypoints.unshift(new Waypoint({}).dto())
+        newState.travel.waypoints.unshift(new Waypoint({}))
         setState(newState)
     }
 

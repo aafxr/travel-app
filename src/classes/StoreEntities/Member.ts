@@ -19,8 +19,7 @@ import {Photo} from "./Photo";
  * __movementType__,
  * __age__,
  */
-export class Member extends StoreEntity implements MemberType {
-    storeName = StoreName.USERS
+export class Member {
 
     id = '';
     username = '';
@@ -35,8 +34,6 @@ export class Member extends StoreEntity implements MemberType {
 
 
     constructor(member: Partial<MemberType> | Member) {
-        super();
-
         if (member.id) this.id = member.id
         if (member.username) this.username = member.username
         if (member.first_name) this.first_name = member.first_name
@@ -57,19 +54,16 @@ export class Member extends StoreEntity implements MemberType {
 
     setUsername(username: string) {
         this.username = username
-        this.update()
     }
 
 
     setFirst_name(first_name: string) {
         this.first_name = first_name
-        this.update()
     }
 
 
     setLast_name(last_name: string) {
         this.last_name = last_name
-        this.update()
     }
 
 
@@ -79,36 +73,15 @@ export class Member extends StoreEntity implements MemberType {
 
         this.image?.destroy()
         this.image = photo
-        this.update()
     }
 
 
     setAge(age: number) {
         this.age = age
-        this.update()
     }
-
-
-    update() {
-        this.emit('update', [this])
-    }
-
 
     get getPhotoURL() {
         if (this.image) return this.image.toString()
         return DEFAULT_IMG_URL
     }
-
-
-    dto(): { id: string; [p: string]: any } {
-        return {
-            id: this.id,
-            username: this.username,
-            first_name: this.first_name,
-            last_name: this.last_name,
-            photo: this.image?.id || this.photo,
-        };
-    }
-
-
 }

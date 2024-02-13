@@ -6,6 +6,7 @@ import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
+import {User} from "../../../../classes/StoreEntities";
 
 import '../../css/Expenses.css'
 
@@ -14,7 +15,7 @@ import '../../css/Expenses.css'
 export default function ExpensesActual() {
     const user = useUser()!
     const travel = useTravel()!
-    const groupMap = useExpensesGroupActual(user.getSetting('expensesFilter'))
+    const groupMap = useExpensesGroupActual(User.getSetting(user, 'expensesFilter'))
 
 
     return (

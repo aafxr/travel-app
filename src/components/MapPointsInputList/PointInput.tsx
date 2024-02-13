@@ -1,48 +1,46 @@
 import {Input} from "../ui";
 import {DragIcon, SearchIcon} from "../svg";
 import Swipe from "../ui/Swipe/Swipe";
-import React, {useEffect, useRef, useState} from "react";
-import useTravelContext from "../../hooks/useTravelContext";
-import defaultPoint from "../../utils/default-values/defaultPoint";
-import {WaypointType} from "../../types/WaypointType";
+import React, {useRef} from "react";
+import {Waypoint} from "../../classes/StoreEntities";
 
 
 type PointInputPropsType = {
-    point: WaypointType,
-    onRemovePoint?: (waypoint:WaypointType) => unknown,
-    onDragOver?: (waypoint:WaypointType) => unknown,
-    onDragLeave?: (waypoint:WaypointType) => unknown,
-    onFocus?: (waypoint:WaypointType) => unknown,
-    onBlur?: (waypoint:WaypointType) => unknown,
-    onSearchClick?: (waypoint:WaypointType) => unknown,
-    onTouchStart?: (e: React.TouchEvent<HTMLDivElement>, waypoint:WaypointType) => unknown,
-    onTouchEnd?: (e: React.TouchEvent<HTMLDivElement>, waypoint:WaypointType) => unknown,
-    onTouchMove?: (e: React.TouchEvent<HTMLDivElement>, waypoint:WaypointType) => unknown,
-    onDragStart?: (waypoint:WaypointType) => unknown,
-    onDragEnd?: (waypoint:WaypointType) => unknown,
-    onKeyDown?: (e:React.KeyboardEvent<HTMLDivElement>, waypoint:WaypointType) => unknown,
-    onInputChange?: (text: string, waypoint:WaypointType) => unknown,
-    onHover?: (hoverWaypoint: WaypointType) => unknown
+    point: Waypoint,
+    onRemovePoint?: (waypoint: Waypoint) => unknown,
+    onDragOver?: (waypoint: Waypoint) => unknown,
+    onDragLeave?: (waypoint: Waypoint) => unknown,
+    onFocus?: (waypoint: Waypoint) => unknown,
+    onBlur?: (waypoint: Waypoint) => unknown,
+    onSearchClick?: (waypoint: Waypoint) => unknown,
+    onTouchStart?: (e: React.TouchEvent<HTMLDivElement>, waypoint: Waypoint) => unknown,
+    onTouchEnd?: (e: React.TouchEvent<HTMLDivElement>, waypoint: Waypoint) => unknown,
+    onTouchMove?: (e: React.TouchEvent<HTMLDivElement>, waypoint: Waypoint) => unknown,
+    onDragStart?: (waypoint: Waypoint) => unknown,
+    onDragEnd?: (waypoint: Waypoint) => unknown,
+    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>, waypoint: Waypoint) => unknown,
+    onInputChange?: (text: string, waypoint: Waypoint) => unknown,
+    onHover?: (hoverWaypoint: Waypoint) => unknown
 }
 
 /**
  * @function
  * @name PointInput
- * @param {WaypointType} [point]
- * @param {(point: WaypointType) => unknown} [onRemovePoint]
- * @param {(point: WaypointType) => unknown} [onDragOver]
- * @param {(point: WaypointType) => unknown} [onDragLeave]
- * @param {(point: WaypointType) => unknown} [onFocus]
- * @param {(point: WaypointType) => unknown} [onBlur]
- * @param {(point: WaypointType) => unknown} [onSearchClick]
- * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchStart]
- * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchEnd]
- * @param {(event: TouchEvent<HTMLDivElement>,point: WaypointType) => unknown} [onTouchMove]
- * @param {(point: WaypointType) => unknown} [onDragStart]
- * @param {(point: WaypointType) => unknown} [onDragEnd]
- * @param {(event: InputEvent, point: WaypointType) => unknown} [onKeyDown]
- * @param {(event: InputEvent, point: WaypointType) => unknown} [onInputChange]
- * @param {(event: InputEvent, point: WaypointType) => unknown} [onHover]
+ * @param {Waypoint} [point]
+ * @param {(point: Waypoint) => unknown} [onRemovePoint]
+ * @param {(point: Waypoint) => unknown} [onDragOver]
+ * @param {(point: Waypoint) => unknown} [onDragLeave]
+ * @param {(point: Waypoint) => unknown} [onFocus]
+ * @param {(point: Waypoint) => unknown} [onBlur]
+ * @param {(point: Waypoint) => unknown} [onSearchClick]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: Waypoint) => unknown} [onTouchStart]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: Waypoint) => unknown} [onTouchEnd]
+ * @param {(event: TouchEvent<HTMLDivElement>,point: Waypoint) => unknown} [onTouchMove]
+ * @param {(point: Waypoint) => unknown} [onDragStart]
+ * @param {(point: Waypoint) => unknown} [onDragEnd]
+ * @param {(event: InputEvent, point: Waypoint) => unknown} [onKeyDown]
+ * @param {(event: InputEvent, point: Waypoint) => unknown} [onInputChange]
+ * @param {(event: InputEvent, point: Waypoint) => unknown} [onHover]
  * @returns {JSX.Element|null}
  * @category Components
  */
@@ -68,39 +66,39 @@ export default function PointInput(
     const inputRef = useRef<HTMLInputElement>(null)
     const isFocus = inputRef.current === document.activeElement
 
-    const handleRemovePoint = (point:WaypointType) => onRemovePoint && onRemovePoint(point)
+    const handleRemovePoint = (point: Waypoint) => onRemovePoint && onRemovePoint(point)
 
-    const handleDragOver = (point:WaypointType) => onDragOver && onDragOver(point)
+    const handleDragOver = (point: Waypoint) => onDragOver && onDragOver(point)
 
-    const handleDragLeave = (point:WaypointType) => onDragLeave && onDragLeave(point)
+    const handleDragLeave = (point: Waypoint) => onDragLeave && onDragLeave(point)
 
-    const handleFocus = (point:WaypointType) => onFocus && onFocus(point)
+    const handleFocus = (point: Waypoint) => onFocus && onFocus(point)
 
-    const handleBlur = (point:WaypointType) => onBlur && onBlur(point)
+    const handleBlur = (point: Waypoint) => onBlur && onBlur(point)
 
-    const handleSearchClick = (point:WaypointType) => onSearchClick && onSearchClick(point)
+    const handleSearchClick = (point: Waypoint) => onSearchClick && onSearchClick(point)
 
-    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => {
+    const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>, point: Waypoint) => {
         onTouchStart && onTouchStart(event, point)
         onHover && onHover(point)
     }
 
-    const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => onTouchEnd && onTouchEnd(event, point)
+    const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>, point: Waypoint) => onTouchEnd && onTouchEnd(event, point)
 
-    const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>, point:WaypointType) => onTouchMove && onTouchMove(event, point)
+    const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>, point: Waypoint) => onTouchMove && onTouchMove(event, point)
 
-    const handleDragStart = (point:WaypointType) => onDragStart && onDragStart(point)
+    const handleDragStart = (point: Waypoint) => onDragStart && onDragStart(point)
 
-    const handleDragEnd = (point:WaypointType) => onDragEnd && onDragEnd(point)
+    const handleDragEnd = (point: Waypoint) => onDragEnd && onDragEnd(point)
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, point:WaypointType) => onKeyDown && onKeyDown(event, point)
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, point: Waypoint) => onKeyDown && onKeyDown(event, point)
 
-    const handleInputChange = (text:string, point:WaypointType) => {
-        if(text !== point.address)
-        onInputChange && onInputChange(text, point)
+    const handleInputChange = (text: string, point: Waypoint) => {
+        if (text !== point.address)
+            onInputChange && onInputChange(text, point)
     }
 
-    const handleHover = (point:WaypointType) => onHover && onHover(point)
+    const handleHover = (point: Waypoint) => onHover && onHover(point)
 
 
     return (

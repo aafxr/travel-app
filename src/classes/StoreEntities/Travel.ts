@@ -1,12 +1,10 @@
 import {nanoid} from "nanoid";
 import getDistanceFromTwoPoints from "../../utils/getDistanceFromTwoPoints";
-import {DEFAULT_IMG_URL, MS_IN_DAY} from "../../static/constants";
 import {TravelPermission} from "../../types/TravelPermission";
 import {TravelPreference} from "../../types/TravelPreference";
 import {MovementType} from "../../types/MovementType";
-import {TravelType} from "../../types/TravelType";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StoreEntity} from "./StoreEntity";
+import { MS_IN_DAY} from "../../static/constants";
 import {Preference} from "../Preference";
 import {Permission} from "../Permission";
 import {Waypoint} from "./Waypoint";
@@ -14,10 +12,9 @@ import {Member} from "./Member";
 import {Place} from "./Place";
 import {Photo} from "./Photo";
 import {Road} from "./Road";
-import {StoreName} from "../../types/StoreName";
 
 
-type TravelPropsType = Partial<TravelType> | Travel
+type TravelPropsType = Partial<Travel>
 
 
 const zero_time = new Date(0)
@@ -58,8 +55,7 @@ const MIDDLE_TIME = HOUR_IN_MS * 13
  * __permission__,
  * __interests__
  */
-export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
-    storeName = StoreName.TRAVEL
+export class Travel {
 
     id = nanoid(8);
     code = '';
@@ -69,7 +65,6 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     title = '';
 
     photo: string = '';
-    image?: Photo
 
     days = 1
     isFromPoint: DBFlagType = 0
@@ -97,7 +92,6 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
 
 
     constructor(travel: TravelPropsType) {
-        super()
         if (travel.id) this.id = travel.id
         if (travel.title) this.title = travel.title
         if (travel.code) this.code = travel.code
@@ -107,6 +101,7 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (travel.days) this.days = travel.days
         if (travel.description) this.description = travel.description
         if (travel.members_count && travel.members_count > 1) this.members_count = travel.members_count
+        if (travel.children_count && travel.children_count > 0) this.children_count = travel.children_count
         if (travel.movementTypes) this.movementTypes = (travel.movementTypes as any).map((mt: any) => (mt['id'] ? mt['id'] : mt) as MovementType)
         if (travel.photo) this.photo = travel.photo
         if (travel.places) this.places = travel.places.map(p => new Place(p))
@@ -127,50 +122,50 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
     }
 
 
-    setId(id: string) {
-        this.id = id
-        this.setUpdated_at()
+    static setId(travel:Travel, id: string) {
+        travel.id = id
+        Travel.setUpdated_at(travel)
     }
 
-    setCode(code: string) {
-        this.code = code
-        this.setUpdated_at()
+    static setCode(travel:Travel, code: string) {
+        travel.code = code
+        Travel.setUpdated_at(travel)
     }
 
-    setDescription(description: string) {
-        this.description = description
-        this.setUpdated_at()
+    static setDescription(travel:Travel, description: string) {
+        travel.description = description
+        Travel.setUpdated_at(travel)
     }
 
-    setDirection(direction: string) {
-        this.direction = direction
-        this.setUpdated_at()
+    static setDirection(travel:Travel, direction: string) {
+        travel.direction = direction
+        Travel.setUpdated_at(travel)
     }
 
-    setOwner_id(owner_id: string) {
-        this.owner_id = owner_id
-        this.setUpdated_at()
+    static setOwner_id(travel:Travel, owner_id: string) {
+        travel.owner_id = owner_id
+        Travel.setUpdated_at(travel)
     }
 
-    get members() {
-        return [this.owner_id, ...this.admins, ...this.editors, ...this.commentator]
+    static getMembers(travel: Travel) {
+        return [travel.owner_id, ...travel.admins, ...travel.editors, ...travel.commentator]
     }
 
-    setMovementTypes(movementTypes: MovementType[]) {
-        this.movementTypes = movementTypes
-        this.setUpdated_at()
+    static setMovementTypes(travel:Travel, movementTypes: MovementType[]) {
+        travel.movementTypes = movementTypes
+        Travel.setUpdated_at(travel)
     }
 
-    addPlace(place: Place) {
-        if (!this.places.length) {
+    static addPlace(travel: Travel, place: Place) {
+        if (!travel.places.length) {
             let start = new Date(0)
-            start.setTime(zero_time.getTime() + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
-            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            start.setTime(zero_time.getTime() + MIDDLE_TIME - HOUR_IN_MS * (travel.preference.density / Preference.base_density))
+            const end = new Date(start.getTime() + Preference.base_duration * (travel.preference.depth / Preference.base_depth))
             place.time_start = start
             place.time_end = end
-            this.places.push(place)
+            travel.places.push(place)
         } else {
-            const last = this.places[this.places.length - 1]
+            const last = travel.places[travel.places.length - 1]
             const dist = getDistanceFromTwoPoints(place.location, last.location)
             const road = new Road({
                 time_start: last.time_end,
@@ -179,8 +174,8 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
                 to: place.location
             })
             let r_idx = 0
-            this.road.forEach(r => r.time_start > road.time_start && r_idx++)
-            this.road.splice(r_idx, 0, road)
+            travel.road.forEach(r => r.time_start > road.time_start && r_idx++)
+            travel.road.splice(r_idx, 0, road)
             let start: Date
             const hh = road.time_end.getHours()
             if (hh < 16 && hh > 9) {
@@ -188,52 +183,47 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
             } else {
                 const t = new Date(road.time_end)
                 t.setHours(0, 0, 0, 0)
-                t.setTime(t.getTime() + MS_IN_DAY + MIDDLE_TIME - HOUR_IN_MS * (this.preference.density / Preference.base_density))
+                t.setTime(t.getTime() + MS_IN_DAY + MIDDLE_TIME - HOUR_IN_MS * (travel.preference.density / Preference.base_density))
                 start = t
             }
 
-            const end = new Date(start.getTime() + Preference.base_duration * (this.preference.depth / Preference.base_depth))
+            const end = new Date(start.getTime() + Preference.base_duration * (travel.preference.depth / Preference.base_depth))
             place.time_start = start
             place.time_end = end
-            this.places.push(place)
+            travel.places.push(place)
         }
     }
 
-    setPlaces(places: Place[]) {
-        this.places = places
-        this.setUpdated_at()
+    static setPlaces(travel:Travel, places: Place[]) {
+        travel.places = places
+        Travel.setUpdated_at(travel)
     }
 
 
-    removePlace(place: Place) {
-        this.places = this.places.filter(p => p._id !== place._id)
-        this.road = []
-        debugger
-
-        this.setUpdated_at()
+    static removePlace(travel : Travel, place: Place) {
+        travel.places = travel.places.filter(p => p._id !== place._id)
+        travel.road = []
+        Travel.setUpdated_at(travel)
     }
 
 
-    setWaypoints(waypoints: Waypoint[]) {
-        this.waypoints = waypoints
-        this.setUpdated_at()
+    static setWaypoints(travel:Travel, waypoints: Waypoint[]) {
+        travel.waypoints = waypoints
+        Travel.setUpdated_at(travel)
     }
 
-    setPhoto(photo: Photo) {
-        if (this.photo) photo.id = this.photo
-        else this.photo = photo.id
-
-        this.image?.destroy()
-        this.image = photo
-        this.setUpdated_at()
+    static setPhoto(travel:Travel, photo: Photo) {
+        if (travel.photo) photo.id = travel.photo
+        else travel.photo = photo.id
+        Travel.setUpdated_at(travel)
     }
 
-    private updateRoad(){
-        this.road = []
-        if (this.places.length > 1) {
-            for (let i = 1; i < this.places.length; i++) {
-                const place_1 = this.places[i - 1]
-                const place_2 = this.places[i]
+    static updateRoad(travel: Travel){
+        travel.road = []
+        if (travel.places.length > 1) {
+            for (let i = 1; i < travel.places.length; i++) {
+                const place_1 = travel.places[i - 1]
+                const place_2 = travel.places[i]
                 const dist = getDistanceFromTwoPoints(place_1.location, place_2.location)
                 const road = new Road({
                     time_start: place_1.time_end,
@@ -242,55 +232,50 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
                     to: place_2.location
                 })
                 let r_idx = 0
-                this.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
-                this.road.splice(r_idx, 0 , road)
+                travel.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
+                travel.road.splice(r_idx, 0 , road)
             }
         }
     }
 
-    get getPhotoURL() {
-        if (this.image) return this.image.src
-        return DEFAULT_IMG_URL
+    static setTitle(travel:Travel, title: string) {
+        travel.title = title
+        Travel.setUpdated_at(travel)
     }
 
-    setTitle(title: string) {
-        this.title = title
-        this.setUpdated_at()
-    }
-
-    setDays(days: number) {
+    static setDays(travel:Travel, days: number) {
         if (days < 1) return
-        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * days)
-        this.days = days
-        this.setUpdated_at()
+        travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * days)
+        travel.days = days
+        Travel.setUpdated_at(travel)
     }
 
-    setIsFromPoint(isFromPoint: DBFlagType) {
-        this.isFromPoint = isFromPoint
-        this.setUpdated_at()
+    static setIsFromPoint(travel:Travel, isFromPoint: DBFlagType) {
+        travel.isFromPoint = isFromPoint
+        Travel.setUpdated_at(travel)
     }
 
-    setChildren_count(children_count: number) {
-        this.children_count = children_count
-        this.setUpdated_at()
+    static setChildren_count(travel:Travel, children_count: number) {
+        travel.children_count = children_count
+        Travel.setUpdated_at(travel)
     }
 
-    setMembers_count(members_count: number) {
-        this.members_count = members_count
-        this.setUpdated_at()
+    static setMembers_count(travel:Travel, members_count: number) {
+        travel.members_count = members_count
+        Travel.setUpdated_at(travel)
     }
 
 
-    setDate_end(date_end: Date) {
-        this.date_end = new Date(date_end)
-        this.date_start = new Date(this.date_end.getTime() - MS_IN_DAY * this.days)
-        this.setUpdated_at()
+    static setDate_end(travel:Travel, date_end: Date) {
+        travel.date_end = new Date(date_end)
+        travel.date_start = new Date(travel.date_end.getTime() - MS_IN_DAY * travel.days)
+        Travel.setUpdated_at(travel)
     }
 
-    setDate_start(date_start: Date) {
-        this.date_start = new Date(date_start)
-        this.date_end = new Date(this.date_start.getTime() + MS_IN_DAY * this.days)
-        this.setUpdated_at()
+    static setDate_start(travel:Travel, date_start: Date) {
+        travel.date_start = new Date(date_start)
+        travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * travel.days)
+        Travel.setUpdated_at(travel)
     }
 
     getMemberRole<T extends Member>(member: T) {
@@ -309,14 +294,14 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         if (this.permission.public) return true
         if (this.admins.includes(member.id)) return true
         if (this.editors.includes(member.id)) return true
-        if (this.commentator.includes(member.id)) return true
-        return false
+        return this.commentator.includes(member.id);
+
     }
 
     isAdmin<T extends Member>(member: T) {
         if (member.id === this.owner_id) return true
-        if (this.admins.includes(member.id)) return true
-        return false
+        return this.admins.includes(member.id);
+
     }
 
     isEditor<T extends Member>(member: T) {
@@ -340,66 +325,35 @@ export class Travel extends StoreEntity implements Omit<TravelType, 'photo'> {
         return !!this.permission[key]
     }
 
-    private setUpdated_at() {
-        this.updated_at = new Date()
-        this.emit('update', [this])
+    static setUpdated_at(travel:Travel) {
+        travel.updated_at = new Date()
     }
 
     get isPublic() {
         return !!this.permission.public
     }
 
-    setDepth(depth: TravelPreference['depth']) {
-        this.preference.depth = depth
-        this.setUpdated_at()
+    static setDepth(travel:Travel, depth: TravelPreference['depth']) {
+        travel.preference.depth = depth
+        Travel.setUpdated_at(travel)
     }
 
-    setDensity(density: TravelPreference['density']) {
-        this.preference.density = density
-        this.setUpdated_at()
+    static setDensity(travel:Travel, density: TravelPreference['density']) {
+        travel.preference.density = density
+        Travel.setUpdated_at(travel)
     }
 
-    setPublic(val: DBFlagType | boolean) {
-        this.permission.public = val ? 1 : 0
-        this.setUpdated_at()
+    static setPublic(travel:Travel, val: DBFlagType | boolean) {
+        travel.permission.public = val ? 1 : 0
+        Travel.setUpdated_at(travel)
     }
 
-    isMember<T extends Member>(member: T) {
-        if (member.id === this.owner_id) return true
-        if (this.isAdmin(member)) return true
-        if (this.isEditor(member)) return true
-        if (this.members.includes(member.id)) return true
-        return false
-    }
+    static isMember<T extends Member>(travel:Travel, member: T) {
+        if (member.id === travel.owner_id) return true
+        if (travel.isAdmin(member)) return true
+        if (travel.isEditor(member)) return true
+        return Travel.getMembers(travel).includes(member.id);
 
-    dto(): TravelType {
-        return {
-            id: this.id,
-            code: this.code,
-            description: this.description,
-            direction: this.direction,
-            owner_id: this.owner_id,
-            photo: this.image?.id || this.photo,
-            title: this.title,
-            days: this.days,
-            isFromPoint: this.isFromPoint,
-            children_count: this.children_count,
-            members_count: this.members_count,
-            created_at: this.created_at,
-            date_end: this.date_end,
-            date_start: this.date_start,
-            movementTypes: this.movementTypes,
-            places: this.places.map(p => p.dto()),
-            road: this.road.map(r => r.dto()),
-            preference: this.preference.dto(),
-            waypoints: this.waypoints.map(w => w.dto()),
-            updated_at: this.updated_at,
-            admins: this.admins,
-            editors: this.editors,
-            commentator: this.commentator,
-            permission: this.permission.dto(),
-            interests: this.interests,
-        }
     }
 }
 

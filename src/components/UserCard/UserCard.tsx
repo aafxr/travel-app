@@ -1,10 +1,10 @@
 import clsx from "clsx";
 
-import {Member} from "../../classes/StoreEntities/Member";
-import PhotoComponent from "../PhotoComponent/PhotoComponent";
+import PhotoComponent from "../PhotoComponents/PhotoComponent";
+import {useTravel} from "../../contexts/AppContextProvider";
+import {Member} from "../../classes/StoreEntities";
 
 import './UserCard.css'
-import {useTravel} from "../../contexts/AppContextProvider";
 
 
 type UserCardPropsType = {
@@ -40,7 +40,7 @@ export default function UserCard({
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
             <>
-                <PhotoComponent src={member.getPhotoURL} className='avatar'/>
+                <PhotoComponent item={member} className='avatar'/>
                 {variant !== 'compact' && (
                     <>
                         <div className='user-card-info column'>

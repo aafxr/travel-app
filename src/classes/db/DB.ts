@@ -1,7 +1,8 @@
-import {StoreEntity} from "../StoreEntities";
+import {Action, StoreEntity} from "../StoreEntities";
 import {openIDBDatabase} from "./openIDBDatabaase";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
+import {ActionName} from "../../types/ActionsType";
 
 /**
  * @class DB
@@ -185,6 +186,7 @@ export class DB {
     /**
      * принимает массив инстансов __наследников класса StoreEntity__ и записывает все элементы в соответствующий массив
      * @param elements
+     * @deprecated
      */
     static async writeAll<T extends Pick<StoreEntity, 'dto' | 'storeName'>>(elements: T[] = []) {
         if (!elements.length) return
@@ -195,6 +197,24 @@ export class DB {
         for (const el of elements) {
             const store = tx.objectStore(el.storeName)
             store.put(el.dto())
+        }
+    }
+
+    static async writeWithAction<T extends Object>(storeName:StoreName, item: T, user_id: string, actionType:ActionName){
+        const action = new Action(item, user_id, storeName, actionType)
+        const db = await openIDBDatabase()
+        const tx = db.transaction([storeName, StoreName.ACTION], 'readwrite')
+        const itemStore = tx.objectStore(storeName)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        switch (actionType){
+            case ActionName.ADD:
+                itemStore.add(item)
+                actionStore.add(action)
+                return
+            case ActionName.UPDATE:
+                itemStore.put(item)
+                actionStore.put(action)
+                return
         }
     }
 

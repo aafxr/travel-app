@@ -30,8 +30,7 @@ import {StoreName} from "../../types/StoreName";
  * __value__,
  * __variant__
  */
-class Expense extends StoreEntity implements ExpenseType {
-    storeName = StoreName.EXPENSE
+class Expense {
 
     id: string;
     entity_id = '';
@@ -49,12 +48,10 @@ class Expense extends StoreEntity implements ExpenseType {
     variant: ExpenseVariantType = "expenses_actual";
 
     coeff = 1
-    exchanger!: Exchange
 
     user: User
 
     constructor(expense: Partial<ExpenseType | Expense>, user: User) {
-        super()
         this.user = user
 
         if (expense.id) this.id = expense.id
@@ -73,108 +70,82 @@ class Expense extends StoreEntity implements ExpenseType {
         if (expense.value) this.value = expense.value
         if (expense.variant) this.variant = expense.variant
 
-        this.setExchanger(new Exchange())
-
-        this.user.subscribe("currency", (u) => this.setCurrency(u.currency))
-
     }
 
 
-    setId(id: string) {
-        this.id = id
+    static setId(expense: Expense, id: string) {
+        expense.id = id
     }
 
-    setEntity_id(entity_id: string) {
-        this.entity_id = entity_id
+    static setEntity_id(expense: Expense, entity_id: string) {
+        expense.entity_id = entity_id
     }
 
-    setEntity_type(entity_type: string) {
-        this.entity_type = entity_type
+    static setEntity_type(expense: Expense, entity_type: string) {
+        expense.entity_type = entity_type
     }
 
-    setPrimary_entity_id(primary_entity_id: string) {
-        this.primary_entity_id = primary_entity_id
+    static setPrimary_entity_id(expense: Expense, primary_entity_id: string) {
+        expense.primary_entity_id = primary_entity_id
     }
 
-    setPrimary_entity_type(primary_entity_type: string) {
-        this.primary_entity_type = primary_entity_type
+    static setPrimary_entity_type(expense: Expense, primary_entity_type: string) {
+        expense.primary_entity_type = primary_entity_type
     }
 
-    setSection_id(section_id: string) {
-        this.section_id = section_id
+    static setSection_id(expense: Expense, section_id: string) {
+        expense.section_id = section_id
     }
 
-    setTitle(title: string) {
-        this.title = title
+    static setTitle(expense: Expense, title: string) {
+        expense.title = title
     }
 
-    setUser_id(user_id: string) {
-        this.user_id = user_id
+    static setUser_id(expense: Expense, user_id: string) {
+        expense.user_id = user_id
     }
 
-    setCurrency(currency: keyof CurrencyName) {
-        this.currency = currency
-        this.coeff = this.exchanger.getCoefficient(currency)
-        this.emit('update', [this])
-    }
-
-    setDatetime(datetime: Date) {
-        this.datetime = new Date(datetime)
-    }
-
-    setPersonal(personal: DBFlagType) {
-        this.personal = personal
-    }
-
-    setValue(value: number) {
-        this.value = value
-    }
-
-    isPersonal<T extends Member>(user: T) {
-        return this.personal === 1 && this.id.split(':').pop() === user.id
-    }
-
-    isCommon() {
-        return this.personal === 0
-    }
-
-    setCoeff(n: number) {
-        this.coeff = n
-        this.emit('update', [this])
-    }
-
-    setExchanger(ex: Exchange) {
-        this.exchanger = ex
-        let unsub = ex.subscribe('update', (e) => {
-            unsub()
-            this.setCoeff(e.getCoefficient(this.user.currency))
-        })
-    }
-
-    valueOf(){
-        return this.value * this.coeff
-    }
-
-    dto(): ExpenseType {
-        return {
-            id: this.id,
-            entity_id: this.entity_id,
-            entity_type: this.entity_type,
-            primary_entity_id: this.primary_entity_id,
-            primary_entity_type: this.primary_entity_type,
-            section_id: this.section_id,
-            title: this.title,
-            user_id: this.user_id,
-            currency: this.currency,
-            created_at: this.created_at,
-            datetime: this.datetime,
-            personal: this.personal,
-            value: this.value,
-            variant: this.variant
+    static setCurrency(expense: Expense, currency: keyof CurrencyName, exchange ?: Exchange) {
+        expense.currency = currency
+        if (exchange) {
+            expense.coeff = exchange.getCoefficient(currency)
+        } else {
+            expense.coeff = 1
         }
     }
-}
 
+    static setDatetime(expense: Expense, datetime: Date) {
+        expense.datetime = new Date(datetime)
+    }
+
+    static setPersonal(expense: Expense, personal: DBFlagType) {
+        expense.personal = personal
+    }
+
+    static setValue(expense: Expense, value: number) {
+        expense.value = value
+    }
+
+    static isPersonal<T extends Member>(expense: Expense, user: T) {
+        return expense.personal === 1 && expense.id.split(':').pop() === user.id
+    }
+
+    static isCommon(expense: Expense) {
+        return expense.personal === 0
+    }
+
+    static setCoeff(expense: Expense, n: number) {
+        expense.coeff = n
+    }
+
+    static setExchange(expense: Expense, ex: Exchange, user: User) {
+        Expense.setCoeff(expense, ex.getCoefficient(user.currency || "RUB"))
+    }
+
+    valueOf() {
+        return this.value * this.coeff
+    }
+}
 
 
 class ExpenseActual extends Expense {

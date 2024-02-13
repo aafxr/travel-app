@@ -1,12 +1,11 @@
 import {ExpenseFilterType, RouteFilterType} from "../../types/filtersTypes";
 import {CurrencyName} from "../../types/CurrencyTypes";
-import {ExtendType} from "../../types/ExtendType";
 import {DBFlagType} from "../../types/DBFlagType";
-import {UserSettingsType, UserType} from "../../types/UserType";
+import {UserSettingsType} from "../../types/UserType";
 import {Member} from "./Member";
 import {StoreName} from "../../types/StoreName";
 
-type UserConstructorPropsType = Partial<UserType> | User
+type UserConstructorPropsType = Partial<User>
 
 /**
  * представление пользователя приложения
@@ -32,7 +31,7 @@ type UserConstructorPropsType = Partial<UserType> | User
  * @class User
  * @extends Member
  */
-export class User extends Member implements UserType {
+export class User extends Member {
     storeName = StoreName.USERS
 
     token = '';
@@ -60,90 +59,58 @@ export class User extends Member implements UserType {
         }
     }
 
-    dto(): UserType & ExtendType {
-        return {
-            id: this.id,
-            username: this.username,
-            first_name: this.first_name,
-            last_name: this.last_name,
-            photo: this.image?.id || this.photo,
-            token: this.token,
-            refresh_token: this.refresh_token,
-            movementType: this.movementType,
-            age: this.age,
-            settings: this.settings
-        };
+    static setId(user: User, id: string) {
+        user.id = id
     }
 
 
-    setId(id: string) {
-        this.id = id
-        this.setUpdate_at()
+    static setUsername(user: User, username: string) {
+        user.username = username
     }
 
 
-    setUsername(username: string) {
-        this.username = username
-        this.setUpdate_at()
+    static setFirst_name(user: User, first_name: string) {
+        user.first_name = first_name
     }
 
 
-    setFirst_name(first_name: string) {
-        this.first_name = first_name
-        this.setUpdate_at()
+    static setLast_name(user: User, last_name: string) {
+        user.last_name = last_name
     }
 
 
-    setLast_name(last_name: string) {
-        this.last_name = last_name
-        this.setUpdate_at()
+    static setToken(user: User, token: string) {
+        user.token = token
     }
 
 
-    setToken(token: string) {
-        this.token = token
-        this.setUpdate_at()
+    static setRefresh_token(user: User, refresh_token: string) {
+        user.refresh_token = refresh_token
     }
 
 
-    setRefresh_token(refresh_token: string) {
-        this.refresh_token = refresh_token
-        this.setUpdate_at()
+    static getSetting<T extends keyof UserSettingsType>(user: User, key: T): UserSettingsType[T]{
+        return user.settings[key]
     }
 
 
-    getSetting<T extends keyof UserSettingsType>(key: T): UserSettingsType[T]{
-        return this.settings[key]
+    static setRouteFilter(user: User, filter: RouteFilterType) {
+        user.settings.routeFilter = filter
     }
 
 
-    setRouteFilter(filter: RouteFilterType) {
-        this.settings.routeFilter = filter
-        this.setUpdate_at()
+    static setCurtain(user: User, isOpen: DBFlagType | boolean) {
+        user.settings.curtain = isOpen ? 1 : 0
     }
 
 
-    setCurtain(isOpen: DBFlagType | boolean) {
-        this.settings.curtain = isOpen ? 1 : 0
-        this.setUpdate_at()
+    static setExpenseFilter(user: User, filter: ExpenseFilterType) {
+        user.settings.expensesFilter = filter
     }
 
 
-    setExpenseFilter(filter: ExpenseFilterType) {
-        this.settings.expensesFilter = filter
-        this.setUpdate_at()
-    }
-
-
-    isLogIn() {
+    static isLogIn(user: User) {
         if (location.hostname === 'localhost') return true
-        return Boolean(this.token && this.refresh_token)
+        return Boolean(user.token && user.refresh_token)
     }
-
-
-    setUpdate_at(){
-        this.emit('update', [this])
-    }
-
-
 }

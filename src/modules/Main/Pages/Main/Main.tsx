@@ -1,11 +1,12 @@
-import React, {useState} from 'react'
+import React, { useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
-import {APIRouteType, fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
+import { fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import Navigation from "../../../../components/Navigation/Navigation";
+import {Route} from "../../../../classes/StoreEntities/route/Route";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
 import {Travel} from '../../../../classes/StoreEntities'
@@ -26,7 +27,7 @@ export default function Main() {
     const user = useUser()
     const context = useAppContext()
 
-    const [routes, setRoutes] = useState<APIRouteType[]>([])
+    const [routes, setRoutes] = useState<Route[]>([])
 
     async function handleNewTravel() {
         if (user) {
@@ -41,6 +42,7 @@ export default function Main() {
         }
     }
 
+
     function adviceRoutes(){
         fetchRouteAdvice({
             days: 7,
@@ -49,7 +51,8 @@ export default function Main() {
             location: 1,
             preference:{active:1,nature:1}
         })
-            .then(({routes}) => {
+            .then((routes) => {
+                console.log(routes)
                 setRoutes(routes)
             })
             .catch(defaultHandleError)

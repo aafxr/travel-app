@@ -6,7 +6,6 @@ import {useAppContext} from "../../../../contexts/AppContextProvider";
 import {YandexMapContainer} from "../../../../components/YandexMap";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
-import {WaypointType} from "../../../../types/WaypointType";
 import {YPlacemark} from "../../../../components/YandexMap";
 import {Waypoint} from "../../../../classes/StoreEntities";
 import {PageHeader} from "../../../../components/ui";
@@ -23,7 +22,7 @@ import './TravelAddWaypoint.css'
 export default function TravelAddWaypoint() {
     const navigate = useNavigate()
     const context = useAppContext()
-    const [point, setPoint] = useState<WaypointType>(new Waypoint({}).dto())
+    const [point, setPoint] = useState<Waypoint>(new Waypoint({}))
 
 
     async function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -38,7 +37,7 @@ export default function TravelAddWaypoint() {
 
     async function handleChange(text: string) {
         const address = text.trim()
-        setPoint({...point, address})
+        setPoint(new Waypoint({...point, address}))
         if (!address) return
         const waypoint = await findAddress(point)
         if (waypoint) {

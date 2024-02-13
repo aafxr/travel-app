@@ -16,7 +16,7 @@ import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import Main from "./modules/Main/Pages/Main/Main";
 // import ErrorPage from "./modules/OtherPages/ErrorPage";
 // import Loader from "./components/Loader/Loader";
-import Alerts from "./components/Alerts/Alerts";
+import Alerts, {pushAlertMessage} from "./components/Alerts/Alerts";
 // import {USER_AUTH} from "./static/constants";
 // import useDBReady from "./hooks/useDBReady";
 // import Dev from "./modules/Dev";
@@ -85,6 +85,11 @@ function App() {
                 })
                 .catch(defaultHandleError)
         }
+    }, [])
+
+    useEffect(() => {
+        window.ononline = () => {pushAlertMessage({type:"info", message: 'Connection restored'})}
+        window.onoffline = () => {pushAlertMessage({type:"info", message: 'Bad connection'})}
     }, [])
 
     window.DB = DB

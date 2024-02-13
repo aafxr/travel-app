@@ -1,7 +1,6 @@
 import {SectionType} from "../../types/SectionType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
-import {StoreEntity} from "./StoreEntity";
 import {DB} from "../db/DB";
 
 /**
@@ -15,8 +14,7 @@ import {DB} from "../db/DB";
  * __hidden__
  *
  */
-export class Section extends StoreEntity implements SectionType{
-    storeName = StoreName.SECTION
+export class Section{
 
     id = '';
     color = '';
@@ -24,38 +22,26 @@ export class Section extends StoreEntity implements SectionType{
     hidden: DBFlagType = 0;
 
     constructor(section: Partial<SectionType> | Section) {
-        super()
-
         if (section.id) this.id = section.id
         if (section.color) this.color = section.color
         if (section.title) this.title = section.title
         if (section.hidden) this.hidden = section.hidden
     }
 
-    setColor(color: string) {
-        this.color = color
+    static setColor(section : Section, color: string) {
+        section.color = color
     }
 
-    setTitle(title: string) {
-        this.title = title
+    static setTitle(section : Section, title: string) {
+        section.title = title
     }
 
-    setHidden(hidden: DBFlagType) {
-        this.hidden = hidden
+    static setHidden(section : Section, hidden: DBFlagType) {
+        section.hidden = hidden
     }
 
     static async defaultSections(){
         return await DB.getAll(StoreName.SECTION)
 
     }
-
-    dto(): SectionType {
-        return {
-            id: this.id,
-            color: this.color,
-            title: this.title,
-            hidden: this.hidden,
-        };
-    }
-
 }

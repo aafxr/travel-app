@@ -2,7 +2,7 @@ import React from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
+import PhotoComponent from "../../../../components/PhotoComponents/PhotoComponent";
 import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
@@ -39,7 +39,7 @@ export default function Profile() {
                 <div className='profile-backside column gap-1 pt-20'>
                     <div className='title title-bold center'>Профиль</div>
                     <div className='profile-image center'>
-                        <PhotoComponent className='photo' src={user.getPhotoURL} onChange={handlePhotoChange} />
+                        <PhotoComponent className='photo' item={user} onChange={handlePhotoChange} />
                     </div>
                     <div className='profile-user-name center'>
                         <span>{user.first_name}</span>&nbsp;

@@ -1,9 +1,9 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useTravelState, UseTravelStateType} from "../../../../hooks/useTravelState";
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import NumberInput from "../../../../components/ui/Input/NumberInput";
 import TextArea from "../../../../components/ui/TextArea/TextArea";
@@ -35,7 +35,7 @@ export default function TravelDescriptionAndDate() {
 
 
     function getNewState(state: UseTravelStateType): UseTravelStateType {
-        return {...state, travel: {...state.travel}}
+        return {...state, travel: new Travel(state.travel)}
     }
 
 
@@ -124,6 +124,7 @@ export default function TravelDescriptionAndDate() {
 
     if (!state) return null
     if (!travel) return null
+
 
     return (
         <div className='wrapper'>

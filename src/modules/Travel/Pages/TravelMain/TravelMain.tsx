@@ -6,7 +6,7 @@ import {ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../..
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
-import PhotoComponent from "../../../../components/PhotoComponent/PhotoComponent";
+import PhotoComponent from "../../../../components/PhotoComponents/PhotoComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
@@ -21,6 +21,8 @@ import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelMain.css'
+import {Travel, User} from "../../../../classes/StoreEntities";
+import {PhotoService} from "../../../../classes/services/PhotoService";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -49,11 +51,16 @@ export default function TravelMain() {
     )
 
 
-    function handleTravelPhotoChange(blob: Blob) {
-        travel.setPhoto(new Photo({blob}))
+    async function handleTravelPhotoChange(blob: Blob) {
+        const photo = new Photo({blob})
+        Travel.setPhoto(travel, photo)
         if (user)
             TravelService.update(travel, user)
-                .then(() => context.setTravel(travel))
+                .then(() => {
+                    context.setTravel(travel)
+                    PhotoService.save(photo)
+                        .catch(defaultHandleError)
+                })
                 .catch(defaultHandleError)
     }
 
@@ -63,7 +70,7 @@ export default function TravelMain() {
     }, [travel])
 
     function handleCurtain(val = true) {
-        user.setCurtain(val)
+        User.setCurtain(user, val)
         setCurtainOpen(val)
     }
 
@@ -81,7 +88,7 @@ export default function TravelMain() {
                 <div className='wrapper column gap-1 pb-20 '>
                     <div className='content column gap-1'>
                         <div className='travel-details'>
-                            <PhotoComponent className='img-abs' src={travel.getPhotoURL} onChange={handleTravelPhotoChange}/>
+                            <PhotoComponent className='img-abs' item={travel} onChange={handleTravelPhotoChange}/>
                         </div>
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'
@@ -100,7 +107,7 @@ export default function TravelMain() {
                             </div>
                         }
                         <div>
-                            <TravelPeople peopleList={travel.members} compact={compact}/>
+                            <TravelPeople peopleList={Travel.getMembers(travel)} compact={compact}/>
                         </div>
                         <div className='flex-between'>
                             <AddButton>Пригласить еще</AddButton>

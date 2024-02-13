@@ -10,7 +10,7 @@ import {UserService} from "./UserService";
 
 export class PhotoService{
     static async getById(id:string){
-        let photo = await DB.getOne<PhotoType>(StoreName.Photo, id)
+        let photo = await DB.getOne<Photo>(StoreName.Photo, id)
         try {
             if(!photo) photo = await fetchPhoto(id)
         }catch (e){
@@ -36,7 +36,7 @@ export class PhotoService{
     }
 
     static async save(photo:Photo){
-        await DB.update(StoreName.Photo, photo.dto())
+        await DB.update(StoreName.Photo, photo)
     }
 
     static async initPhoto<T extends {photo: string, setPhoto:(photo:Photo) => unknown}>(items:T[]){

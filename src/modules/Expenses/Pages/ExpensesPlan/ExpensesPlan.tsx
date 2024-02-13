@@ -8,6 +8,7 @@ import Container from "../../../../components/Container/Container";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
+import {User} from "../../../../classes/StoreEntities";
 
 
 /**
@@ -20,7 +21,7 @@ import '../../css/Expenses.css'
 export default function ExpensesPlan() {
     const user = useUser()!
     const travel = useTravel()!
-    const groupMap = useExpensesGroupPlan(user.getSetting('expensesFilter'))
+    const groupMap = useExpensesGroupPlan(User.getSetting(user, 'expensesFilter'))
 
     return (
         <>

@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {ExpensesGroupsContextStateType} from "./ExpensesGroupsContextProvider";
 import {ExpensesContext} from "./ExpensesContextProvider";
 import {useUser} from "../AppContextProvider";
+import {Expense} from "../../classes/StoreEntities";
 
 export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React.Dispatch<React.SetStateAction<ExpensesGroupsContextStateType>>]{
     const expensesContext = useContext(ExpensesContext)
@@ -26,7 +27,7 @@ export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React
 
         //group plan expenses
         expensesContext.plan.forEach(e => {
-            if(e.isPersonal(user)) {
+            if(Expense.isPersonal(e, user)) {
                 if(!newState.plan.personal.has(e.section_id))
                     newState.plan.personal.set(e.section_id, [])
                 newState.plan.personal.get(e.section_id)!.push(e)
@@ -39,7 +40,7 @@ export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React
 
         // group actual expenses
         expensesContext.actual.forEach(e => {
-            if(e.isPersonal(user)) {
+            if(Expense.isPersonal(e, user)) {
                 if(!newState.actual.personal.has(e.section_id))
                     newState.actual.personal.set(e.section_id, [])
                 newState.actual.personal.get(e.section_id)!.push(e)

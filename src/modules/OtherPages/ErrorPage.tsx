@@ -1,8 +1,7 @@
 import {useEffect} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 
 import Container from "../../components/Container/Container";
-import Button from "../../components/ui/Button/Button";
 import {PageHeader} from "../../components/ui";
 
 

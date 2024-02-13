@@ -63,7 +63,7 @@ export default function TravelAddPlace() {
         const newTravel = new Travel(travel)
         const list = Array.from(state.selected.values()).map(p => new Place(p))
         for (const pl of list)
-            newTravel.addPlace(pl)
+            Travel.addPlace(newTravel, pl)
         TravelService.update(newTravel, user)
             .then(() => context.setTravel(newTravel))
             .then(() => navigate(`/travel/${travel.id}/1/`))

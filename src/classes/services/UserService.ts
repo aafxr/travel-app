@@ -47,8 +47,8 @@ export class UserService {
         const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
         const userStore = tx.objectStore(StoreName.USERS)
         const actionStore = tx.objectStore(StoreName.ACTION)
-        userStore.add(newUser.dto())
-        actionStore.add(action.dto())
+        userStore.add(newUser)
+        actionStore.add(action)
         return newUser
 
     }
@@ -56,7 +56,7 @@ export class UserService {
     static async update(user: User) {
         if (user.image) await PhotoService.save(user.image)
         const action = new Action(user, user.id, StoreName.TRAVEL, ActionName.UPDATE)
-        await DB.writeAll([user, action])
+        await DB.writeWithAction(StoreName.USERS, user, user.id, ActionName.UPDATE)
         return user
     }
 
@@ -67,7 +67,7 @@ export class UserService {
         const userStore = tx.objectStore(StoreName.USERS)
         const actionStore = tx.objectStore(StoreName.ACTION)
         userStore.delete(user.id)
-        actionStore.add(action.dto())
+        actionStore.add(action)
     }
 
     static async getById(id: string) {
@@ -85,10 +85,10 @@ export class UserService {
     static async logIn(authPayload: TelegramAuthPayloadType) {
         const user = await fetchUserAuthTg(authPayload)
         if (user) {
-            await DB.update(StoreName.USERS, user.dto())
+            await DB.update(StoreName.USERS, user)
             await DB.update(StoreName.STORE, {name: ACCESS_TOKEN, value: user.token})
             await DB.update(StoreName.STORE, {name: REFRESH_TOKEN, value: user.refresh_token})
-            localStorage.setItem(USER_AUTH, JSON.stringify(user.dto()))
+            localStorage.setItem(USER_AUTH, JSON.stringify(user))
         }
         return user
 

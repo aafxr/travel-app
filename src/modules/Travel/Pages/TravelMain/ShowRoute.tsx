@@ -1,14 +1,14 @@
-import React, {createContext, useEffect, useMemo} from "react";
+import React, {createContext, useEffect, useMemo, useState} from "react";
 
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {CalendarIcon, FlagIcon, MapIcon} from "../../../../components/svg";
+import {Place, Road, User} from "../../../../classes/StoreEntities";
 import Container from "../../../../components/Container/Container";
-import {Place, Road} from "../../../../classes/StoreEntities";
+import {RouteFilterType} from "../../../../types/filtersTypes";
 import Button from "../../../../components/ui/Button/Button";
 import {MS_IN_DAY} from "../../../../static/constants";
 import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
-import debounce from "lodash.debounce";
 import ShowPlaces from "./ShowPlaces";
 
 import './TravelMain.css'
@@ -23,9 +23,6 @@ type DayGroupContextType = { dayGroups: Map<string, DayGroupType> }
 export const DaysGroupContext = createContext<DayGroupContextType>({dayGroups: new Map()})
 
 
-
-
-
 const colors = [
     '#7bece7',
     '#5f72dc',
@@ -36,9 +33,16 @@ const colors = [
 
 
 export function ShowRoute() {
-    const user = useUser()!
-    const context = useAppContext()
+    const user = useUser()
     const travel = useTravel()
+    const [filterType, setFilterType] = useState<RouteFilterType>('byDays')
+
+
+    useEffect(() => {
+        if (!user) return
+        setFilterType(user.settings.routeFilter)
+    }, [user])
+
 
     const newGroupState: DayGroupContextType = useMemo(() => {
         if (!travel) return {dayGroups: new Map()}
@@ -75,14 +79,13 @@ export function ShowRoute() {
         return newGroupState
     }, [travel])
 
+    function handleFilterSelect(type: RouteFilterType) {
+        if (!user) return;
+        User.setRouteFilter(user, type)
+        setFilterType(type)
+    }
 
-    useEffect(() => {
-        const debouncedUpdate = debounce(() => {
-            context.setUser(user)
-        }, 50, {trailing: true})
-        const unsubscribe = user.subscribe('update', debouncedUpdate)
-        return () => unsubscribe()
-    })
+    if (!user) return null
 
 
     return (
@@ -91,8 +94,8 @@ export function ShowRoute() {
                 <div className='flex-between gap-1 pt-20 pb-20'>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('byDays')}
-                        active={user.getSetting('routeFilter') === 'byDays'}
+                        onClick={() => handleFilterSelect('byDays')}
+                        active={User.getSetting(user, 'routeFilter') === 'byDays'}
                     >
                         <div className='column center'>
                             <CalendarIcon className='icon'/>
@@ -101,8 +104,8 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('onMap')}
-                        active={user.getSetting('routeFilter') === 'onMap'}
+                        onClick={() => handleFilterSelect('onMap')}
+                        active={User.getSetting(user, 'routeFilter') === 'onMap'}
                     >
                         <div className='column center'>
                             <MapIcon className='icon'/>
@@ -111,8 +114,8 @@ export function ShowRoute() {
                     </Button>
                     <Button
                         className='travel-details-button'
-                        onClick={() => user.setRouteFilter('allPlaces')}
-                        active={user.getSetting('routeFilter') === 'allPlaces'}
+                        onClick={() => handleFilterSelect('allPlaces')}
+                        active={User.getSetting(user, 'routeFilter') === 'allPlaces'}
                     >
                         <div className='column center'>
                             <FlagIcon className='icon'/>
@@ -123,13 +126,13 @@ export function ShowRoute() {
             </Container>
             <DaysGroupContext.Provider value={newGroupState}>
                 {
-                    user.getSetting('routeFilter') === 'allPlaces' && <ShowPlaces/>
+                    User.getSetting(user, 'routeFilter') === 'allPlaces' && <ShowPlaces/>
                 }
                 {
-                    user.getSetting('routeFilter') === 'onMap' && <ShowRouteOnMap/>
+                    User.getSetting(user, 'routeFilter') === 'onMap' && <ShowRouteOnMap/>
                 }
                 {
-                    user.getSetting('routeFilter') === 'byDays' && <ShowRouteByDays/>
+                    User.getSetting(user, 'routeFilter') === 'byDays' && <ShowRouteByDays/>
                 }
             </DaysGroupContext.Provider>
         </div>

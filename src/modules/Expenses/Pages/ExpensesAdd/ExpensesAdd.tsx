@@ -91,7 +91,7 @@ export default function ExpensesAdd() {
     function onChipSelect(section: Section) {
         if (!user) return
         if (!expense) return
-        expense.setSection_id(section.id)
+        Expense.setSection_id(expense, section.id)
         setSelectedSection(section)
         setExpense(new Expense(expense, user))
     }
@@ -100,7 +100,7 @@ export default function ExpensesAdd() {
     function handleCurrencyChange(c: string) {
         if (!user) return
         if (!expense) return
-        expense.setCurrency(currencySymbol.get(c)!)
+        Expense.setCurrency(expense, currencySymbol.get(c)!)
         setExpense(new Expense(expense, user))
     }
 
@@ -108,7 +108,7 @@ export default function ExpensesAdd() {
     function handleNameChange(text: string) {
         if (!expense) return
         if (!user) return
-        expense.setTitle(text)
+        Expense.setTitle(expense, text)
         setExpense(new Expense(expense, user))
     }
 
@@ -116,13 +116,13 @@ export default function ExpensesAdd() {
     function handleValueChange(value: number) {
         if (!expense) return
         if (!user) return
-        expense.setValue(value)
+        Expense.setValue(expense, value)
         setExpense(new Expense(expense, user))
     }
 
     function handlePersonalFlagChangge(value: boolean) {
         if (!expense) return
-        expense.setPersonal(value ? 1 : 0)
+        Expense.setPersonal(expense, value ? 1 : 0)
         setExpense(expense)
     }
 
@@ -223,7 +223,7 @@ export default function ExpensesAdd() {
 
                             {
                                 travel.members_count > 1 && (
-                                    <Checkbox checked={expense?.isPersonal(user)}
+                                    <Checkbox checked={Expense.isPersonal(expense, user)}
                                               onChange={handlePersonalFlagChangge} left>Личные</Checkbox>
                                 )
                             }

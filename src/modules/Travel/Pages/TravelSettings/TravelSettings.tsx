@@ -9,12 +9,12 @@ import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import {TravelPreference} from "../../../../types/TravelPreference";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
-import {Member} from "../../../../classes/StoreEntities/Member";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
+import {Member} from "../../../../classes/StoreEntities";
 
 import './TravelSettings.css'
 import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
@@ -69,9 +69,9 @@ export default function TravelSettings() {
     function handleDateRangeChange({start, end}: { start?: Date, end?: Date }) {
         if (!state) return;
         const t = new Travel(state.travel)
-        if (start) t.setDate_start(start)
-        if (end) t.setDate_end(end)
-        updateState({...state, travel: t.dto()})
+        if (start) Travel.setDate_start(t, start)
+        if (end) Travel.setDate_end(t, end)
+        updateState({...state, travel: t})
     }
 
 
@@ -117,6 +117,7 @@ export default function TravelSettings() {
     function handleChildrenCountChange(num: number){
         if(!state) return
         state.travel.children_count = num
+        console.log(state.travel)
         updateState({...state})
     }
 

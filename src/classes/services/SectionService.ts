@@ -11,7 +11,7 @@ export class SectionService {
         if (sectionObj) return new Section(sectionObj)
 
         const sections = await fetchSections()
-        await DB.writeAll(sections)
+        await DB.writeAllToStore(StoreName.SECTION, sections)
         return sections.find(s => s.id === section_id)
     }
 
@@ -20,7 +20,7 @@ export class SectionService {
         if (sectionsObj.length) return sectionsObj.map(s => new Section(s))
 
         const sections = await fetchSections()
-        await DB.writeAll(sections)
+        await DB.writeAllToStore(StoreName.SECTION, sections)
         return sections
     }
 }
