@@ -34,7 +34,9 @@ function PhotoComponent({className, item, onChange, ...props}: PhotoPropsType) {
 
     useEffect(() => {
         PhotoService.getById(item.photo)
-            .then(p => {if (p) setPhoto(p)})
+            .then(p => {
+                if (p) setPhoto(p)
+            })
             .catch(defaultHandleError)
 
         return () => {
@@ -62,11 +64,8 @@ function PhotoComponent({className, item, onChange, ...props}: PhotoPropsType) {
 
     return (
         <>
-            {photo
-                ? <img {...props} className={className} src={ photo.src || photo.blobUrl} alt="Фото" onClick={() => inputRef.current?.click()}/>
-                :<img {...props} className={className} src={DEFAULT_IMG_URL} alt="Фото" onClick={() => inputRef.current?.click()}/>
-            }
-
+            <img {...props} className={className} src={photo ? photo.src || photo.blobUrl : DEFAULT_IMG_URL} alt="Фото"
+                 onClick={() => inputRef.current?.click()}/>
             {!!onChange &&
                 <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/jpeg,image/png'}/>}
         </>
