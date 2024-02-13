@@ -31,19 +31,14 @@ interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChang
 function PhotoComponent({className, item, onChange, ...props}: PhotoPropsType) {
     const inputRef = useRef<HTMLInputElement>(null)
     const [photo, setPhoto] = useState<Photo>()
-    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        if (item.photo) {
-            setLoading(true)
-            PhotoService.getById(item.photo)
-                .then(setPhoto)
-                .catch(defaultHandleError)
-                .finally(() => setLoading(false))
-        }
+        PhotoService.getById(item.photo)
+            .then(p => {if (p) setPhoto(p)})
+            .catch(defaultHandleError)
 
         return () => {
-            photo && photo.destroy()
+            photo && photo.destroy && photo.destroy()
         }
     }, [])
 
@@ -65,12 +60,13 @@ function PhotoComponent({className, item, onChange, ...props}: PhotoPropsType) {
         }
     }
 
-    if(loading) return null
-
     return (
         <>
-            <img {...props} className={className} src={photo? photo.src || photo.blobUrl : DEFAULT_IMG_URL} alt="Фото"
-                 onClick={e => inputRef.current?.click()}/>
+            {photo
+                ? <img {...props} className={className} src={ photo.src || photo.blobUrl} alt="Фото" onClick={() => inputRef.current?.click()}/>
+                :<img {...props} className={className} src={DEFAULT_IMG_URL} alt="Фото" onClick={() => inputRef.current?.click()}/>
+            }
+
             {!!onChange &&
                 <input ref={inputRef} type="file" hidden onChange={handlePhotoChange} accept={'image/jpeg,image/png'}/>}
         </>

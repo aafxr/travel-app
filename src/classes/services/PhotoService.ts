@@ -11,6 +11,8 @@ import {UserService} from "./UserService";
 export class PhotoService{
     static async getById(id:string){
         let photo = await DB.getOne<Photo>(StoreName.Photo, id)
+        if(photo) photo = new Photo(photo)
+
         try {
             if(!photo) photo = await fetchPhoto(id)
         }catch (e){

@@ -34,6 +34,7 @@ export class Photo {
     }
 
     destroy() {
+        console.log(12)
         if (this.blobUrl) {
             URL.revokeObjectURL(this.blobUrl)
             this.blobUrl = ''
@@ -41,8 +42,6 @@ export class Photo {
     }
 
     toString() {
-        console.log(1)
-        console.log(typeof this.blobUrl)
         return this.src || this.blobUrl
     }
 }
