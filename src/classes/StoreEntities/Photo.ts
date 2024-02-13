@@ -34,8 +34,7 @@ export class Photo {
     }
 
     destroy() {
-        console.log(12)
-        if (this.blobUrl) {
+            if (this.blobUrl) {
             URL.revokeObjectURL(this.blobUrl)
             this.blobUrl = ''
         }

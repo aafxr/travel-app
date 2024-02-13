@@ -48,18 +48,18 @@ function PhotoComponent({className, item, onChange, ...props}: PhotoPropsType) {
         if (!e.target.files) return
         const file = e.target.files[0]
         if (!file) return
-        if (photo) {
-            const newPhoto = new Photo({id: photo.id, blob: file})
+            const newPhoto = new Photo({id: photo?.id, blob: file})
 
             PhotoService.save(newPhoto)
                 .then(() => setPhoto(newPhoto))
                 .then(() => onChange && onChange(file))
                 .catch(defaultHandleError)
-
-        } else {
-            /*** передаем обновленные данные о фото в компонент родитель */
-            onChange && onChange(file)
-        }
+        // if (photo) {
+        //
+        // } else {
+        //     /*** передаем обновленные данные о фото в компонент родитель */
+        //     onChange && onChange(file)
+        // }
     }
 
     return (
