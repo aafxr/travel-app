@@ -28,18 +28,21 @@ export default function UserNameEdite() {
     function handleFirstName(firstName: string) {
         if (!state) return
         User.setFirst_name(state.user, firstName)
+        setState({...state})
     }
 
 
     function handleLastName(lastName: string) {
         if (!state) return
         User.setLast_name(state.user,lastName)
+        setState({...state})
     }
 
 
     function handleUserName(userName: string) {
         if (!state) return
         User.setUsername(state.user,userName)
+        setState({...state})
     }
 
 
