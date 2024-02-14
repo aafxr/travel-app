@@ -302,10 +302,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .avatar{
+    position: relative;
     width: var(--avatar-size);
     height: var(--avatar-size);
     border-radius: 50%;
-    object-fit: contain;
+    overflow: hidden;
+    object-fit: cover;
 }
 
 .overflow-x-hidden{

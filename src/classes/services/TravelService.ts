@@ -1,10 +1,12 @@
+import {fetchRouteAdvice} from "../../api/fetch/fetchRouteAdvice";
 import {fetchTravels} from "../../api/fetch/fetchTravels";
-import {Action, Travel, User} from "../StoreEntities";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
+import {Action, Travel, User} from "../StoreEntities";
 import {ActionName} from "../../types/ActionsType";
 import {TravelError, UserError} from "../errors";
 import {StoreName} from "../../types/StoreName";
 import {DB} from "../db/DB";
+import {PlaceStep} from "../StoreEntities/route/PlaceStep";
 
 export class TravelService {
     static async create(newTravel: Travel, user: User) {
@@ -47,29 +49,31 @@ export class TravelService {
     static async getById(travelId: string) {
         const travel_type = await DB.getOne<Travel>(StoreName.TRAVEL, travelId)
         if (travel_type) {
-            // if (travel.photo) {
-            //     const photo = await PhotoService.getById(travel.photo)
-            //     if (photo) travel.setPhoto(new Photo(photo))
-            // }
             return new Travel(travel_type)
         }
     }
 
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
-        if (fetchTravelsList.length) {
-            // for (const travel of fetchTravelsList) {
-                // const photo = await PhotoService.getById(travel.photo)
-                // if (photo) travel.setPhoto(new Photo(photo))
-            // }
-            return fetchTravelsList
-        }
+        if (fetchTravelsList.length) return fetchTravelsList
+
         const idb_travels = await DB.getAll<Travel>(StoreName.TRAVEL, max)
-        // for (const travel of travels) {
-        //     const photo = await PhotoService.getById(travel.photo)
-        //     if (photo) travel.setPhoto(new Photo(photo))
-        // }
         return idb_travels.map(t => new Travel(t))
+    }
+
+    static async getRecommendRoutes(travel:Travel){
+        try {
+            return await fetchRouteAdvice({
+                days: travel.days,
+                depth: travel.preference.depth,
+                density: travel.preference.density,
+                location: 1,
+                preference: {...travel.preference.interests},
+            })
+        } catch (e){
+            console.error(e)
+            return []
+        }
     }
 
     // static async addPlace(ctx: Context, place: Place) {

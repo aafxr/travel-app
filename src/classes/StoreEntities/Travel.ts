@@ -4,7 +4,7 @@ import {TravelPermission} from "../../types/TravelPermission";
 import {TravelPreference} from "../../types/TravelPreference";
 import {MovementType} from "../../types/MovementType";
 import {DBFlagType} from "../../types/DBFlagType";
-import { MS_IN_DAY} from "../../static/constants";
+import {MS_IN_DAY} from "../../static/constants";
 import {Preference} from "../Preference";
 import {Permission} from "../Permission";
 import {Waypoint} from "./Waypoint";
@@ -13,6 +13,10 @@ import {Place} from "./Place";
 import {Photo} from "./Photo";
 import {Road} from "./Road";
 import {Route} from "./route/Route";
+import {RoadStep} from "./route/RoadStep";
+import {APIHotelStep, APIPlaceStep, APIRoadStep} from "../../api/fetch/fetchRouteAdvice";
+import {PlaceStep} from "./route/PlaceStep";
+import {HotelStep} from "./route/HotelStep";
 
 
 type TravelPropsType = Partial<Travel>
@@ -89,8 +93,7 @@ export class Travel {
     preference = new Preference();
     permission: Permission = new Permission();
 
-    interests = []
-    route?: Route
+    steps: Route['steps'] = []
 
 
     constructor(travel: TravelPropsType) {
@@ -119,33 +122,40 @@ export class Travel {
         if (travel.editors) this.editors = travel.editors
         if (travel.commentator) this.commentator = travel.commentator
 
-        if (travel.preference) Object.assign(this.preference, new Preference(travel.preference).dto())
-        if (travel.permission) Object.assign(this.permission, new Permission(travel.permission).dto())
-        if(travel.route) this.route = new Route(travel.route)
+        if (travel.preference) Object.assign(this.preference, new Preference(travel.preference))
+        if (travel.permission) Object.assign(this.permission, new Permission(travel.permission))
+        if (travel.steps) this.steps = travel.steps.map(s => {
+            if (s.type === 'road')
+                return new RoadStep(s as unknown as APIRoadStep)
+            else if (s.type === 'place')
+                return new PlaceStep(s as unknown as APIPlaceStep)
+            else
+                return new HotelStep(s as unknown as APIHotelStep)
+        })
     }
 
 
-    static setId(travel:Travel, id: string) {
+    static setId(travel: Travel, id: string) {
         travel.id = id
         Travel.setUpdated_at(travel)
     }
 
-    static setCode(travel:Travel, code: string) {
+    static setCode(travel: Travel, code: string) {
         travel.code = code
         Travel.setUpdated_at(travel)
     }
 
-    static setDescription(travel:Travel, description: string) {
+    static setDescription(travel: Travel, description: string) {
         travel.description = description
         Travel.setUpdated_at(travel)
     }
 
-    static setDirection(travel:Travel, direction: string) {
+    static setDirection(travel: Travel, direction: string) {
         travel.direction = direction
         Travel.setUpdated_at(travel)
     }
 
-    static setOwner_id(travel:Travel, owner_id: string) {
+    static setOwner_id(travel: Travel, owner_id: string) {
         travel.owner_id = owner_id
         Travel.setUpdated_at(travel)
     }
@@ -154,7 +164,7 @@ export class Travel {
         return [travel.owner_id, ...travel.admins, ...travel.editors, ...travel.commentator]
     }
 
-    static setMovementTypes(travel:Travel, movementTypes: MovementType[]) {
+    static setMovementTypes(travel: Travel, movementTypes: MovementType[]) {
         travel.movementTypes = movementTypes
         Travel.setUpdated_at(travel)
     }
@@ -197,31 +207,31 @@ export class Travel {
         }
     }
 
-    static setPlaces(travel:Travel, places: Place[]) {
+    static setPlaces(travel: Travel, places: Place[]) {
         travel.places = places
         Travel.setUpdated_at(travel)
     }
 
 
-    static removePlace(travel : Travel, place: Place) {
+    static removePlace(travel: Travel, place: Place) {
         travel.places = travel.places.filter(p => p._id !== place._id)
         travel.road = []
         Travel.setUpdated_at(travel)
     }
 
 
-    static setWaypoints(travel:Travel, waypoints: Waypoint[]) {
+    static setWaypoints(travel: Travel, waypoints: Waypoint[]) {
         travel.waypoints = waypoints
         Travel.setUpdated_at(travel)
     }
 
-    static setPhoto(travel:Travel, photo: Photo) {
+    static setPhoto(travel: Travel, photo: Photo) {
         if (travel.photo) photo.id = travel.photo
         else travel.photo = photo.id
         Travel.setUpdated_at(travel)
     }
 
-    static updateRoad(travel: Travel){
+    static updateRoad(travel: Travel) {
         travel.road = []
         if (travel.places.length > 1) {
             for (let i = 1; i < travel.places.length; i++) {
@@ -236,46 +246,46 @@ export class Travel {
                 })
                 let r_idx = 0
                 travel.road.forEach(r => (r.time_start > road.time_start) && r_idx++)
-                travel.road.splice(r_idx, 0 , road)
+                travel.road.splice(r_idx, 0, road)
             }
         }
     }
 
-    static setTitle(travel:Travel, title: string) {
+    static setTitle(travel: Travel, title: string) {
         travel.title = title
         Travel.setUpdated_at(travel)
     }
 
-    static setDays(travel:Travel, days: number) {
+    static setDays(travel: Travel, days: number) {
         if (days < 1) return
         travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * days)
         travel.days = days
         Travel.setUpdated_at(travel)
     }
 
-    static setIsFromPoint(travel:Travel, isFromPoint: DBFlagType) {
+    static setIsFromPoint(travel: Travel, isFromPoint: DBFlagType) {
         travel.isFromPoint = isFromPoint
         Travel.setUpdated_at(travel)
     }
 
-    static setChildren_count(travel:Travel, children_count: number) {
+    static setChildren_count(travel: Travel, children_count: number) {
         travel.children_count = children_count
         Travel.setUpdated_at(travel)
     }
 
-    static setMembers_count(travel:Travel, members_count: number) {
+    static setMembers_count(travel: Travel, members_count: number) {
         travel.members_count = members_count
         Travel.setUpdated_at(travel)
     }
 
 
-    static setDate_end(travel:Travel, date_end: Date) {
+    static setDate_end(travel: Travel, date_end: Date) {
         travel.date_end = new Date(date_end)
         travel.date_start = new Date(travel.date_end.getTime() - MS_IN_DAY * travel.days)
         Travel.setUpdated_at(travel)
     }
 
-    static setDate_start(travel:Travel, date_start: Date) {
+    static setDate_start(travel: Travel, date_start: Date) {
         travel.date_start = new Date(date_start)
         travel.date_end = new Date(travel.date_start.getTime() + MS_IN_DAY * travel.days)
         Travel.setUpdated_at(travel)
@@ -328,7 +338,7 @@ export class Travel {
         return !!this.permission[key]
     }
 
-    static setUpdated_at(travel:Travel) {
+    static setUpdated_at(travel: Travel) {
         travel.updated_at = new Date()
     }
 
@@ -336,27 +346,37 @@ export class Travel {
         return !!this.permission.public
     }
 
-    static setDepth(travel:Travel, depth: TravelPreference['depth']) {
+    static setDepth(travel: Travel, depth: TravelPreference['depth']) {
         travel.preference.depth = depth
         Travel.setUpdated_at(travel)
     }
 
-    static setDensity(travel:Travel, density: TravelPreference['density']) {
+    static setDensity(travel: Travel, density: TravelPreference['density']) {
         travel.preference.density = density
         Travel.setUpdated_at(travel)
     }
 
-    static setPublic(travel:Travel, val: DBFlagType | boolean) {
+    static setPublic(travel: Travel, val: DBFlagType | boolean) {
         travel.permission.public = val ? 1 : 0
         Travel.setUpdated_at(travel)
     }
 
-    static isMember<T extends Member>(travel:Travel, member: T) {
+    static isMember<T extends Member>(travel: Travel, member: T) {
         if (member.id === travel.owner_id) return true
         if (travel.isAdmin(member)) return true
         if (travel.isEditor(member)) return true
         return Travel.getMembers(travel).includes(member.id);
+    }
 
+    static getInterest(travel: Travel, key: keyof Preference['interests']) {
+        if (key in travel.preference.interests)
+            return travel.preference.interests[key]
+        else
+            return 0
+    }
+
+    static setRoute(travel: Travel, route: Route) {
+        travel.steps = route.steps
     }
 }
 

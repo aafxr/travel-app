@@ -2,24 +2,27 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
-import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {defaultMovementTags} from "../../../../components/defaultMovementTags";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
+import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
+import NumberInput from "../../../../components/ui/Input/NumberInput";
 import {TravelPreference} from "../../../../types/TravelPreference";
 import Container from "../../../../components/Container/Container";
 import DateRange from "../../../../components/DateRange/DateRange";
+import {useTravelState} from "../../../../hooks/useTravelState";
 import Counter from "../../../../components/Counter/Counter";
 import Button from "../../../../components/ui/Button/Button";
 import {MovementType} from "../../../../types/MovementType";
 import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
 import {Member} from "../../../../classes/StoreEntities";
+import {Travel} from "../../../../classes/StoreEntities";
 
 import './TravelSettings.css'
-import ToggleBox from "../../../../components/ui/ToggleBox/ToggleBox";
-import {useTravelState} from "../../../../hooks/useTravelState";
-import {Travel} from "../../../../classes/StoreEntities";
+import TravelInterests from "../../../../components/TravelInterests/TravelInterests";
+import {Preference} from "../../../../classes/Preference";
 
 
 const sightseeingTime: RadioButtonGroupItemType[] = [
@@ -42,15 +45,17 @@ const depth: RadioButtonGroupItemType[] = [
  */
 export default function TravelSettings() {
     const user = useUser()!
-    const travel = useTravel()!
     const context = useAppContext()
     const navigate = useNavigate()
 
-    const [state, updateState] = useTravelState(travel)
+    const [state, updateState] = useTravelState(context.travel)
 
 
     /** обработка нажатия на карточку пользователя */
-    const handleUserClick = (user: Member) => navigate(`/travel/${travel.id}/settings/${user.id}/`)
+    const handleUserClick = (user: Member) => {
+        if(!context.travel) return
+        navigate(`/travel/${context.travel.id}/settings/${user.id}/`)
+    }
 
 
     /** добавление / удаление способа перемещения во время маршрута */
@@ -74,6 +79,14 @@ export default function TravelSettings() {
         updateState({...state, travel: t})
     }
 
+    function handleTravelDays(d: number) {
+        if (!state) return
+        if (d < 1) return
+
+        Travel.setDays(state.travel, d)
+        updateState({...state})
+    }
+
 
     function handleDensityChange(select: RadioButtonGroupItemType[]) {
         if (!state) return;
@@ -91,12 +104,12 @@ export default function TravelSettings() {
 
     /** сохранение параметров путешествия */
     function handleSaveTravelButton() {
-        if(!user) return
+        if (!user) return
         if (!state) return;
         const t = new Travel(state.travel)
-        TravelService.update(t, user)
+        TravelService.create(t, user)
             .then(() => context.setTravel(t))
-            .then(() => navigate(`/travel/${travel.id}/`))
+            .then(() => navigate(`/travel/${state.travel.id}/advice-route/`))
             .catch(defaultHandleError)
     }
 
@@ -108,16 +121,23 @@ export default function TravelSettings() {
     }
 
 
-    function handleMembersCountChange(num: number){
-        if(!state) return
+    function handleMembersCountChange(num: number) {
+        if (!state) return
         state.travel.members_count = num
         updateState({...state})
     }
 
-    function handleChildrenCountChange(num: number){
-        if(!state) return
+    function handleChildrenCountChange(num: number) {
+        if (!state) return
         state.travel.children_count = num
-        console.log(state.travel)
+        updateState({...state})
+    }
+
+    function handleInterestsChange(key: keyof Preference['interests']) {
+        if (!state) return
+        Travel.getInterest(state.travel, key)
+            ? state.travel.preference.interests[key] = 0
+            : state.travel.preference.interests[key] = 1
         updateState({...state})
     }
 
@@ -129,7 +149,7 @@ export default function TravelSettings() {
         <>
             <div className='travel-settings wrapper'>
                 <Container>
-                    <PageHeader arrowBack to={`/travel/${travel.id}/`} title={'Параметры'}/>
+                    <PageHeader arrowBack title={'Параметры'}/>
                 </Container>
                 <Container className='content overflow-x-hidden'>
                     <div className='content column'>
@@ -137,13 +157,22 @@ export default function TravelSettings() {
                             <h4 className='title-semi-bold'>Направление</h4>
                             <div className='travel-settings-dirrection-title row'>
                                 <Chip color='light-orange' rounded>
-                                    {state.travel.direction}
+                                    {state.travel.direction || state.travel.title}
                                 </Chip>
                             </div>
                         </section>
 
                         <section className='travel-settings-date column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Дата поездки</h4>
+                            <div className='travel-edit-days'>
+                                <span className='title-semi-bold'>Количество дней</span>
+                                <NumberInput
+                                    className='travel-edit-days-input'
+                                    value={state.travel.days}
+                                    onChange={handleTravelDays}
+                                    size={1}
+                                />
+                            </div>
                             <DateRange
                                 init={state.travel.date_start.getTime() > 0 ? {
                                     start: state.travel.date_start,
@@ -162,7 +191,7 @@ export default function TravelSettings() {
                                         <Chip
                                             key={dmt.id}
                                             icon={dmt.icon}
-                                            color={~state.travel.movementTypes.findIndex(mt =>  mt === dmt.id) ? 'orange' : 'grey'}
+                                            color={~state.travel.movementTypes.findIndex(mt => mt === dmt.id) ? 'orange' : 'grey'}
                                             rounded
                                             onClick={() => handleMovementSelect(dmt.id)}
                                         >
@@ -176,7 +205,7 @@ export default function TravelSettings() {
                         <section className='block'>
                             <ToggleBox
                                 className='block'
-                                init={travel.isPublic}
+                                init={state.travel.isPublic}
                                 onChange={handleToggleBoxChanged}
                                 title={"Сделать видимым для всех"}
                             />
@@ -184,15 +213,15 @@ export default function TravelSettings() {
 
                         <section className='travel-settings-members column gap-0.5 block'>
                             <h4 className='title-semi-bold'>Участники</h4>
-                            <TravelPeople peopleList={[...state.travel.admins, ...state.travel.editors, ...state.travel.commentator]} onClick={handleUserClick}/>
+                            <TravelPeople peopleList={Travel.getMembers(state.travel)} onClick={handleUserClick}/>
                             <div className='center'>
-                                {/*<AddButton to={`/travel/${travelCode}/settings/invite/`}>Добавить*/}
+                                {/*<AddButton to={`/travel/${state.travelCode}/settings/invite/`}>Добавить*/}
                                 {/*    участника</AddButton>*/}
                             </div>
                             <div className='flex-between'>
                                 <span>Взрослые</span>
                                 <Counter
-                                    init={travel.members_count}
+                                    init={state.travel.members_count}
                                     min={state.travel.admins.length + state.travel.editors.length + state.travel.commentator.length || 1}
                                     onChange={handleMembersCountChange}
                                 />
@@ -200,7 +229,7 @@ export default function TravelSettings() {
                             <div className='flex-between'>
                                 <span>Дети</span>
                                 <Counter
-                                    init={travel.children_count}
+                                    init={state.travel.children_count}
                                     min={0}
                                     onChange={handleChildrenCountChange}
                                 />
@@ -212,7 +241,7 @@ export default function TravelSettings() {
                                 title={'Насыщенность путешествия'}
                                 checklist={sightseeingTime}
                                 onChange={handleDensityChange}
-                                init={sightseeingTime.find(st => st.id === travel.preference.density)!}
+                                init={sightseeingTime.find(st => st.id === context.travel?.preference.density)!}
                             />
                         </section>
 
@@ -221,16 +250,22 @@ export default function TravelSettings() {
                                 title={'Глубина осмотра '}
                                 checklist={depth}
                                 onChange={handleDepthChange}
-                                init={depth.find(d => d.id === travel.preference.depth)!}
+                                init={depth.find(d => d.id === context.travel?.preference.depth)!}
                             />
                         </section>
 
                         <section className='block'>
                             <div className='title-semi-bold'>Интересы</div>
+                            <TravelInterests
+                                interests={state.travel.preference.interests}
+                                onClick={handleInterestsChange}
+                            />
                         </section>
 
                         <section className='block'>
-                            <div className='link' onClick={() => navigate(`/travel/${travel.id}/details/`)}>+ Добавить детали поездки</div>
+                            <div className='link' onClick={() => navigate(`/travel/${state.travel.id}/details/`)}>+ Добавить
+                                детали поездки
+                            </div>
                         </section>
 
                         {/*{*/}
@@ -239,7 +274,7 @@ export default function TravelSettings() {
                         {/*            <h4 className='title-semi-bold'>Отель</h4>*/}
                         {/*            {*/}
                         {/*                updatedTravel.hotels.map(h => (*/}
-                        {/*                    <Link key={h.id} to={`/travel/${travel.id}/add/hotel/${h.id}/`}>*/}
+                        {/*                    <Link key={h.id} to={`/travel/${state.travel.id}/add/hotel/${h.id}/`}>*/}
                         {/*                        <div className='travel-settings-hotel'>*/}
                         {/*                            <div*/}
                         {/*                                className='travel-settings-hotel-rent'>{dateRange(h.check_in, h.check_out)}</div>*/}
@@ -251,7 +286,7 @@ export default function TravelSettings() {
                         {/*            }*/}
                         {/*            /!*<div*!/*/}
                         {/*            /!*    className='link'*!/*/}
-                        {/*            /!*    onClick={() => navigate(`/travel/${travelCode}/add/hotel/`)}*!/*/}
+                        {/*            /!*    onClick={() => navigate(`/travel/${state.travelCode}/add/hotel/`)}*!/*/}
                         {/*            /!*>*!/*/}
                         {/*            /!*    + Добавить отель*!/*/}
                         {/*            /!*</div>*!/*/}
@@ -267,7 +302,7 @@ export default function TravelSettings() {
                         {/*                !!updatedTravel.appointments && Array.isArray(updatedTravel.appointments) && (*/}
                         {/*                    updatedTravel.appointments.map(a => (*/}
                         {/*                        <Link key={a.id}*/}
-                        {/*                              to={`/travel/${travel.id}/add/appointment/${a.id}/`}>*/}
+                        {/*                              to={`/travel/${state.travel.id}/add/appointment/${a.id}/`}>*/}
                         {/*                            <div className='travel-settings-appointment'>*/}
                         {/*                                <div*/}
                         {/*                                    className='travel-settings-appointment-date'>{dateRange(a.date, a.date) + ' ' + a.time.split(':').slice(0, 2).join(':')}</div>*/}
@@ -280,7 +315,7 @@ export default function TravelSettings() {
                         {/*            }*/}
                         {/*            /!*<div*!/*/}
                         {/*            /!*    className='link'*!/*/}
-                        {/*            /!*    onClick={() => navigate(`/travel/${travelCode}/add/appointment/`)}*!/*/}
+                        {/*            /!*    onClick={() => navigate(`/travel/${state.travelCode}/add/appointment/`)}*!/*/}
                         {/*            /!*>*!/*/}
                         {/*            /!*    + Добавить встречу*!/*/}
                         {/*            /!*</div>*!/*/}
@@ -292,13 +327,14 @@ export default function TravelSettings() {
                     </div>
                 </Container>
                 <div className='footer-btn-container footer'>
-                    <Button onClick={handleSaveTravelButton} disabled={state ? !state.change : true }>Построить маршрут</Button>
+                    <Button onClick={handleSaveTravelButton} disabled={state ? !state.change : true}>Построить
+                        маршрут</Button>
                 </div>
             </div>
             {/*<FlatButton*/}
             {/*    className={'buttons-block'}*/}
-            {/*    onInvite={() => navigate(`/travel/${travel.id}/settings/invite/`)}*/}
-            {/*    onHotel={() => navigate(`/travel/${travel.id}/add/hotel/`)}*/}
+            {/*    onInvite={() => navigate(`/travel/${state.travel.id}/settings/invite/`)}*/}
+            {/*    onHotel={() => navigate(`/travel/${state.travel.id}/add/hotel/`)}*/}
             {/*    onAppointment={() => navigate(`/travel/${travel.id}/add/appointment/`)}*/}
             {/*/>*/}
         </>

@@ -12,6 +12,7 @@ import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
 
 import './TravelMain.css'
+import ShowSteps from "./ShowSteps";
 
 export type DayGroupType = {
     items: Array<Place | Road>
@@ -132,7 +133,8 @@ export function ShowRoute() {
                     User.getSetting(user, 'routeFilter') === 'onMap' && <ShowRouteOnMap/>
                 }
                 {
-                    User.getSetting(user, 'routeFilter') === 'byDays' && <ShowRouteByDays/>
+                    // User.getSetting(user, 'routeFilter') === 'byDays' && <ShowRouteByDays/>
+                    User.getSetting(user, 'routeFilter') === 'byDays' && <ShowSteps/>
                 }
             </DaysGroupContext.Provider>
         </div>

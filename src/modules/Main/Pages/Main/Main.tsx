@@ -1,12 +1,9 @@
-import React, { useState} from 'react'
+import React from 'react'
 import {useNavigate} from "react-router-dom";
 
-import RecommendSection from "../../../../components/RecommendSection/RecommendSection";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
-import { fetchRouteAdvice} from "../../../../api/fetch/fetchRouteAdvice";
 import Navigation from "../../../../components/Navigation/Navigation";
-import {Route} from "../../../../classes/StoreEntities/route/Route";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
 import {Travel} from '../../../../classes/StoreEntities'
@@ -27,8 +24,6 @@ export default function Main() {
     const user = useUser()
     const context = useAppContext()
 
-    const [routes, setRoutes] = useState<Route[]>([])
-
     async function handleNewTravel() {
         if (user) {
             TravelService.create(new Travel({}), user)
@@ -40,22 +35,6 @@ export default function Main() {
         } else {
             navigate('/login/')
         }
-    }
-
-
-    function adviceRoutes(){
-        fetchRouteAdvice({
-            days: 7,
-            density: 3,
-            depth: 3,
-            location: 1,
-            preference:{active:1,nature:1}
-        })
-            .then((routes) => {
-                console.log(routes)
-                setRoutes(routes)
-            })
-            .catch(defaultHandleError)
     }
 
 
@@ -75,10 +54,9 @@ export default function Main() {
                     </button>
                 </div>
 
-                <button onClick={adviceRoutes}>make request</button>
 
                 {/*<PopularSection/>*/}
-                <RecommendSection routes={routes}/>
+                {/*<RecommendSection routes={routes}/>*/}
 
                 {/*<IconButton*/}
                 {/*    border={false}*/}

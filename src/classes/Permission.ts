@@ -19,14 +19,4 @@ export class Permission implements TravelPermission{
         if(permissions.showExpenses) this.showExpenses = permissions.showExpenses
         if(permissions.showRoute) this.showRoute = permissions.showRoute
     }
-
-    dto():TravelPermission{
-        return {
-            public: this.public,
-            showCheckList: this.showCheckList,
-            showComments: this.showComments,
-            showExpenses: this.showExpenses,
-            showRoute: this.showRoute,
-        }
-    }
 }

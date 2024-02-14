@@ -39,22 +39,22 @@ export default function UserCard({
 
     return (
         <div className={classNames(variant, className)} onClick={handleUserCardClick}>
-            <>
-                <PhotoComponent item={member} className='avatar'/>
-                {variant !== 'compact' && (
-                    <>
-                        <div className='user-card-info column'>
-                            <div className='user-card-name'>
-                                {member.first_name}&nbsp;
-                                {/*{!!vehicle && <img src={vehicle} alt='vehicle'/>}*/}
-                            </div>
-                            {/* статус юзера (в поездке / на месте ...)*/}
-                            {/*<div className='user-card-status'>{}</div>*/}
+            <div  className='avatar'>
+                <PhotoComponent item={member} className='img-abs' />
+            </div>
+            {variant !== 'compact' && (
+                <>
+                    <div className='user-card-info column'>
+                        <div className='user-card-name'>
+                            {member.first_name}&nbsp;
+                            {/*{!!vehicle && <img src={vehicle} alt='vehicle'/>}*/}
                         </div>
-                        <div className='user-card-role flex-0'>{travel.getMemberRole(member)}</div>
-                    </>
-                )}
-            </>
+                        {/* статус юзера (в поездке / на месте ...)*/}
+                        {/*<div className='user-card-status'>{}</div>*/}
+                    </div>
+                    <div className='user-card-role flex-0'>{travel.getMemberRole(member)}</div>
+                </>
+            )}
         </div>
     )
 }

@@ -1,0 +1,80 @@
+.step{
+    position: relative;
+    box-shadow: var(--box-shadow);
+    border-radius: var(--br-20);
+}
+.step .image{
+    position: relative;
+    border-top-left-radius: var(--br-20);
+    border-top-right-radius: var(--br-20);
+    aspect-ratio: 1.8;
+    overflow: hidden;
+}
+
+.step .start,
+.step .end{
+    position: absolute;
+    left: 20px;
+}
+
+.step .start{
+    top: 0;
+    transform: translateY(-50%);
+}
+
+.step .end{
+    bottom: 0;
+    transform: translateY(50%);
+}
+
+.step .inner{
+    padding: 8px 8px 16px 8px;
+}
+
+.step .inner .name{
+    font-weight: 500;
+}
+
+.step .inner .stats{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.step .inner .price{
+    font-weight: 600;
+}
+
+.step .inner .rate{
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.step .inner .duration{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    color: var(--color-primary-light);
+    font-weight: 600;
+    border-radius: 3rem;
+    background-color: var(--color-primary);
+}
+
+.step .inner .duration span{
+    position: relative;
+    top: -3px;
+    font-size: 0.6rem;
+    line-height: 1;
+}
+
+.road{
+    margin-left: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-left: 2px dashed var(--color-grey);
+}

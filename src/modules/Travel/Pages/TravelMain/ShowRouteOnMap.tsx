@@ -1,11 +1,29 @@
-import React, {useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import {YPlacemark, YandexMapContainer, YPolyline} from "../../../../components/YandexMap";
 import {useTravel} from "../../../../contexts/AppContextProvider";
+import {RoadStep} from "../../../../classes/StoreEntities/route/RoadStep";
+import {PlaceStep} from "../../../../classes/StoreEntities/route/PlaceStep";
+import {HotelStep} from "../../../../classes/StoreEntities/route/HotelStep";
 
 export default function ShowRouteOnMap() {
     const travel = useTravel()
     const ref = useRef<HTMLDivElement>(null)
+
+    const [points, setPoints] = useState<[number, number][]>([])
+
+    useEffect(() => {
+        if(!travel) return
+
+        const pl:[number, number][] = travel
+            .steps.filter(s => !(s instanceof RoadStep))
+            .map((p, idx) => {
+                if (p instanceof PlaceStep) return p.place.position
+                if (p instanceof HotelStep) return p.place.position
+                return [1000,1000]
+            })
+        setPoints(pl)
+    }, [])
 
     // const lines: [string, Array<Place | Road>, string] = useMemo(() => {
     //     let list = [...groups.dayGroups.entries()].map(([day, g]) => ([day, g.items, g.color]))
@@ -36,9 +54,24 @@ export default function ShowRouteOnMap() {
 
     if (!travel) return null
 
+    if (travel.steps)
+        return (
+            <>
+                <div
+                    ref={ref}
+                    id='on-map'
+                    className='flex-1 relative'
+                >
+                    <YandexMapContainer style={{height: '100%'}}>
+                        {points.map((p, idx) => (<YPlacemark key={idx} coordinates={p} iconContent={`${idx + 1}`}/>)) }
+                        <YPolyline rout={points} strokeWidth={4}/>
+                    </YandexMapContainer>
+                </div>
+            </>
+        )
+
     return (
         <>
-
             <div
                 ref={ref}
                 id='on-map'
@@ -52,7 +85,7 @@ export default function ShowRouteOnMap() {
                 {/*/>*/}
                 <YandexMapContainer style={{height: '100%'}}>
                     {travel.places.map((p, idx) => (
-                        <YPlacemark coordinates={p.location} iconContent={`${idx + 1}`}/>
+                        <YPlacemark key={idx} coordinates={p.location} iconContent={`${idx + 1}`}/>
                     ))}
                     <YPolyline rout={travel.places.map(p => p.location)} strokeWidth={4}/>
                 </YandexMapContainer>

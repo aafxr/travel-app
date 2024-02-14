@@ -40,6 +40,7 @@ import UserPhotoEdite from "./modules/Main/Pages/Profile/UserPhotoEdite";
 import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import Login from "./modules/Main/Pages/Login/Login";
+import TravelAdviceRoute from "./modules/Travel/Pages/TravelAdviceRoute/TravelAdviceRoute";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -127,13 +128,15 @@ function App() {
                     <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
                     <Route path={'/events/'} element={<Events/>}/>
                     <Route path={'/travel/add/'} element={<TravelAdd/>}/>
+                    <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
                     <Route element={<TravelLayout/>}>
+                        <Route path={'/travel/:travelCode/advice-route/'} element={<TravelAdviceRoute/>}/>
+
                         <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                         <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
                         <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
                         <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
                         <Route path={'/travel/:travelCode/checklist/'} element={<CheckListComponent/>}/>
-                        <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
                         <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
                         <Route path={'/travel/:travelCode/settings/invite/'} element={<TravelInviteMember/>}/>
                         <Route path={'/travel/:travelCode/description/'} element={<TravelDescriptionAndDate/>}/>

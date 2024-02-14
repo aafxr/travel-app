@@ -1,0 +1,13 @@
+.route{
+    background-color: var(--color-grey-light);
+    padding: 0.5rem;
+    line-height: 1.2;
+    border-radius: var(--br-10);
+    /*box-shadow: var(--box-shadow);*/
+    cursor: pointer;
+}
+
+.route.selected{
+    color: var(--color-secondary);
+    background-color: var(--color-primary);
+}

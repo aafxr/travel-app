@@ -1,13 +1,11 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
-import {TravelService} from "../../../../classes/services";
 import {Travel} from "../../../../classes/StoreEntities";
 
 import '../../css/Travel.css'
@@ -20,6 +18,7 @@ import '../../css/Travel.css'
 export default function TravelAdd() {
     const navigate = useNavigate()
     const user = useUser()
+    const context = useAppContext()
 
     const [title, setTitle] = useState('')
 
@@ -31,10 +30,12 @@ export default function TravelAdd() {
         }
         if (title.length && user) {
             const travel = new Travel({title, owner_id: user.id})
-            TravelService.create(travel, user)
-                .then(() => navigate(`/travel/${travel.id}/map/`))
-                .catch(defaultHandleError)
+            context.setTravel(travel)
+            navigate(`/travel/${travel.id}/settings/`)
 
+            // TravelService.create(travel, user)
+            //     .then(() => navigate(`/travel/${travel.id}/map/`))
+            //     .catch(defaultHandleError)
         }
     }
 
@@ -47,7 +48,7 @@ export default function TravelAdd() {
                         <div className='w-full'>
                             <Input
                                 className='travel-destination-input'
-                                value={'Калининград'}
+                                value={title}
                                 onChange={setTitle}
                                 placeholder='Название поездки'
                             />

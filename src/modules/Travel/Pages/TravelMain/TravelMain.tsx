@@ -8,10 +8,12 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import PhotoComponent from "../../../../components/PhotoComponents/PhotoComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
+import {PhotoService} from "../../../../classes/services/PhotoService";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import {Travel, User} from "../../../../classes/StoreEntities";
 import {Photo} from "../../../../classes/StoreEntities/Photo";
 import Curtain from "../../../../components/Curtain/Curtain";
 import {TravelService} from "../../../../classes/services";
@@ -21,8 +23,6 @@ import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelMain.css'
-import {Travel, User} from "../../../../classes/StoreEntities";
-import {PhotoService} from "../../../../classes/services/PhotoService";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -135,7 +135,6 @@ export default function TravelMain() {
                 direction={travelDurationLabel/*travel.routeBuilder.getPlacesAtDay(+dayNumber)[0]?.name*/}
                 onChange={handleCurtain}
                 defaultOffsetPercents={curtainOpen ? 0 : 1}
-
             >
                 <ShowRoute/>
             </Curtain>

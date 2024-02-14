@@ -1,5 +1,5 @@
 import {Step} from "./Step";
-import {Place} from "../Place";
+import {Place} from "./Place";
 import {APIPlaceStep} from "../../../api/fetch/fetchRouteAdvice";
 
 export class PlaceStep extends Step{
