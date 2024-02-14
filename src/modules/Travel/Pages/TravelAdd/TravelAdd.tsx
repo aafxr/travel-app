@@ -47,7 +47,7 @@ export default function TravelAdd() {
                         <div className='w-full'>
                             <Input
                                 className='travel-destination-input'
-                                value={title}
+                                value={'Калининград'}
                                 onChange={setTitle}
                                 placeholder='Название поездки'
                             />

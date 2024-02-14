@@ -12,6 +12,7 @@ import {Member} from "./Member";
 import {Place} from "./Place";
 import {Photo} from "./Photo";
 import {Road} from "./Road";
+import {Route} from "./route/Route";
 
 
 type TravelPropsType = Partial<Travel>
@@ -89,6 +90,7 @@ export class Travel {
     permission: Permission = new Permission();
 
     interests = []
+    route?: Route
 
 
     constructor(travel: TravelPropsType) {
@@ -119,6 +121,7 @@ export class Travel {
 
         if (travel.preference) Object.assign(this.preference, new Preference(travel.preference).dto())
         if (travel.permission) Object.assign(this.permission, new Permission(travel.permission).dto())
+        if(travel.route) this.route = new Route(travel.route)
     }
 
 
