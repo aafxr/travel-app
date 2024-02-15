@@ -10,5 +10,5 @@ import {CurrencyType} from "./CurrencyTypes";
 
 export interface ExchangeType {
     date: number
-    value: CurrencyType<any>[]
+    value: CurrencyType[]
 }

@@ -18,7 +18,7 @@
  * @category Types
  */
 import {DBFlagType} from "./DBFlagType";
-import {CurrencyName} from "./CurrencyTypes";
+import {CurrencyName} from "../contexts/ExchangeContext/CurrencyTypes";
 
 export type ExpenseVariantType = 'expenses_actual' | 'expenses_plan'
 

@@ -3,9 +3,10 @@ import {ExpensesGroupsContext} from "./ExpensesGroupsContextProvider";
 import {ExpenseFilterType} from "../../types/filtersTypes";
 import {Expense} from "../../classes/StoreEntities";
 
-export function useExpensesGroupActual(key: ExpenseFilterType): Map<string, Expense[]>{
+export function useExpensesGroupActual(key: ExpenseFilterType): Map<string, Expense[]> {
     const context = useContext(ExpensesGroupsContext)
-    switch (key){
+
+    switch (key) {
         case "personal":
             return context.actual.personal
         case "common":

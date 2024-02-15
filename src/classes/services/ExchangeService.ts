@@ -1,20 +1,20 @@
 import {Expense} from "../StoreEntities";
 import {DB} from "../db/DB";
 import {StoreName} from "../../types/StoreName";
-import {ExchangeType} from "../../types/ExchangeType";
-import {CurrencyType} from "../../types/CurrencyTypes";
+import {ExchangeType} from "../../contexts/ExchangeContext/ExchangeType";
+import {CurrencyType} from "../../contexts/ExchangeContext/CurrencyTypes";
 import {fetchExchangeCourse} from "../../api/fetch/fetchExchangeCource";
 
 export class ExchangeService {
 
     //инициализация курса валют для списка расходов
     static async initExpensesExchange(expenses: Expense[], _retry = false): Promise<{
-        [key: string]: CurrencyType<any>[]
+        [key: string]: CurrencyType[]
     }> {
         const min_date = expenses.reduce<Date>((a, e) => a < e.created_at ? a : e.created_at, new Date()).getTime()
         const max_date = expenses.reduce<Date>((a, e) => a > e.created_at ? a : e.created_at, new Date(0)).getTime()
         const exchande_type = await DB.getMany<ExchangeType>(StoreName.CURRENCY, IDBKeyRange.bound(min_date, max_date))
-        const exchange = exchande_type.reduce<{ [key: string]: CurrencyType<any>[] }>((a, e) => {
+        const exchange = exchande_type.reduce<{ [key: string]: CurrencyType[] }>((a, e) => {
             const key = new Date(e.date).toLocaleDateString()
             a[key] = e.value
             return a
@@ -35,7 +35,6 @@ export class ExchangeService {
         }
 
 
-
         const response = await fetchExchangeCourse(new Date(min_date), new Date(max_date))
         for await (const [time, value] of Object.entries(response)) {
             const [ dd,mm,yy] = time.split('.')
@@ -47,5 +46,17 @@ export class ExchangeService {
             await DB.update(StoreName.CURRENCY, item)
         }
         return await ExchangeService.initExpensesExchange(expenses, true)
+    }
+
+
+    static async getExchangeCourse(from:Date, to: Date){
+        const course = await DB.getMany<ExchangeType>(StoreName.CURRENCY, IDBKeyRange.bound(from.getTime(), to.getTime()))
+        const result: {[key: string]: ExchangeType['value']} = {}
+
+        for (const c of course){
+            const key = new Date(c.date).toLocaleDateString()
+            result[key] = c.value
+        }
+        return result
     }
 }

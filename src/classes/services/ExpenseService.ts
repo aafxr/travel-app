@@ -39,11 +39,11 @@ export class ExpenseService {
     }
 
     static async delete(expense: Expense, user: User) {
-        if (!Expense.isPersonal(expense,user)) {
-            const travel = await TravelService.getById(expense.primary_entity_id)
-            if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
-            if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
-        }
+        // if (!Expense.isPersonal(expense,user)) {
+        //     const travel = await TravelService.getById(expense.primary_entity_id)
+        //     if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
+        //     if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
+        // }
         const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.DELETE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
@@ -61,14 +61,13 @@ export class ExpenseService {
         const expenses = expenses_type_list.map(e => new Expense(e, user))
         if(!expenses.length) return []
 
-        const exchange = await ExchangeService.initExpensesExchange(expenses)
+        // const exchange = await ExchangeService.initExpensesExchange(expenses)
         /////дополнить расходы курсом валют
-        for (const e of expenses){
-            const key = e.created_at.toLocaleDateString()
-            const ex = exchange[key]
-            Expense.setExchange(e, new Exchange({date: e.created_at.getTime(), value: ex}), user)
-        }
-
+        // for (const e of expenses){
+        //     const key = e.created_at.toLocaleDateString()
+        //     const ex = exchange[key]
+        //     Expense.setExchange(e, new Exchange({date: e.created_at.getTime(), value: ex}), user)
+        // }
         return expenses
     }
 

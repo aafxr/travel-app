@@ -1,5 +1,5 @@
 import {ExpenseFilterType} from "../../../types/filtersTypes";
-import {CurrencyName} from "../../../types/CurrencyTypes";
+import {CurrencyName} from "../../../contexts/ExchangeContext/CurrencyTypes";
 
 export const filterType: ExpenseFilterType[] = ['personal', 'common', 'all']
 

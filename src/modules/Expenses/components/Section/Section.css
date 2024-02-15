@@ -43,3 +43,12 @@
 }
 
 
+.section-item .currency{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.section-item .currency .light{
+    color: var(--color-grey);
+}

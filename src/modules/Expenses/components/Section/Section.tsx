@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
@@ -15,6 +15,8 @@ import {currencySymbol} from "../../static/vars";
 import Line from "../Line/Line";
 
 import './Section.css'
+import {useExchangeCoefficient} from "../../../../contexts/ExchangeContext";
+import {ExpensesContext} from "../../../../contexts/ExpensesContexts/ExpensesContextProvider";
 
 type SectionPropsType = {
     section_id: string,
@@ -112,9 +114,11 @@ function Section({
  */
 function SectionItem({expense}: { expense: Expense }) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
-    const travel = useTravel()
     const user = useUser()
+    const travel = useTravel()
     const navigate = useNavigate();
+    const coef = useExchangeCoefficient(expense.datetime, expense.currency)
+    const expensesContext = useContext(ExpensesContext)
 
     let time = dateToStringFormat(datetime)
     const isPlan = expense.variant === 'expenses_plan'
@@ -126,15 +130,15 @@ function SectionItem({expense}: { expense: Expense }) {
     async function handleRemove() {
         if (!travel || !user) return
         if (expense) {
-            if (isPlan) {
-                ExpenseService.delete(expense, user)
-                    .then(() => pushAlertMessage({type: 'success', message: `Успешно удалено`}))
-                    .catch(defaultHandleError)
-            }
+            ExpenseService.delete(expense, user)
+                .then(() => expensesContext.removeExpense && expensesContext.removeExpense(expense))
+                .then(() => pushAlertMessage({type: 'success', message: `Успешно удалено`}))
+                .catch(defaultHandleError)
 
         }
     }
 
+    if (!user) return null
 
     return (
         <Swipe
@@ -145,13 +149,14 @@ function SectionItem({expense}: { expense: Expense }) {
         >
             <div className={clsx('section-item', 'flex-between')}>
                 <div>
-                    <div>
-                        {title || ''} <span>{entity_type || ''}</span>
-                    </div>
+                    <div>{title || ''} <span>{entity_type || ''}</span></div>
                     <span>{time}</span>
                 </div>
-
-                <div>{formatter.format(value)} {currencySymbol.get(expense.currency)}</div>
+                <div className='currency'>
+                    {currencySymbol.has(user.currency) &&
+                        <div>{formatter.format(value * coef)} {currencySymbol.get(user.currency)}</div>}
+                    <div className='light'>{formatter.format(value)} {currencySymbol.get(expense.currency)}</div>
+                </div>
             </div>
         </Swipe>
     )

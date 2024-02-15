@@ -1,5 +1,5 @@
 import aFetch from "../../axios";
-import {CurrencyType} from "../../types/CurrencyTypes";
+import {CurrencyType} from "../../contexts/ExchangeContext/CurrencyTypes";
 
 // type APICurrencyResponseType = {
 //     [key: string]: CurrencyType<any>[]
@@ -8,7 +8,7 @@ import {CurrencyType} from "../../types/CurrencyTypes";
 type APICurrencyResponce = {
     ok: boolean,
     data:{
-        [key:string]: CurrencyType<any>[]
+        [key:string]: CurrencyType[]
     }
 }
 

@@ -22,8 +22,8 @@ export default function ExpensesActual() {
         <>
             <Container className='pt-20 content column gap-1'>
                 <AddButton to={`/travel/${travel.id}/expenses/add/`}>Записать расходы</AddButton>
-                {
-                    Array.from(groupMap.entries()).map(([section_id, expensesList]) => (
+                { Array.from(groupMap.entries())
+                    .map(([section_id, expensesList]) => (
                         <Section key={section_id} section_id={section_id} expenses={expensesList}/>
                     ))
                 }

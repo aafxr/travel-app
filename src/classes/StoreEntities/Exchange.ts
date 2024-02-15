@@ -1,5 +1,5 @@
-import {CurrencyName, CurrencyType} from "../../types/CurrencyTypes";
-import {ExchangeType} from "../../types/ExchangeType";
+import {CurrencyName, CurrencyType} from "../../contexts/ExchangeContext/CurrencyTypes";
+import {ExchangeType} from "../../contexts/ExchangeContext/ExchangeType";
 import {StoreName} from "../../types/StoreName";
 import {StoreEntity} from "./StoreEntity";
 import {DB} from "../db/DB";
@@ -20,7 +20,7 @@ export class Exchange extends StoreEntity implements ExchangeType {
     storeName = StoreName.CURRENCY
 
     date: number = 0;
-    value: CurrencyType<any>[] = [];
+    value: CurrencyType[] = [];
     status: ExchangeStatus = ExchangeStatus.pure
 
 

@@ -17,10 +17,10 @@ export type CurrencyName = {
     KZT: '₯',
 }
 
-export interface CurrencyType<T extends keyof CurrencyName>{
-    char_code: T
+export interface CurrencyType{
+    char_code: keyof CurrencyName
     name: string
     num_code: number
-    symbol: CurrencyName[T]
+    symbol: CurrencyName[keyof CurrencyName]
     value: number
 }

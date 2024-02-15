@@ -15,6 +15,7 @@ export type ExpensesContextStateType = {
     plan: Expense[]
     limits: Map<string, Limit>
     loading: boolean
+    removeExpense?: (e:Expense) => unknown
 }
 
 const initialValue: ExpensesContextStateType = {
@@ -39,21 +40,41 @@ export default function ExpensesContextProvider() {
         if (!travelCode) return
         setState({...state, loading: true})
         const expensesPromise = ExpenseService.getAllByTravelId(context, travelCode)
-        const limitsPromise = LimitService.getAllByTravelId(context, travelCode)
-        Promise.all([expensesPromise, limitsPromise])
-            .then(([expenses_list, limits_list]: [Expense[], Limit[]]) => {
+            .then((expenses_list) => {
                 const actual: Expense[] = []
                 const plan: Expense[] = []
                 expenses_list.forEach(e => e.variant === "expenses_actual" ? actual.push(e) : plan.push(e))
-
-                for (const limit of limits_list) {
-                        state.limits.set(limit.id, limit)
-                }
                 setState({...state, actual, plan})
             })
             .catch(defaultHandleError)
+
+
+        const limitsPromise = LimitService.getAllByTravelId(context, travelCode)
+            .then(limits_list => {
+                for (const limit of limits_list) {
+                    state.limits.set(limit.id, limit)
+                }
+            })
+            .catch(defaultHandleError)
+
+
+        Promise.all([expensesPromise, limitsPromise])
             .finally(() => setState(prev => ({...prev, loading: false})))
+
+
     }, [travelCode])
+
+    function handleRemoveExpense(e:Expense){
+        if(e.variant === 'expenses_actual'){
+            const update = state.actual.filter(exp => exp !== e)
+            setState(prev => ({...prev, actual: update}))
+        }else if(e.variant === 'expenses_plan'){
+            const update = state.plan.filter(exp => exp !== e)
+            setState(prev => ({...prev, plan: update}))
+        }
+    }
+
+    state.removeExpense = handleRemoveExpense
 
 
     if (state.loading) {

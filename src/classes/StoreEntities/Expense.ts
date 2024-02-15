@@ -4,7 +4,7 @@ import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreEntity} from "./StoreEntity";
 import {Member} from "./Member";
-import {CurrencyName} from "../../types/CurrencyTypes";
+import {CurrencyName} from "../../contexts/ExchangeContext/CurrencyTypes";
 import {Exchange} from "./Exchange";
 import {User} from "./User";
 import {StoreName} from "../../types/StoreName";

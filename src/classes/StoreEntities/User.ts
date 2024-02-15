@@ -1,5 +1,5 @@
 import {ExpenseFilterType, RouteFilterType} from "../../types/filtersTypes";
-import {CurrencyName} from "../../types/CurrencyTypes";
+import {CurrencyName} from "../../contexts/ExchangeContext/CurrencyTypes";
 import {DBFlagType} from "../../types/DBFlagType";
 import {UserSettingsType} from "../../types/UserType";
 import {Member} from "./Member";

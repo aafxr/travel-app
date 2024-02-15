@@ -23,7 +23,10 @@ export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React
         if (expensesContext.loading) return
         if(!user) return
 
-        const newState: ExpensesGroupsContextStateType = {...state}
+        const newState: ExpensesGroupsContextStateType = {actual:{...state.actual}, plan:{...state.plan}}
+
+        newState.plan.common.clear()
+        newState.plan.personal.clear()
 
         //group plan expenses
         expensesContext.plan.forEach(e => {
@@ -37,6 +40,18 @@ export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React
                 newState.plan.common.get(e.section_id)!.push(e)
             }
         })
+        setState(newState)
+    }, [expensesContext.plan, user])
+
+
+    useEffect(() => {
+        if(!user) return
+        if (expensesContext.loading) return
+
+        const newState: ExpensesGroupsContextStateType = {actual:{...state.actual}, plan:{...state.plan}}
+
+        newState.actual.common.clear()
+        newState.actual.personal.clear()
 
         // group actual expenses
         expensesContext.actual.forEach(e => {
@@ -50,7 +65,8 @@ export  function useGroupExpensesState():[ExpensesGroupsContextStateType,  React
                 newState.actual.common.get(e.section_id)!.push(e)
             }
         })
-    }, [expensesContext, user])
+        setState(newState)
+    }, [expensesContext.actual, user])
 
     return [state, setState]
 }

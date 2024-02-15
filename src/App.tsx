@@ -41,6 +41,7 @@ import ActionsList from "./modules/Main/Pages/ActionsList/ActionsList";
 import Sessions from "./modules/Main/Pages/Sessions/Sessions";
 import Login from "./modules/Main/Pages/Login/Login";
 import TravelAdviceRoute from "./modules/Travel/Pages/TravelAdviceRoute/TravelAdviceRoute";
+import {ExchangeContextProvider} from "./contexts/ExchangeContext";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -96,8 +97,12 @@ function App() {
     }, [])
 
     useEffect(() => {
-        window.ononline = () => {pushAlertMessage({type:"info", message: 'Connection restored'})}
-        window.onoffline = () => {pushAlertMessage({type:"info", message: 'Bad connection'})}
+        window.ononline = () => {
+            pushAlertMessage({type: "info", message: 'Connection restored'})
+        }
+        window.onoffline = () => {
+            pushAlertMessage({type: "info", message: 'Bad connection'})
+        }
     }, [])
 
     window.DB = DB
@@ -154,17 +159,19 @@ function App() {
                         {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
                         {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
                         {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
-                        <Route element={<ExpensesContextProvider/>}>
-                            <Route element={<ExpensesGroupsContextProvider/>}>
-                                <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
+                        <Route element={<ExchangeContextProvider/>}>
+                            <Route element={<ExpensesContextProvider/>}>
+                                <Route element={<ExpensesGroupsContextProvider/>}>
+                                    <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
+                                </Route>
                             </Route>
+                            {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
+                            <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd/>}/>
+                            <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
+                            <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd/>}/>
+                            <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                         </Route>
-                        {/*            <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit primary_entity_type={'travel'}/>}/>*/}
-                        <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd/>}/>
-                        <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
-                        <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd/>}/>
-                        <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                     </Route>
                     {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
                     <Route path={'/profile/'} element={<Profile/>}/>
