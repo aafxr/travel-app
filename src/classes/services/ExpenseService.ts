@@ -3,8 +3,6 @@ import {ExpenseError, TravelError, UserError} from "../errors";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ExpenseType} from "../../types/ExpenseType";
 import {ActionName} from "../../types/ActionsType";
-import {Exchange} from "../StoreEntities/Exchange";
-import {ExchangeService} from "./ExchangeService";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 import {TravelService} from "./TravelService";
@@ -53,13 +51,13 @@ export class ExpenseService {
         actionStore.add(action)
     }
 
-    static async getAllByTravelId(ctx: Context,travelId:string): Promise<Expense[]>{
+    static async getAllByTravelId(ctx: Context, travelId: string): Promise<Expense[]> {
         const user = ctx.user
         if (!user) throw UserError.unauthorized()
 
         const expenses_type_list = await DB.getManyFromIndex<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, travelId)
         const expenses = expenses_type_list.map(e => new Expense(e, user))
-        if(!expenses.length) return []
+        if (!expenses.length) return []
 
         // const exchange = await ExchangeService.initExpensesExchange(expenses)
         /////дополнить расходы курсом валют
@@ -71,8 +69,35 @@ export class ExpenseService {
         return expenses
     }
 
-    static async getById(id:string, user: User){
+    static async getById(id: string, user: User) {
         const ex = await DB.getOne<ExpenseType>(StoreName.EXPENSE, id)
-        if(ex) return new Expense(ex, user)
+        if (ex) return new Expense(ex, user)
+    }
+
+
+    /** метод подсчитывает сумму всех расходов указанной секции */
+    static async getTotal(user: User, travel: Travel, section_id: string, personal: boolean, variant: Expense['variant'] = "expenses_plan") {
+        const cursor = DB.openIndexCursor<Expense>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, travel.id)
+        let total = 0
+        let expense = (await cursor.next()).value
+        while (expense) {
+            if (expense.section_id !== section_id) {
+                expense = (await cursor.next()).value
+                continue
+            }
+            if (Expense.isPersonal(expense, user) !== personal) {
+                expense = (await cursor.next()).value
+                continue
+            }
+            if (expense.variant !== variant) {
+                expense = (await cursor.next()).value
+                continue
+            }
+
+            total += expense.value
+
+            expense = (await cursor.next()).value
+        }
+        return total
     }
 }

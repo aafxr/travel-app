@@ -13,7 +13,6 @@ type LinePropsType = {
  * @constructor
  */
 export default function Line({value, color}: LinePropsType){
-
     return <div className={'line'}>
         <div
             className={'line-front'}

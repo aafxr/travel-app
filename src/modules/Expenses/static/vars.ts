@@ -1,9 +1,9 @@
 import {ExpenseFilterType} from "../../../types/filtersTypes";
-import {CurrencyName} from "../../../contexts/ExchangeContext/CurrencyTypes";
+import {CurrencyName} from "../../../contexts/ExchangeContext";
 
 export const filterType: ExpenseFilterType[] = ['personal', 'common', 'all']
 
-export const local:Record<ExpenseFilterType, string> = {
+export const local: Record<ExpenseFilterType, string> = {
     'personal': 'Личные',
     'common': 'Общие',
     'all': "Все"
@@ -19,9 +19,17 @@ export const currencySymbol: Map<string, keyof CurrencyName> = new Map([
     ['د.إ', 'CNY'],
     ['₯', 'KZT'],
 
-    ['RUB','₽' ],
-    ['USD','$' ],
-    ['EUR','€' ],
-    ['CNY','د.إ' ],
-    ['KZT','₯' ],
+    ['RUB', '₽'],
+    ['USD', '$'],
+    ['EUR', '€'],
+    ['CNY', 'د.إ'],
+    ['KZT', '₯'],
 ]) as Map<string, keyof CurrencyName>
+
+export const symbols: Array<CurrencyName[keyof CurrencyName]> = [
+    '₽',
+    '$',
+    '€',
+    'د.إ',
+    '₯'
+]

@@ -57,6 +57,7 @@
     flex-direction: column;
     align-items: center;
     padding: 0.5rem;
+    width: 42px;
     color: var(--color-primary-light);
     font-weight: 600;
     border-radius: 3rem;

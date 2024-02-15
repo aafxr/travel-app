@@ -14,7 +14,7 @@ import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import {Input, PageHeader, Chip} from "../../../../components/ui";
 import Select from "../../../../components/ui/Select/Select";
 import Button from "../../../../components/ui/Button/Button";
-import {currencySymbol} from "../../static/vars";
+import {currencySymbol, symbols} from "../../static/vars";
 
 import '../../css/Expenses.css'
 
@@ -52,27 +52,25 @@ export default function ExpensesAdd() {
     useEffect(() => {
         if (!travel) return
         if (!user) return
+
+        const defaultExpenseValue= new Expense({
+            section_id: 'misc',
+            variant: isPlan ? "expenses_plan" : "expenses_actual",
+            primary_entity_id: travel.id
+        }, user)
+
         if (expenseCode) {
             setLoading(true)
             ExpenseService.getById(expenseCode, user)
-                .then(e => {
-                    if (e) setExpense(e)
-                    else setExpense(new Expense({
-                        section_id: 'misc',
-                        variant: isPlan ? "expenses_plan" : "expenses_actual",
-                        primary_entity_id: travel.id
-                    }, user))
-                })
+                .then(e =>  {
+                    e && setExpense(e)
+                } )
                 .catch(defaultHandleError)
                 .finally(() => setLoading(false))
-        } else {
-            setExpense(new Expense({
-                section_id: 'misc',
-                variant: isPlan ? "expenses_plan" : "expenses_actual",
-                primary_entity_id: travel.id
-            }, user))
+        } else if (expenseCode === undefined){
+            setExpense(defaultExpenseValue)
         }
-    }, [expenseCode])
+    }, [])
 
 
     useEffect(() => {
@@ -181,8 +179,7 @@ export default function ExpensesAdd() {
                                             {section.title}
                                         </Chip>
                                     )
-                                )
-                                }
+                                )}
                             </div>
                             <div className='column gap-1'>
                                 <div className='column gap-0.25'>
@@ -214,7 +211,7 @@ export default function ExpensesAdd() {
                                             className='expenses-currency flex-0'
                                             value={cs ?cs[0]: '₽'}
                                             defaultValue=''
-                                            options={[...currencySymbol.keys()]}
+                                            options={[...symbols]}
                                             onChange={handleCurrencyChange}
                                         />
                                     </div>

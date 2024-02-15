@@ -24,22 +24,14 @@ interface InputPropsType extends Omit<InputHTMLAttributes<HTMLInputElement>, 'on
  */
 
 export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, value, onChange, ...props}, ref) => {
-    const [text, setText] = useState('')
+    const [text, setText] = useState(value)
     const change = useRef<Function>()
     const styles = clsx('input', props.className)
+
 
     useEffect(() => {
         change.current = onChange
     }, [onChange])
-
-    useEffect(() => {
-        setText(value || '')
-    }, [value])
-
-
-    useEffect(() => {
-        handleChangeInput(text)
-    }, [text])
 
 
     function handleEnterKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -52,8 +44,12 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
 
     const handleChangeInput = useCallback(debounce((str: string) => {
         if (change.current) change.current(str)
-
     }, delay, {trailing: true}), [delay])
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>){
+        setText(e.target.value)
+        handleChangeInput(e.target.value)
+    }
 
 
     return (
@@ -63,7 +59,7 @@ export default React.forwardRef<HTMLInputElement, InputPropsType>(({delay = 0, v
             value={text}
             className={styles}
             onKeyUp={handleEnterKeyUp}
-            onChange={e => setText(e.target.value)}
+            onChange={handleChange}
         />
     )
 })

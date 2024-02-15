@@ -49,7 +49,6 @@ function Section({
             .catch(defaultHandleError)
     }, [])
 
-
     let percent = 0
     if (limit) percent = total / limit.value
 
@@ -68,26 +67,25 @@ function Section({
                         <div className='section-title'>{formatter.format(total)} ₽</div>
                     </div>
                 </Link>
-                {
-                    <>
-                        <Line value={User.getSetting(user, 'expensesFilter') !== "all" ? percent : 0} color={color}/>
+                {<>
+                    {User.getSetting(user, 'expensesFilter') !== "all"
+                        ? <Line value={0} color={color}/>
+                        : <Line value={percent} color={color}/>
+                    }
                         {
                             !!limit && (
                                 <div className={'flex-between'}>
                                     <div className='section-subtitle'>Лимит {formatter.format(limit.value)} ₽</div>
                                     {balance >= 0
-                                        ?
-                                        <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
-                                        : <div
-                                            className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} {currencySymbol.get(user.currency)}</div>
+                                        ? <div className='section-subtitle'>Осталось: {formatter.format(balance)} ₽</div>
+                                        : <div className='section-subtitle red'>Перерасход: {formatter.format(Math.abs(balance))} {currencySymbol.get(user.currency)}</div>
                                     }
                                 </div>
                             )
                         }
                     </>
                 }
-                {
-                    !!expenses.length && (
+                {!!expenses.length && (
                         <div className='section-items column gap-0.5'>
                             {
                                 expenses.map(item => (<SectionItem key={item.id} expense={item}/>))
@@ -138,11 +136,15 @@ function SectionItem({expense}: { expense: Expense }) {
         }
     }
 
+    function handleClick(){
+        navigate(editRoute)
+    }
+
     if (!user) return null
 
     return (
         <Swipe
-            onClick={() => navigate(editRoute)}
+            onClick={handleClick}
             onRemove={handleRemove}
             rightButton
             small

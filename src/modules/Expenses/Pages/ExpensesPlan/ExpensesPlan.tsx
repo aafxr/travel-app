@@ -5,10 +5,10 @@ import ExpensesFilterVariant from "../../components/ExpensesFilterVariant";
 import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
 import Container from "../../../../components/Container/Container";
+import {User} from "../../../../classes/StoreEntities";
 import Section from "../../components/Section/Section";
 
 import '../../css/Expenses.css'
-import {User} from "../../../../classes/StoreEntities";
 
 
 /**

@@ -5,10 +5,9 @@ import {ActionName} from "../../types/ActionsType";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 import {LimitType} from "../../types/LimitType";
-import {UserError, LimitError} from "../errors";
+import {LimitError, TravelError, UserError} from "../errors";
 import {TravelService} from "./TravelService";
 import {Context} from "../Context/Context";
-import {TravelError} from "../errors";
 import {DB} from "../db/DB";
 
 
@@ -86,6 +85,7 @@ export class LimitService {
         if (expense.variant !== 'expenses_plan') return
 
         const cursor = DB.openIndexCursor<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, expense.primary_entity_id)
+
         let expenseObj = (await cursor.next()).value
         let total = 0
 
@@ -100,6 +100,12 @@ export class LimitService {
                 expenseObj = (await cursor.next()).value
                 continue
             }
+
+            // const exch = await ExchangeService.getExchangeCourse( new Date(e.datetime.getTime() - MS_IN_DAY), e.datetime,)
+            // const key = e.datetime.toLocaleDateString()
+
+            // const coef = exch[key]?.find(ex => ex.char_code  === e.currency)?.value || 1
+
             total += e.value
             expenseObj = (await cursor.next()).value
         }
@@ -129,5 +135,11 @@ export class LimitService {
             }
         }
 
+    }
+
+
+    static async getByID(user: User, limitID: string, ){
+        const limit = await DB.getOne<Limit>(StoreName.LIMIT, limitID)
+        if(limit) return new Limit(limit, user)
     }
 }
