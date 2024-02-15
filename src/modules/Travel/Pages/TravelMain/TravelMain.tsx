@@ -45,7 +45,7 @@ export default function TravelMain() {
     const menu = (
         <Menu>
             <LinkComponent to={`/travel/${travelCode}/description/`} title={'Описание и дата'}/>
-            <LinkComponent to={`/travel/${travelCode}/settings/`} title={'Насыщенность'}/>
+            {/*<LinkComponent to={`/travel/${travelCode}/settings/`} title={'Насыщенность'}/>*/}
             {/*<LinkComponent to={`/travel/${travelCode}/permissions/`} title={'Права'}/>*/}
         </Menu>
     )

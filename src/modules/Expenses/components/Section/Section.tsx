@@ -68,7 +68,7 @@ function Section({
                     </div>
                 </Link>
                 {<>
-                    {User.getSetting(user, 'expensesFilter') !== "all"
+                    {User.getSetting(user, 'expensesFilter') === "all"
                         ? <Line value={0} color={color}/>
                         : <Line value={percent} color={color}/>
                     }
