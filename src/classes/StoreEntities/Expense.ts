@@ -1,13 +1,11 @@
 import {nanoid} from "nanoid";
 
 import {ExpenseType, ExpenseVariantType} from "../../types/ExpenseType";
+import {CurrencyName} from "../../contexts/ExchangeContext";
 import {DBFlagType} from "../../types/DBFlagType";
-import {StoreEntity} from "./StoreEntity";
-import {Member} from "./Member";
-import {CurrencyName} from "../../contexts/ExchangeContext/CurrencyTypes";
 import {Exchange} from "./Exchange";
+import {Member} from "./Member";
 import {User} from "./User";
-import {StoreName} from "../../types/StoreName";
 
 
 /**

@@ -125,13 +125,14 @@ export class DB {
      * @param storeName
      * @param indexName
      * @param query
+     * @param count
      */
-    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange | IDBValidKey): Promise<T[]> {
+    static async getManyFromIndex<T>(storeName: StoreName, indexName: keyof T, query: IDBKeyRange | IDBValidKey, count?: number): Promise<T[]> {
         const db = await openIDBDatabase()
         const tx = db.transaction(storeName)
         const store = tx.objectStore(storeName)
         const index = store.index(indexName as string)
-        return await index.getAll(query)
+        return await index.getAll(query, count)
     }
 
     /**
