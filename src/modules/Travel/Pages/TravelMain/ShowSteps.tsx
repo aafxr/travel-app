@@ -4,17 +4,16 @@ import React, {useEffect, useState} from "react";
 import {HotelStep} from "../../../../classes/StoreEntities/route/HotelStep";
 import {PlaceStep} from "../../../../classes/StoreEntities/route/PlaceStep";
 import {RoadStep} from "../../../../classes/StoreEntities/route/RoadStep";
-import {CarIcon, StarIcon, WalkIcon} from "../../../../components/svg";
 import Container from "../../../../components/Container/Container";
 import {useTravel} from "../../../../contexts/AppContextProvider";
 import {Travel} from "../../../../classes/StoreEntities";
-import {Chip, Tab} from "../../../../components/ui";
+import {Tab} from "../../../../components/ui";
 
 import './steps/ShowSteps.css'
-import {MS_IN_DAY} from "../../../../static/constants";
 import {PlaceStepCard} from "./steps/PlaceStepCard";
 import {RoadStepCard} from "./steps/RoadStepCard";
 import {HotelStepCard} from "./steps/HotelStepCard";
+import Swipe from "../../../../components/ui/Swipe/Swipe";
 
 
 export default function ShowSteps() {
@@ -65,7 +64,17 @@ export default function ShowSteps() {
 function StepCard({step}: { step: Travel["steps"][number] }) {
 
     if (step instanceof PlaceStep) {
-        return <PlaceStepCard place={step}/>
+        const removeElement = <div>
+
+        </div>
+        return (
+            <Swipe
+                rightElement={removeElement}
+                rightButton
+            >
+                <PlaceStepCard place={step}/>
+            </Swipe>
+        )
     } else if (step instanceof RoadStep) {
         return <RoadStepCard road={step}/>
     } else {

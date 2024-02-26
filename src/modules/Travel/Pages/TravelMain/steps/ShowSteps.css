@@ -2,6 +2,7 @@
     position: relative;
     box-shadow: var(--box-shadow);
     border-radius: var(--br-20);
+    background-color: var(--color-background);
 }
 .step .image{
     position: relative;

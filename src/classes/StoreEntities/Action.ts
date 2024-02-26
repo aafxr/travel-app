@@ -1,6 +1,6 @@
 import {nanoid} from "nanoid";
 
-import {ActionName, ActionType} from "../../types/ActionsType";
+import {ActionName} from "../../types/ActionsType";
 import {DBFlagType} from "../../types/DBFlagType";
 import {StoreName} from "../../types/StoreName";
 

@@ -44,6 +44,7 @@ import TravelAdviceRoute from "./modules/Travel/Pages/TravelAdviceRoute/TravelAd
 import {ExchangeContextProvider} from "./contexts/ExchangeContext";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import ActionsWorkerContextProvider from "./contexts/ActionsWorkerContextProvider/ActionsWorkerContextProvider";
+import {SocketContextProvider} from "./contexts/SocketContextProvider";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -137,42 +138,43 @@ function App() {
                         <Route path={'/travel/add/'} element={<TravelAdd/>}/>
                         <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
                         <Route element={<TravelLayout/>}>
-                            <Route path={'/travel/:travelCode/advice-route/'} element={<TravelAdviceRoute/>}/>
-
-                            <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
-                            <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
-                            <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
-                            <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
-                            <Route path={'/travel/:travelCode/checklist/'} element={<CheckListComponent/>}/>
-                            <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
-                            <Route path={'/travel/:travelCode/settings/invite/'} element={<TravelInviteMember/>}/>
-                            <Route path={'/travel/:travelCode/description/'} element={<TravelDescriptionAndDate/>}/>
-                            <Route path={'/travel/:travelCode/permissions/'} element={<TravelPermissions/>}/>
-                            {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
-                            <Route path={'/travel/:travelCode/details/'} element={<TravelDetails/>}/>
-                            <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
-                            {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
-                            {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
-                            <Route element={<ExchangeContextProvider/>}>
-                                <Route element={<ExpensesContextProvider/>}>
-                                    <Route element={<ExpensesGroupsContextProvider/>}>
-                                        <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
-                                        <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
+                            <Route element={<SocketContextProvider />} >
+                                <Route path={'/travel/:travelCode/advice-route/'} element={<TravelAdviceRoute/>}/>
+                                <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
+                                <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
+                                <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
+                                <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
+                                <Route path={'/travel/:travelCode/checklist/'} element={<CheckListComponent/>}/>
+                                <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
+                                <Route path={'/travel/:travelCode/settings/invite/'} element={<TravelInviteMember/>}/>
+                                <Route path={'/travel/:travelCode/description/'} element={<TravelDescriptionAndDate/>}/>
+                                <Route path={'/travel/:travelCode/permissions/'} element={<TravelPermissions/>}/>
+                                {/*        <Route path={'/travel/:travelCode/add/:pointNumber/'} element={<TravelWaypoint/>}/>*/}
+                                <Route path={'/travel/:travelCode/details/'} element={<TravelDetails/>}/>
+                                <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
+                                {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
+                                {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
+                                <Route element={<ExchangeContextProvider/>}>
+                                    <Route element={<ExpensesContextProvider/>}>
+                                        <Route element={<ExpensesGroupsContextProvider/>}>
+                                            <Route path={'/travel/:travelCode/expenses/'} element={<ExpensesActual/>}/>
+                                            <Route path={'/travel/:travelCode/expenses/plan/'} element={<ExpensesPlan/>}/>
+                                        </Route>
                                     </Route>
+                                    <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit />}/>
+                                    <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd/>}/>
+                                    <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                                 </Route>
-                                <Route path={'/travel/:travelCode/expenses/limit/:sectionId/'} element={<LimitsEdit />}/>
-                                <Route path={'/travel/:travelCode/expenses/add/'} element={<ExpensesAdd/>}/>
-                                <Route path={'/travel/:travelCode/expenses/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/add/'} element={<ExpensesAdd/>}/>
-                                <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                             </Route>
                         </Route>
                         {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
