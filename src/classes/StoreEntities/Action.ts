@@ -28,6 +28,7 @@ import {StoreName} from "../../types/StoreName";
 export class Action<T extends object> {
 
     id = nanoid(16);
+    uid = this.id;
     action: ActionName;
     data: T;
     datetime = new Date();

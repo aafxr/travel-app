@@ -31,10 +31,9 @@ export function SocketContextProvider(){
         socket.onclose = () => setState({})
         socket.onerror = console.log
 
-        console.log(socket)
+        return () => {socket.close()}
     }, [])
 
-    console.log(state)
 
     return (
         <SocketContext.Provider value={state}>
