@@ -2,6 +2,7 @@ import {Outlet} from "react-router-dom";
 import {createContext, useEffect, useState} from "react";
 
 import {useTravel, useUser} from "../AppContextProvider";
+import {SocketMessage, SocketMessageType} from "../../classes/SocketMessage";
 
 
 export type SocketContextType = {
@@ -24,14 +25,23 @@ export function SocketContextProvider(){
         const socket =  new WebSocket(`wss://${process.env.REACT_APP_SOCKET_SERVER_NAME}:62879?groupName=${travel.id}&userID=${user.id}`)
 
         socket.addEventListener('open', () => {
-            console.log('[X] socket')
+            const msg = SocketMessage.join(travel.id)
+            socket.send(JSON.stringify(msg))
             setState({socket})
         })
 
         socket.onclose = () => setState({})
         socket.onerror = console.log
 
-        return () => {socket.close()}
+        socket.onmessage = (e: MessageEvent<SocketMessageType>) =>{
+            console.log(e.data)
+        }
+
+        return () => {
+            const msg = SocketMessage.leave(travel.id)
+            socket.send(JSON.stringify(msg))
+            socket.close()
+        }
     }, [])
 
     if (state.socket) window.socket = state.socket

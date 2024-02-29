@@ -3,7 +3,7 @@ import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 
 export const DB_NAME = 'travelAppStore'
-export const DB_VERSION = 36
+export const DB_VERSION = 37
 
 export const DB_STORES: DBStoreDescriptionType[] = [
     {
@@ -109,6 +109,12 @@ export const DB_STORES: DBStoreDescriptionType[] = [
         name: StoreName.UPDATED_TRAVEL_INFO,
         key: IndexName.PRIMARY_ENTITY_ID,
         indexes: [IndexName.UPDATED_AT]
+    },
+    //================ Travel Message =============================================================================
+    {
+        name: StoreName.MESSAGE,
+        key: 'date',
+        indexes: [IndexName.PRIMARY_ENTITY_ID]
     }
 
 ]

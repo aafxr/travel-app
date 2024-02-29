@@ -1,7 +1,7 @@
 import {nanoid} from "nanoid";
 import {Action} from "../StoreEntities";
 
-type SocketMessageType = {
+export type SocketMessageType = {
     id: string,
     join: string
 } | {
@@ -13,7 +13,8 @@ type SocketMessageType = {
         from: string,
         to: string,
         text: string,
-        date: Date
+        date: Date,
+        primary_entity_id: string
     }
 } | {
     id: string,
@@ -62,13 +63,14 @@ export class SocketMessage {
      * @param to
      * @param text
      * @param date
+     * @param primary_entity_id
      */
-    static message(from: string, to: string, text: string, date?: Date) {
+    static message(from: string, to: string, text: string, primary_entity_id: string, date?: Date) {
         if (!date) date = new Date()
 
         const msg: SocketMessageType = {
             id: SocketMessage.getMessageID(),
-            message: {from, to, text, date}
+            message: {from, to, text, date, primary_entity_id}
         }
         return msg
     }
@@ -78,11 +80,10 @@ export class SocketMessage {
      * сообщение о событии
      * @param action
      */
-    static actionMessage(action: Action<any>){
-        const msg = {
+    static actionMessage(action: Action<any>) {
+        return {
             id: SocketMessage.getMessageID(),
             action
         }
-        return msg
     }
 }
