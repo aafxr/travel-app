@@ -42,7 +42,7 @@ export default function TravelInviteMember() {
 
     useEffect(() => {
         const initState = {
-            member: new Member({first_name: 'asd'}),
+            member: new Member({first_name: ''}),
             inviteURL: process.env.REACT_APP_SERVER_URL + `/invite/${nanoid(24)}/`,
             email: ''
         }

@@ -4,8 +4,8 @@ import {MemberType} from "../../types/MemberType";
 export  async function  fetchUsers(ids: string[]){
     if (!ids.length) return []
     try{
-        const users: MemberType[] | undefined = (await aFetch.post('/users/', {data: ids})).data
-        if( users && users.length) return users
+        const response: {ok:boolean, data:MemberType[]} | undefined = (await aFetch.post('/user/getList/', {data: ids})).data
+        if( response && response.ok) return response.data
         else return []
     }catch (e){
         return []

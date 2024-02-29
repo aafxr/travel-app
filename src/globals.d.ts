@@ -18,7 +18,8 @@ declare global {
         TelegramLoginWidget: {
             dataOnauth: (user) => unknown,
         }
-        ymaps:ymaps
+        ymaps:ymaps,
+        socket: WebSocket
     }
 
     interface GlobalEventHandlersEventMap{

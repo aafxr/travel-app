@@ -53,7 +53,6 @@ export function ShowRoute() {
             .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
         const items = new Set(itemsList)
         const t = new Date(0)
-        t.setHours(0, 0, 0, 0)
         let d_start = t.getTime()
         let d_end = d_start + MS_IN_DAY
         for (let i = 0; i < travel.days; i++) {

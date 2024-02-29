@@ -74,6 +74,11 @@ export default function TravelMain() {
         setCurtainOpen(val)
     }
 
+    function handleInviteMember(){
+        if(!travel) return
+        navigate(`/travel/${travel.id}/settings/invite/`)
+    }
+
     return (
         <>
             <Container className='travel-details-header'>
@@ -110,7 +115,7 @@ export default function TravelMain() {
                             <TravelPeople peopleList={Travel.getMembers(travel)} compact={compact}/>
                         </div>
                         <div className='flex-between'>
-                            <AddButton>Пригласить еще</AddButton>
+                            <AddButton onClick={handleInviteMember}>Пригласить еще</AddButton>
                             <span className='link' onClick={() => setCompact(!compact)}>
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
