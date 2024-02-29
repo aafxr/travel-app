@@ -19,7 +19,12 @@ export type SocketMessageType = {
 } | {
     id: string,
     action: Action<any>
+} | {
+    receive: string
 }
+
+
+
 
 
 /**
