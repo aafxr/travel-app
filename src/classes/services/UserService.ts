@@ -1,9 +1,9 @@
-import {ActionName} from "../../types/ActionsType";
 import {ACCESS_TOKEN, REFRESH_TOKEN, USER_AUTH} from "../../static/constants";
 import {TelegramAuthPayloadType} from "../../types/TelegramAuthPayloadType";
 import {fetchRemoveUserAuth} from "../../api/fetch/fetchRemoveUserAuth";
 import {fetchUserAuthTg} from "../../api/fetch/fetchUserAuthTg";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
+import {ActionName} from "../../types/ActionsType";
 import {StoreName} from "../../types/StoreName";
 import {Action, User} from "../StoreEntities";
 import {UserType} from "../../types/UserType";
@@ -19,6 +19,10 @@ const devUser = {
     last_name: 'Алексеев'
 }
 
+
+/**
+ * сервис для обновления информации о
+ */
 export class UserService {
     static async getLoggedInUser() {
         if (location.hostname === 'localhost') {

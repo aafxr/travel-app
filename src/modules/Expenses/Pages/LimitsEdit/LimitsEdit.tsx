@@ -11,10 +11,10 @@ import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
+import {StoreName} from "../../../../types/StoreName";
+import {DB} from "../../../../classes/db/DB";
 
 import '../../css/Expenses.css'
-import {DB} from "../../../../classes/db/DB";
-import {StoreName} from "../../../../types/StoreName";
 
 /**
  * страница редактиррования лимитов

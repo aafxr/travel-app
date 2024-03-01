@@ -1,14 +1,31 @@
-import {DB} from "../db/DB";
+import {fetchPhoto} from "../../api/fetch/fetchPhoto";
+import {sendPhoto} from "../../api/fetch/sendPhoto";
+import {CustomError} from "../errors/CustomError";
 import {StoreName} from "../../types/StoreName";
 import {PhotoType} from "../../types/PhotoType";
-import {fetchPhoto} from "../../api/fetch/fetchPhoto";
-import {CustomError} from "../errors/CustomError";
-import {User} from "../StoreEntities";
 import {Photo} from "../StoreEntities/Photo";
-import {sendPhoto} from "../../api/fetch/sendPhoto";
 import {UserService} from "./UserService";
+import {User} from "../StoreEntities";
+import {DB} from "../db/DB";
 
+
+/**
+ * сеервис для работы с изображениями
+ * (созранение, изменение информации об изображении)
+ *
+ * ---
+ * доступны следующие методы:
+ * - getById
+ * - updateUserPhoto
+ * - save
+ * - initPhoto
+ */
 export class PhotoService{
+
+    /**
+     * метод для загрузки изображения из локальной бд
+     * @param id ид изображения
+     */
     static async getById(id:string){
         let photo = await DB.getOne<Photo>(StoreName.Photo, id)
         if(photo) photo = new Photo(photo)
@@ -37,6 +54,10 @@ export class PhotoService{
         user.setPhoto(photo)
     }
 
+    /**
+     * метод для созранения изображения в бд
+     * @param photo
+     */
     static async save(photo:Photo){
         await DB.update(StoreName.Photo, photo)
     }

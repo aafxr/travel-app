@@ -4,9 +4,17 @@ import {Travel, User} from "../StoreEntities";
 import {Checklist} from "../StoreEntities";
 import {DB} from "../db/DB";
 
+
+/**
+ * Сервис для работы с чеклистом
+ *
+ * Содержит методы:
+ * - getCheckList
+ * - updateChecklist
+ */
 export class CheckListService{
     /**
-     * возвращает существующий или создает новый чеклист
+     * метод загружает существующий чеклист из локальной бд или создает новый
      * @param travel
      * @param user
      */
@@ -23,6 +31,10 @@ export class CheckListService{
         return checklist
     }
 
+    /**
+     * метод обновляет информацию о чеклисте в бд
+     * @param chl
+     */
     static async updateChecklist(chl: Checklist){
         await DB.update(StoreName.CHECKLIST, chl.dto())
     }

@@ -32,8 +32,27 @@ async function getValidLimit(limit: Partial<Limit> & Pick<Limit, 'section_id' | 
 }
 
 
+
+/**
+ * сервис позволяет работать с лимитами
+ * (создавать, обновлять, удалять, получать список лимитов )
+ *
+ * ---
+ * доступны следующие методы:
+ * - create
+ * - update
+ * - delete
+ * - getAllByTravelId
+ * - updateWithNewExpense
+ * - getByID
+ */
 export class LimitService {
 
+    /**
+     * метоод позволяет создать новый лимит  сгенерировать action
+     * @param limit
+     * @param user
+     */
     static async create(limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User | undefined) {
         if (!user) throw UserError.unauthorized()
 
@@ -42,7 +61,11 @@ export class LimitService {
         return newLimit
     }
 
-
+    /**
+     * метод позваляет обновить запись о лимите и создает action с измененной информацией
+     * @param limit
+     * @param user
+     */
     static async update(limit: Limit, user: User) {
         if (!user) throw UserError.unauthorized()
 
@@ -65,7 +88,11 @@ export class LimitService {
         return user
     }
 
-
+    /**
+     * метод позволяет удалить лимит и генерирует action
+     * @param context
+     * @param limit
+     */
     static async delete(context: Context, limit: Limit) {
         const user = context.user
         if (!user) throw UserError.unauthorized()
@@ -86,7 +113,11 @@ export class LimitService {
         actionStore.add(action)
     }
 
-
+    /**
+     * метод возвращает список всех лимитов для данного путешествия
+     * @param context
+     * @param id ид путешествия
+     */
     static async getAllByTravelId(context: Context, id: string) {
         const user = context.user
         if (!user) throw UserError.unauthorized()
@@ -163,7 +194,11 @@ export class LimitService {
 
     }
 
-
+    /**
+     * метод возвращает запись о лимите в локалльной бд 
+     * @param user
+     * @param limitID
+     */
     static async getByID(user: User, limitID: string, ){
         const limit = await DB.getOne<Limit>(StoreName.LIMIT, limitID)
         if(limit) return new Limit(limit, user)

@@ -11,15 +11,38 @@ import {Context} from "../Context/Context";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
 
+
+/**
+ * сервис позволяет работать с расходами
+ * (создавать, удалять, обнавлять)
+ *
+ * ---
+ * содержит следующие методы:
+ * - create
+ * - update
+ * - delete
+ * - getAllByTravelId
+ * - getById
+ * - getTotal
+ */
 export class ExpenseService {
 
+    /**
+     * метод добавляет запись о расходе в бд и создает соответствующий action
+     * @param expense
+     * @param user
+     */
     static async create(expense: Expense, user: User) {
         await DB.writeWithAction(StoreName.EXPENSE, expense, user.id, ActionName.ADD)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
-
     }
 
+    /**
+     * метод обновляет запись о расходе в бд и генерирует соответсвующий action
+     * @param expense
+     * @param user
+     */
     static async update(expense: Expense, user: User) {
         if (!Expense.isPersonal(expense, user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
@@ -44,6 +67,11 @@ export class ExpenseService {
         return expense
     }
 
+    /**
+     * мметод удляет запись о расходе и создает соответствующий action
+     * @param expense
+     * @param user
+     */
     static async delete(expense: Expense, user: User) {
         // if (!Expense.isPersonal(expense,user)) {
         //     const travel = await TravelService.getById(expense.primary_entity_id)
@@ -61,6 +89,11 @@ export class ExpenseService {
         actionStore.add(action)
     }
 
+    /**
+     * метод позваляет загрузить спсок расходов для указанного путешествия
+     * @param ctx
+     * @param travelId
+     */
     static async getAllByTravelId(ctx: Context, travelId: string): Promise<Expense[]> {
         const user = ctx.user
         if (!user) throw UserError.unauthorized()
@@ -85,7 +118,14 @@ export class ExpenseService {
     }
 
 
-    /** метод подсчитывает сумму всех расходов указанной секции */
+    /**
+     * метод подсчитывает сумму всех расходов указанной секции
+     * @param user
+     * @param travel
+     * @param section_id
+     * @param personal
+     * @param variant
+     */
     static async getTotal(user: User, travel: Travel, section_id: string, personal: boolean, variant: Expense['variant'] = "expenses_plan") {
         const cursor = DB.openIndexCursor<Expense>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, travel.id)
         let total = 0
