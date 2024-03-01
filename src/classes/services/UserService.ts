@@ -9,6 +9,8 @@ import {Action, User} from "../StoreEntities";
 import {UserType} from "../../types/UserType";
 import {Photo} from "../StoreEntities/Photo";
 import {PhotoService} from "./PhotoService";
+import {UserError} from "../errors";
+import {Compare} from "../Compare";
 import {DB} from "../db/DB";
 
 const devUser = {
@@ -55,13 +57,25 @@ export class UserService {
 
     static async update(user: User) {
         if (user.image) await PhotoService.save(user.image)
-        const action = new Action(user, user.id, StoreName.TRAVEL, ActionName.UPDATE)
-        await DB.writeWithAction(StoreName.USERS, user, user.id, ActionName.UPDATE)
+
+        const oldUser = await DB.getOne<User>(StoreName.USERS, user.id)
+
+        if (!oldUser) throw UserError.updateBeforeCreate()
+
+        const changed = Compare.objects(oldUser, user, ['id'])
+
+        const action = new Action(changed, user.id, StoreName.USERS, ActionName.UPDATE)
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
+        const expenseStore = tx.objectStore(StoreName.USERS)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        expenseStore.put(user)
+        actionStore.add(action)
         return user
     }
 
     static async delete(user: User) {
-        const action = new Action(user, user.id, StoreName.USERS, ActionName.DELETE)
+        const action = new Action({id: user.id}, user.id, StoreName.USERS, ActionName.DELETE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
         const userStore = tx.objectStore(StoreName.USERS)

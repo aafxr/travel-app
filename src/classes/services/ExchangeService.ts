@@ -1,8 +1,8 @@
 import {Expense} from "../StoreEntities";
 import {DB} from "../db/DB";
 import {StoreName} from "../../types/StoreName";
-import {ExchangeType} from "../../contexts/ExchangeContext/ExchangeType";
-import {CurrencyType} from "../../contexts/ExchangeContext/CurrencyTypes";
+import {ExchangeType} from "../../contexts/ExchangeContext";
+import {CurrencyType} from "../../contexts/ExchangeContext";
 import {fetchExchangeCourse} from "../../api/fetch/fetchExchangeCource";
 
 export class ExchangeService {

@@ -8,6 +8,7 @@ import {IndexName} from "../../types/IndexName";
 import {TravelService} from "./TravelService";
 import {LimitService} from "./LimitService";
 import {Context} from "../Context/Context";
+import {Compare} from "../Compare";
 import {DB} from "../db/DB";
 
 export class ExpenseService {
@@ -25,7 +26,14 @@ export class ExpenseService {
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
             if (!Travel.isMember(travel, user)) throw ExpenseError.permissionDenied()
         }
-        const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.UPDATE)
+
+        const oldExpense = await DB.getOne<Expense>(StoreName.EXPENSE, expense.id)
+
+        if(!oldExpense) throw ExpenseError.updateBeforeCreate()
+
+        const changed = Compare.objects(oldExpense, expense, ['id', 'primary_entity_id'], ["user"])
+
+        const action = new Action(changed, user.id, expense.variant as StoreName, ActionName.UPDATE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
         const expenseStore = tx.objectStore(StoreName.EXPENSE)
@@ -42,7 +50,9 @@ export class ExpenseService {
         //     if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
         //     if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
         // }
-        const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.DELETE)
+        const {id,primary_entity_id} = expense
+
+        const action = new Action({id,primary_entity_id}, expense.id, expense.variant as StoreName, ActionName.DELETE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
         const expenseStore = tx.objectStore(StoreName.EXPENSE)

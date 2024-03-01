@@ -7,7 +7,6 @@ import Container from "../../../../components/Container/Container";
 import {RouteFilterType} from "../../../../types/filtersTypes";
 import Button from "../../../../components/ui/Button/Button";
 import {MS_IN_DAY} from "../../../../static/constants";
-import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
 

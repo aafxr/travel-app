@@ -1,10 +1,10 @@
-import {Travel, User} from "../StoreEntities";
-import {DB} from "../db/DB";
-import {StoreName} from "../../types/StoreName";
 import {ChecklistType} from "../../types/ChecklistType";
-import {Checklist} from "../StoreEntities/Checklist";
+import {StoreName} from "../../types/StoreName";
+import {Travel, User} from "../StoreEntities";
+import {Checklist} from "../StoreEntities";
+import {DB} from "../db/DB";
 
-export class CheckListServise{
+export class CheckListService{
     /**
      * возвращает существующий или создает новый чеклист
      * @param travel

@@ -1,3 +1,5 @@
+import {CoordinatesType} from "../types/CoordinatesType";
+
 /**
  * возвращает растояние поп прямой в метрах __(м)__
  * @function
@@ -6,7 +8,7 @@
  * @param {CoordinatesType} point_2
  * @returns {number}
  */
-export default function getDistanceFromTwoPoints(point_1, point_2) {
+export default function getDistanceFromTwoPoints(point_1: CoordinatesType, point_2: CoordinatesType) {
     if(!point_1 || !point_2) return 0
     const R = 6371;
 
@@ -23,6 +25,6 @@ export default function getDistanceFromTwoPoints(point_1, point_2) {
     return R * c;
 }
 
-function deg2rad(deg) {
+function deg2rad(deg: number) {
     return deg * (Math.PI/180)
 }

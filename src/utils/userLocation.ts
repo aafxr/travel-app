@@ -11,7 +11,7 @@
  * @name userLocation
  * @category Utils
  */
-export default function userLocation() {
+export default function userLocation(): Promise<[number,number]> {
 
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(loc => {
@@ -50,8 +50,8 @@ export default function userLocation() {
     })
 }
 
-function handleGeoPermission() {
-    return navigator.permissions.query({name: "geolocation"}).then((result) => {
-        return result.state === "granted";
-    });
-}
+// function handleGeoPermission() {
+//     return navigator.permissions.query({name: "geolocation"}).then((result) => {
+//         return result.state === "granted";
+//     });
+// }

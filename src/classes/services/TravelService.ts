@@ -5,8 +5,8 @@ import {Action, Travel, User} from "../StoreEntities";
 import {ActionName} from "../../types/ActionsType";
 import {TravelError, UserError} from "../errors";
 import {StoreName} from "../../types/StoreName";
+import {Compare} from "../Compare";
 import {DB} from "../db/DB";
-import {PlaceStep} from "../StoreEntities/route/PlaceStep";
 
 export class TravelService {
     static async create(newTravel: Travel, user: User) {
@@ -29,7 +29,22 @@ export class TravelService {
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
         // if (travel.image) await PhotoService.save(travel.image)
-        await DB.writeWithAction(StoreName.TRAVEL, travel, user.id, ActionName.UPDATE)
+        const oldTravel = await DB.getOne<Travel>(StoreName.TRAVEL, travel.id)
+
+        if(!oldTravel) throw TravelError.updateBeforeCreate()
+
+        const change = Compare.travels(oldTravel, travel, ["id"])
+
+        const action = new Action(change, user.id, StoreName.TRAVEL, ActionName.UPDATE)
+
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
+        const travelStore = tx.objectStore(StoreName.TRAVEL)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        travelStore.put(travel)
+        actionStore.add(action)
+
+        // await DB.writeWithAction(StoreName.TRAVEL, travel, user.id, ActionName.UPDATE)
         return travel
     }
 
@@ -37,7 +52,9 @@ export class TravelService {
         if (!user) throw UserError.unauthorized()
         if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
 
-        const action = new Action(travel, user.id, StoreName.TRAVEL, ActionName.DELETE)
+        const {id} = travel
+
+        const action = new Action({id}, user.id, StoreName.TRAVEL, ActionName.DELETE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
         const travelStore = tx.objectStore(StoreName.TRAVEL)

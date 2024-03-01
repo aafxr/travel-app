@@ -342,8 +342,8 @@ export class Travel {
         travel.updated_at = new Date()
     }
 
-    get isPublic() {
-        return !!this.permission.public
+    static isPublic(travel: Travel) {
+        return !!travel.permission.public
     }
 
     static setDepth(travel: Travel, depth: TravelPreference['depth']) {

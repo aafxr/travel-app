@@ -1,20 +1,19 @@
 import {Action, Expense, Limit, User} from "../StoreEntities";
+import {LimitError, TravelError, UserError} from "../errors";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
-import {ExpenseType} from "../../types/ExpenseType";
 import {ActionName} from "../../types/ActionsType";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
-import {LimitType} from "../../types/LimitType";
-import {LimitError, TravelError, UserError} from "../errors";
 import {TravelService} from "./TravelService";
 import {Context} from "../Context/Context";
+import {Compare} from "../Compare";
 import {DB} from "../db/DB";
 
 
-async function getValidLimit(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User) {
+async function getValidLimit(limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User) {
     const newLimit = new Limit(limit, user)
     const personalLimitFlag = Limit.isPersonal(newLimit, user)
-    const cursor = await DB.openCursor<ExpenseType>(StoreName.EXPENSE)
+    const cursor = await DB.openCursor<Expense>(StoreName.EXPENSE)
     let next_exp = (await cursor.next()).value
     let total = 0
 
@@ -35,7 +34,7 @@ async function getValidLimit(limit: Partial<LimitType> & Pick<LimitType, 'sectio
 
 export class LimitService {
 
-    static async create(limit: Partial<LimitType> & Pick<LimitType, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User | undefined) {
+    static async create(limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User | undefined) {
         if (!user) throw UserError.unauthorized()
 
         const newLimit = await getValidLimit(limit, user)
@@ -47,8 +46,22 @@ export class LimitService {
     static async update(limit: Limit, user: User) {
         if (!user) throw UserError.unauthorized()
 
+        const oldLimit = await DB.getOne<Limit>(StoreName.LIMIT, limit.id)
+
+        if(!oldLimit) throw LimitError.updateBeforeCreate()
+
         const newLimit = await getValidLimit(limit, user)
-        await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.UPDATE)
+
+        const change = Compare.objects(oldLimit, newLimit, ["id", "primary_entity_id"], ['user'])
+
+        const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
+
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
+        const limitStore = tx.objectStore(StoreName.LIMIT)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        limitStore.put(newLimit)
+        actionStore.add(action)
         return user
     }
 
@@ -62,7 +75,9 @@ export class LimitService {
             if (!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
             if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
         }
-        const action = new Action(user, user.id, StoreName.LIMIT, ActionName.DELETE)
+
+        const {id, primary_entity_id} = limit
+        const action = new Action({id, primary_entity_id}, user.id, StoreName.LIMIT, ActionName.DELETE)
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
         const limitStore = tx.objectStore(StoreName.LIMIT)
@@ -76,7 +91,7 @@ export class LimitService {
         const user = context.user
         if (!user) throw UserError.unauthorized()
 
-        const limits_obj = await DB.getManyFromIndex<LimitType>(StoreName.LIMIT, IndexName.PRIMARY_ENTITY_ID, id)
+        const limits_obj = await DB.getManyFromIndex<Limit>(StoreName.LIMIT, IndexName.PRIMARY_ENTITY_ID, id)
         return limits_obj.map(l => new Limit(l, user))
     }
 
@@ -84,7 +99,7 @@ export class LimitService {
     static async updateWithNewExpense(expense: Expense, user: User) {
         if (expense.variant !== 'expenses_plan') return
 
-        const cursor = DB.openIndexCursor<ExpenseType>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, expense.primary_entity_id)
+        const cursor = DB.openIndexCursor<Expense>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, expense.primary_entity_id)
 
         let expenseObj = (await cursor.next()).value
         let total = 0
@@ -109,9 +124,9 @@ export class LimitService {
             total += e.value
             expenseObj = (await cursor.next()).value
         }
-        let limit: LimitType | undefined
-        if (Expense.isPersonal(expense, user)) limit = await DB.getOne<LimitType>(StoreName.LIMIT, `${user.id}:${expense.primary_entity_id}`)
-        else limit = await DB.getOne<LimitType>(StoreName.LIMIT, `${expense.section_id}:${expense.primary_entity_id}`)
+        let limit: Limit | undefined
+        if (Expense.isPersonal(expense, user)) limit = await DB.getOne<Limit>(StoreName.LIMIT, `${user.id}:${expense.primary_entity_id}`)
+        else limit = await DB.getOne<Limit>(StoreName.LIMIT, `${expense.section_id}:${expense.primary_entity_id}`)
 
         if (!limit) {
             const id = Expense.isPersonal(expense,user)
@@ -129,9 +144,20 @@ export class LimitService {
             await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.ADD)
         } else {
             if (limit.value < total) {
-                limit.value = total
                 const l = new Limit(limit, user)
-                await DB.writeWithAction(StoreName.LIMIT, l, user.id, ActionName.UPDATE)
+                l.value = total
+
+                const change = Compare.objects(limit, l, ["id", "primary_entity_id"], ['user'])
+
+                const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
+
+                const db = await openIDBDatabase()
+                const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
+                const limitStore = tx.objectStore(StoreName.LIMIT)
+                const actionStore = tx.objectStore(StoreName.ACTION)
+                limitStore.put(l)
+                actionStore.add(action)
+                // await DB.writeWithAction(StoreName.LIMIT, l, user.id, ActionName.UPDATE)
             }
         }
 

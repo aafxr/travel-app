@@ -99,7 +99,7 @@ export default function TravelMain() {
                             <h2 className='center gap-0.5'
                                 onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
                                 { travel.title || (<span className='travel-details-title--empty'>Добавить название</span>) }
-                                    {travel.isPublic ? <VisibilityIcon className='travel-details-icon icon public'/> : <VisibilityOffIcon className='travel-details-icon icon private'/>}
+                                    {Travel.isPublic(travel) ? <VisibilityIcon className='travel-details-icon icon public'/> : <VisibilityOffIcon className='travel-details-icon icon private'/>}
                             </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
                         </div>

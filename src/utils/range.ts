@@ -7,7 +7,7 @@
  * @returns {number[]}
  * @category Utils
  */
-export default function range(start, end) {
+export default function range(start: number, end: number) {
     let output = []
     if (typeof end === 'undefined') {
         end = start

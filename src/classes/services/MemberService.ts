@@ -2,9 +2,9 @@ import {fetchUsers} from "../../api/fetch/fetchUsers";
 import {fetchUser} from "../../api/fetch/fetchUser";
 import {MemberType} from "../../types/MemberType";
 import {StoreName} from "../../types/StoreName";
-import {Member} from "../StoreEntities/Member";
 import {Photo} from "../StoreEntities/Photo";
 import {PhotoService} from "./PhotoService";
+import {Member} from "../StoreEntities";
 import {DB} from "../db/DB";
 
 

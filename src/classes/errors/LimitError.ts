@@ -15,4 +15,8 @@ export class LimitError extends CustomError{
         return new LimitError(`Лимит должен быть больше либо раве запланированным расходам. Минимальное значение: ${value} ${currencySymbol || ''}`,ErrorCode.LOW_LIMIT_VALUE)
     }
 
+    static updateBeforeCreate(){
+        return new LimitError('Обновление лимита до создания', ErrorCode.LIMIT_UPDATE_BEFORE_CREATE)
+    }
+
 }

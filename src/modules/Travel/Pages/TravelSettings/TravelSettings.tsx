@@ -205,7 +205,7 @@ export default function TravelSettings() {
                         <section className='block'>
                             <ToggleBox
                                 className='block'
-                                init={state.travel.isPublic}
+                                init={Travel.isPublic(state.travel)}
                                 onChange={handleToggleBoxChanged}
                                 title={"Сделать видимым для всех"}
                             />

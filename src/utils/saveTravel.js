@@ -29,7 +29,7 @@ export default async function saveTravel(travel, user_id){
     /***@type{TravelType}*/
     const oldTravel = await storeDB.getOne(constants.store.TRAVEL, travel.id)
     if (oldTravel){
-        const newTravel = changedFields(oldTravel, travel, ['id']).reduce((acc, key) => {
+        const newTravel = Compare.objects(oldTravel, travel, ['id']).reduce((acc, key) => {
             acc[key] = travel[key]
             return acc
         },{})

@@ -13,6 +13,8 @@ import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
 
 import '../../css/Expenses.css'
+import {DB} from "../../../../classes/db/DB";
+import {StoreName} from "../../../../types/StoreName";
 
 /**
  * страница редактиррования лимитов
@@ -63,7 +65,7 @@ export default function LimitsEdit() {
 
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
-    function handleSave() {
+    async function handleSave() {
         if (!limit || !user || !travel) return
 
         if (limit.value < total) {
@@ -75,9 +77,17 @@ export default function LimitsEdit() {
             return
         }
 
-        LimitService.update(limit, user)
-            .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
-            .catch(defaultHandleError)
+        const l = await DB.getOne<Limit>(StoreName.LIMIT, limit.id)
+
+        if(l) {
+            LimitService.update(limit, user)
+                .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
+                .catch(defaultHandleError)
+        } else {
+            LimitService.create(limit, user)
+                .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
+                .catch(defaultHandleError)
+        }
     }
 
 
