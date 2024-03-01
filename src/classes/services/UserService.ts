@@ -21,9 +21,23 @@ const devUser = {
 
 
 /**
- * сервис для обновления информации о
+ * сервис для обновления информации о пользователе
+ *
+ * ---
+ * доступны следующие методы:
+ * - getLoggedInUser
+ * - create
+ * - update
+ * - delete
+ * - getById
+ * - logIn
+ * - logOut
  */
 export class UserService {
+
+    /**
+     * метод загружает информацию о последнем пользователе, который был авторизован
+     */
     static async getLoggedInUser() {
         if (location.hostname === 'localhost') {
             const dev_user = await DB.getOne<UserType>(StoreName.USERS, devUser.id)
@@ -46,6 +60,10 @@ export class UserService {
         return null
     }
 
+    /**
+     * метод позволяет создать нового пользователя и генерирует action
+     * @param user
+     */
     static async create(user: Partial<UserType> | undefined) {
         const newUser = user ? new User(user) : new User({})
         const action = new Action(newUser, newUser.id, StoreName.USERS, ActionName.ADD)
@@ -56,9 +74,12 @@ export class UserService {
         userStore.add(newUser)
         actionStore.add(action)
         return newUser
-
     }
 
+    /**
+     * метод позволяет обновить информацию о пользователе и генерирует action
+     * @param user
+     */
     static async update(user: User) {
         if (user.image) await PhotoService.save(user.image)
 
@@ -78,6 +99,10 @@ export class UserService {
         return user
     }
 
+    /**
+     * метод позволяет удалить информацию о пользователе из бд и генерирует action
+     * @param user
+     */
     static async delete(user: User) {
         const action = new Action({id: user.id}, user.id, StoreName.USERS, ActionName.DELETE)
         const db = await openIDBDatabase()
@@ -88,6 +113,10 @@ export class UserService {
         actionStore.add(action)
     }
 
+    /**
+     * метод позволяет загрузить информацию о пользователе о пользователе
+     * @param id
+     */
     static async getById(id: string) {
         const user = await DB.getOne<UserType>(StoreName.USERS, id)
         if (user) {
@@ -100,6 +129,11 @@ export class UserService {
         }
     }
 
+    /**
+     * метод получает информацию о пользователе от сервиса telegramAuthWidget и формирует запрос к апи для прохождения
+     * процедуры аутентификации. Затем, в случае успешной верификации, сохраняет информацию в бд
+     * @param authPayload информацию от telegramAuthWidget
+     */
     static async logIn(authPayload: TelegramAuthPayloadType) {
         const user = await fetchUserAuthTg(authPayload)
         if (user) {
@@ -112,6 +146,10 @@ export class UserService {
 
     }
 
+    /**
+     * метод удаляет информацию о залогиненом пользователе
+     * @param user
+     */
     static async logOut(user: User) {
         localStorage.removeItem(USER_AUTH)
         await DB.delete(StoreName.USERS, user.id)
