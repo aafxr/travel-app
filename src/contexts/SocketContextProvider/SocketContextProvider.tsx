@@ -24,13 +24,9 @@ export function SocketContextProvider(){
 
         const socket =  new WebSocket(`wss://${process.env.REACT_APP_SOCKET_SERVER_NAME}:62879?groupName=${travel.id}&userID=${user.id}`)
 
-        socket.addEventListener('open', () => {
-            const msg = SocketMessage.join(travel.id)
-            socket.send(JSON.stringify(msg))
-            setState({socket})
-        })
+        socket.addEventListener('open', () => { setState({socket}) })
 
-        socket.onclose = () => setState({})
+        socket.onclose = () => { setState({}) }
         socket.onerror = console.log
 
         socket.onmessage = (e: MessageEvent<SocketMessageType>) =>{
@@ -38,8 +34,6 @@ export function SocketContextProvider(){
         }
 
         return () => {
-            const msg = SocketMessage.leave(travel.id)
-            socket.send(JSON.stringify(msg))
             socket.close()
         }
     }, [])

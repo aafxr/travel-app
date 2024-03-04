@@ -3,12 +3,6 @@ import {Action} from "../StoreEntities";
 
 export type SocketMessageType = {
     id: string,
-    join: string
-} | {
-    id: string,
-    leave: string
-} | {
-    id: string,
     message: {
         from: string,
         to: string,
@@ -35,40 +29,13 @@ export class SocketMessage {
         return nanoid(7)
     }
 
-
-    /**
-     * метод для отправки сообщения на подключение к шруппе
-     * @param group
-     */
-    static join(group: string) {
-        const msg: SocketMessageType = {
-            id: SocketMessage.getMessageID(),
-            join: group
-        }
-        return msg
-    }
-
-
-    /**
-     * метод для отключения от группы
-     * @param group
-     */
-    static leave(group: string) {
-        const msg: SocketMessageType = {
-            id: SocketMessage.getMessageID(),
-            leave: group
-        }
-        return msg
-    }
-
-
     /**
      * текстовое сообщение  пользователю
-     * @param from
-     * @param to
+     * @param from отправитель
+     * @param to получатель
      * @param text
      * @param date
-     * @param primary_entity_id
+     * @param primary_entity_id ид путешествия
      */
     static message(from: string, to: string, text: string, primary_entity_id: string, date?: Date) {
         if (!date) date = new Date()

@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useMemo, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {Expense, Section as SectionEntity, User} from "../../../../classes/StoreEntities";
+import {Expense, Section as SectionEntity, Travel, User} from "../../../../classes/StoreEntities";
 import {ExpenseService, SectionService} from "../../../../classes/services";
 import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
@@ -68,7 +68,7 @@ function Section({
                     </div>
                 </Link>
                 {<>
-                    {User.getSetting(user, 'expensesFilter') === "all"
+                    {(User.getSetting(user, 'expensesFilter') === "all" && travel.members_count !== 1 )
                         ? <Line value={0} color={color}/>
                         : <Line value={percent} color={color}/>
                     }
