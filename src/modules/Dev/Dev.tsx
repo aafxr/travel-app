@@ -8,7 +8,7 @@ import './dev.css'
 
 
 
-export default function Dev() {
+export function Dev() {
     const navigate = useNavigate()
 
 
@@ -44,6 +44,7 @@ export default function Dev() {
                     <div className={'message'}>
                         <div className={'message-text'}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium blanditiis in similique.</div>
                         <div className={'message-close'}>X</div>
+                        <span className={'message-icon'}></span>
                     </div>
                 </div>
             </Container>

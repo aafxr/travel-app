@@ -45,6 +45,7 @@ import {ExchangeContextProvider} from "./contexts/ExchangeContext";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import ActionsWorkerContextProvider from "./contexts/ActionsWorkerContextProvider/ActionsWorkerContextProvider";
 import {SocketContextProvider} from "./contexts/SocketContextProvider";
+import {Dev} from "./modules/Dev";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -129,7 +130,7 @@ function App() {
             <Routes>
                 <Route path={'/'} element={<Main/>}/>
                 <Route path={'/auth/'} element={<TelegramAuth handleAuth={handleAuth}/>}/>
-                {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
+                <Route path={'/dev/'} element={<Dev/>}/>
                 <Route element={<AuthRequired/>}>
                     <Route element={<ActionsWorkerContextProvider/>}>
                         <Route path={'/favorite/'} element={<Favorite/>}/>
