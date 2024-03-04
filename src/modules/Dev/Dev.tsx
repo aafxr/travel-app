@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react'
-import {Link, useNavigate} from "react-router-dom";
-import {Input, PageHeader} from "../../components/ui";
-import Container from "../../components/Container/Container";
+import {useNavigate} from "react-router-dom";
 
-import Categories from "../../components/Categories/Categories";
+import Container from "../../components/Container/Container";
+import {PageHeader} from "../../components/ui";
+
+import './dev.css'
+
 
 
 export default function Dev() {
@@ -20,7 +22,9 @@ export default function Dev() {
         return null
     }
 
-    const options = ["₽", "$","€","¥","₸"]
+
+
+
 
     return (
         <>
@@ -37,9 +41,11 @@ export default function Dev() {
                     <h2 style={{fontWeight: '900'}}>
                         <b>Опции</b>
                     </h2>
+                    <div className={'message'}>
+                        <div className={'message-text'}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium blanditiis in similique.</div>
+                        <div className={'message-close'}>X</div>
+                    </div>
                 </div>
-                <Categories style={{marginTop: '0.5rem'}}/>
-                <Categories style={{marginTop: '0.5rem'}}/>
             </Container>
         </>
     )
