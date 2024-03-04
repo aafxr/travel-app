@@ -22,20 +22,12 @@ export function SocketContextProvider(){
     useEffect(() => {
         if(!travel || !user) return
 
-        const socket =  new WebSocket(`wss://${process.env.REACT_APP_SOCKET_SERVER_NAME}:62879?groupName=${travel.id}&userID=${user.id}`)
-
+        const socket =  new WebSocket(`wss://${process.env.REACT_APP_SOCKET_SERVER_NAME}:62879?userID=${user.id}`)
         socket.addEventListener('open', () => { setState({socket}) })
-
         socket.onclose = () => { setState({}) }
         socket.onerror = console.log
-
-        socket.onmessage = (e: MessageEvent<SocketMessageType>) =>{
-            console.log(e.data)
-        }
-
-        return () => {
-            socket.close()
-        }
+        socket.onmessage = (e: MessageEvent<SocketMessageType>) =>{ console.log(e.data) }
+        return () => { socket.close() }
     }, [])
 
     if (state.socket) window.socket = state.socket
