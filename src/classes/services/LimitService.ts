@@ -45,6 +45,7 @@ async function getValidLimit(limit: Partial<Limit> & Pick<Limit, 'section_id' | 
  * - getAllByTravelId
  * - updateWithNewExpense
  * - getByID
+ * - writeTransaction
  */
 export class LimitService {
 
@@ -79,12 +80,8 @@ export class LimitService {
 
         const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
 
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
-        const limitStore = tx.objectStore(StoreName.LIMIT)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        limitStore.put(newLimit)
-        actionStore.add(action)
+        await LimitService.writeTransaction(limit, action)
+
         return user
     }
 
@@ -104,13 +101,8 @@ export class LimitService {
         }
 
         const {id, primary_entity_id} = limit
-        const action = new Action({id, primary_entity_id}, user.id, StoreName.LIMIT, ActionName.DELETE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
-        const limitStore = tx.objectStore(StoreName.LIMIT)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        limitStore.delete(limit.id)
-        actionStore.add(action)
+        const action = new Action({id, primary_entity_id} as Limit, user.id, StoreName.LIMIT, ActionName.DELETE)
+        await LimitService.writeTransaction(limit, action, true)
     }
 
     /**
@@ -182,13 +174,7 @@ export class LimitService {
 
                 const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
 
-                const db = await openIDBDatabase()
-                const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
-                const limitStore = tx.objectStore(StoreName.LIMIT)
-                const actionStore = tx.objectStore(StoreName.ACTION)
-                limitStore.put(l)
-                actionStore.add(action)
-                // await DB.writeWithAction(StoreName.LIMIT, l, user.id, ActionName.UPDATE)
+                await LimitService.writeTransaction(limit, action)
             }
         }
 
@@ -202,5 +188,17 @@ export class LimitService {
     static async getByID(user: User, limitID: string, ){
         const limit = await DB.getOne<Limit>(StoreName.LIMIT, limitID)
         if(limit) return new Limit(limit, user)
+    }
+
+
+    static async writeTransaction(limit: Limit, action: Action<Partial<Limit>>, isDelete = false){
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
+        const limitStore = tx.objectStore(StoreName.LIMIT)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        isDelete
+            ? limitStore.delete(limit.id)
+            : limitStore.put(limit)
+        actionStore.add(action)
     }
 }

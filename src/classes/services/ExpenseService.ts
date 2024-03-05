@@ -24,6 +24,7 @@ import {DB} from "../db/DB";
  * - getAllByTravelId
  * - getById
  * - getTotal
+ * - writeTransaction
  */
 export class ExpenseService {
 
@@ -33,7 +34,8 @@ export class ExpenseService {
      * @param user
      */
     static async create(expense: Expense, user: User) {
-        await DB.writeWithAction(StoreName.EXPENSE, expense, user.id, ActionName.ADD)
+        const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.ADD)
+        await ExpenseService.writeTransaction(expense, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
@@ -57,12 +59,7 @@ export class ExpenseService {
         const changed = Compare.objects(oldExpense, expense, ['id', 'primary_entity_id'], ["user"])
 
         const action = new Action(changed, user.id, expense.variant as StoreName, ActionName.UPDATE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.EXPENSE)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.put(expense)
-        actionStore.add(action)
+        await ExpenseService.writeTransaction(expense, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
@@ -80,13 +77,8 @@ export class ExpenseService {
         // }
         const {id,primary_entity_id} = expense
 
-        const action = new Action({id,primary_entity_id}, expense.id, expense.variant as StoreName, ActionName.DELETE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.EXPENSE)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.delete(expense.id)
-        actionStore.add(action)
+        const action = new Action({id,primary_entity_id} as Expense, user.id, expense.variant as StoreName, ActionName.DELETE)
+        await ExpenseService.writeTransaction(expense, action, true)
     }
 
     /**
@@ -149,5 +141,22 @@ export class ExpenseService {
             expense = (await cursor.next()).value
         }
         return total
+    }
+
+    /**
+     * транзакция для записи расхода экшена
+     * @param expense
+     * @param action
+     * @param isDelete
+     */
+    static async writeTransaction(expense:Expense, action: Action<Partial<Expense>>, isDelete = false){
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
+        const expenseStore = tx.objectStore(StoreName.EXPENSE)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        isDelete
+            ? expenseStore.delete(expense.id)
+            : expenseStore.put(expense)
+        actionStore.add(action)
     }
 }

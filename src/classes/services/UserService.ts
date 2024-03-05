@@ -32,6 +32,7 @@ const devUser = {
  * - getById
  * - logIn
  * - logOut
+ * - writeTransaction
  */
 export class UserService {
 
@@ -67,12 +68,7 @@ export class UserService {
     static async create(user: Partial<UserType> | undefined) {
         const newUser = user ? new User(user) : new User({})
         const action = new Action(newUser, newUser.id, StoreName.USERS, ActionName.ADD)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
-        const userStore = tx.objectStore(StoreName.USERS)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        userStore.add(newUser)
-        actionStore.add(action)
+        await UserService.writeTransaction(newUser, action)
         return newUser
     }
 
@@ -90,12 +86,7 @@ export class UserService {
         const changed = Compare.objects(oldUser, user, ['id'])
 
         const action = new Action(changed, user.id, StoreName.USERS, ActionName.UPDATE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.USERS)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.put(user)
-        actionStore.add(action)
+        await UserService.writeTransaction(user, action)
         return user
     }
 
@@ -105,12 +96,7 @@ export class UserService {
      */
     static async delete(user: User) {
         const action = new Action({id: user.id}, user.id, StoreName.USERS, ActionName.DELETE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
-        const userStore = tx.objectStore(StoreName.USERS)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        userStore.delete(user.id)
-        actionStore.add(action)
+        await UserService.writeTransaction(user, action, true)
     }
 
     /**
@@ -156,5 +142,16 @@ export class UserService {
         await DB.delete(StoreName.STORE, ACCESS_TOKEN)
         await DB.delete(StoreName.STORE, REFRESH_TOKEN)
         await fetchRemoveUserAuth(user)
+    }
+
+    static async writeTransaction(user:User, action: Action<Partial<User>>, isDelete = false){
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.USERS, StoreName.ACTION], 'readwrite')
+        const userStore = tx.objectStore(StoreName.USERS)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        isDelete
+            ? userStore.delete(user.id)
+            : userStore.put(user)
+        actionStore.add(action)
     }
 }

@@ -21,6 +21,7 @@ import {DB} from "../db/DB";
  * - getById
  * - getList
  * - getRecommendRoutes
+ * - writeTransaction
  */
 export class TravelService {
 
@@ -36,12 +37,7 @@ export class TravelService {
         const owner = user
         const travel = new Travel({...newTravel, owner_id: owner.id})
         const action = new Action(travel, owner.id, StoreName.TRAVEL, ActionName.ADD)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.ACTION, StoreName.TRAVEL], "readwrite")
-        const travelStore = tx.objectStore(StoreName.TRAVEL)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        travelStore.add(travel)
-        actionStore.add(action)
+        await TravelService.writeTransaction(travel, action)
         return travel
     }
 
@@ -63,14 +59,7 @@ export class TravelService {
 
         const action = new Action(change, user.id, StoreName.TRAVEL, ActionName.UPDATE)
 
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
-        const travelStore = tx.objectStore(StoreName.TRAVEL)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        travelStore.put(travel)
-        actionStore.add(action)
-
-        // await DB.writeWithAction(StoreName.TRAVEL, travel, user.id, ActionName.UPDATE)
+        await TravelService.writeTransaction(travel, action)
         return travel
     }
 
@@ -86,12 +75,7 @@ export class TravelService {
         const {id} = travel
 
         const action = new Action({id}, user.id, StoreName.TRAVEL, ActionName.DELETE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
-        const travelStore = tx.objectStore(StoreName.TRAVEL)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        travelStore.delete(travel.id)
-        actionStore.add(action)
+        await TravelService.writeTransaction(travel, action, true)
     }
 
     /**
@@ -155,5 +139,16 @@ export class TravelService {
     //     travel.setPlaces([...travel.places, ...places])
     //     await TravelService.update(travel, user)
     // }
+
+    static async writeTransaction(travel:Travel, action: Action<Partial<Travel>>, isDelete = false){
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
+        const travelStore = tx.objectStore(StoreName.TRAVEL)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        isDelete
+            ? travelStore.delete(travel.id)
+            : travelStore.put(travel)
+        actionStore.add(action)
+    }
 
 }
