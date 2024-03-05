@@ -50,7 +50,7 @@ export class Recover{
      * @param travelID ид путешествия
      * @param user
      */
-    async expense(travelID:string, user: User){
+    static async expense(travelID:string, user: User){
         const t: Record<string, Expense> = {}
 
         const ev: ExpenseVariantType[] = ["expenses_plan", "expenses_actual"]
@@ -76,7 +76,7 @@ export class Recover{
      * @param travelID ид путешествия
      * @param user
      */
-    async limit(travelID: string, user: User){
+    static async limit(travelID: string, user: User){
         const t: Record<string, Limit> = {}
 
         const predicate = (a: Action<Limit>) => a.entity === StoreName.LIMIT && a.data.primary_entity_id === travelID

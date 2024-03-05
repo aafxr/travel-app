@@ -15,6 +15,7 @@ declare global {
         User:User.prototype
         context: Context
         DB: DB
+        Recover: Recover
         TelegramLoginWidget: {
             dataOnauth: (user) => unknown,
         }

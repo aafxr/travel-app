@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 
 import Main from "./modules/Main/Pages/Main/Main";
 import Alerts, {pushAlertMessage} from "./components/Alerts/Alerts";
@@ -46,6 +46,7 @@ import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import ActionsWorkerContextProvider from "./contexts/ActionsWorkerContextProvider/ActionsWorkerContextProvider";
 import {SocketContextProvider} from "./contexts/SocketContextProvider";
 import {Dev} from "./modules/Dev";
+import {Recover} from "./classes/Recover";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -114,6 +115,7 @@ function App() {
     window.Expense = Expense
     window.Travel = Travel
     window.Place = Place
+    window.Recover = Recover
 
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)

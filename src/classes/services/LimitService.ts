@@ -58,7 +58,11 @@ export class LimitService {
         if (!user) throw UserError.unauthorized()
 
         const newLimit = await getValidLimit(limit, user)
-        await DB.writeWithAction(StoreName.LIMIT, newLimit, user.id, ActionName.ADD)
+        const limitObject = {...newLimit} as Partial<Limit>
+        delete limitObject['user']
+
+        const action = new Action(limitObject, user.id, StoreName.LIMIT, ActionName.ADD)
+        await LimitService.writeTransaction(limitObject, action)
         return newLimit
     }
 
@@ -80,7 +84,7 @@ export class LimitService {
 
         const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
 
-        await LimitService.writeTransaction(limit, action)
+        await LimitService.writeTransaction(change, action)
 
         return user
     }
@@ -191,13 +195,13 @@ export class LimitService {
     }
 
 
-    static async writeTransaction(limit: Limit, action: Action<Partial<Limit>>, isDelete = false){
+    static async writeTransaction(limit: Partial<Limit>, action: Action<Partial<Limit>>, isDelete = false){
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.LIMIT, StoreName.ACTION], 'readwrite')
         const limitStore = tx.objectStore(StoreName.LIMIT)
         const actionStore = tx.objectStore(StoreName.ACTION)
         isDelete
-            ? limitStore.delete(limit.id)
+            ? limitStore.delete(limit?.id || '')
             : limitStore.put(limit)
         actionStore.add(action)
     }
