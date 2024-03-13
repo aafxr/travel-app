@@ -9,7 +9,7 @@ import {DB} from '../classes/db/DB'
  * @category Utils
  */
 export default function clearUserData(){
-    if (window) {
+    if ('localStorage' in  window) {
         // window?.location.reload()
         window?.localStorage.removeItem(USER_AUTH)
     }

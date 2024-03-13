@@ -2,11 +2,13 @@ import {Outlet} from "react-router-dom";
 import {createContext, useEffect, useState} from "react";
 
 import {useTravel, useUser} from "../AppContextProvider";
-import {SocketMessage, SocketMessageType} from "../../classes/SocketMessage";
+import { SocketMessageType} from "../../classes/SocketMessage";
+import {io, Socket} from "socket.io-client";
 
 
 export type SocketContextType = {
-    socket?: WebSocket | undefined
+    socket?: Socket | undefined
+    errorMessage?: string
 }
 
 
@@ -22,15 +24,28 @@ export function SocketContextProvider(){
     useEffect(() => {
         if(!travel || !user) return
 
-        const socket =  new WebSocket(`wss://${process.env.REACT_APP_SOCKET_SERVER_NAME}:62879?userID=${user.id}`)
-        socket.addEventListener('open', () => { setState({socket}) })
-        socket.onclose = () => { setState({}) }
-        socket.onerror = console.log
-        socket.onmessage = (e: MessageEvent<SocketMessageType>) =>{ console.log(e.data) }
+        const socket =  io(process.env.REACT_APP_SOCKET_URL as string) //{ host: process.env.REACT_APP_SOCKET_HOST ,port:process.env.REACT_APP_SOCKET_PORT, secure: true}
+
+        socket.on('connect', () => {
+            socket.emit('join',{join:{travelID: travel.id}})
+
+            setState({socket})
+        })
+        socket.on('disconnect', () => setState({socket: undefined}))
+        socket.on('connect_error', (err: Error) => {
+            console.error(err)
+            setState({...state, errorMessage: err.message})
+        })
+
+        socket.on('message', (msg) => console.log(msg))
+
         return () => { socket.close() }
     }, [])
 
-    if (state.socket) window.socket = state.socket
+    if (state.socket) {
+        window.socket = state.socket
+        window.sendMessage = (id:string, message: string = 'test message') => window.socket.emit('message',{message:{primary_entity_id: id, text: message}})
+    }
 
     return (
         <SocketContext.Provider value={state}>

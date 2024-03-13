@@ -1,6 +1,7 @@
 import {Place, Travel, User} from "./classes/StoreEntities";
-import {DB} from "./classes/db/DB";
 import {Context} from "./classes/Context/Context";
+import {Socket} from "socket.io-client";
+import {DB} from "./classes/db/DB";
 import ymaps from "ymaps/index";
 
 
@@ -20,7 +21,8 @@ declare global {
             dataOnauth: (user) => unknown,
         }
         ymaps:ymaps,
-        socket: WebSocket
+        socket: Socket
+        sendMessage: function
     }
 
     interface GlobalEventHandlersEventMap{

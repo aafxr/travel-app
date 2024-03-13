@@ -120,26 +120,6 @@ export class TravelService {
         }
     }
 
-    // static async addPlace(ctx: Context, place: Place) {
-    //     const {user, travel} = ctx
-    //     if (!travel) throw TravelError.unexpectedTravelId('undefined')
-    //     if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
-    //     if (!place || place.id) throw TravelError.unexpectedPlace(place?.id)
-    //
-    //     travel.setPlaces([...travel.places, place])
-    //     return await TravelService.update(travel, user)
-    // }
-
-    // static async addPlaces(ctx: Context, travel: Travel, places: Place[]) {
-    //     const user = ctx.user
-    //
-    //     if (!user) throw UserError.unauthorized()
-    //     if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
-    //
-    //     travel.setPlaces([...travel.places, ...places])
-    //     await TravelService.update(travel, user)
-    // }
-
     static async writeTransaction(travel:Travel, action: Action<Partial<Travel>>, isDelete = false){
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')

@@ -94,4 +94,33 @@ export class Recover{
 
         return Object.values(t)
     }
+
+    /**
+     * метод, присвивает сущности измененные поля и обновляет запись в бд
+     * @param action
+     * @param [cb] опциональный коллбек (если указан, то поиск сущности в бд осуществляется по ключу, вернувшемуся из этого колбека)
+     */
+    static async asign<T extends {}>(action: Action<T>, cb?: (a: Action<T>) => string){
+        let key = ''
+        if(cb) key = cb(action)
+        else if('id' in action.data) key = action.data.id as string
+
+        if (!key) return
+
+        let storeName = action.entity
+        if(storeName.startsWith('expense')) storeName = StoreName.EXPENSE
+
+        const entity = await DB.getOne<T>(storeName, key)
+        if(!entity) return
+
+        const changes = action.data
+        const entityKeys = Object.keys(changes) as Array<keyof T>
+        entityKeys.forEach(k => {
+            if(entity[k] && typeof entity[k] === 'object') Object.assign(entity[k] as object, changes[k])
+            else entity[k] = changes[k] as any
+        })
+
+        await DB.update(storeName, entity)
+        return entity
+    }
 }
