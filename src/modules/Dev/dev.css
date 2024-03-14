@@ -1,11 +1,11 @@
-.message{
-    position: relative;
-    padding: 0.5rem 0.7rem;
-    border-radius: 0.7rem;
-    border: 2px solid var(--color-primary);
-    background-color: var(--color-background);
-    animation: 1s linear 1 slideInRight;
-}
+/*.message{*/
+/*    position: relative;*/
+/*    padding: 0.5rem 0.7rem;*/
+/*    border-radius: 0.7rem;*/
+/*    border: 2px solid var(--color-primary);*/
+/*    background-color: var(--color-background);*/
+/*    animation: 1s linear 1 slideInRight;*/
+/*}*/
 
 .message-text{
     font-size: 0.85rem;

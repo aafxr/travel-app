@@ -47,6 +47,7 @@ import ActionsWorkerContextProvider from "./contexts/ActionsWorkerContextProvide
 import {SocketContextProvider} from "./contexts/SocketContextProvider";
 import {Dev} from "./modules/Dev";
 import {Recover} from "./classes/Recover";
+import {TravelChat} from "./modules/Travel/Pages/TravelChat/TravelChat";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -146,6 +147,7 @@ function App() {
                                 <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                                 <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
                                 <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
+                                <Route path={'/travel/:travelCode/chat/'} element={<TravelChat/>}/>
                                 <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
                                 <Route path={'/travel/:travelCode/checklist/'} element={<CheckListComponent/>}/>
                                 <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>

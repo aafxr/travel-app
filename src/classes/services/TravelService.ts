@@ -95,7 +95,10 @@ export class TravelService {
      */
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
-        if (fetchTravelsList.length) return fetchTravelsList
+        if (fetchTravelsList.length) {
+            await DB.writeAllToStore(StoreName.TRAVEL, fetchTravelsList)
+            return fetchTravelsList
+        }
 
         const idb_travels = await DB.getAll<Travel>(StoreName.TRAVEL, max)
         return idb_travels.map(t => new Travel(t))

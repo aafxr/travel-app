@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 
-import {ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
+import {ChatIcon, ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
@@ -79,6 +79,11 @@ export default function TravelMain() {
         navigate(`/travel/${travel.id}/settings/invite/`)
     }
 
+    function handleChatButtonClick(){
+        if(!travel) return
+        navigate(`/travel/${travel.id}/chat/`)
+    }
+
     return (
         <>
             <Container className='travel-details-header'>
@@ -130,7 +135,7 @@ export default function TravelMain() {
                                 onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
                             />
                         }
-                        {/*<IconButton icon={<ChatIcon badge/>}/>*/}
+                        <IconButton icon={<ChatIcon badge/>} onClick={handleChatButtonClick}/>
                     </div>
                     </div>
                 </div>
