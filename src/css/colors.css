@@ -43,6 +43,11 @@
 
     --controls-shadow: drop-shadow(0px 5px 15px rgba(0, 0, 0, 0.10));
 
+    --right-msg-bg: #519df5;
+    --right-msg-text: #fff;
+    --left-msg-bg: var(--color-grey-light);
+    --left-msg-text: #000;
+
 
 }
 

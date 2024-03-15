@@ -49,8 +49,6 @@ export function SocketContextProvider(){
                 MessageService
                     .saveNewMessage(message)
                     .catch(defaultHandleError)
-
-            pushAlertMessage({type: "info", message: msg})
         })
 
         return () => { socket.close() }

@@ -1,13 +1,15 @@
 import clsx from "clsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {useSocket} from "../../../../contexts/SocketContextProvider";
 import Container from "../../../../components/Container/Container";
+import TextArea from "../../../../components/ui/TextArea/TextArea";
 import {MessageService} from "../../../../classes/services";
 import {Message} from "../../../../classes/StoreEntities";
 import {PageHeader} from "../../../../components/ui";
+import {SendIcon} from "../../../../components/svg";
 
 import './TravelChat.css'
 
@@ -17,6 +19,9 @@ export function TravelChat() {
     const user = useUser()
     const travel = useTravel()
     const [messages, setMessages] = useState<Message[]>([])
+    const [text, setText] = useState('')
+    const [taFocus, setTaFocus] = useState(false)
+    const chatRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (!travel) return
@@ -32,7 +37,7 @@ export function TravelChat() {
 
         function newMessage(msg: string) {
             const m = Message.fromSocket(msg)
-            if (m) setMessages([...messages, m])
+            if (m) setMessages(prev => [...prev, m])
         }
 
         socket.on('message', newMessage)
@@ -42,22 +47,43 @@ export function TravelChat() {
         }
     }, [socket])
 
-    function isLeft(msg: Message) {
-        if (!user) return false
-        return msg.from !== user.id
+    useEffect(() => {
+        if(!chatRef.current) return
+        chatRef.current.scroll({ top: chatRef.current.scrollHeight, behavior: "smooth" })
+    }, [messages])
+
+    function handleSendMessageChange(){
+        const t = text.trim()
+        if(!t || !user || !travel) return
+
+        const msg = new Message({
+            from: user.id,
+            primary_entity_id: travel.id,
+            date: new Date(),
+            text: t
+        })
+        MessageService
+            .sendMessage(msg)
+            .then(() => {
+                setText('')
+                setMessages([...messages, msg])
+            })
+            .catch(defaultHandleError)
+
     }
+
+    if(!user) return null
 
     return (
         <div className='wrapper'>
             <Container>
                 <PageHeader arrowBack title='Чат'/>
             </Container>
-            <Container className='content'>
+            <Container ref={chatRef} className='content'>
                 <div className='chat'>
-
                     {
                         messages.map((m) => (
-                            <div className={`"msg ${isLeft(m) ? 'left-msg' : 'right-msg'}"`}>
+                            <div key={m.id} className={`msg ${Message.isSelf(m, user) ? 'right-msg' : 'left-msg'}`}>
                                 <div className="msg-img"></div>
 
                                 <div className="msg-bubble">
@@ -72,8 +98,23 @@ export function TravelChat() {
                             </div>
                         ))
                     }
-
-
+                </div>
+            </Container>
+            <Container className='footer'>
+                <div className='msg-input'>
+                    <TextArea
+                        autoResize={false}
+                        className={taFocus ? 'active': ''}
+                        value={text}
+                        onChange={setText}
+                        onSubmit={handleSendMessageChange}
+                        onFocus={() => setTaFocus(true)}
+                        onBlur={() => setTaFocus(false)}
+                    />
+                    <SendIcon
+                        className={clsx('msg-input-icon', {active: !!text})}
+                        onClick={handleSendMessageChange}
+                    />
                 </div>
             </Container>
         </div>

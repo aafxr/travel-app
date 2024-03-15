@@ -1,13 +1,15 @@
 import clsx from "clsx";
-import React, {TextareaHTMLAttributes, useEffect, useRef, useState} from 'react';
+import React, {TextareaHTMLAttributes, useRef} from 'react';
+
 import './TextArea.css';
 
 
-interface TextAreaPropsType extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
-    init?: string
+interface TextAreaPropsType extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'onSubmit'> {
+    // init?: string
     value?: string
     autoResize?: boolean
     onChange?: (text: string) => unknown
+    onSubmit?: (text: string) => unknown
 }
 
 /**
@@ -25,24 +27,14 @@ interface TextAreaPropsType extends Omit<TextareaHTMLAttributes<HTMLTextAreaElem
 export default function TextArea({
                                      className,
                                      autoResize = true,
-                                     init,
+                                     // init,
                                      onChange,
+                                     onSubmit,
                                      ...props
                                  }: TextAreaPropsType) {
-    const [text, setText] = useState('')
-    // const [minHeight, setMinHeight] = useState(0);
-
     const classNames = clsx('textarea hide-scroll', className);
 
     let ref = useRef<HTMLTextAreaElement>(null);
-
-
-    useEffect(() => {
-        if (init)
-            setText(init)
-    }, [])
-
-
 
     // auto resize
     // useLayoutEffect(() => {
@@ -71,8 +63,16 @@ export default function TextArea({
 
 
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setText(e.target.value)
+        // setText(e.target.value)
         if(onChange) onChange(e.target.value)
+    }
+
+    function handleKeyUp(e:React.KeyboardEvent<HTMLTextAreaElement>){
+        if(props.onKeyUp) props.onKeyUp(e)
+        if(!ref.current) return
+        if(e.key === 'Enter' && !e.ctrlKey){
+            onSubmit?.(ref.current.value)
+        }
     }
 
 
@@ -80,8 +80,8 @@ export default function TextArea({
         <textarea
             className={classNames}
             ref={ref}
+            onKeyUp={handleKeyUp}
             {...props}
-            value={text}
             onChange={handleChange}
         ></textarea>
     );

@@ -1,4 +1,5 @@
 import {nanoid} from "nanoid";
+import {User} from "./User";
 
 export class Message{
     id: string
@@ -25,5 +26,9 @@ export class Message{
         }catch(e){
             return
         }
+    }
+
+    static isSelf(msg:Message, user?: User | undefined | null){
+        return msg.from === user?.id
     }
 }
