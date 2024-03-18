@@ -48,6 +48,11 @@ import {SocketContextProvider} from "./contexts/SocketContextProvider";
 import {Dev} from "./modules/Dev";
 import {Recover} from "./classes/Recover";
 import {TravelChat} from "./modules/Travel/Pages/TravelChat/TravelChat";
+import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
+import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
+import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
+import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
+import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -158,13 +163,13 @@ function App() {
                                 <Route path={'/travel/:travelCode/details/'} element={<TravelDetails/>}/>
                                 <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                                 {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
+                                        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
                                 {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
+                                        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
                                 {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                                 {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
                                 {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
                                 <Route element={<ExchangeContextProvider/>}>

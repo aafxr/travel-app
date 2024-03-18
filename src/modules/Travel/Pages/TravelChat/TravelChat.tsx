@@ -100,23 +100,25 @@ export function TravelChat() {
                     }
                 </div>
             </Container>
-            <Container className='footer'>
-                <div className='msg-input'>
-                    <TextArea
-                        autoResize={false}
-                        className={taFocus ? 'active': ''}
-                        value={text}
-                        onChange={setText}
-                        onSubmit={handleSendMessageChange}
-                        onFocus={() => setTaFocus(true)}
-                        onBlur={() => setTaFocus(false)}
-                    />
-                    <SendIcon
-                        className={clsx('msg-input-icon', {active: !!text})}
-                        onClick={handleSendMessageChange}
-                    />
+            {/*<Container className='footer'>*/}
+                <div className='footer-btn-container footer'>
+                    <div className='msg-input'>
+                        <TextArea
+                            autoResize={false}
+                            className={taFocus ? 'active': ''}
+                            value={text}
+                            onChange={setText}
+                            onSubmit={handleSendMessageChange}
+                            onFocus={() => setTaFocus(true)}
+                            onBlur={() => setTaFocus(false)}
+                        />
+                        <SendIcon
+                            className={clsx('msg-input-icon', {active: !!text})}
+                            onClick={handleSendMessageChange}
+                        />
+                    </div>
                 </div>
-            </Container>
+            {/*</Container>*/}
         </div>
     )
 }

@@ -8,7 +8,6 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import PhotoComponent from "../../../../components/PhotoComponents/PhotoComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
-import {PhotoService} from "../../../../classes/services/PhotoService";
 import FlatButton from "../../../../components/FlatButton/FlatButton";
 import TravelPeople from "../../components/TravelPeople/TravelPeople";
 import AddButton from "../../../../components/ui/AddButtom/AddButton";
@@ -18,6 +17,7 @@ import {Photo} from "../../../../classes/StoreEntities/Photo";
 import Curtain from "../../../../components/Curtain/Curtain";
 import {TravelService} from "../../../../classes/services";
 import {Chip, PageHeader} from "../../../../components/ui";
+import {PhotoService} from "../../../../classes/services";
 import dateRange from "../../../../utils/dateRange";
 import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
@@ -45,6 +45,7 @@ export default function TravelMain() {
     const menu = (
         <Menu>
             <LinkComponent to={`/travel/${travelCode}/description/`} title={'Описание и дата'}/>
+            <LinkComponent to={`/travel/${travelCode}/details/`} title={'Детали путешествия'}/>
             {/*<LinkComponent to={`/travel/${travelCode}/settings/`} title={'Насыщенность'}/>*/}
             {/*<LinkComponent to={`/travel/${travelCode}/permissions/`} title={'Права'}/>*/}
         </Menu>

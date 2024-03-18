@@ -38,10 +38,10 @@ export default function TravelOnRoute() {
                 </div>
             </Container>
             <Container className='content column gap-1'>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Ресторан'} onAdd={handleAdd}/>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Прокат'} onAdd={handleAdd}/>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Парк'} onAdd={handleAdd}/>
-                <LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Музей'} onAdd={handleAdd}/>
+                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Ресторан'} onAdd={handleAdd} place={{}}/>*/}
+                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Прокат'} onAdd={handleAdd}/>*/}
+                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Парк'} onAdd={handleAdd}/>*/}
+                {/*<LocationCard title='Cosmos Sochi Hotel' imgURL={DEFAULT_IMG_URL} entityType={'Музей'} onAdd={handleAdd}/>*/}
             </Container>
             <div className='footer-btn-container footer'>
                 <Button onClick={handleSave}>Добавить</Button>
