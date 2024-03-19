@@ -116,6 +116,7 @@ function App() {
         }
     }, [])
 
+
     window.DB = DB
     window.User = User
     window.Expense = Expense

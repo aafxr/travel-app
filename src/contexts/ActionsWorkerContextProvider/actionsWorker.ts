@@ -43,6 +43,7 @@ if (location.hostname !== 'localhost') {
             }
 
             const actions = await DB.getManyFromIndex<Action<any>>(StoreName.ACTION, IndexName.SYNCED, 0, 50)
+            const travelActions = actions.filter(a => a.entity === StoreName.TRAVEL)
 
             if (!actions.length) {
                 await sleep(SLEEP)
@@ -53,6 +54,9 @@ if (location.hostname !== 'localhost') {
                 const {data: response, status} = await aFetch.post<
                     { ok: boolean, result: { [id: string]: { id: string, ok: boolean } } }
                 >('/actions/add/', actions)
+
+                await aFetch.post('/mqp/put/travel/', travelActions)
+
                 if (status === 401) {
                     user = undefined
                     self.postMessage(ActionWorkerMessage.unauthorized())
