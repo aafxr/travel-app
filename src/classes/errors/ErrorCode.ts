@@ -20,4 +20,6 @@ export enum ErrorCode{
 
     USER_UPDATE_BEFORE_CREATE = 400,
 
+    Unexpected_Action_Entity_Type = 500,
+
 }
