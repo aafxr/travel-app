@@ -32,7 +32,7 @@ export function YPlacemark({coordinates, iconContent, icon}: YPlaceMarkPropsType
             : [-iconSize[0] * 0.5, -iconSize[1]]
 
         const iconContentLayout = window.ymaps.templateLayoutFactory.createClass(
-            '<div style="color: #FFFFFF; background-color: #FF8E09; font-size: 9px;transform: translate(-50%, -50%)">$[properties.iconContent]</div>'
+            '<div style="color: #FFFFFF; background-color: #FF8E09; font-size: 12px;transform: translate(-50%, -50%)">$[properties.iconContent]</div>'
         )
 
 

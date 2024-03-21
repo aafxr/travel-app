@@ -42,8 +42,6 @@ export function SocketContextProvider(){
         })
 
         socket.on('message', (msg) => {
-            console.log(msg)
-
             const message = Message.fromSocket(msg)
             if(message)
                 MessageService

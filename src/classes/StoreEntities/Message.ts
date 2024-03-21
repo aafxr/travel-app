@@ -19,6 +19,7 @@ export class Message{
     static fromSocket(msg: string){
         try {
             let message = JSON.parse(msg)
+            console.log(message)
             if('message' in message){
                 message = message.message
                 return new Message(message)

@@ -55,7 +55,7 @@ if (location.hostname !== 'localhost') {
                     { ok: boolean, result: { [id: string]: { id: string, ok: boolean } } }
                 >('/actions/add/', actions)
 
-                await aFetch.post('/mqp/put/travel/', travelActions)
+                await aFetch.post('/rmq/put/travel/', travelActions)
 
                 if (status === 401) {
                     user = undefined

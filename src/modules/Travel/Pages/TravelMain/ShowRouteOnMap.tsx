@@ -63,7 +63,18 @@ export default function ShowRouteOnMap() {
                     className='flex-1 relative'
                 >
                     <YandexMapContainer style={{height: '100%'}}>
-                        {points.map((p, idx) => (<YPlacemark key={idx} coordinates={p} iconContent={`${idx + 1}`}/>)) }
+                        {points.map((p, idx) => (
+                            <YPlacemark
+                                key={idx}
+                                coordinates={p}
+                                iconContent={`${idx + 1}`}
+                                icon={{
+                                    url: process.env.PUBLIC_URL + '/icons/location_on_24px.svg',
+                                    size:[40,40]
+                                }}
+                            />
+                        ))
+                        }
                         <YPolyline rout={points} strokeWidth={4}/>
                     </YandexMapContainer>
                 </div>
