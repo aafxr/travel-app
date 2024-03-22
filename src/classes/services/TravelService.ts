@@ -7,6 +7,7 @@ import {TravelError, UserError} from "../errors";
 import {StoreName} from "../../types/StoreName";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
+import {Context} from "../Context/Context";
 
 
 /**
@@ -28,25 +29,29 @@ export class TravelService {
     /**
      * метод позволяет создать новое путешествие, так же сгенерировать
      * соответствующий action
+     * @param context
      * @param newTravel
      * @param user
      */
-    static async create(newTravel: Travel, user: User) {
+    static async create(context: Context, newTravel: Travel, user: User) {
         if (!User.isLogIn(user)) throw UserError.unauthorized()
 
         const owner = user
         const travel = new Travel({...newTravel, owner_id: owner.id})
         const action = new Action(travel, owner.id, StoreName.TRAVEL, ActionName.ADD)
         await TravelService.writeTransaction(travel, action)
+        context.socket?.emit('travel:action', action)
+
         return travel
     }
 
     /**
      * метод позволяет обновить путешествие, так же генерирет action с измененными полями путешествия
+     * @param context
      * @param travel
      * @param user
      */
-    static async update(travel: Travel, user: User) {
+    static async update(context: Context, travel: Travel, user: User) {
         if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
         if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
 
@@ -60,15 +65,18 @@ export class TravelService {
         const action = new Action(change, user.id, StoreName.TRAVEL, ActionName.UPDATE)
 
         await TravelService.writeTransaction(travel, action)
+        context.socket?.emit('travel:action', action)
+
         return travel
     }
 
     /**
      * метод позволяет удалить путешествие из локальной бд, также генерирует соответствующий action
+     * @param context
      * @param travel
      * @param user
      */
-    static async delete(travel: Travel, user: User) {
+    static async delete(context: Context, travel: Travel, user: User) {
         if (!user) throw UserError.unauthorized()
         if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
 
@@ -76,6 +84,7 @@ export class TravelService {
 
         const action = new Action({id}, user.id, StoreName.TRAVEL, ActionName.DELETE)
         await TravelService.writeTransaction(travel, action, true)
+        context.socket?.emit('travel:action', action)
     }
 
     /**

@@ -3,8 +3,6 @@ import React, {
     HTMLAttributes,
     PropsWithChildren,
     useEffect,
-    useLayoutEffect,
-    useRef,
     useState
 } from "react";
 import {YMapControls} from "./YMapControls/YMapControls";

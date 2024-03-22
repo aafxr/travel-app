@@ -66,7 +66,7 @@ export default function TravelAddOnMap() {
             .filter(w => Boolean(~w.coords[0]) && Boolean(w.address.length))
             .map(w => new Waypoint(w))
 
-        TravelService.update(travel, user)
+        TravelService.update(context, travel, user)
             .then(() => navigate(`/travel/${travel.id}/settings/`))
             .catch(defaultHandleError)
     }

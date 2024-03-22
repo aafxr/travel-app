@@ -1,4 +1,3 @@
-import aFetch from "../../axios";
 import {Photo} from "../../classes/StoreEntities/Photo";
 
 export async function fetchPhoto(id: string): Promise<Photo | undefined>{

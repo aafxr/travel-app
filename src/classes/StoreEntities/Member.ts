@@ -1,8 +1,6 @@
 import {DEFAULT_IMG_URL} from "../../static/constants";
 import {MovementType} from "../../types/MovementType";
 import {MemberType} from "../../types/MemberType";
-import {StoreName} from "../../types/StoreName";
-import {StoreEntity} from "./StoreEntity";
 import {Photo} from "./Photo";
 
 

@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {Route} from "../../../../classes/StoreEntities/route/Route";
 import Container from "../../../../components/Container/Container";
 import Button from "../../../../components/ui/Button/Button";
@@ -20,6 +20,7 @@ export default function TravelAdviceRoute() {
 
     const user = useUser()
     const travel = useTravel()
+    const context = useAppContext()
 
     const [recommend, setRecommend] = useState<Route[]>([])
     const [selected, setSelected] = useState<Route>()
@@ -44,7 +45,7 @@ export default function TravelAdviceRoute() {
         if(!travel) return
         if(selected && user) {
             Travel.setRoute(travel, selected)
-            TravelService.update(travel, user)
+            TravelService.update(context, travel, user)
                 .then(() => navigate(`/travel/${travel.id}/`))
                 .catch(defaultHandleError)
         } else{

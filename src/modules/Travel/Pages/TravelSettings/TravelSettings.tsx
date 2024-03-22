@@ -107,7 +107,7 @@ export default function TravelSettings() {
         if (!user) return
         if (!state) return;
         const t = new Travel(state.travel)
-        TravelService.create(t, user)
+        TravelService.create(context, t, user)
             .then(() => context.setTravel(t))
             .then(() => navigate(`/travel/${state.travel.id}/advice-route/`))
             .catch(defaultHandleError)

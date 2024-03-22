@@ -1,18 +1,17 @@
 import React, {useEffect, useMemo, useState} from "react";
 
-import dateToStringFormat from "../../../../utils/dateToStringFormat";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {ActionName, ActionType} from "../../../../types/ActionsType";
 import Container from "../../../../components/Container/Container";
 import ListItem from "../../../../components/ListItem/ListItem";
 import Loader from "../../../../components/Loader/Loader";
+import {StoreName} from "../../../../types/StoreName";
 import {PageHeader} from "../../../../components/ui";
 import {CheckIcon} from "../../../../components/svg";
 import {DB} from "../../../../classes/db/DB";
-import {StoreName} from "../../../../types/StoreName";
-import {ActionName, ActionType} from "../../../../types/ActionsType";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 
 
-const consvertActionName: { [key: string]: string } = {
+const convertActionName: { [key: string]: string } = {
     [ActionName.ADD]: "Добавлен",
     [ActionName.UPDATE]: "Обновлен",
     [ActionName.DELETE]: "Удален",
@@ -48,7 +47,7 @@ export default function ActionsList() {
             action => {
                 const a = {...action}
                 a.entity = (convertorStoreName[a.entity] || '') as StoreName
-                a.action = (consvertActionName[a.action] || '') as ActionName
+                a.action = (convertActionName[a.action] || '') as ActionName
                 return a
             }
         ), [actions])

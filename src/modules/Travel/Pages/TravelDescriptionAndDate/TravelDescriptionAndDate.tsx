@@ -104,7 +104,7 @@ export default function TravelDescriptionAndDate() {
 
         if (state.change) {
             const updatedTravel = new Travel(state.travel)
-            TravelService.update(updatedTravel, user)
+            TravelService.update(context, updatedTravel, user)
                 .then(() => navigate(`/travel/${updatedTravel.id}/`))
                 .then(() => context.setTravel(updatedTravel))
                 .catch(defaultHandleError)

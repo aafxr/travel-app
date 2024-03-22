@@ -1,13 +1,11 @@
-import React, {forwardRef, useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {PlaceStep} from "../../../../classes/StoreEntities/route/PlaceStep";
-import LocationCard from "../../components/LocationCard/LocationCard";
 import Container from "../../../../components/Container/Container";
 import {Place, Travel} from "../../../../classes/StoreEntities";
 import {TravelService} from "../../../../classes/services";
-import {Tab} from "../../../../components/ui";
 import {PlaceStepCard} from "./steps/PlaceStepCard";
 
 export default function ShowPlaces() {
@@ -31,13 +29,13 @@ export default function ShowPlaces() {
     }, [])
 
 
-    function handleRemovePLace(place: Place) {
+    function handleRemovePlace(place: Place) {
         if(!user) return
         if(!travel) return
 
         const t = new Travel(travel)
         Travel.removePlace(t, place)
-        TravelService.update( t, user)
+        TravelService.update(context, t, user)
             .then( () => context.setTravel(t))
             .catch(defaultHandleError)
     }

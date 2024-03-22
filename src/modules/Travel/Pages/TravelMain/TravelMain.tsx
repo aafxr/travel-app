@@ -23,8 +23,6 @@ import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelMain.css'
-import {DB} from "../../../../classes/db/DB";
-import {ActionService} from "../../../../classes/services/ActionService";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -58,7 +56,7 @@ export default function TravelMain() {
         const photo = new Photo({blob})
         Travel.setPhoto(travel, photo)
         if (user)
-            TravelService.update(travel, user)
+            TravelService.update(context, travel, user)
                 .then(() => {
                     context.setTravel(travel)
                     PhotoService.save(photo)

@@ -1,14 +1,9 @@
 import {Outlet} from "react-router-dom";
+import {io, Socket} from "socket.io-client";
 import {createContext, useEffect, useState} from "react";
 
 import {useAppContext, useTravel, useUser} from "../AppContextProvider";
-import { SocketMessageType} from "../../classes/SocketMessage";
-import {io, Socket} from "socket.io-client";
-import {pushAlertMessage} from "../../components/Alerts/Alerts";
-import {Message} from "../../classes/StoreEntities";
-import {MessageService} from "../../classes/services";
-import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {SocketService} from "../../classes/services/SocketService";
+import socketManagement from "./socketManagement";
 
 
 export type SocketContextType = {
@@ -30,34 +25,43 @@ export function SocketContextProvider(){
     useEffect(() => {
         if(!travel || !user) return
 
+        const handle = socketManagement(context)
+
         const socket =  io(process.env.REACT_APP_SOCKET_URL as string) //{ host: process.env.REACT_APP_SOCKET_HOST ,port:process.env.REACT_APP_SOCKET_PORT, secure: true}
 
         socket.on('connect', () => {
-            socket.emit('join',{join:{travelID: travel.id}})
-
+            socket.emit('travel:join',{travelID: travel.id})
+            socket.emit('travel:join:result', console.log)
+            context.setSocket(socket)
             setState({socket})
         })
-        socket.on('disconnect', () => setState({socket: undefined}))
+
+        socket.on('disconnect', () => {
+            setState({socket: undefined})
+            context.setSocket(null)
+        })
+
         socket.on('connect_error', (err: Error) => {
             console.error(err)
             setState({...state, errorMessage: err.message})
         })
 
-        socket.on('message', (msg) => {
-            SocketService
-                .onMessage(msg)
-                .catch(defaultHandleError)
-        })
+        socket.on('travel:message', handle.newTravelMessage)
+        socket.on('travel:message:result', console.log)
+        socket.on('travel:action', handle.newTravelAction)
+        socket.on('travel:action:result', console.log)
 
-        socket.on('travel-action', (msg) =>
-            SocketService
-                .onTravelAction(msg)
-                .then(t => t && context.setTravel(travel))
-                .catch(defaultHandleError)
-        )
+        // (msg) =>
+        // SocketService
+        //     .onTravelAction(msg)
+        //     .then(t => t && context.setTravel(travel))
+        //     .catch(defaultHandleError)
 
 
-        return () => { socket.close() }
+        return () => {
+            socket.emit('travel:leave', {travelID: travel.id})
+            socket.close()
+        }
     }, [])
 
 

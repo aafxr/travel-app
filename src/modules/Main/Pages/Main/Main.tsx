@@ -26,7 +26,7 @@ export default function Main() {
 
     async function handleNewTravel() {
         if (user) {
-            TravelService.create(new Travel({}), user)
+            TravelService.create(context, new Travel({}), user)
                 .then((travel) => {
                     context.setTravel(travel)
                     navigate(`/travel/add/`)
