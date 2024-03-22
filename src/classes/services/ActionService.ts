@@ -1,8 +1,8 @@
+import {Action, Expense, Limit, Travel, User} from "../StoreEntities";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
-import {Action, Travel, User} from "../StoreEntities";
-import {DB} from "../db/DB";
 import {Recover} from "../Recover";
+import {DB} from "../db/DB";
 
 /**
  * сервис для рабботы с actions
@@ -27,20 +27,22 @@ export class ActionService{
      * @param user
      * @return boolean возвращает true если принятый action был до проделанных манипуляций с сущностью
      */
-    static async prepareNewAction(action: Action<any>, user: User){
+    static async prepareNewAction<T extends {}>(action: Action<T>, user: User){
+        console.log('prepareNewAction -> ', action)
         const storeName = action.entity
-        const dateTime = new Date(action.datetime)
-        const cursor = await DB.openIndexCursor<Action<any>>(storeName, IndexName.DATETIME,IDBKeyRange.lowerBound(dateTime), "prev")
+        action.datetime = new Date(action.datetime)
+
+        const cursor = await DB.openIndexCursor<Action<any>>(StoreName.ACTION, IndexName.DATETIME,IDBKeyRange.lowerBound(action.datetime), "prev")
         const a = (await cursor.next()).value
         await DB.update(StoreName.ACTION, action)
-        if(a){
+        if(a && a.datetime > action.datetime){
             switch (storeName){
                 case StoreName.TRAVEL:
-                    return await Recover.travel(action.data.id)
+                    return await Recover.travel((action as unknown as Action<Travel>).data.id)
                 case StoreName.EXPENSE:
-                    return await Recover.expense(action.data.primary_entity_id, user)
+                    return await Recover.expense((action as unknown as Action<Expense>).data.primary_entity_id, user)
                 case StoreName.LIMIT:
-                    return await Recover.limit(action.data.primary_entity_id, user)
+                    return await Recover.limit((action as unknown as Action<Limit>).data.primary_entity_id, user)
             }
         } else {
             return await Recover.asign(action)

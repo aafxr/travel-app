@@ -15,6 +15,7 @@ export class Recover{
     static async travel(travelID: string){
         let t = new Travel({id: travelID})
 
+
         const predicate = (a:Action<Partial<Travel>>) => a.entity === StoreName.TRAVEL && a.data.id === travelID
 
         let actions = await DB.getLocalActions(predicate)

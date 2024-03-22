@@ -35,12 +35,12 @@ export default function TravelMain() {
     const {travelCode, dayNumber} = useParams()
     const navigate = useNavigate()
     const context = useAppContext()
-    const travel = useTravel()!
-    const user = useUser()!
+    const travel = useTravel()
+    const user = useUser()
 
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
-    const travelDurationLabel = dateRange(travel.date_start, travel.date_end)
+    const travelDurationLabel = travel ? dateRange(travel.date_start, travel.date_end) : ''
 
     const menu = (
         <Menu>
@@ -53,6 +53,7 @@ export default function TravelMain() {
 
 
     async function handleTravelPhotoChange(blob: Blob) {
+        if(!travel) return
         const photo = new Photo({blob})
         Travel.setPhoto(travel, photo)
         if (user)
@@ -66,11 +67,13 @@ export default function TravelMain() {
     }
 
     useEffect(() => {
+        if(!travel) return
         if (!dayNumber) navigate(`/travel/${travel.id}/1/`)
 
     }, [travel])
 
     function handleCurtain(val = true) {
+        if(!travel || !user) return
         User.setCurtain(user, val)
         setCurtainOpen(val)
     }
@@ -84,6 +87,9 @@ export default function TravelMain() {
         if(!travel) return
         navigate(`/travel/${travel.id}/chat/`)
     }
+
+
+    if(!travel) return null
 
     return (
         <>
@@ -130,7 +136,7 @@ export default function TravelMain() {
                         <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
                                     onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
                         {
-                            travel.permit("showCheckList") && <IconButton
+                            travel.permission.showCheckList === 1 && <IconButton
                                 icon={<ChecklistIcon/>}
                                 title='Чек-лист'
                                 onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
