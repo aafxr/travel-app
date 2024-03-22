@@ -1,6 +1,6 @@
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
-import {Action, User} from "../StoreEntities";
+import {Action, Travel, User} from "../StoreEntities";
 import {DB} from "../db/DB";
 import {Recover} from "../Recover";
 
@@ -57,5 +57,20 @@ export class ActionService{
     static async prepaireNewActions(actions: Action<any>[], user: User){
         for (const a of actions)
             await ActionService.prepareNewAction(a, user)
+    }
+
+
+    /**
+     * метод возвращает последний созданный action для указанного ид путешествия
+     * @param travelId
+     */
+    static async getLastActionByTravelID(travelId:string){
+        const cursor = DB.openIndexCursor<Action<Travel>>(StoreName.ACTION, IndexName.DATETIME, undefined, "prev")
+        let lastAction = (await cursor.next()).value
+        while(lastAction){
+            if(lastAction.data.id === travelId) break
+            lastAction = (await cursor.next()).value
+        }
+        return lastAction
     }
 }

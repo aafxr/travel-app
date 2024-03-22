@@ -1,9 +1,9 @@
-import {Action, Travel} from "../StoreEntities";
-import {StoreName} from "../../types/StoreName";
 import {SocketError} from "../errors/SocketError";
-import {DB} from "../db/DB";
+import {Action, Message, Travel} from "../StoreEntities";
+import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 import {Recover} from "../Recover";
+import {DB} from "../db/DB";
 
 export class SocketService{
 
@@ -18,6 +18,7 @@ export class SocketService{
      */
     static async onTravelAction(msg: string){
         const action: Action<Travel> = JSON.parse(msg)
+        console.log(action)
         action.datetime = new Date(action.datetime)
         if(action.entity !== StoreName.TRAVEL) throw SocketError.UnexpectedActionEntityType(action)
 
@@ -28,18 +29,24 @@ export class SocketService{
             lastAction = (await cursor.next()).value
         }
 
-        await DB.writeAllToStore(StoreName.ACTION, [action])
+        await DB.add(StoreName.ACTION, action)
 
         if(lastAction){
             lastAction.datetime = new Date(lastAction.datetime)
             if(action.datetime < lastAction.datetime){
                 const travel = await Recover.travel(action.data.id)
-                await DB.writeAllToStore(StoreName.TRAVEL, [travel])
+                await DB.update(StoreName.TRAVEL, travel)
                 return travel
             } else {
                 return await Recover.asign<Travel>(action)
             }
         }
+    }
 
+
+    static async onMessage(msg: string){
+        const message: Message = JSON.parse(msg)
+
+        await DB.update(StoreName.MESSAGE, message)
     }
 }

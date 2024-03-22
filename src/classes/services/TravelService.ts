@@ -96,7 +96,12 @@ export class TravelService {
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
         if (fetchTravelsList.length) {
-            await DB.writeAllToStore(StoreName.TRAVEL, fetchTravelsList)
+            for(const fetchTravel of fetchTravelsList){
+                try {
+                    await DB.add(StoreName.TRAVEL, fetchTravel)
+                }catch(_){}
+            }
+            // await DB.writeAllToStore(StoreName.TRAVEL, fetchTravelsList)
             return fetchTravelsList
         }
 
