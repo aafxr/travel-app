@@ -13,7 +13,7 @@ import {openDB} from "idb";
 export async function openIDBDatabase(dbname: string = DB_NAME, version = DB_VERSION, stores: DBStoreDescriptionType[] = DB_STORES) {
     return await openDB(dbname, version, {
         upgrade(db, oldVersion, newVersion, transaction, event) {
-            Array.from(db.objectStoreNames).forEach(storeName => db.deleteObjectStore(storeName))
+            // Array.from(db.objectStoreNames).forEach(storeName => db.deleteObjectStore(storeName))
 
             const existedStores = Array.from(db.objectStoreNames)
             const storeNameList = stores.map(store => store.name as string)

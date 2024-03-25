@@ -5,9 +5,9 @@ import {Action, Travel, User} from "../StoreEntities";
 import {ActionName} from "../../types/ActionsType";
 import {TravelError, UserError} from "../errors";
 import {StoreName} from "../../types/StoreName";
+import {Context} from "../Context/Context";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
-import {Context} from "../Context/Context";
 
 
 /**
@@ -58,7 +58,7 @@ export class TravelService {
         // if (travel.image) await PhotoService.save(travel.image)
         const oldTravel = await DB.getOne<Travel>(StoreName.TRAVEL, travel.id)
 
-        if(!oldTravel) throw TravelError.updateBeforeCreate()
+        if (!oldTravel) throw TravelError.updateBeforeCreate()
 
         const change = Compare.travels(oldTravel, travel, ["id"])
 
@@ -105,12 +105,20 @@ export class TravelService {
     static async getList(max?: number) {
         const fetchTravelsList = await fetchTravels()
         if (fetchTravelsList.length) {
-            for(const fetchTravel of fetchTravelsList){
+            for (let i = 0; i < fetchTravelsList.length; i++) {
                 try {
+                    const fetchTravel = fetchTravelsList[i]
                     await DB.add(StoreName.TRAVEL, fetchTravel)
-                }catch(_){}
+                } catch (_) {
+                    let existTravel = await DB.getOne<Travel>(StoreName.TRAVEL, fetchTravelsList[i].id)
+                    if (existTravel) {
+                        existTravel = new Travel(existTravel)
+                        fetchTravelsList[i] = existTravel
+                    } else {
+                        fetchTravelsList.splice(i, 1)
+                    }
+                }
             }
-            // await DB.writeAllToStore(StoreName.TRAVEL, fetchTravelsList)
             return fetchTravelsList
         }
 
@@ -122,7 +130,7 @@ export class TravelService {
      * метод выполняет обращение к api и получает наиболее подходящий маршрут по выбранным предпочтениям
      * @param travel
      */
-    static async getRecommendRoutes(travel:Travel){
+    static async getRecommendRoutes(travel: Travel) {
         try {
             return await fetchRouteAdvice({
                 days: travel.days,
@@ -131,13 +139,13 @@ export class TravelService {
                 location: 1,
                 preference: {...travel.preference.interests},
             })
-        } catch (e){
+        } catch (e) {
             console.error(e)
             return []
         }
     }
 
-    static async writeTransaction(travel:Travel, action: Action<Partial<Travel>>, isDelete = false){
+    static async writeTransaction(travel: Travel, action: Action<Partial<Travel>>, isDelete = false) {
         const db = await openIDBDatabase()
         const tx = db.transaction([StoreName.TRAVEL, StoreName.ACTION], 'readwrite')
         const travelStore = tx.objectStore(StoreName.TRAVEL)
