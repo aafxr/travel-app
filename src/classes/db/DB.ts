@@ -44,6 +44,7 @@ export class DB {
             else store.add(data)
         } catch (e) {
             console.error(e)
+            throw e
         }
     }
 
