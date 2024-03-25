@@ -45,6 +45,7 @@ export class Compare{
             }
 
             if(typeof result[key] === 'object'){
+                // @ts-ignore
                 result[key] = Compare.objects(old[key] as object, newT[key] as object)
                 if(!Object.keys(result[key] as object).length) delete result[key]
             }

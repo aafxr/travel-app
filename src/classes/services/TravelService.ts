@@ -52,8 +52,8 @@ export class TravelService {
      * @param user
      */
     static async update(context: Context, travel: Travel, user: User) {
-        if (!user || !travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
-        if (!travel.permitChange(user)) throw TravelError.permissionDeniedToChangeTravel()
+        if (!user || !Travel.permitChange(travel, user)) throw TravelError.permissionDeniedToChangeTravel()
+        if (!Travel.permitChange(travel, user)) throw TravelError.permissionDeniedToChangeTravel()
 
         // if (travel.image) await PhotoService.save(travel.image)
         const oldTravel = await DB.getOne<Travel>(StoreName.TRAVEL, travel.id)
@@ -78,7 +78,7 @@ export class TravelService {
      */
     static async delete(context: Context, travel: Travel, user: User) {
         if (!user) throw UserError.unauthorized()
-        if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
+        if (!Travel.permitDelete(travel, user)) throw TravelError.permissionDeniedDeleteTravel()
 
         const {id} = travel
 

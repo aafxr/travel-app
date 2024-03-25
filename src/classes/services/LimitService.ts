@@ -1,4 +1,4 @@
-import {Action, Expense, Limit, User} from "../StoreEntities";
+import {Action, Expense, Limit, Travel, User} from "../StoreEntities";
 import {LimitError, TravelError, UserError} from "../errors";
 import {openIDBDatabase} from "../db/openIDBDatabaase";
 import {ActionName} from "../../types/ActionsType";
@@ -101,7 +101,7 @@ export class LimitService {
         if (!Limit.isPersonal(limit, user)) {
             const travel = await TravelService.getById(limit.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(limit.primary_entity_id)
-            if (!travel.permitDelete(user)) throw TravelError.permissionDeniedDeleteTravel()
+            if (!Travel.permitDelete(travel, user)) throw TravelError.permissionDeniedDeleteTravel()
         }
 
         const {id, primary_entity_id} = limit

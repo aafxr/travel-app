@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import PhotoComponent from "../PhotoComponents/PhotoComponent";
 import {useTravel} from "../../contexts/AppContextProvider";
-import {Member} from "../../classes/StoreEntities";
+import {Member, Travel} from "../../classes/StoreEntities";
 
 import './UserCard.css'
 
@@ -52,7 +52,7 @@ export default function UserCard({
                         {/* статус юзера (в поездке / на месте ...)*/}
                         {/*<div className='user-card-status'>{}</div>*/}
                     </div>
-                    <div className='user-card-role flex-0'>{travel.getMemberRole(member)}</div>
+                    <div className='user-card-role flex-0'>{Travel.getMemberRole(travel, member)}</div>
                 </>
             )}
         </div>
