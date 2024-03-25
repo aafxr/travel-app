@@ -53,6 +53,7 @@ import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel
 import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
 import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
+import {Compare} from "./classes/Compare";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -123,6 +124,7 @@ function App() {
     window.Travel = Travel
     window.Place = Place
     window.Recover = Recover
+    window.Compare = Compare
 
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)

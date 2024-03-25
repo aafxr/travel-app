@@ -6,7 +6,10 @@ export class Compare{
 
         Object.keys(newObj).forEach(k => {
             if(excludeKeys.includes(k)) return
-            if(old[k] !== newObj[k]) result[k as keyof T] = newObj[k]
+            if(old[k] !== newObj[k]) {
+                result[k as keyof T] = newObj[k]
+                return
+            }
         })
 
         for (const k of includeKeys) {
@@ -38,22 +41,15 @@ export class Compare{
         for (const k in result){
             const key = k as keyof Travel
             if(Array.isArray(result[key])){
-                if(Compare.objectArrays(old[key] as Array<object>, newT[key] as Array<object>)){
+                if(Compare.objectArrays(old[key] as Array<object> || [], newT[key] as Array<object>)){
                     // @ts-ignore
                     result[key] = newT[key]
                 }
             }
-            
-            if(newT[key] instanceof Date){
-                if((old[key] as Date).getTime() !== (newT[key] as Date).getTime())
-                    { // @ts-ignore
-                        result[key] = newT[key]
-                    }
-            }
 
-            if(typeof result[key] === 'object'){
+            if(typeof result[key] === 'object' && !(result[key] instanceof Date)){
                 // @ts-ignore
-                result[key] = Compare.objects(old[key] as object, newT[key] as object)
+                result[key] = Compare.objects(old[key] as object || {}, newT[key] as object || {})
                 if(!Object.keys(result[key] as object).length) delete result[key]
             }
         }

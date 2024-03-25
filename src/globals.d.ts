@@ -3,6 +3,7 @@ import {Context} from "./classes/Context/Context";
 import {Socket} from "socket.io-client";
 import {DB} from "./classes/db/DB";
 import ymaps from "ymaps/index";
+import {Compare} from "./classes/Compare";
 
 
 declare global {
@@ -23,6 +24,7 @@ declare global {
         ymaps:ymaps,
         socket: Socket
         sendMessage: function
+        Compare: Compare
     }
 
     interface GlobalEventHandlersEventMap{
