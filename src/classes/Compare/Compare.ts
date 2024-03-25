@@ -43,6 +43,13 @@ export class Compare{
                     result[key] = newT[key]
                 }
             }
+            
+            if(newT[key] instanceof Date){
+                if((old[key] as Date).getTime() !== (newT[key] as Date).getTime())
+                    { // @ts-ignore
+                        result[key] = newT[key]
+                    }
+            }
 
             if(typeof result[key] === 'object'){
                 // @ts-ignore

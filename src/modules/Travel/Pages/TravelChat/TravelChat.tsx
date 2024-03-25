@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, {useEffect, useRef, useState} from "react";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {useSocket} from "../../../../contexts/SocketContextProvider";
 import Container from "../../../../components/Container/Container";
 import TextArea from "../../../../components/ui/TextArea/TextArea";
@@ -12,9 +12,11 @@ import {PageHeader} from "../../../../components/ui";
 import {SendIcon} from "../../../../components/svg";
 
 import './TravelChat.css'
+import {SMEType} from "../../../../contexts/SocketContextProvider/SMEType";
 
 
 export function TravelChat() {
+    const context = useAppContext()
     const socket = useSocket()
     const user = useUser()
     const travel = useTravel()
@@ -35,15 +37,20 @@ export function TravelChat() {
     useEffect(() => {
         if (!socket) return
 
-        function newMessage(msg: string) {
-            const m = Message.fromSocket(msg)
-            if (m) setMessages(prev => [...prev, m])
+        function newMessage(msg: Message) {
+            msg = new Message(msg)
+            if (msg) {
+                setMessages(prev => [...prev, msg])
+                MessageService
+                    .saveNewMessage(msg)
+                    .catch(defaultHandleError)
+            }
         }
 
-        socket.on('message', newMessage)
+        socket.on(SMEType.MESSAGE, newMessage)
 
         return () => {
-            socket.off('message', newMessage)
+            socket.off(SMEType.MESSAGE, newMessage)
         }
     }, [socket])
 
@@ -63,7 +70,7 @@ export function TravelChat() {
             text: t
         })
         MessageService
-            .sendMessage(msg)
+            .sendMessage(context, msg)
             .then(() => {
                 setText('')
                 setMessages([...messages, msg])
@@ -71,6 +78,8 @@ export function TravelChat() {
             .catch(defaultHandleError)
 
     }
+
+    if(socket) window.socket = socket
 
     if(!user) return null
 

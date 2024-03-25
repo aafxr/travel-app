@@ -3,6 +3,8 @@ import {ActionName} from "../../types/ActionsType";
 import {Action, Message} from "../StoreEntities";
 import {StoreName} from "../../types/StoreName";
 import {DB} from "../db/DB";
+import {Context} from "../Context/Context";
+import {SMEType} from "../../contexts/SocketContextProvider/SMEType";
 
 
 /**
@@ -29,10 +31,15 @@ export class MessageService{
 
     /**
      * метод записывает сообщение в бд и создает action
+     * @param context
      * @param msg
      */
-    static async sendMessage(msg: Message){
+    static async sendMessage(context: Context, msg: Message){
         const action = new Action(msg, msg.from, StoreName.MESSAGE, ActionName.ADD)
+        const socket = context.socket
+        if(socket){
+            socket.emit(SMEType.MESSAGE, msg)
+        }
         await MessageService.writeTransaction(msg, action)
     }
 
