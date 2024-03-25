@@ -109,14 +109,12 @@ export class TravelService {
                 try {
                     const fetchTravel = fetchTravelsList[i]
                     await DB.add(StoreName.TRAVEL, fetchTravel)
-                } catch (_) {
-                    let existTravel = await DB.getOne<Travel>(StoreName.TRAVEL, fetchTravelsList[i].id)
-                    if (existTravel) {
-                        existTravel = new Travel(existTravel)
-                        fetchTravelsList[i] = existTravel
-                    } else {
-                        fetchTravelsList.splice(i, 1)
-                    }
+                } catch (_) {}
+
+                let existTravel = await DB.getOne<Travel>(StoreName.TRAVEL, fetchTravelsList[i].id)
+                if (existTravel) {
+                    existTravel = new Travel(existTravel)
+                    fetchTravelsList[i] = existTravel
                 }
             }
             return fetchTravelsList
