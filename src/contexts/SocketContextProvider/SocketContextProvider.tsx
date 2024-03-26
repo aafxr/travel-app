@@ -4,6 +4,7 @@ import {createContext, useEffect, useState} from "react";
 
 import {useAppContext, useTravel, useUser} from "../AppContextProvider";
 import socketManagement from "./socketManagement";
+import {SMEType} from "./SMEType";
 
 
 export type SocketContextType = {
@@ -46,7 +47,7 @@ export function SocketContextProvider(){
             setState({...state, errorMessage: err.message})
         })
 
-        socket.on('travel:message', handle.newTravelMessage)
+        socket.on(SMEType.MESSAGE, handle.newTravelMessage)
         socket.on('travel:message:result', console.log)
         socket.on('travel:action', handle.newTravelAction)
         socket.on('travel:action:result', console.log)
