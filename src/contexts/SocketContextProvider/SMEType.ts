@@ -1,10 +1,10 @@
 export enum SMEType{
-    JOIN = "travel:join",
-    LEAVE = "travel:leave",
-    ACTION = "travel:action",
-    ACTION_RESULT = "travel:action:result",
-    MESSAGE = "travel:message",
-    MESSAGE_RESULT = "travel:message:result",
-    EXPENSE = 'travel:expense',
-    EXPENSE_RESULT = 'travel:expense:result'
+    JOIN                    = "travel:join",
+    LEAVE                   = "travel:leave",
+    TRAVEL_ACTION           = "travel:action",
+    TRAVEL_ACTION_RESULT    = "travel:action:result",
+    MESSAGE                 = "travel:message",
+    MESSAGE_RESULT          = "travel:message:result",
+    EXPENSE_ACTION          = 'expense:action',
+    EXPENSE_ACTION_RESULT    = 'expense:action:result'
 }

@@ -41,7 +41,7 @@ export default function TravelRoutes() {
                 .catch(console.error)
                 .finally(() => setLoading(false))
         }
-    }, [user])
+    }, [])
 
 
     /** обновление списка актуальных путешествий */
