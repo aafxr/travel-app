@@ -10,6 +10,7 @@ import {LimitService} from "./LimitService";
 import {Context} from "../Context/Context";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
+import {SMEType} from "../../contexts/SocketContextProvider/SMEType";
 
 
 /**
@@ -30,22 +31,26 @@ export class ExpenseService {
 
     /**
      * метод добавляет запись о расходе в бд и создает соответствующий action
+     * @param context
      * @param expense
      * @param user
      */
-    static async create(expense: Expense, user: User) {
+    static async create(context: Context,  expense: Expense, user: User) {
         const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.ADD)
         await ExpenseService.writeTransaction(expense, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
 
     /**
      * метод обновляет запись о расходе в бд и генерирует соответсвующий action
+     * @param context
      * @param expense
      * @param user
      */
-    static async update(expense: Expense, user: User) {
+    static async update(context: Context, expense: Expense, user: User) {
         if (!Expense.isPersonal(expense, user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
@@ -60,16 +65,19 @@ export class ExpenseService {
 
         const action = new Action(changed, user.id, expense.variant as StoreName, ActionName.UPDATE)
         await ExpenseService.writeTransaction(expense, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
 
     /**
      * мметод удляет запись о расходе и создает соответствующий action
+     * @param context
      * @param expense
      * @param user
      */
-    static async delete(expense: Expense, user: User) {
+    static async delete(context: Context, expense: Expense, user: User) {
         // if (!Expense.isPersonal(expense,user)) {
         //     const travel = await TravelService.getById(expense.primary_entity_id)
         //     if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
@@ -78,6 +86,8 @@ export class ExpenseService {
         const {id,primary_entity_id} = expense
 
         const action = new Action({id,primary_entity_id} as Expense, user.id, expense.variant as StoreName, ActionName.DELETE)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
         await ExpenseService.writeTransaction(expense, action, true)
     }
 

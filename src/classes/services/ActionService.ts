@@ -45,7 +45,7 @@ export class ActionService{
                     return await Recover.limit((action as unknown as Action<Limit>).data.primary_entity_id, user)
             }
         } else {
-            return await Recover.asign(action)
+            return await Recover.assign(action)
         }
     }
 

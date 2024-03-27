@@ -101,7 +101,7 @@ export class Recover{
      * @param action
      * @param [cb] опциональный коллбек (если указан, то поиск сущности в бд осуществляется по ключу, вернувшемуся из этого колбека)
      */
-    static async asign<T extends {}>(action: Action<T>, cb?: (a: Action<T>) => string){
+    static async assign<T extends {}>(action: Action<T>, cb?: (a: Action<T>) => string){
         let key = ''
         if(cb) key = cb(action)
         else if('id' in action.data) key = action.data.id as string

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
@@ -9,6 +9,8 @@ import {TravelService} from "../../../../classes/services";
 import {Travel} from '../../../../classes/StoreEntities'
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
+
+import PopularSection from "../../../../components/PopularSection/PopularSection";
 
 import './Main.css'
 
@@ -44,7 +46,9 @@ export default function Main() {
                 <PageHeader title={'Главная страница'} MenuEl={<Menu/>}/>
             </Container>
             <Container className='content pb-20'>
-                <div className='banner'>
+                <div className='banner' style={{
+                    backgroundImage: 'url(/images/main.jpg)'
+                }}>
                     <h2 className='banner-title'>Спланируйте поездку за минуты</h2>
                     <button
                         className='banner-button'
@@ -55,8 +59,8 @@ export default function Main() {
                 </div>
 
 
-                {/*<PopularSection/>*/}
-                {/*<RecommendSection routes={routes}/>*/}
+                <PopularSection />
+                {/*<RecommendSection routes={[]}/>*/}
 
                 {/*<IconButton*/}
                 {/*    border={false}*/}

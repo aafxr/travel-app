@@ -53,13 +53,8 @@ export function SocketContextProvider(){
         socket.on(SMEType.TRAVEL_ACTION_RESULT, console.log)
         socket.on(SMEType.EXPENSE_ACTION, handle.newExpenseAction)
         socket.on(SMEType.EXPENSE_ACTION_RESULT, console.log)
-
-        // (msg) =>
-        // SocketService
-        //     .onTravelAction(msg)
-        //     .then(t => t && context.setTravel(travel))
-        //     .catch(defaultHandleError)
-
+        socket.on(SMEType.LIMIT_ACTION, handle.newLimitAction)
+        socket.on(SMEType.LIMIT_ACTION_RESULT, console.log)
 
         return () => {
             socket.emit('travel:leave', {travelID: travel.id})

@@ -2,11 +2,14 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-left: calc(0px - var(--padding-base));
+    margin-right: calc(0px - var(--padding-base));
     gap: 2rem;
     padding: 3rem 1rem;
     background-color: var(--color-banner);
-    margin-left: calc(0px - var(--padding-base));
-    margin-right: calc(0px - var(--padding-base));
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .banner-title{

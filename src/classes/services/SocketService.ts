@@ -38,7 +38,7 @@ export class SocketService{
                 await DB.update(StoreName.TRAVEL, travel)
                 return travel
             } else {
-                return await Recover.asign<Travel>(action)
+                return await Recover.assign<Travel>(action)
             }
         }
     }

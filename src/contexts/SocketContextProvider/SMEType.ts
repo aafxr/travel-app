@@ -6,5 +6,7 @@ export enum SMEType{
     MESSAGE                 = "travel:message",
     MESSAGE_RESULT          = "travel:message:result",
     EXPENSE_ACTION          = 'expense:action',
-    EXPENSE_ACTION_RESULT    = 'expense:action:result'
+    EXPENSE_ACTION_RESULT   = 'expense:action:result',
+    LIMIT_ACTION            = 'limit:action',
+    LIMIT_ACTION_RESULT     = 'limit:action:result',
 }

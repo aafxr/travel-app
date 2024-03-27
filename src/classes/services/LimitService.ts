@@ -8,6 +8,7 @@ import {TravelService} from "./TravelService";
 import {Context} from "../Context/Context";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
+import {SMEType} from "../../contexts/SocketContextProvider/SMEType";
 
 
 async function getValidLimit(limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User) {
@@ -51,10 +52,11 @@ export class LimitService {
 
     /**
      * метоод позволяет создать новый лимит  сгенерировать action
+     * @param context
      * @param limit
      * @param user
      */
-    static async create(limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User | undefined) {
+    static async create(context: Context, limit: Partial<Limit> & Pick<Limit, 'section_id' | 'primary_entity_id' | 'value' | 'id'>, user: User | undefined) {
         if (!user) throw UserError.unauthorized()
 
         const newLimit = await getValidLimit(limit, user)
@@ -63,15 +65,18 @@ export class LimitService {
 
         const action = new Action(limitObject, user.id, StoreName.LIMIT, ActionName.ADD)
         await LimitService.writeTransaction(limitObject, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.LIMIT_ACTION, action)
         return newLimit
     }
 
     /**
      * метод позваляет обновить запись о лимите и создает action с измененной информацией
+     * @param context
      * @param limit
      * @param user
      */
-    static async update(limit: Limit, user: User) {
+    static async update(context: Context, limit: Limit, user: User) {
         if (!user) throw UserError.unauthorized()
 
         const oldLimit = await DB.getOne<Limit>(StoreName.LIMIT, limit.id)
@@ -83,8 +88,9 @@ export class LimitService {
         const change = Compare.objects(oldLimit, newLimit, ["id", "primary_entity_id"], ['user'])
 
         const action = new Action(change, user.id, StoreName.LIMIT, ActionName.UPDATE)
-
         await LimitService.writeTransaction(change, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.LIMIT_ACTION, action)
 
         return user
     }
@@ -107,6 +113,8 @@ export class LimitService {
         const {id, primary_entity_id} = limit
         const action = new Action({id, primary_entity_id} as Limit, user.id, StoreName.LIMIT, ActionName.DELETE)
         await LimitService.writeTransaction(limit, action, true)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.LIMIT_ACTION, action)
     }
 
     /**
