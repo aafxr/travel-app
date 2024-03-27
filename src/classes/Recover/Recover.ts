@@ -54,7 +54,7 @@ export class Recover{
     static async expense(travelID:string, user: User){
         const t: Record<string, Expense> = {}
 
-        const ev: ExpenseVariantType[] = ["expenses_plan", "expenses_actual"]
+        const ev: ExpenseVariantType[] = [StoreName.EXPENSES_PLAN, StoreName.EXPENSES_ACTUAL]
 
         const predicate = (a: Action<Expense>) => ev.includes(a.entity as ExpenseVariantType) && a.data.primary_entity_id === travelID
 

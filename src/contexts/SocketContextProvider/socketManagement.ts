@@ -20,6 +20,7 @@ export default function socketManagement(context: Context) {
         const user = context.user
         if (!user) return
 
+        msg.datetime = new Date(msg.datetime )
         ActionService
             .prepareNewAction(msg, user)
             .then(t => t && context.setTravel(t as Travel))
@@ -36,14 +37,18 @@ export default function socketManagement(context: Context) {
         const user = context.user
         if (!user) return
 
+        msg.datetime = new Date(msg.datetime )
         const eID = msg.data.id
         const primaryID = msg.data.primary_entity_id
+        try {
+            await DB.add(StoreName.ACTION, msg)
+        }catch (e){}
         if (eID && primaryID) {
             const expenses = await Recover.expense(primaryID, user)
             for (const e of expenses) {
                 await DB.update(StoreName.EXPENSE, e)
             }
-            return await DB.getOne(msg.entity, eID)
+            return await DB.getOne(StoreName.EXPENSE, eID)
         }
     }
 
@@ -51,6 +56,8 @@ export default function socketManagement(context: Context) {
     async function newLimitAction(this: Socket, msg: Action<Partial<Limit>>) {
         const user = context.user
         if (!user) return
+
+        msg.datetime = new Date(msg.datetime )
         try {
             await DB.add(StoreName.ACTION, msg)
         } catch (e) {}

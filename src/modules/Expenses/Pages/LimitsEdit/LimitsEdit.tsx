@@ -4,7 +4,7 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {ExpenseService, LimitService, SectionService} from "../../../../classes/services";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Limit, Section, Travel, User} from "../../../../classes/StoreEntities";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Container from "../../../../components/Container/Container";
@@ -23,6 +23,7 @@ export default function LimitsEdit() {
     const {sectionId} = useParams()
     const user = useUser()
     const travel = useTravel()
+    const context = useAppContext()
     const navigate = useNavigate()
 
     const [limit, setLimit] = useState<Limit>()
@@ -80,11 +81,11 @@ export default function LimitsEdit() {
         const l = await DB.getOne<Limit>(StoreName.LIMIT, limit.id)
 
         if(l) {
-            LimitService.update(limit, user)
+            LimitService.update(context, limit, user)
                 .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
                 .catch(defaultHandleError)
         } else {
-            LimitService.create(limit, user)
+            LimitService.create(context, limit, user)
                 .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
                 .catch(defaultHandleError)
         }

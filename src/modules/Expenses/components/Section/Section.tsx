@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Expense, Section as SectionEntity, Travel, User} from "../../../../classes/StoreEntities";
 import {ExpenseService, SectionService} from "../../../../classes/services";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -114,6 +114,7 @@ function SectionItem({expense}: { expense: Expense }) {
     const {datetime, value, title, entity_type, id, primary_entity_id} = expense
     const user = useUser()
     const travel = useTravel()
+    const context = useAppContext()
     const navigate = useNavigate();
     const coef = useExchangeCoefficient(expense.datetime, expense.currency)
     const expensesContext = useContext(ExpensesContext)
@@ -128,7 +129,7 @@ function SectionItem({expense}: { expense: Expense }) {
     async function handleRemove() {
         if (!travel || !user) return
         if (expense) {
-            ExpenseService.delete(expense, user)
+            ExpenseService.delete(context, expense, user)
                 .then(() => expensesContext.removeExpense && expensesContext.removeExpense(expense))
                 .then(() => pushAlertMessage({type: 'success', message: `Успешно удалено`}))
                 .catch(defaultHandleError)
