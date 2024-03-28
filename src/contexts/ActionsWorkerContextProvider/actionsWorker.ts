@@ -49,6 +49,8 @@ if (location.hostname !== 'localhost') {
                 await sleep(SLEEP)
                 continue
             }
+            // @ts-ignore
+            actions.forEach(a => a.datetime = a.datetime.getTime())
 
             try {
                 const {data: response, status} = await aFetch.post<

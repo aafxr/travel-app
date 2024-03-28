@@ -2,10 +2,12 @@ import clsx from "clsx";
 import React, {useContext, useEffect, useMemo, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {Expense, Section as SectionEntity, Travel, User} from "../../../../classes/StoreEntities";
-import {ExpenseService, SectionService} from "../../../../classes/services";
+import {ExpensesContext} from "../../../../contexts/ExpensesContexts/ExpensesContextProvider";
+import {Expense, Section as SectionEntity,  User} from "../../../../classes/StoreEntities";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {ExpenseService, SectionService} from "../../../../classes/services";
+import {useExchangeCoefficient} from "../../../../contexts/ExchangeContext";
 import {useLimit} from "../../../../contexts/ExpensesContexts/useLimit";
 import dateToStringFormat from "../../../../utils/dateToStringFormat";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
@@ -15,8 +17,6 @@ import {currencySymbol} from "../../static/vars";
 import Line from "../Line/Line";
 
 import './Section.css'
-import {useExchangeCoefficient} from "../../../../contexts/ExchangeContext";
-import {ExpensesContext} from "../../../../contexts/ExpensesContexts/ExpensesContextProvider";
 
 type SectionPropsType = {
     section_id: string,

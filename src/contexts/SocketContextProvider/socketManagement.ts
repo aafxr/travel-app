@@ -8,23 +8,30 @@
 import {Socket} from "socket.io-client";
 import {Context} from "../../classes/Context/Context";
 import {Action, Expense, Limit, Travel} from "../../classes/StoreEntities";
-import {ActionService} from "../../classes/services/ActionService";
-import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import {Recover} from "../../classes/Recover";
 import {StoreName} from "../../types/StoreName";
 import {DB} from "../../classes/db/DB";
 
 export default function socketManagement(context: Context) {
 
-    function newTravelAction(this: Socket, msg: Action<Travel>) {
+    async function newTravelAction(this: Socket, msg: Action<Travel>) {
         const user = context.user
         if (!user) return
 
         msg.datetime = new Date(msg.datetime )
-        ActionService
-            .prepareNewAction(msg, user)
-            .then(t => t && context.setTravel(t as Travel))
-            .catch(defaultHandleError)
+        if(msg.data.date_start) msg.data.date_start = new Date(msg.data.date_start)
+        if(msg.data.date_end) msg.data.date_end = new Date(msg.data.date_end)
+        if(msg.data.updated_at) msg.data.updated_at = new Date(msg.data.updated_at)
+        if(msg.data.created_at) msg.data.created_at = new Date(msg.data.created_at)
+
+        try {
+            await DB.add(StoreName.ACTION, msg)
+        }catch (e){}
+
+        const travelID = msg.data.id
+        const travel = await Recover.travel(travelID)
+        await DB.update(StoreName.TRAVEL, travel)
+        context.setTravel(travel)
     }
 
 
@@ -38,6 +45,9 @@ export default function socketManagement(context: Context) {
         if (!user) return
 
         msg.datetime = new Date(msg.datetime )
+        if(msg.data.datetime) msg.data.datetime = new Date(msg.data.datetime)
+        if(msg.data.created_at) msg.data.created_at = new Date(msg.data.created_at)
+
         const eID = msg.data.id
         const primaryID = msg.data.primary_entity_id
         try {
@@ -58,6 +68,7 @@ export default function socketManagement(context: Context) {
         if (!user) return
 
         msg.datetime = new Date(msg.datetime )
+
         try {
             await DB.add(StoreName.ACTION, msg)
         } catch (e) {}
