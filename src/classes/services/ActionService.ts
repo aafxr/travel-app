@@ -81,36 +81,35 @@ export class ActionService {
 
     static async checkNewActionsWhileReconnect(context: Context, travelID: string) {
         const updatedEntities: Record<string, boolean> = {}
-        const lastActionTime = await ActionService.getLastActionTime()
-        if (lastActionTime) {
-            const newActions = await fetchActions(lastActionTime.getTime())
-            const entities = new Set(newActions.map(a => a.entity.startsWith('expense') ? StoreName.EXPENSE : a.entity))
-            await DB.writeAllToStore(StoreName.ACTION, newActions)
+        let lastActionTime = (await ActionService.getLastActionTime())?.getTime() || 0
 
-            const user = context.user
-            if (!user) return updatedEntities
+        const newActions = await fetchActions(lastActionTime)
+        const entities = new Set(newActions.map(a => a.entity.startsWith('expense') ? StoreName.EXPENSE : a.entity))
+        await DB.writeAllToStore(StoreName.ACTION, newActions)
 
-            if (entities.has(StoreName.EXPENSE)) {
-                const expenses = await Recover.expense(travelID, user)
-                await DB.writeAllToStore(StoreName.EXPENSE, expenses)
-                updatedEntities[StoreName.EXPENSE] = true
-                entities.delete(StoreName.EXPENSE)
+        const user = context.user
+        if (!user) return updatedEntities
 
-            }
+        if (entities.has(StoreName.EXPENSE)) {
+            const expenses = await Recover.expense(travelID, user)
+            await DB.writeAllToStore(StoreName.EXPENSE, expenses)
+            updatedEntities[StoreName.EXPENSE] = true
+            entities.delete(StoreName.EXPENSE)
 
-            for (const storeName of entities.values()) {
-                switch (storeName) {
-                    case StoreName.TRAVEL:
-                        const travel = Recover.travel(travelID)
-                        await DB.update(StoreName.TRAVEL, travel)
-                        updatedEntities[StoreName.TRAVEL] = true
-                        break
-                    case StoreName.LIMIT:
-                        const limit = await Recover.limit(travelID, user)
-                        await DB.writeAllToStore(StoreName.LIMIT, limit)
-                        updatedEntities[StoreName.LIMIT] = true
-                        break
-                }
+        }
+
+        for (const storeName of entities.values()) {
+            switch (storeName) {
+                case StoreName.TRAVEL:
+                    const travel = Recover.travel(travelID)
+                    await DB.update(StoreName.TRAVEL, travel)
+                    updatedEntities[StoreName.TRAVEL] = true
+                    break
+                case StoreName.LIMIT:
+                    const limit = await Recover.limit(travelID, user)
+                    await DB.writeAllToStore(StoreName.LIMIT, limit)
+                    updatedEntities[StoreName.LIMIT] = true
+                    break
             }
         }
         return updatedEntities

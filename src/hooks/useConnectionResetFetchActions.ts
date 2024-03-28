@@ -17,6 +17,7 @@ export function useConnectionResetFetchActions(){
 
             await ActionService.checkNewActionsWhileReconnect(context, travel.id)
                 .then(async (res) => {
+                    console.log(res)
                     if(res[StoreName.TRAVEL]){
                         const t = await DB.getOne<Travel>(StoreName.TRAVEL, travel.id)
                         if(t) context.setTravel(t)
