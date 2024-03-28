@@ -26,6 +26,7 @@ import {ActionName} from "../../types/ActionsType";
  * - __writeAllToStore__    записывает список обектов в указанный стор
  * - __openCursor__         возвращает курсор, позволяет пройтись по всем записям в бд
  * - __openIndexCursor__    возвращает курсор по указанному индексу, позволяет пройтись по всем записям в бд
+ * - __getLocalActions__    метод позволяет получить список actions удовлетворяющих предикату
  *
  */
 export class DB {
@@ -43,6 +44,7 @@ export class DB {
             else store.add(data)
         } catch (e) {
             console.error(e)
+            throw e
         }
     }
 
@@ -280,5 +282,25 @@ export class DB {
             yield cursor.value as T
             cursor = await cursor.continue()
         }
+    }
+
+
+    /**
+     * метод позволяет получить список actions удовлетворяющих предикату
+     * @param predicate
+     */
+    static async getLocalActions<T extends {}>(predicate: (action:Action<T>)=> boolean): Promise<Action<T>[]>{
+        const actions: Action<T>[] = []
+
+        const  cursor = await DB.openCursor<Action<T>>(StoreName.ACTION)
+        let action = (await cursor.next()).value
+        while(action){
+            if(predicate(action)) {
+                action.datetime = new Date(action.datetime)
+                actions.push(action)
+            }
+            action = (await cursor.next()).value
+        }
+        return actions
     }
 }

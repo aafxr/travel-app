@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
-import {useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
 import {TravelService} from "../../../../classes/services";
@@ -23,6 +23,7 @@ import defaultHandleError from "../../../../utils/error-handlers/defaultHandleEr
  */
 export default function TravelRoutes() {
     const user = useUser()
+    const context = useAppContext()
 
     const {travelsType} = useParams()
     const navigate = useNavigate()
@@ -40,7 +41,7 @@ export default function TravelRoutes() {
                 .catch(console.error)
                 .finally(() => setLoading(false))
         }
-    }, [user])
+    }, [])
 
 
     /** обновление списка актуальных путешествий */
@@ -56,7 +57,7 @@ export default function TravelRoutes() {
     function handleRemove(travel: Travel) {
         if (user) {
             /** удаление путешествия из бд и добавление экшена об удалении */
-            TravelService.delete(travel, user)
+            TravelService.delete(context, travel, user)
                 .then(() => setTravels(travels.filter(t => t !== travel)))
                 .catch(defaultHandleError)
         }

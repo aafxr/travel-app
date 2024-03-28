@@ -21,4 +21,8 @@ export class TravelError extends CustomError {
     static unexpectedPlace(placeId: string){
         return new TravelError(`Unexpected place with id="${placeId}"`, ErrorCode.UNEXPECTED_TRAVEL_ID)
     }
+
+    static updateBeforeCreate(){
+        return new TravelError(`Обновление путешествия до созлания`, ErrorCode.TRAVEL_UPDATE_BEFORE_CREATE)
+    }
 }

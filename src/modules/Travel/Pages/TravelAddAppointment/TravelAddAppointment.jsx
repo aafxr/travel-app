@@ -3,13 +3,14 @@ import React, {useEffect, useState} from "react";
 
 import defaultAppointmentData from "../../../../utils/default-values/defaultAppointmentData";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
-import {TextArea} from "../../../../components/ui/TextArea/TextArea";
 import Container from "../../../../components/Container/Container";
-import useTravelContext from "../../../../hooks/useTravelContext";
+import {useTravel} from "../../../../contexts/AppContextProvider";
 import useUserSelector from "../../../../hooks/useUserSelector";
 import ErrorReport from "../../../../controllers/ErrorReport";
 import Button from "../../../../components/ui/Button/Button";
 import {Input, PageHeader} from "../../../../components/ui";
+import {Travel} from "../../../../classes/StoreEntities";
+import {TextArea} from "../../../../components/ui";
 
 /**
  * компонент для добавления встреч
@@ -26,15 +27,15 @@ export default function TravelAddAppointment() {
     // const dateHandlers = useChangeInputType('date')
     // const timeHandlers = useChangeInputType('time')
 
-    const {travel, update} = useTravelContext()
-    const [appointment, setAppointment] = useState(/** @type{AppointmentType}*/null)
+    const travel = useTravel()
+    const [appointment, setAppointment] = useState(null)
 
     //==================================================================================================================
     /** поиск встречи (инициализация начального значения) */
     useEffect(() => {
         if (travel && !appointment) {
             /** индекс встречи в массиве встреч путешествия */
-            const ap = travel.appointments.find(a => a.id === appointmentCode)
+            const ap = Travel.appointments.find(a => a.id === appointmentCode)
             /** инициализация путешествия */
             if (ap) setAppointment(ap)
             else setAppointment(defaultAppointmentData())

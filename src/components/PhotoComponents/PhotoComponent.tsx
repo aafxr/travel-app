@@ -22,7 +22,7 @@ interface PhotoPropsType extends Omit<HTMLAttributes<HTMLImageElement>, 'onChang
 /**
  * компонент отображает фото по переданному src , либо ищет в бд по id
  * @param  className css class
- * @param  id        идентификатор фото в бд
+ * @param  item        Travel | User | Member, элемент, который содержит поле "photo"
  * @param  onChange  обработчик на изменение фото
  * @param  props     other props
  * @returns {JSX.Element}

@@ -104,7 +104,7 @@ export default function TravelDescriptionAndDate() {
 
         if (state.change) {
             const updatedTravel = new Travel(state.travel)
-            TravelService.update(updatedTravel, user)
+            TravelService.update(context, updatedTravel, user)
                 .then(() => navigate(`/travel/${updatedTravel.id}/`))
                 .then(() => context.setTravel(updatedTravel))
                 .catch(defaultHandleError)
@@ -178,7 +178,7 @@ export default function TravelDescriptionAndDate() {
                 </div>
                 <div className='block column gap-0.5'>
                     <div className='title-bold'>Описание</div>
-                    <TextArea init={state.travel.description} onChange={handleDescriptionChange}
+                    <TextArea value={state.travel.description} onChange={handleDescriptionChange}
                               placeholder='Описание'/>
                 </div>
             </Container>

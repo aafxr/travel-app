@@ -2,8 +2,15 @@ import {User} from "../StoreEntities";
 import {UserError} from "../errors";
 import axios from "axios";
 
+/**
+ * сервис для работы с соединением
+ */
 export class ConnectionService {
 
+    /**
+     * метод позволяет отправить запрос для обновления токенов
+     * @param user
+     */
     static async refresh(user: User) {
         if (!user) throw UserError.unauthorized()
 

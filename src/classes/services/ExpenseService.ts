@@ -8,49 +8,94 @@ import {IndexName} from "../../types/IndexName";
 import {TravelService} from "./TravelService";
 import {LimitService} from "./LimitService";
 import {Context} from "../Context/Context";
+import {Compare} from "../Compare";
 import {DB} from "../db/DB";
+import {SMEType} from "../../contexts/SocketContextProvider/SMEType";
 
+
+/**
+ * сервис позволяет работать с расходами
+ * (создавать, удалять, обнавлять)
+ *
+ * ---
+ * содержит следующие методы:
+ * - create
+ * - update
+ * - delete
+ * - getAllByTravelId
+ * - getById
+ * - getTotal
+ * - writeTransaction
+ */
 export class ExpenseService {
 
-    static async create(expense: Expense, user: User) {
-        await DB.writeWithAction(StoreName.EXPENSE, expense, user.id, ActionName.ADD)
+    /**
+     * метод добавляет запись о расходе в бд и создает соответствующий action
+     * @param context
+     * @param expense
+     * @param user
+     */
+    static async create(context: Context,  expense: Expense, user: User) {
+        const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.ADD)
+        await ExpenseService.writeTransaction(expense, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
-
     }
 
-    static async update(expense: Expense, user: User) {
+    /**
+     * метод обновляет запись о расходе в бд и генерирует соответсвующий action
+     * @param context
+     * @param expense
+     * @param user
+     */
+    static async update(context: Context, expense: Expense, user: User) {
         if (!Expense.isPersonal(expense, user)) {
             const travel = await TravelService.getById(expense.primary_entity_id)
             if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
             if (!Travel.isMember(travel, user)) throw ExpenseError.permissionDenied()
         }
-        const action = new Action(expense, user.id, expense.variant as StoreName, ActionName.UPDATE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.EXPENSE)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.put(expense)
-        actionStore.add(action)
+
+        const oldExpense = await DB.getOne<Expense>(StoreName.EXPENSE, expense.id)
+
+        if(!oldExpense) throw ExpenseError.updateBeforeCreate()
+
+        const changed = Compare.objects(oldExpense, expense, ['id', 'primary_entity_id'], ["user"])
+
+        const action = new Action(changed, user.id, expense.variant as StoreName, ActionName.UPDATE)
+        await ExpenseService.writeTransaction(expense, action)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
         await LimitService.updateWithNewExpense(expense, user)
         return expense
     }
 
-    static async delete(expense: Expense, user: User) {
+    /**
+     * мметод удляет запись о расходе и создает соответствующий action
+     * @param context
+     * @param expense
+     * @param user
+     */
+    static async delete(context: Context, expense: Expense, user: User) {
         // if (!Expense.isPersonal(expense,user)) {
         //     const travel = await TravelService.getById(expense.primary_entity_id)
         //     if (!travel) throw TravelError.unexpectedTravelId(expense.primary_entity_id)
         //     if (travel.permitChange(user)) throw ExpenseError.permissionDenied()
         // }
-        const action = new Action(expense, expense.id, expense.variant as StoreName, ActionName.DELETE)
-        const db = await openIDBDatabase()
-        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
-        const expenseStore = tx.objectStore(StoreName.EXPENSE)
-        const actionStore = tx.objectStore(StoreName.ACTION)
-        expenseStore.delete(expense.id)
-        actionStore.add(action)
+        const {id,primary_entity_id} = expense
+
+        const action = new Action({id,primary_entity_id} as Expense, user.id, expense.variant as StoreName, ActionName.DELETE)
+        const socket = context.socket
+        if(socket) socket.emit(SMEType.EXPENSE_ACTION, action)
+        await ExpenseService.writeTransaction(expense, action, true)
     }
 
+    /**
+     * метод позваляет загрузить спсок расходов для указанного путешествия
+     * @param ctx
+     * @param travelId
+     */
     static async getAllByTravelId(ctx: Context, travelId: string): Promise<Expense[]> {
         const user = ctx.user
         if (!user) throw UserError.unauthorized()
@@ -75,7 +120,14 @@ export class ExpenseService {
     }
 
 
-    /** метод подсчитывает сумму всех расходов указанной секции */
+    /**
+     * метод подсчитывает сумму всех расходов указанной секции
+     * @param user
+     * @param travel
+     * @param section_id
+     * @param personal
+     * @param variant
+     */
     static async getTotal(user: User, travel: Travel, section_id: string, personal: boolean, variant: Expense['variant'] = "expenses_plan") {
         const cursor = DB.openIndexCursor<Expense>(StoreName.EXPENSE, IndexName.PRIMARY_ENTITY_ID, travel.id)
         let total = 0
@@ -99,5 +151,22 @@ export class ExpenseService {
             expense = (await cursor.next()).value
         }
         return total
+    }
+
+    /**
+     * транзакция для записи расхода экшена
+     * @param expense
+     * @param action
+     * @param isDelete
+     */
+    static async writeTransaction(expense:Expense, action: Action<Partial<Expense>>, isDelete = false){
+        const db = await openIDBDatabase()
+        const tx = db.transaction([StoreName.EXPENSE, StoreName.ACTION], 'readwrite')
+        const expenseStore = tx.objectStore(StoreName.EXPENSE)
+        const actionStore = tx.objectStore(StoreName.ACTION)
+        isDelete
+            ? expenseStore.delete(expense.id)
+            : expenseStore.put(expense)
+        actionStore.add(action)
     }
 }

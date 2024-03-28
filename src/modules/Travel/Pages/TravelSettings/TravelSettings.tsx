@@ -107,7 +107,7 @@ export default function TravelSettings() {
         if (!user) return
         if (!state) return;
         const t = new Travel(state.travel)
-        TravelService.create(t, user)
+        TravelService.create(context, t, user)
             .then(() => context.setTravel(t))
             .then(() => navigate(`/travel/${state.travel.id}/advice-route/`))
             .catch(defaultHandleError)
@@ -205,7 +205,7 @@ export default function TravelSettings() {
                         <section className='block'>
                             <ToggleBox
                                 className='block'
-                                init={state.travel.isPublic}
+                                init={Travel.isPublic(state.travel)}
                                 onChange={handleToggleBoxChanged}
                                 title={"Сделать видимым для всех"}
                             />

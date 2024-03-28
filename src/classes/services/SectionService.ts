@@ -4,8 +4,21 @@ import {SectionType} from "../../types/SectionType";
 import {StoreName} from "../../types/StoreName";
 import {Section} from "../StoreEntities";
 
+
+/**
+ * сервис для загрузки информации о секциях
+ *
+ * ---
+ * доступны следующие методы:
+ * - getSectionById
+ * - getAll
+ */
 export class SectionService {
 
+    /**
+     * метод для загрузки информации о секции из бд
+     * @param section_id
+     */
     static async getSectionById(section_id: string) {
         const sectionObj = await DB.getOne<SectionType>(StoreName.SECTION, section_id)
         if (sectionObj) return new Section(sectionObj)
@@ -15,6 +28,9 @@ export class SectionService {
         return sections.find(s => s.id === section_id)
     }
 
+    /**
+     * метод загружает информацию о секции из бд или формирует запрос к api
+     */
     static async getAll() {
         const sectionsObj = await DB.getAll<SectionType>(StoreName.SECTION)
         if (sectionsObj.length) return sectionsObj.map(s => new Section(s))

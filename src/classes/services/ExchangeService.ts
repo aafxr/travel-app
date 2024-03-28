@@ -1,13 +1,26 @@
 import {Expense} from "../StoreEntities";
 import {DB} from "../db/DB";
 import {StoreName} from "../../types/StoreName";
-import {ExchangeType} from "../../contexts/ExchangeContext/ExchangeType";
-import {CurrencyType} from "../../contexts/ExchangeContext/CurrencyTypes";
+import {ExchangeType} from "../../contexts/ExchangeContext";
+import {CurrencyType} from "../../contexts/ExchangeContext";
 import {fetchExchangeCourse} from "../../api/fetch/fetchExchangeCource";
 
+
+/**
+ * сервис для работы с курсом валют
+ *
+ * ---
+ * содержит следующие методы:
+ * - initExpensesExchange
+ * - getExchangeCourse
+ */
 export class ExchangeService {
 
-    //инициализация курса валют для списка расходов
+    /**
+     * инициализация курса валют для списка расходов
+     * @param expenses
+     * @param _retry
+     */
     static async initExpensesExchange(expenses: Expense[], _retry = false): Promise<{
         [key: string]: CurrencyType[]
     }> {
@@ -48,7 +61,11 @@ export class ExchangeService {
         return await ExchangeService.initExpensesExchange(expenses, true)
     }
 
-
+    /**
+     * метод загружает курс валют для указанного диапазона времени
+     * @param from
+     * @param to
+     */
     static async getExchangeCourse(from:Date, to: Date){
         const course = await DB.getMany<ExchangeType>(StoreName.CURRENCY, IDBKeyRange.bound(from.getTime(), to.getTime()))
         const result: {[key: string]: ExchangeType['value']} = {}

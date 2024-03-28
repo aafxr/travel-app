@@ -4,13 +4,15 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {ExpenseService, LimitService, SectionService} from "../../../../classes/services";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {Limit, Section, Travel, User} from "../../../../classes/StoreEntities";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import Checkbox from "../../../../components/ui/Checkbox/Checkbox";
 import Container from "../../../../components/Container/Container";
 import {Chip, Input, PageHeader} from "../../../../components/ui";
 import Button from "../../../../components/ui/Button/Button";
 import {formatter} from "../../../../utils/currencyFormat";
+import {StoreName} from "../../../../types/StoreName";
+import {DB} from "../../../../classes/db/DB";
 
 import '../../css/Expenses.css'
 
@@ -21,6 +23,7 @@ export default function LimitsEdit() {
     const {sectionId} = useParams()
     const user = useUser()
     const travel = useTravel()
+    const context = useAppContext()
     const navigate = useNavigate()
 
     const [limit, setLimit] = useState<Limit>()
@@ -63,7 +66,7 @@ export default function LimitsEdit() {
 
 
     // обновляем данные в бд либо выволим сообщение о некоректно заданном лимите
-    function handleSave() {
+    async function handleSave() {
         if (!limit || !user || !travel) return
 
         if (limit.value < total) {
@@ -75,9 +78,17 @@ export default function LimitsEdit() {
             return
         }
 
-        LimitService.update(limit, user)
-            .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
-            .catch(defaultHandleError)
+        const l = await DB.getOne<Limit>(StoreName.LIMIT, limit.id)
+
+        if(l) {
+            LimitService.update(context, limit, user)
+                .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
+                .catch(defaultHandleError)
+        } else {
+            LimitService.create(context, limit, user)
+                .then(() => navigate(`/travel/${travel.id}/expenses/plan/`))
+                .catch(defaultHandleError)
+        }
     }
 
 

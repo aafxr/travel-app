@@ -8,5 +8,6 @@ export enum IndexName {
     ENTITY = 'entity',
     ACTION = 'action',
     UPDATED_AT = 'updated_at',
-    DATE_START = "date_start"
+    DATE_START = "date_start",
+    DATETIME = "datetime"
 }

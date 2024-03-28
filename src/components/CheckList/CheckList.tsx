@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 import {useTravel, useUser} from "../../contexts/AppContextProvider";
-import {CheckListServise} from "../../classes/services";
+import {CheckListService} from "../../classes/services";
 import {Checklist} from "../../classes/StoreEntities";
 import Container from "../Container/Container";
 import Checkbox from "../ui/Checkbox/Checkbox";
@@ -37,7 +37,7 @@ export default function CheckListComponent() {
         if (!travel) return
         if (travelCode && travelCode !== travel.id) {
             setLoading(true)
-            CheckListServise.getCheckList(travel, user)
+            CheckListService.getCheckList(travel, user)
                 .then(chl => setCheckList(chl))
                 .catch(defaultHandleError)
                 .finally(() => setLoading(false))
@@ -47,7 +47,7 @@ export default function CheckListComponent() {
     // созранение измененного чеклиста ===============================================================================
     function handleSubmit() {
         if (checkList && changed) {
-            CheckListServise.updateChecklist(checkList)
+            CheckListService.updateChecklist(checkList)
                 .then(() => navigate(-1))
                 .catch(defaultHandleError)
         }

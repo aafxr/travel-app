@@ -6,7 +6,7 @@
  * @name errorToObject
  * @category Utils
  */
-export default function errorToObject(e){
+export default function errorToObject<T extends Error>(e: T){
     return {
         message: e.message,
         stack: e.stack

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 
 import Main from "./modules/Main/Pages/Main/Main";
 import Alerts, {pushAlertMessage} from "./components/Alerts/Alerts";
@@ -45,6 +45,15 @@ import {ExchangeContextProvider} from "./contexts/ExchangeContext";
 import LimitsEdit from "./modules/Expenses/Pages/LimitsEdit/LimitsEdit";
 import ActionsWorkerContextProvider from "./contexts/ActionsWorkerContextProvider/ActionsWorkerContextProvider";
 import {SocketContextProvider} from "./contexts/SocketContextProvider";
+import {Dev} from "./modules/Dev";
+import {Recover} from "./classes/Recover";
+import {TravelChat} from "./modules/Travel/Pages/TravelChat/TravelChat";
+import TravelAddPlane from "./modules/Travel/Pages/TravelAddPlane/TravelAddPlane";
+import TravelAddHotel from "./modules/Travel/Pages/TravelAddHotel/TravelAddHotel";
+import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAddLocation";
+import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
+import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
+import {Compare} from "./classes/Compare";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -108,11 +117,14 @@ function App() {
         }
     }, [])
 
+
     window.DB = DB
     window.User = User
     window.Expense = Expense
     window.Travel = Travel
     window.Place = Place
+    window.Recover = Recover
+    window.Compare = Compare
 
     function handleAuth(payload: TelegramAuthPayloadType) {
         UserService.logIn(payload)
@@ -129,7 +141,7 @@ function App() {
             <Routes>
                 <Route path={'/'} element={<Main/>}/>
                 <Route path={'/auth/'} element={<TelegramAuth handleAuth={handleAuth}/>}/>
-                {/*    <Route path={'/dev/'} element={<Dev/>}/>*/}
+                <Route path={'/dev/'} element={<Dev/>}/>
                 <Route element={<AuthRequired/>}>
                     <Route element={<ActionsWorkerContextProvider/>}>
                         <Route path={'/favorite/'} element={<Favorite/>}/>
@@ -143,6 +155,7 @@ function App() {
                                 <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                                 <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
                                 <Route path={'/travel/:travelCode/'} element={<TravelMain/>}/>
+                                <Route path={'/travel/:travelCode/chat/'} element={<TravelChat/>}/>
                                 <Route path={'/travel/:travelCode/:dayNumber/'} element={<TravelMain/>}/>
                                 <Route path={'/travel/:travelCode/checklist/'} element={<CheckListComponent/>}/>
                                 <Route path={'/travel/:travelCode/settings/:userCode/'} element={<TravelUserPermission/>}/>
@@ -153,13 +166,13 @@ function App() {
                                 <Route path={'/travel/:travelCode/details/'} element={<TravelDetails/>}/>
                                 <Route path={'/travel/:travelCode/add/place/'} element={<TravelAddPlace/>}/>
                                 {/*<Route path={'/travel/:travelCode/add/place/:timestamp/'} element={<TravelAddPlace/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/plane/'} element={<TravelAddPlane/>}/>
+                                        <Route path={'/travel/:travelCode/add/hotel/'} element={<TravelAddHotel/>}/>
                                 {/*        <Route path={'/travel/:travelCode/add/hotel/:hotelCode/'} element={<TravelAddHotel/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/location/'} element={<TravelAddLocation/>}/>
+                                        <Route path={'/travel/:travelCode/add/appointment/'} element={<TravelAddAppointment/>}/>
                                 {/*        <Route path={'/travel/:travelCode/add/appointment/:appointmentCode/'} element={<TravelAddAppointment/>}/>*/}
-                                {/*        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>*/}
+                                        <Route path={'/travel/:travelCode/add/recommend/'} element={<TravelOnRoute/>}/>
                                 {/*        <Route path={'/travel/:travelCode/photoGallery/'} element={<TravelPhotoGallery/>}/>*/}
                                 {/*        <Route path={'/travel/:travelCode/photoGallery/add/'} element={<TravelAddPhoto/>}/>*/}
                                 <Route element={<ExchangeContextProvider/>}>

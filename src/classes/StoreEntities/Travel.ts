@@ -291,59 +291,59 @@ export class Travel {
         Travel.setUpdated_at(travel)
     }
 
-    getMemberRole<T extends Member>(member: T) {
-        if (this.isAdmin(member)) return 'admin'
-        if (this.isEditor(member)) return 'editor'
+    static getMemberRole<T extends Member>(travel: Travel, member: T) {
+        if (Travel.isAdmin(travel, member)) return 'admin'
+        if (Travel.isEditor(travel, member)) return 'editor'
         return 'commentator'
     }
 
-    permitChange<T extends Member>(member: T) {
-        return member.id === this.owner_id ||
-            this.admins.includes(member.id) ||
-            this.editors.includes(member.id)
+    static permitChange<T extends Member>(travel: Travel, member: T) {
+        return member.id === travel.owner_id ||
+            travel.admins.includes(member.id) ||
+            travel.editors.includes(member.id)
     }
 
-    permitWatch(member: Member) {
-        if (this.permission.public) return true
-        if (this.admins.includes(member.id)) return true
-        if (this.editors.includes(member.id)) return true
-        return this.commentator.includes(member.id);
-
-    }
-
-    isAdmin<T extends Member>(member: T) {
-        if (member.id === this.owner_id) return true
-        return this.admins.includes(member.id);
+    static permitWatch(travel: Travel, member: Member) {
+        if (travel.permission.public) return true
+        if (travel.admins.includes(member.id)) return true
+        if (travel.editors.includes(member.id)) return true
+        return travel.commentator.includes(member.id);
 
     }
 
-    isEditor<T extends Member>(member: T) {
-        return this.editors.includes(member.id);
+    static isAdmin<T extends Member>(travel: Travel, member: T) {
+        if (member.id === travel.owner_id) return true
+        return travel.admins.includes(member.id);
+
     }
 
-    permitDelete<T extends Member>(membeer: T) {
-        return membeer.id === this.owner_id
+    static isEditor<T extends Member>( travel: Travel, member: T) {
+        return travel.editors.includes(member.id);
     }
 
-    hasPermit(user: Member, key: keyof TravelPermission) {
-        if (this.permitChange(user)) return true
-        return !!this.permission[key];
+    static permitDelete<T extends Member>(travel: Travel, member: T) {
+        return member.id === travel.owner_id
     }
 
-    getPreference<T extends keyof TravelPreference>(key: T) {
-        return this.preference[key]
+    static hasPermit(travel: Travel, user: Member, key: keyof TravelPermission) {
+        if (Travel.permitChange(travel, user)) return true
+        return !!travel.permission[key];
     }
 
-    permit<T extends keyof TravelPermission>(key: T) {
-        return !!this.permission[key]
+    static getPreference<T extends keyof TravelPreference>(travel: Travel, key: T) {
+        return travel.preference[key]
+    }
+
+    static permit<T extends keyof TravelPermission>(travel: Travel, key: T) {
+        return !!travel.permission[key]
     }
 
     static setUpdated_at(travel: Travel) {
         travel.updated_at = new Date()
     }
 
-    get isPublic() {
-        return !!this.permission.public
+    static isPublic(travel: Travel) {
+        return !!travel.permission.public
     }
 
     static setDepth(travel: Travel, depth: TravelPreference['depth']) {
@@ -363,8 +363,8 @@ export class Travel {
 
     static isMember<T extends Member>(travel: Travel, member: T) {
         if (member.id === travel.owner_id) return true
-        if (travel.isAdmin(member)) return true
-        if (travel.isEditor(member)) return true
+        if (Travel.isAdmin(travel, member)) return true
+        if (Travel.isEditor(travel, member)) return true
         return Travel.getMembers(travel).includes(member.id);
     }
 

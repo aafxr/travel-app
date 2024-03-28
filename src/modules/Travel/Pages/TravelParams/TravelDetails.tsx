@@ -20,12 +20,12 @@ export default function TravelDetails() {
             <PageHeader arrowBack title='Детали путешествия' />
         </Container>
             <Container className='content'>
-                {/*<LinkComponent to={`/travel/${travelCode}/add/location/`} title='Добавить место' arrow />*/}
-                {/*<LinkComponent to={`/travel/${travelCode}/add/plane/`} title='Добавить самолет' arrow />*/}
-                {/*<LinkComponent to={`/travel/${travelCode}/add/hotel/`} title='Добавить отель' arrow />*/}
+                <LinkComponent to={`/travel/${travelCode}/add/location/`} title='Добавить место' arrow />
+                <LinkComponent to={`/travel/${travelCode}/add/plane/`} title='Добавить самолет' arrow />
+                <LinkComponent to={`/travel/${travelCode}/add/hotel/`} title='Добавить отель' arrow />
                 <LinkComponent to={`/travel/${travelCode}/add/place/`} title='Добавить локацию' arrow />
                 {/*<LinkComponent to={`/travel/${travelCode}/add/appointment/`} title='Добавить встречу' arrow />*/}
-                {/*<LinkComponent to={`/travel/${travelCode}/add/recommend/`} title='По пути' arrow />*/}
+                <LinkComponent to={`/travel/${travelCode}/add/recommend/`} title='По пути' arrow />
         </Container>
         </div>
     )

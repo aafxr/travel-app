@@ -118,7 +118,7 @@ registerRoute(
 
 registerRoute(
     ({url}) => url.origin === self.location.origin,
-    new NetworkFirst({
+    new StaleWhileRevalidate({
         cacheName: 'api',
         plugins: [ new ExpirationPlugin({maxAgeSeconds: 30 * 24 * 60 * 60}),],
     })

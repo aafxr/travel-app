@@ -7,7 +7,6 @@ import Container from "../../../../components/Container/Container";
 import {RouteFilterType} from "../../../../types/filtersTypes";
 import Button from "../../../../components/ui/Button/Button";
 import {MS_IN_DAY} from "../../../../static/constants";
-import ShowRouteByDays from "./ShowRouteByDays";
 import ShowRouteOnMap from "./ShowRouteOnMap";
 import ShowPlaces from "./ShowPlaces";
 
@@ -53,7 +52,6 @@ export function ShowRoute() {
             .sort((a, b) => a.time_start.getTime() - b.time_start.getTime())
         const items = new Set(itemsList)
         const t = new Date(0)
-        t.setHours(0, 0, 0, 0)
         let d_start = t.getTime()
         let d_end = d_start + MS_IN_DAY
         for (let i = 0; i < travel.days; i++) {

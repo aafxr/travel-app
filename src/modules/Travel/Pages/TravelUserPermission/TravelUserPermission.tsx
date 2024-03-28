@@ -10,6 +10,7 @@ import {useMember} from "../../../../hooks/useMember";
 import {TrashIcon} from "../../../../components/svg";
 
 import './TravelUserPermission.css'
+import {Travel} from "../../../../classes/StoreEntities";
 
 
 /**
@@ -60,7 +61,7 @@ export default function TravelUserPermission() {
             </div>
         )
 
-    if(user && !travel.isAdmin(user))
+    if(user && !Travel.isAdmin(travel, user))
         return (
             <div className='wrapper'>
                 <Container className='content pt-20 pb-20 column gap-0.5' loading={loading}>
@@ -104,12 +105,12 @@ export default function TravelUserPermission() {
                         <div className='member-title title-semi-bold '>Права</div>
                         <ul className='member-access-rules'>
                             <li>
-                                <Checkbox checked={travel.permitChange(member)} onChange={handleEditePermit}>
+                                <Checkbox checked={Travel.permitChange(travel, member)} onChange={handleEditePermit}>
                                     Редактирование
                                 </Checkbox>
                             </li>
                             <li>
-                                <Checkbox checked={travel.permitChange(member)} onChange={handleShowPermit}>
+                                <Checkbox checked={Travel.permitChange(travel, member)} onChange={handleShowPermit}>
                                     Просмотр
                                 </Checkbox>
                             </li>

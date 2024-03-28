@@ -1,7 +1,9 @@
 import {Place, Travel, User} from "./classes/StoreEntities";
-import {DB} from "./classes/db/DB";
 import {Context} from "./classes/Context/Context";
+import {Socket} from "socket.io-client";
+import {DB} from "./classes/db/DB";
 import ymaps from "ymaps/index";
+import {Compare} from "./classes/Compare";
 
 
 declare global {
@@ -15,10 +17,14 @@ declare global {
         User:User.prototype
         context: Context
         DB: DB
+        Recover: Recover
         TelegramLoginWidget: {
             dataOnauth: (user) => unknown,
         }
-        ymaps:ymaps
+        ymaps:ymaps,
+        socket: Socket
+        sendMessage: function
+        Compare: Compare
     }
 
     interface GlobalEventHandlersEventMap{

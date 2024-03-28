@@ -73,7 +73,8 @@ function registerValidSW(swUrl, config) {
                                 'tabs for this page are closed. See https://cra.link/PWA.'
                             );
                             //==========================================================================================
-                            window?.confirm('Страница устарела. Обновить страницу для получения актуальной версии?') && window?.location.reload()
+                            // window?.confirm('Страница устарела. Обновить страницу для получения актуальной версии?') &&
+                            window?.location.reload()
                             // Execute callback
                             if (config && config.onUpdate) {
                                 config.onUpdate(registration);

@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react'
 
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useTravel, useUser} from "../../../../contexts/AppContextProvider";
+import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import {ExpenseService, SectionService} from "../../../../classes/services";
 import {pushAlertMessage} from "../../../../components/Alerts/Alerts";
 import NumberInput from "../../../../components/ui/Input/NumberInput";
@@ -32,6 +32,7 @@ export default function ExpensesAdd() {
     const {expenseCode} = useParams()
     const navigate = useNavigate()
 
+    const context = useAppContext()
     const travel = useTravel()
     const user = useUser()
 
@@ -145,11 +146,11 @@ export default function ExpensesAdd() {
 
 
         if (expenseCode)
-            ExpenseService.update(expense, user)
+            ExpenseService.update(context, expense, user)
                 .then(() => navigate(-1))
                 .catch(defaultHandleError)
         else
-            ExpenseService.create(expense, user)
+            ExpenseService.create(context, expense, user)
                 .then(() => navigate(-1))
                 .catch(defaultHandleError)
     }
