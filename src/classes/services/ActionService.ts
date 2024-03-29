@@ -78,7 +78,11 @@ export class ActionService {
         return lastAction
     }
 
-
+    /**
+     * метод делает запрос на получение actions после востановления интернет-соединения
+     * @param context
+     * @param travelID
+     */
     static async checkNewActionsWhileReconnect(context: Context, travelID: string) {
         const updatedEntities: Record<string, boolean> = {}
         let lastActionTime = (await ActionService.getLastActionTime())?.getTime() || 0
