@@ -1,15 +1,17 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import Container from "../../components/Container/Container";
-import {PageHeader} from "../../components/ui";
+import {PageHeader, Toast} from "../../components/ui";
 
 import './dev.css'
+import Input from "../../components/ui/Input/Input";
 
 
 
 export function Dev() {
     const navigate = useNavigate()
+    const [toastVisible, setToastVisible] = useState(false)
 
 
     useEffect(() => {
@@ -38,14 +40,11 @@ export function Dev() {
                     flexDirection: 'column',
                     letterSpacing: '1px'
                 }}>
-                    <h2 style={{fontWeight: '900'}}>
-                        <b>Опции</b>
-                    </h2>
-                    <div className={'message'}>
-                        <div className={'message-text'}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium blanditiis in similique.</div>
-                        <div className={'message-close'}>X</div>
-                        <span className={'message-icon'}></span>
-                    </div>
+                    <Input
+                        onFocus={() => setToastVisible(true)}
+                        onBlur ={() => setToastVisible(false)}
+                    />
+                    <Toast max={5} onSubmit={console.log} visible={toastVisible}/>
                 </div>
             </Container>
         </>
