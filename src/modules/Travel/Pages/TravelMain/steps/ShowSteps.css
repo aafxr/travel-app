@@ -80,3 +80,7 @@
     font-weight: 600;
     border-left: 2px dashed var(--color-grey);
 }
+
+.right-card-bg{
+    background-color: var(--color-grey-light);
+}

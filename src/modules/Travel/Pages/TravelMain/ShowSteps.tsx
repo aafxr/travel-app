@@ -9,11 +9,13 @@ import {useTravel} from "../../../../contexts/AppContextProvider";
 import {Travel} from "../../../../classes/StoreEntities";
 import {Tab} from "../../../../components/ui";
 
-import './steps/ShowSteps.css'
-import {PlaceStepCard} from "./steps/PlaceStepCard";
-import {RoadStepCard} from "./steps/RoadStepCard";
-import {HotelStepCard} from "./steps/HotelStepCard";
 import Swipe from "../../../../components/ui/Swipe/Swipe";
+import {PlaceStepCard} from "./steps/PlaceStepCard";
+import {HotelStepCard} from "./steps/HotelStepCard";
+import {RoadStepCard} from "./steps/RoadStepCard";
+
+import './steps/ShowSteps.css'
+import {TrashIcon} from "../../../../components/svg";
 
 
 export default function ShowSteps() {
@@ -64,13 +66,17 @@ export default function ShowSteps() {
 function StepCard({step}: { step: Travel["steps"][number] }) {
 
     if (step instanceof PlaceStep) {
-        const removeElement = <div>
-
+        const removeElement = <div className='column'>
+            <div className='icon'>
+                <TrashIcon  />
+            </div>
+            <span>Удалить</span>
         </div>
         return (
             <Swipe
                 rightElement={removeElement}
                 rightButton
+                rElemBg={'right-card-bg'}
             >
                 <PlaceStepCard place={step}/>
             </Swipe>

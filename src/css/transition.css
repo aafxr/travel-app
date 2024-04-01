@@ -1,5 +1,5 @@
 :root{
-    --tr-all: all 2s ease;
+    --tr-all: all .3s ease;
     --alert-animation-duration: 6s;
     --toggle-transition: 0.4s
 }

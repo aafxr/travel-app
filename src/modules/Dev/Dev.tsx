@@ -1,17 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import Container from "../../components/Container/Container";
-import {PageHeader, Toast} from "../../components/ui";
+import {PageHeader, DropDown} from "../../components/ui";
+import Input from "../../components/ui/Input/Input";
 
 import './dev.css'
-import Input from "../../components/ui/Input/Input";
+import {PlaceStepCard} from "../Travel/Pages/TravelMain/steps/PlaceStepCard";
+import {PlaceStep} from "../../classes/StoreEntities/route/PlaceStep";
 
 
 
 export function Dev() {
     const navigate = useNavigate()
     const [toastVisible, setToastVisible] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
 
 
     useEffect(() => {
@@ -41,10 +44,17 @@ export function Dev() {
                     letterSpacing: '1px'
                 }}>
                     <Input
+                        ref={inputRef}
                         onFocus={() => setToastVisible(true)}
-                        onBlur ={() => setToastVisible(false)}
+                        // onBlur ={() => setToastVisible(false)}
                     />
-                    <Toast max={5} onSubmit={console.log} visible={toastVisible}/>
+                    {/*<DropDown*/}
+                    {/*    items={['item 1', 'item 2', 'item 3']}*/}
+                    {/*    node={inputRef}*/}
+                    {/*    max={5}*/}
+                    {/*    onSubmit={console.log}*/}
+                    {/*    visible={toastVisible}*/}
+                    {/*/>*/}
                 </div>
             </Container>
         </>

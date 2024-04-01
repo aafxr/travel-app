@@ -1,36 +1,41 @@
+import clsx from "clsx";
+import {createPortal} from "react-dom";
 import React, {useEffect, useRef, useState} from "react";
 
+import './DropDown.css'
 
-import './Toast.css'
-import clsx from "clsx";
 
-type ToastPropsType = {
+type DropDownPropsType<T> = {
     items?: string[]
     visible?: boolean
     max?: number
     onSelect?: (item: string) => unknown
     onSubmit?: (item: string) => unknown
     className?: string
+    node?: React.RefObject<T>
 }
 
 
-const testString = [
-    'testString 1',
-    'testString 2',
-    'testString 3',
-    'testString 4',
-    'testString 5',
-    'testString 6',
-]
-
-export default function Toast({
-                                  items = testString,
+/**
+ * компонент отображает выпадающий список
+ * @param items - массив строк который будет отображен в выподающем списке
+ * @param visible - флаг видимости списка
+ * @param max - максимальное число эллеменото отображаемых в списке
+ * @param onSelect - метод, вызывается при навигации по полям при помощи стрелок
+ * @param onSubmit - метод, вызывается при клике/enter
+ * @param className - стили, применяются к корневому элементу списка
+ * @param node - dom нода, к которой будет спозиционирован список
+ * @constructor
+ */
+export default function DropDown<T extends HTMLElement>({
+                                  items = [],
                                   visible = false,
                                   max = 5,
                                   onSelect,
                                   onSubmit,
-                                  className
-                              }: ToastPropsType
+                                  className,
+                                  node
+                              }: DropDownPropsType<T>
 ) {
     const itemRef = useRef<HTMLLIElement>(null)
     const toastRef = useRef<HTMLUListElement>(null)
@@ -45,6 +50,18 @@ export default function Toast({
 
 
     useEffect(() => {
+        if(!toastRef.current) return
+        if(!node || !node.current) return
+
+        const rect = node.current.getBoundingClientRect()
+        toastRef.current.style.top = rect.bottom + 'px'
+        toastRef.current.style.left = rect.left + 'px'
+        toastRef.current.style.width = rect.width + 'px'
+
+    }, [node])
+
+
+    useEffect(() => {
         function handleKeyPress(e: KeyboardEvent){
             if(!items || !items.length) return
             if(!itemRef.current || !toastRef.current) return
@@ -52,20 +69,21 @@ export default function Toast({
 
             const {code} = e
             const idx = items.findIndex(item => item === selected)
-            const toastOffset = toastRef.current.offsetTop
-            const toastHeight = toastRef.current.offsetHeight
-            const pointerTop = itemRef.current.offsetHeight * idx
 
-            if(pointerTop < toastOffset){
-                toastRef.current.offsetTop = pointerTop
-            }
+            if(idx !== -1){
+                const toastOffset = toastRef.current.offsetTop
+                const toastHeight = toastRef.current.offsetHeight
+                const pointerTop = itemRef.current.offsetHeight * (idx + 1)
+
+                if(pointerTop < toastOffset){
+                    toastRef.current.scrollTop = pointerTop
+                }
                 else if( pointerTop > toastOffset + toastHeight){
-                toastRef.current.offsetTop =
+                    toastRef.current.scrollTop = pointerTop - toastOffset - toastHeight
+                }
             }
-            const itemHeight = itemRef.current.offsetHeight
-            const offset = (idx - max + 1) * itemHeight
-            console.log(idx, offset)
-            if(offset >= 0) toastRef.current.scrollTop = offset
+
+            console.log(idx, toastRef.current.offsetTop)
 
             if (code === 'ArrowUp') {
                 if (!selected) {
@@ -88,6 +106,8 @@ export default function Toast({
                         ? setSelected(items[0])
                         : setSelected(items[idx + 1])
                 }
+            } else if(code === 'Enter' && selected){
+                onSubmit && onSubmit(selected)
             }
         }
 
@@ -97,23 +117,23 @@ export default function Toast({
 
 
     function handleItemClick(item: string) {
+        setSelected(item)
         onSubmit && onSubmit(item)
     }
 
 
-    return (
-        <ul ref={toastRef} className={clsx('toast', {visible}, className)}>
+    return createPortal((
+        <ul ref={toastRef} className={clsx('dropdown', {visible}, className)}>
             {
                 items?.map((item, idx) => (
                     <li
                         key={idx}
                         ref={itemRef}
-                        className={clsx('toast-item', {active: selected === item})}
+                        className={clsx('dropdown-item', {active: selected === item})}
                         onClick={() => handleItemClick(item)}
-
                     >{item}</li>
                 ))
             }
         </ul>
-    )
+    ), document.body)
 }
