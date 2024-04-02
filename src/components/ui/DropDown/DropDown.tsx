@@ -53,13 +53,20 @@ export default function DropDown<T extends HTMLElement>({
 
 
     useEffect(() => {
-        if(!rootRef.current) return
-        if(!node || !node.current) return
+        function resizeDropDown(){
+            if(!rootRef.current) return
+            if(!node || !node.current) return
 
-        const rect = node.current.getBoundingClientRect()
-        rootRef.current.style.top = rect.bottom + 'px'
-        rootRef.current.style.left = rect.left + 'px'
-        rootRef.current.style.width = rect.width + 'px'
+            const rect = node.current.getBoundingClientRect()
+            rootRef.current.style.top = rect.bottom + 'px'
+            rootRef.current.style.left = rect.left + 'px'
+            rootRef.current.style.width = rect.width + 'px'
+        }
+        resizeDropDown()
+
+        window.addEventListener('resize', resizeDropDown)
+        return () => { window.removeEventListener('resize', resizeDropDown) }
+
 
     }, [node])
 
