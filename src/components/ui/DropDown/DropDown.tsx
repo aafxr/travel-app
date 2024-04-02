@@ -11,6 +11,7 @@ type DropDownPropsType<T> = {
     max?: number
     onSelect?: (item: string) => unknown
     onSubmit?: (item: string) => unknown
+    onDropDownClose?: () => unknown
     className?: string
     node?: React.RefObject<T>
 }
@@ -23,6 +24,7 @@ type DropDownPropsType<T> = {
  * @param max - максимальное число эллеменото отображаемых в списке
  * @param onSelect - метод, вызывается при навигации по полям при помощи стрелок
  * @param onSubmit - метод, вызывается при клике/enter
+ * @param onDropDownClose - метод вызывается при нажатии Esc
  * @param className - стили, применяются к корневому элементу списка
  * @param node - dom нода, к которой будет спозиционирован список
  * @constructor
@@ -33,30 +35,31 @@ export default function DropDown<T extends HTMLElement>({
                                   max = 5,
                                   onSelect,
                                   onSubmit,
+                                  onDropDownClose,
                                   className,
                                   node
                               }: DropDownPropsType<T>
 ) {
     const itemRef = useRef<HTMLLIElement>(null)
-    const toastRef = useRef<HTMLUListElement>(null)
+    const rootRef = useRef<HTMLUListElement>(null)
     const [selected, setSelected] = useState('')
 
 
     useEffect(() => {
-        if (!itemRef.current || !toastRef.current) return
+        if (!itemRef.current || !rootRef.current) return
         const itemHeight = itemRef.current.offsetHeight
-        toastRef.current.style.maxHeight = itemHeight * max + 'px'
-    }, [itemRef.current, toastRef.current, max])
+        rootRef.current.style.maxHeight = itemHeight * max + 'px'
+    }, [itemRef.current, rootRef.current, max])
 
 
     useEffect(() => {
-        if(!toastRef.current) return
+        if(!rootRef.current) return
         if(!node || !node.current) return
 
         const rect = node.current.getBoundingClientRect()
-        toastRef.current.style.top = rect.bottom + 'px'
-        toastRef.current.style.left = rect.left + 'px'
-        toastRef.current.style.width = rect.width + 'px'
+        rootRef.current.style.top = rect.bottom + 'px'
+        rootRef.current.style.left = rect.left + 'px'
+        rootRef.current.style.width = rect.width + 'px'
 
     }, [node])
 
@@ -64,56 +67,61 @@ export default function DropDown<T extends HTMLElement>({
     useEffect(() => {
         function handleKeyPress(e: KeyboardEvent){
             if(!items || !items.length) return
-            if(!itemRef.current || !toastRef.current) return
-
+            if(!itemRef.current || !rootRef.current) return
 
             const {code} = e
             const idx = items.findIndex(item => item === selected)
 
-            if(idx !== -1){
-                const toastOffset = toastRef.current.offsetTop
-                const toastHeight = toastRef.current.offsetHeight
-                const pointerTop = itemRef.current.offsetHeight * (idx + 1)
-
-                if(pointerTop < toastOffset){
-                    toastRef.current.scrollTop = pointerTop
-                }
-                else if( pointerTop > toastOffset + toastHeight){
-                    toastRef.current.scrollTop = pointerTop - toastOffset - toastHeight
-                }
-            }
-
-            console.log(idx, toastRef.current.offsetTop)
-
             if (code === 'ArrowUp') {
                 if (!selected) {
                     setSelected(items[items.length - 1])
-                    return
-                }
-                if (idx !== -1) {
-                    idx === 0
-                        ? setSelected(items[items.length - 1])
-                        : setSelected(items[idx - 1])
-
+                    onSelect && onSelect(items[items.length - 1])
+                } else if (idx !== -1) {
+                    const selectedItem = idx === 0 ? items[items.length - 1] : items[idx - 1]
+                    setSelected(selectedItem)
+                    onSelect && onSelect(selectedItem)
                 }
             } else if(code === 'ArrowDown'){
                 if (!selected) {
                     setSelected(items[0])
-                    return
-                }
-                if (idx !== -1) {
-                    idx === items.length - 1
-                        ? setSelected(items[0])
-                        : setSelected(items[idx + 1])
+                    onSelect && onSelect(items[0])
+                } else if (idx !== -1) {
+                    const selectedItem = idx === items.length - 1 ? items[0] : items[idx + 1]
+                    setSelected(selectedItem)
+                    onSelect && onSelect(selectedItem)
                 }
             } else if(code === 'Enter' && selected){
                 onSubmit && onSubmit(selected)
+            } else if(code === 'Escape'){
+                onDropDownClose && onDropDownClose()
             }
         }
 
         document.addEventListener('keyup', handleKeyPress)
         return () => { document.removeEventListener('keyup', handleKeyPress) }
     }, [selected])
+
+
+    useEffect(() => {
+        if(!items || !items.length) return
+        if(!itemRef.current || !rootRef.current) return
+
+        const idx = items.findIndex(item => item === selected)
+
+        if(idx !== -1){
+            const rootTopOffset = rootRef.current.scrollTop
+            const rootHeight = rootRef.current.offsetHeight
+            const itemHeight = itemRef.current.offsetHeight
+            const pointerTop = itemHeight * idx
+
+            if(pointerTop < rootTopOffset){
+                rootRef.current.scrollTop = pointerTop
+            }
+            else if( pointerTop >= rootTopOffset + rootHeight){
+                rootRef.current.scrollTop = pointerTop + itemHeight - rootHeight
+            }
+        }
+    },[selected])
 
 
     function handleItemClick(item: string) {
@@ -123,7 +131,7 @@ export default function DropDown<T extends HTMLElement>({
 
 
     return createPortal((
-        <ul ref={toastRef} className={clsx('dropdown', {visible}, className)}>
+        <ul ref={rootRef} className={clsx('dropdown', {visible}, className)}>
             {
                 items?.map((item, idx) => (
                     <li

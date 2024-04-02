@@ -6,8 +6,6 @@ import {PageHeader, DropDown} from "../../components/ui";
 import Input from "../../components/ui/Input/Input";
 
 import './dev.css'
-import {PlaceStepCard} from "../Travel/Pages/TravelMain/steps/PlaceStepCard";
-import {PlaceStep} from "../../classes/StoreEntities/route/PlaceStep";
 
 
 
@@ -48,13 +46,15 @@ export function Dev() {
                         onFocus={() => setToastVisible(true)}
                         // onBlur ={() => setToastVisible(false)}
                     />
-                    {/*<DropDown*/}
-                    {/*    items={['item 1', 'item 2', 'item 3']}*/}
-                    {/*    node={inputRef}*/}
-                    {/*    max={5}*/}
-                    {/*    onSubmit={console.log}*/}
-                    {/*    visible={toastVisible}*/}
-                    {/*/>*/}
+                    <DropDown
+                        items={['item 1', 'item 2', 'item 3', 'item 4', 'item 5']}
+                        node={inputRef}
+                        max={3}
+                        onSubmit={(item) => console.log(`submit ${item}`)}
+                        onSelect={(item) => console.log(`select ${item}`)}
+                        onDropDownClose={() => console.log(`close`)}
+                        visible={toastVisible}
+                    />
                 </div>
             </Container>
         </>
