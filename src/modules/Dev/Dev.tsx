@@ -2,11 +2,11 @@ import React, {useEffect, useRef, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import Container from "../../components/Container/Container";
-import {PageHeader, DropDown} from "../../components/ui";
+import {PageHeader, DropDown, Chip} from "../../components/ui";
 import Input from "../../components/ui/Input/Input";
+import MSwipe from "../../components/MSwipe/MSwipe";
 
 import './dev.css'
-
 
 
 export function Dev() {
@@ -26,12 +26,9 @@ export function Dev() {
     }
 
 
-
-
-
     return (
         <>
-            <Container>
+            <Container className={'overflow-x-hidden'}>
                 <PageHeader title={'Главная страница'}/>
 
                 <div style={{
@@ -44,7 +41,7 @@ export function Dev() {
                     <Input
                         ref={inputRef}
                         onFocus={() => setToastVisible(true)}
-                        // onBlur ={() => setToastVisible(false)}
+                        onBlur ={() => setToastVisible(false)}
                     />
                     <DropDown
                         items={['item 1', 'item 2', 'item 3', 'item 4', 'item 5']}
@@ -52,9 +49,33 @@ export function Dev() {
                         max={3}
                         onSubmit={(item) => console.log(`submit ${item}`)}
                         onSelect={(item) => console.log(`select ${item}`)}
-                        onDropDownClose={() => console.log(`close`)}
+                        onDropDownClose={() => {
+                            inputRef.current?.blur()
+                            console.log(`close`)
+                        }}
                         visible={toastVisible}
                     />
+                    <div className={'hide-scroll'}>
+                        <MSwipe shift={80}>
+                            <MSwipe.Body>
+                                <Input value={';alkds'} />
+                                <Chip>asd</Chip>
+                                <p>a';sdl</p>
+                            </MSwipe.Body>
+
+                            <MSwipe.LeftButton>
+                                <div className='h-full' style={{width: '180px', backgroundColor: '#faf'}}>
+                                    Lorem
+                                </div>
+                            </MSwipe.LeftButton>
+
+                            <MSwipe.RightButton>
+                                <div className='h-full bg-grey-light' style={{width: '180px', backgroundColor: '#aff'}}>
+                                    right
+                                </div>
+                            </MSwipe.RightButton>
+                        </MSwipe>
+                    </div>
                 </div>
             </Container>
         </>

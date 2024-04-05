@@ -5,6 +5,7 @@
     /*padding: var(--padding-base);*/
     max-height: calc(15.325 * 5 * 1rem);
     border: var(--border);
+    background-color: inherit;
     border-color: var(--color-grey-light);
     border-top: transparent;
     border-bottom-left-radius: var(--br-10);
