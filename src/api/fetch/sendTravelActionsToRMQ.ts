@@ -1,9 +1,10 @@
 import {Action} from "../../classes/StoreEntities";
+import aFetch from "../../axios";
 
 /**
  * отправляет action в очередь rabitmq
- * @param actions
+ * @param travelActions
  */
-export async function sendActionsToRMQ(...actions: Action<any>[]){
-
+export async function sendTravelActionsToRMQ(...travelActions: Action<any>[]){
+    return await aFetch.post('/rmq/put/travel/', travelActions)
 }
