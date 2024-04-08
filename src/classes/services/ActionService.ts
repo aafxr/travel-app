@@ -118,4 +118,14 @@ export class ActionService {
         }
         return updatedEntities
     }
+
+    static async checkForNewActions(): Promise<Action<any>[]>{
+        let time = await ActionService.getLastActionTime()
+        if(!time) time = new Date(0)
+
+        const actions = await fetchActions(time.getTime())
+        await DB.writeAllToStore(StoreName.ACTION, actions)
+
+        return actions
+    }
 }

@@ -10,10 +10,14 @@ jobs:
     name: sftp
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
 
       - name: Install Dependencies
-        run: npm i
+        run: npm install
 
       - name: Run tests
         run: npm run test
@@ -22,13 +26,14 @@ jobs:
         run: npm run build
 
       - name: deploy file to server
-        uses:  wlixcc/SFTP-Deploy-Action@v1.2.4
+        uses: easingthemes/ssh-deploy@main
         with:
-          username: 'root'
-          server: '${{ secrets.MAC_IP }}'
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          local_path: './build/*'
-          remote_path: '/home/bitrix/www/'
+          REMOTE_USER: 'root'
+          REMOTE_HOST: '${{ secrets.MAC_IP }}'
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: 'build/'
+          TARGET: '/home/bitrix/www/'
           sftpArgs: '-o ConnectTimeout=5'
           # sftp_only: true
           password: ${{secrets.SSH_PASSWORD}}
