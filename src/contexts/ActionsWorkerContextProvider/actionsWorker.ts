@@ -7,6 +7,8 @@ import {IndexName} from "../../types/IndexName";
 import {DB} from "../../classes/db/DB";
 import sleep from "../../utils/sleep";
 import aFetch from "../../axios";
+import {sendActions} from "../../api/fetch/sendActions";
+import {sendTravelActionsToRMQ} from "../../api/fetch/sendTravelActionsToRMQ";
 
 const SLEEP = 3000
 
@@ -43,6 +45,15 @@ if (location.hostname !== 'localhost') {
             }
 
             const actions = await DB.getManyFromIndex<Action<any>>(StoreName.ACTION, IndexName.SYNCED, 0, 50)
+            // @ts-ignore
+            actions.forEach(a => a.datetime = a.datetime.toISOString())
+            actions.forEach(a => Object.entries(a.data)
+                .forEach(([key, value]) => {
+                    if (value instanceof Date) {
+                        a.data[key] = value.toISOString()
+                    }
+                }))
+
             const travelActions = actions.filter(a => a.entity === StoreName.TRAVEL)
 
             if (!actions.length) {
@@ -50,14 +61,12 @@ if (location.hostname !== 'localhost') {
                 continue
             }
             // @ts-ignore
-            actions.forEach(a => a.datetime = a.datetime.getTime())
+            // actions.forEach(a => a.datetime = a.datetime.getTime())
 
             try {
-                const {data: response, status} = await aFetch.post<
-                    { ok: boolean, result: { [id: string]: { id: string, ok: boolean } } }
-                >('/actions/add/', actions)
+                const {response, status} = await sendActions(...actions)
 
-                await aFetch.post('/rmq/put/travel/', travelActions)
+                await sendTravelActionsToRMQ(...travelActions)
 
                 if (status === 401) {
                     user = undefined
