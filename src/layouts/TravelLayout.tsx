@@ -6,6 +6,10 @@ import PageContainer from "../components/PageContainer/PageContainer";
 import {useAppContext} from "../contexts/AppContextProvider";
 import {TravelService} from "../classes/services";
 import Loader from "../components/Loader/Loader";
+import {useSocket} from "../contexts/SocketContextProvider";
+import {StoreName} from "../types/StoreName";
+import {DB} from "../classes/db/DB";
+import {Travel} from "../classes/StoreEntities";
 
 
 /**
@@ -18,6 +22,7 @@ import Loader from "../components/Loader/Loader";
 export default function TravelLayout({children}: PropsWithChildren) {
     const context = useAppContext()
     const {user, travel} = context
+    const socket = useSocket()
 
     const {travelCode} = useParams()
     const navigate = useNavigate()
@@ -33,6 +38,16 @@ export default function TravelLayout({children}: PropsWithChildren) {
                 .finally(() => setLoading(false))
         }
     }, [travelCode, user])
+
+
+    useEffect(() => {
+        if(!socket) return
+        DB.getAll<Travel>(StoreName.TRAVEL)
+            .then(travels => {
+                const ids = travels.map(t => t.id)
+                socket.emit('travel:join',{travelID: ids})
+            })
+    }, [socket])
 
 
     if (loading) {

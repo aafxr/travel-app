@@ -146,14 +146,14 @@ function App() {
                 <Route path={'/dev/'} element={<Dev/>}/>
                 <Route element={<AuthRequired/>}>
                     <Route element={<LoadActionsComponent />}>
-                        <Route element={<ActionsWorkerContextProvider/>}>
-                            <Route path={'/favorite/'} element={<Favorite/>}/>
-                            <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
-                            <Route path={'/events/'} element={<Events/>}/>
-                            <Route path={'/travel/add/'} element={<TravelAdd/>}/>
-                            <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
-                            <Route element={<TravelLayout/>}>
-                                <Route element={<SocketContextProvider />} >
+                        <Route element={<SocketContextProvider />} >
+                            <Route element={<ActionsWorkerContextProvider/>}>
+                                <Route path={'/favorite/'} element={<Favorite/>}/>
+                                <Route path={'/travels/:travelsType/'} element={<TravelRoutes/>}/>
+                                <Route path={'/events/'} element={<Events/>}/>
+                                <Route path={'/travel/add/'} element={<TravelAdd/>}/>
+                                <Route path={'/travel/:travelCode/settings/'} element={<TravelSettings/>}/>
+                                <Route element={<TravelLayout/>}>
                                     <Route path={'/travel/:travelCode/advice-route/'} element={<TravelAdviceRoute/>}/>
                                     <Route path={'/travel/:travelCode/map/'} element={<TravelAddOnMap/>}/>
                                     <Route path={'/travel/:travelCode/add/waypoint/'} element={<TravelAddWaypoint/>}/>
@@ -192,14 +192,14 @@ function App() {
                                         <Route path={'/travel/:travelCode/expenses/plan/edit/:expenseCode/'} element={<ExpensesAdd/>}/>
                                     </Route>
                                 </Route>
+                                {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
+                                <Route path={'/profile/'} element={<Profile/>}/>
+                                <Route path={'/profile/settings/user/'} element={<ChangeUserPreferences/>}/>
+                                <Route path={'/profile/settings/user/name/edite/'} element={<UserNameEdite/>}/>
+                                <Route path={'/profile/settings/user/photo/edite/'} element={<UserPhotoEdite/>}/>
+                                <Route path={'/profile/actions/'} element={<ActionsList/>}/>
+                                <Route path={'/profile/sessions/'} element={<Sessions/>}/>
                             </Route>
-                            {/*    <Route path={'/hotels/:hotelCode/'} element={<HotelDetails/>}/>*/}
-                            <Route path={'/profile/'} element={<Profile/>}/>
-                            <Route path={'/profile/settings/user/'} element={<ChangeUserPreferences/>}/>
-                            <Route path={'/profile/settings/user/name/edite/'} element={<UserNameEdite/>}/>
-                            <Route path={'/profile/settings/user/photo/edite/'} element={<UserPhotoEdite/>}/>
-                            <Route path={'/profile/actions/'} element={<ActionsList/>}/>
-                            <Route path={'/profile/sessions/'} element={<Sessions/>}/>
                         </Route>
                     </Route>
                 </Route>
