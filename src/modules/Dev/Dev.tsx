@@ -1,15 +1,18 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {useNavigate} from "react-router-dom";
 
 import Container from "../../components/Container/Container";
-import {PageHeader} from "../../components/ui";
+import {PageHeader, DropDown, Chip} from "../../components/ui";
+import Input from "../../components/ui/Input/Input";
+import MSwipe from "../../components/MSwipe/MSwipe";
 
 import './dev.css'
 
 
-
 export function Dev() {
     const navigate = useNavigate()
+    const [toastVisible, setToastVisible] = useState(false)
+    const inputRef = useRef<HTMLInputElement>(null)
 
 
     useEffect(() => {
@@ -23,12 +26,9 @@ export function Dev() {
     }
 
 
-
-
-
     return (
         <>
-            <Container>
+            <Container className={'overflow-x-hidden'}>
                 <PageHeader title={'Главная страница'}/>
 
                 <div style={{
@@ -38,13 +38,43 @@ export function Dev() {
                     flexDirection: 'column',
                     letterSpacing: '1px'
                 }}>
-                    <h2 style={{fontWeight: '900'}}>
-                        <b>Опции</b>
-                    </h2>
-                    <div className={'message'}>
-                        <div className={'message-text'}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium blanditiis in similique.</div>
-                        <div className={'message-close'}>X</div>
-                        <span className={'message-icon'}></span>
+                    <Input
+                        ref={inputRef}
+                        onFocus={() => setToastVisible(true)}
+                        onBlur ={() => setToastVisible(false)}
+                    />
+                    <DropDown
+                        items={['item 1', 'item 2', 'item 3', 'item 4', 'item 5']}
+                        node={inputRef}
+                        max={3}
+                        onSubmit={(item) => console.log(`submit ${item}`)}
+                        onSelect={(item) => console.log(`select ${item}`)}
+                        onDropDownClose={() => {
+                            inputRef.current?.blur()
+                            console.log(`close`)
+                        }}
+                        visible={toastVisible}
+                    />
+                    <div className={'hide-scroll'}>
+                        <MSwipe shift={80}>
+                            <MSwipe.Body>
+                                <Input value={';alkds'} />
+                                <Chip>asd</Chip>
+                                <p>a';sdl</p>
+                            </MSwipe.Body>
+
+                            <MSwipe.LeftButton>
+                                <div className='h-full' style={{width: '180px', backgroundColor: '#faf'}}>
+                                    Lorem
+                                </div>
+                            </MSwipe.LeftButton>
+
+                            <MSwipe.RightButton>
+                                <div className='h-full bg-grey-light' style={{width: '180px', backgroundColor: '#aff'}}>
+                                    right
+                                </div>
+                            </MSwipe.RightButton>
+                        </MSwipe>
                     </div>
                 </div>
             </Container>

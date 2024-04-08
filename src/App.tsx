@@ -54,6 +54,7 @@ import TravelAddLocation from "./modules/Travel/Pages/TravelAddLocation/TravelAd
 import TravelAddAppointment from "./modules/Travel/Pages/TravelAddAppointment/TravelAddAppointment";
 import TravelOnRoute from "./modules/Travel/Pages/TravelOnRoute/TravelOnRoute";
 import {Compare} from "./classes/Compare";
+import {useConnectionResetFetchActions} from "./hooks/useConnectionResetFetchActions";
 
 
 // const TravelDescriptionAndDateLazy = React.lazy(() => import("./modules/Travel/Pages/TravelDescriptionAndDate/TravelDescriptionAndDate"))
@@ -97,6 +98,8 @@ function App() {
     const user = useUser()
     const context = useAppContext()
     const navigate = useNavigate()
+
+    useConnectionResetFetchActions()
 
     useEffect(() => {
         if (!user) {
