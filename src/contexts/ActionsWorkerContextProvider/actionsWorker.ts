@@ -1,14 +1,13 @@
 /// <reference lib="webworker" />
 
 import {ActionWorkerMessage, ActionWorkerMessageType} from "./ActionWorkerMessage";
+import {sendTravelActionsToRMQ} from "../../api/fetch/sendTravelActionsToRMQ";
 import {Action, User} from "../../classes/StoreEntities";
+import {sendActions} from "../../api/fetch/sendActions";
 import {StoreName} from "../../types/StoreName";
 import {IndexName} from "../../types/IndexName";
 import {DB} from "../../classes/db/DB";
 import sleep from "../../utils/sleep";
-import aFetch from "../../axios";
-import {sendActions} from "../../api/fetch/sendActions";
-import {sendTravelActionsToRMQ} from "../../api/fetch/sendTravelActionsToRMQ";
 
 const SLEEP = 3000
 
