@@ -3,6 +3,11 @@ import {useAppContext, useTravel, useUser} from "../../contexts/AppContextProvid
 import {Recover} from "../../classes/Recover";
 import {Outlet} from "react-router-dom";
 
+
+/**
+ * компонент добавляет логику загрузки actions с сервера при востановлении интернет соединения
+ * @constructor
+ */
 export default function LoadActionsComponent() {
     const user = useUser()
     const travel = useTravel()
