@@ -17,9 +17,17 @@ type FetchActionsHookOptions = {
 }
 
 
+/**
+ * хук добавляет слушатель события __window.addEventListener('online', ...)__
+ *
+ * если передать в хук options.callback, то этот callback будет вызван, если будет получен action
+ * с  соответствующим entity
+ *
+ *
+ * @param options - набор callback-опций
+ */
 export function useConnectionResetFetchActions(options: FetchActionsHookOptions = {}) {
     const context = useAppContext()
-
 
 
     useEffect(() => {
