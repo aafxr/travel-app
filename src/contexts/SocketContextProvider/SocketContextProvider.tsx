@@ -1,14 +1,14 @@
 import {Outlet} from "react-router-dom";
 import {io, Socket} from "socket.io-client";
-import {createContext, useEffect, useState} from "react";
+import {createContext, useEffect, useRef, useState} from "react";
 
-import {useAppContext, useTravel, useUser} from "../AppContextProvider";
-import socketManagement from "./socketManagement";
-import {SMEType} from "./SMEType";
-import {DB} from "../../classes/db/DB";
-import {StoreName} from "../../types/StoreName";
-import {Travel} from "../../classes/StoreEntities";
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
+import {useAppContext,  useUser} from "../AppContextProvider";
+import {Travel} from "../../classes/StoreEntities";
+import socketManagement from "./socketManagement";
+import {StoreName} from "../../types/StoreName";
+import {DB} from "../../classes/db/DB";
+import {SMEType} from "./SMEType";
 
 
 export type SocketContextType = {
@@ -24,28 +24,35 @@ export const  SocketContext = createContext<SocketContextType>({})
 export function SocketContextProvider(){
     const [state, setState] = useState<SocketContextType>({})
     const context = useAppContext()
-    const travel = useTravel()
     const user = useUser()
+    const init = useRef<Record<string, any>>({})
 
     useEffect(() => {
-        if(!travel || !user) return
+        if(!user) return
+        if(init.current.initialization) return
 
         const handle = socketManagement(context)
 
+        init.current.initialization = true
         const socket =  io(process.env.REACT_APP_SOCKET_URL as string) //{ host: process.env.REACT_APP_SOCKET_HOST ,port:process.env.REACT_APP_SOCKET_PORT, secure: true}
         console.log(process.env.REACT_APP_SOCKET_URL)
         console.log(socket)
 
         socket.on('connect', () => {
             console.log('socket connect')
-            context.setSocket(socket)
-            setState({socket})
+            DB.getAll<Travel>(StoreName.TRAVEL)
+                .then(travels => {
+                    const ids = travels.map(t => t.id)
+                    socket.emit('travel:join',{travelID: ids})
+                    socket.emit('travel:join:result', console.log)
+                })
+                .catch(defaultHandleError)
         })
 
         socket.on('disconnect', () => {
             console.log('socket disconnect')
-            setState({socket: undefined})
-            context.setSocket(null)
+            // setState({socket: undefined})
+            // context.setSocket(null)
         })
 
         socket.on('connect_error', (err: Error) => {
@@ -62,11 +69,11 @@ export function SocketContextProvider(){
         socket.on(SMEType.LIMIT_ACTION, handle.newLimitAction)
         socket.on(SMEType.LIMIT_ACTION_RESULT, console.log)
 
-        return () => {
-            socket.emit('travel:leave', {travelID: travel.id})
-            socket.close()
-        }
-    }, [])
+        context.setSocket(socket)
+        setState({socket})
+
+        return () => { context.setSocket(null) }
+    }, [user, state])
 
     console.log(state)
     return (

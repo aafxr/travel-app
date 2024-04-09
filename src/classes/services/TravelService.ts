@@ -8,6 +8,7 @@ import {StoreName} from "../../types/StoreName";
 import {Context} from "../Context/Context";
 import {Compare} from "../Compare";
 import {DB} from "../db/DB";
+import {sendNewTravel} from "../../api/fetch/sendNewTravel";
 
 
 /**
@@ -38,6 +39,7 @@ export class TravelService {
 
         const owner = user
         const travel = new Travel({...newTravel, owner_id: owner.id})
+        await sendNewTravel(travel)
         const action = new Action(travel, owner.id, StoreName.TRAVEL, ActionName.ADD)
         await TravelService.writeTransaction(travel, action)
         context.socket?.emit('travel:action', action)

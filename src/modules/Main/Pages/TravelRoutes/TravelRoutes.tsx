@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
+import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
 import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
@@ -8,10 +9,6 @@ import {TravelService} from "../../../../classes/services";
 import {PageHeader, Tab} from "../../../../components/ui";
 import {Travel} from "../../../../classes/StoreEntities";
 import {ShowTravelsList} from "./ShowTravelsList";
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {DB} from "../../../../classes/db/DB";
-import {StoreName} from "../../../../types/StoreName";
-import {useSocket} from "../../../../contexts/SocketContextProvider";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -27,7 +24,6 @@ import {useSocket} from "../../../../contexts/SocketContextProvider";
 export default function TravelRoutes() {
     const user = useUser()
     const context = useAppContext()
-    const socket = useSocket()
 
     const {travelsType} = useParams()
     const navigate = useNavigate()
@@ -46,14 +42,6 @@ export default function TravelRoutes() {
                 .finally(() => setLoading(false))
         }
     }, [])
-
-
-    useEffect(() => {
-        if(!socket) return
-            const ids = travels.map(t => t.id)
-            socket.emit('travel:join',{travelID: ids})
-            socket.emit('travel:join:result', console.log)
-    }, [travels])
 
 
     /** обновление списка актуальных путешествий */
