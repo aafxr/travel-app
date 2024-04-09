@@ -33,13 +33,17 @@ export function SocketContextProvider(){
         const handle = socketManagement(context)
 
         const socket =  io(process.env.REACT_APP_SOCKET_URL as string) //{ host: process.env.REACT_APP_SOCKET_HOST ,port:process.env.REACT_APP_SOCKET_PORT, secure: true}
+        console.log(process.env.REACT_APP_SOCKET_URL)
+        console.log(socket)
 
         socket.on('connect', () => {
+            console.log('socket connect')
             context.setSocket(socket)
             setState({socket})
         })
 
         socket.on('disconnect', () => {
+            console.log('socket disconnect')
             setState({socket: undefined})
             context.setSocket(null)
         })
