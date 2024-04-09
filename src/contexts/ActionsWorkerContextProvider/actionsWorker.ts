@@ -44,14 +44,15 @@ if (location.hostname !== 'localhost') {
             }
 
             const actions = await DB.getManyFromIndex<Action<any>>(StoreName.ACTION, IndexName.SYNCED, 0, 50)
-            // @ts-ignore
-            actions.forEach(a => a.datetime = a.datetime.toISOString())
-            actions.forEach(a => Object.entries(a.data)
-                .forEach(([key, value]) => {
-                    if (value instanceof Date) {
-                        a.data[key] = value.toISOString()
-                    }
-                }))
+            // console.log(actions)
+            // // @ts-ignore
+            // actions.forEach(a => a.datetime = a.datetime.toISOString())
+            // actions.forEach(a => Object.entries(a.data)
+            //     .forEach(([key, value]) => {
+            //         if (value instanceof Date) {
+            //             a.data[key] = value.toISOString()
+            //         }
+            //     }))
 
             const travelActions = actions.filter(a => a.entity === StoreName.TRAVEL)
 

@@ -5,6 +5,10 @@ import {createContext, useEffect, useState} from "react";
 import {useAppContext, useTravel, useUser} from "../AppContextProvider";
 import socketManagement from "./socketManagement";
 import {SMEType} from "./SMEType";
+import {DB} from "../../classes/db/DB";
+import {StoreName} from "../../types/StoreName";
+import {Travel} from "../../classes/StoreEntities";
+import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
 
 
 export type SocketContextType = {
@@ -29,15 +33,17 @@ export function SocketContextProvider(){
         const handle = socketManagement(context)
 
         const socket =  io(process.env.REACT_APP_SOCKET_URL as string) //{ host: process.env.REACT_APP_SOCKET_HOST ,port:process.env.REACT_APP_SOCKET_PORT, secure: true}
+        console.log(process.env.REACT_APP_SOCKET_URL)
+        console.log(socket)
 
         socket.on('connect', () => {
-            socket.emit('travel:join',{travelID: travel.id})
-            socket.emit('travel:join:result', console.log)
+            console.log('socket connect')
             context.setSocket(socket)
             setState({socket})
         })
 
         socket.on('disconnect', () => {
+            console.log('socket disconnect')
             setState({socket: undefined})
             context.setSocket(null)
         })
@@ -62,7 +68,7 @@ export function SocketContextProvider(){
         }
     }, [])
 
-
+    console.log(state)
     return (
         <SocketContext.Provider value={state}>
             <Outlet/>

@@ -18,7 +18,7 @@ type APIResponseType = {
  */
 export async function sendActions(...actions: Action<any>[]) {
     // @ts-ignore
-    actions.forEach(a => a.datetime = a.datetime.toISOString())
+    actions.forEach(a => a.datetime = a.datetime.getTime())
     actions.forEach(a => Object.entries(a.data)
         .forEach(([key, value]) => {
             if (value instanceof Date) {
