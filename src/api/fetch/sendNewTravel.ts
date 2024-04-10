@@ -12,5 +12,15 @@ type ResponseSendTravelType = {
  * @param travel
  */
 export async function sendNewTravel(travel: Travel){
-    return (await aFetch.post<ResponseSendTravelType>('/travel/add/', travel)).data
+    const response = await aFetch.post<ResponseSendTravelType>('/travel/add/', [travel])
+    if(response.statusText === 'ok') {
+        return response.data
+    }
+    else {
+        return {
+            ok: false,
+            request: travel,
+            message: response.statusText
+        }
+    }
 }

@@ -3,8 +3,11 @@ import {io, Socket} from "socket.io-client";
 import {createContext, useEffect, useRef, useState} from "react";
 
 import defaultHandleError from "../../utils/error-handlers/defaultHandleError";
-import {useAppContext,  useUser} from "../AppContextProvider";
-import {Travel} from "../../classes/StoreEntities";
+import {ActionService} from "../../classes/services/ActionService";
+import {useActionSubject} from "../ActionSubjectContextProvider";
+import {useAppContext, useUser} from "../AppContextProvider";
+import {Action, Travel} from "../../classes/StoreEntities";
+import {TravelService} from "../../classes/services";
 import socketManagement from "./socketManagement";
 import {StoreName} from "../../types/StoreName";
 import {DB} from "../../classes/db/DB";
@@ -26,6 +29,7 @@ export function SocketContextProvider(){
     const context = useAppContext()
     const user = useUser()
     const init = useRef<Record<string, any>>({})
+    const actionSubject = useActionSubject()
 
     useEffect(() => {
         if(!user) return
@@ -60,14 +64,40 @@ export function SocketContextProvider(){
             setState({...state, errorMessage: err.message})
         })
 
-        socket.on(SMEType.MESSAGE, handle.newTravelMessage)
+        // socket.on(SMEType.MESSAGE, handle.newTravelMessage)
+        socket.on(SMEType.MESSAGE, console.log)
         socket.on(SMEType.MESSAGE_RESULT, console.log)
-        socket.on(SMEType.TRAVEL_ACTION, handle.newTravelAction)
+        // socket.on(SMEType.TRAVEL_ACTION, handle.newTravelAction)
+        socket.on(SMEType.TRAVEL_ACTION, console.log)
         socket.on(SMEType.TRAVEL_ACTION_RESULT, console.log)
-        socket.on(SMEType.EXPENSE_ACTION, handle.newExpenseAction)
+        // socket.on(SMEType.EXPENSE_ACTION, handle.newExpenseAction)
+        socket.on(SMEType.EXPENSE_ACTION, console.log)
         socket.on(SMEType.EXPENSE_ACTION_RESULT, console.log)
-        socket.on(SMEType.LIMIT_ACTION, handle.newLimitAction)
+        // socket.on(SMEType.LIMIT_ACTION, handle.newLimitAction)
+        socket.on(SMEType.LIMIT_ACTION, console.log)
         socket.on(SMEType.LIMIT_ACTION_RESULT, console.log)
+
+
+        socket.on(SMEType.ACTION, async (action: Action<any>) => {
+            console.log(action, typeof action)
+            try{
+                // await DB.add(StoreName.ACTION, action)
+                const result = await ActionService.prepareNewAction(action,user)
+                if(    result
+                    && context.travel
+                    && context.travel.id
+                    && action.entity === StoreName.TRAVEL
+                    && context.travel.id === action.data.id
+                ){
+                    const travel = await TravelService.getById(context.travel.id)
+                    travel && context.setTravel(travel)
+                }
+                result && actionSubject.next(action)
+            } catch (e){
+                console.error(e)
+                defaultHandleError(e as Error)
+            }
+        })
 
         context.setSocket(socket)
         setState({socket})
@@ -75,7 +105,7 @@ export function SocketContextProvider(){
         return () => { context.setSocket(null) }
     }, [user, state])
 
-    console.log(state)
+
     return (
         <SocketContext.Provider value={state}>
             <Outlet/>

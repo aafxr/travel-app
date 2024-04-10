@@ -9,8 +9,8 @@ import {TravelService} from "../classes/services";
 
 
 type FetchActionsHookOptions = {
-    onTravelAction?: () => unknown
-    onExpenseAction?: () => unknown
+    onTravelAction?: (ids: string[]) => unknown
+    onExpenseAction?: (ids: string[]) => unknown
     onLimitAction?: () => unknown
     onMessageAction?: () => unknown
     onUserAction?: () => unknown
@@ -32,19 +32,34 @@ export function useConnectionResetFetchActions(options: FetchActionsHookOptions 
 
     useEffect(() => {
         async function onOnline() {
-            const travel = context.travel
-            if (!travel) return
-
             const actions: Action<any>[] = await ActionService.checkForNewActions().catch(defaultHandleError) || []
 
-            const entities = actions.map(a => a.entity)
-            const set = new Set(entities)
+            const map = new Map<string, Action<any>[]>()
+            actions.forEach(a => {
+                const list = map.get(a.entity) || []
+                list.push(a)
+            })
 
-            if(options.onTravelAction && set.has(StoreName.TRAVEL)) options.onTravelAction()
-            if(options.onExpenseAction && (set.has(StoreName.EXPENSES_ACTIONS) || set.has(StoreName.EXPENSES_ACTIONS))) options.onExpenseAction()
-            if(options.onLimitAction && set.has(StoreName.LIMIT)) options.onLimitAction()
-            if(options.onUserAction && set.has(StoreName.USERS)) options.onUserAction()
-            if(options.onMessageAction && set.has(StoreName.MESSAGE)) options.onMessageAction()
+            if(options.onTravelAction && map.has(StoreName.TRAVEL)) {
+                const ids: string[] = map.get(StoreName.TRAVEL)!.map(a => a.data.id)
+                options.onTravelAction(ids)
+            }
+
+            if(options.onExpenseAction && (map.has(StoreName.EXPENSES_ACTIONS) || map.has(StoreName.EXPENSES_PLAN))) {
+                const set = new Set<string>()
+                if(map.has(StoreName.EXPENSES_ACTIONS)){
+                    map.get(StoreName.EXPENSES_ACTIONS)!.forEach(a => set.add(a.data.primary_entity_id))
+                }
+                if(map.has(StoreName.EXPENSES_PLAN)){
+                    map.get(StoreName.EXPENSES_PLAN)!.forEach(a => set.add(a.data.primary_entity_id))
+                }
+                const travel_ids = Array.from(set.keys())
+                if(travel_ids.length) options.onExpenseAction(travel_ids)
+            }
+
+            if(options.onLimitAction && map.has(StoreName.LIMIT)) options.onLimitAction()
+            if(options.onUserAction && map.has(StoreName.USERS)) options.onUserAction()
+            if(options.onMessageAction && map.has(StoreName.MESSAGE)) options.onMessageAction()
 
             const currentTravelAction = actions.find(a => a.entity === StoreName.TRAVEL && a.data.id === context.travel?.id)
             if(currentTravelAction) {

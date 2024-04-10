@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 import RadioButtonGroup, {RadioButtonGroupItemType} from "../../../../components/RadioButtonGroup/RadioButtonGroup";
@@ -57,6 +57,12 @@ export default function TravelSettings() {
         navigate(`/travel/${context.travel.id}/settings/${user.id}/`)
     }
 
+    useEffect(() => {
+        if(!context.travel){
+            console.log('Travel field is empty in context')
+            navigate(-1)
+        }
+    }, [])
 
     /** добавление / удаление способа перемещения во время маршрута */
     function handleMovementSelect(movementType: MovementType) {

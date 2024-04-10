@@ -5,6 +5,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {ChatIcon, ChecklistIcon, MoneyIcon, VisibilityIcon, VisibilityOffIcon} from "../../../../components/svg";
 import {useAppContext, useTravel, useUser} from "../../../../contexts/AppContextProvider";
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useActionSubject} from "../../../../contexts/ActionSubjectContextProvider";
 import LinkComponent from "../../../../components/ui/LinkComponent/LinkComponent";
 import PhotoComponent from "../../../../components/PhotoComponents/PhotoComponent";
 import IconButton from "../../../../components/ui/IconButton/IconButton";
@@ -23,6 +24,8 @@ import Menu from "../../../../components/Menu/Menu";
 import {ShowRoute} from "./ShowRoute";
 
 import './TravelMain.css'
+import {filter} from "rxjs";
+import {StoreName} from "../../../../types/StoreName";
 
 /**
  * Страница редактирования деталей путешествия (даты, название, описание путешествия)
@@ -37,6 +40,7 @@ export default function TravelMain() {
     const context = useAppContext()
     const travel = useTravel()
     const user = useUser()
+    const actionSubject = useActionSubject()
 
     const [compact, setCompact] = useState(false)
     const [curtainOpen, setCurtainOpen] = useState(true)
@@ -52,8 +56,23 @@ export default function TravelMain() {
     )
 
 
+    useEffect(() => {
+        if (!user || !travel) return
+        const subscription = actionSubject
+            .pipe(filter(a => a.entity === StoreName.TRAVEL && a.data.id && a.data.id !== travel.id))
+            .subscribe({
+                next: (action) => {
+                    TravelService.getById(action.data.id)
+                        .then(t => t && context.setTravel(t))
+                        .catch(defaultHandleError)
+                }
+            })
+        return () => { subscription.unsubscribe() }
+    }, [])
+
+
     async function handleTravelPhotoChange(blob: Blob) {
-        if(!travel) return
+        if (!travel) return
         const photo = new Photo({blob})
         Travel.setPhoto(travel, photo)
         if (user)
@@ -67,29 +86,29 @@ export default function TravelMain() {
     }
 
     useEffect(() => {
-        if(!travel) return
+        if (!travel) return
         if (!dayNumber) navigate(`/travel/${travel.id}/1/`)
 
     }, [travel])
 
     function handleCurtain(val = true) {
-        if(!travel || !user) return
+        if (!travel || !user) return
         User.setCurtain(user, val)
         setCurtainOpen(val)
     }
 
-    function handleInviteMember(){
-        if(!travel) return
+    function handleInviteMember() {
+        if (!travel) return
         navigate(`/travel/${travel.id}/settings/invite/`)
     }
 
-    function handleChatButtonClick(){
-        if(!travel) return
+    function handleChatButtonClick() {
+        if (!travel) return
         navigate(`/travel/${travel.id}/chat/`)
     }
 
 
-    if(!travel) return null
+    if (!travel) return null
 
     return (
         <>
@@ -110,8 +129,11 @@ export default function TravelMain() {
                         <div className='travel-details-title column center'>
                             <h2 className='center gap-0.5'
                                 onClick={() => navigate(`/travel/${travel.id || travelCode}/edite/`)}>
-                                { travel.title || (<span className='travel-details-title--empty'>Добавить название</span>) }
-                                    {Travel.isPublic(travel) ? <VisibilityIcon className='travel-details-icon icon public'/> : <VisibilityOffIcon className='travel-details-icon icon private'/>}
+                                {travel.title || (
+                                    <span className='travel-details-title--empty'>Добавить название</span>)}
+                                {Travel.isPublic(travel) ?
+                                    <VisibilityIcon className='travel-details-icon icon public'/> :
+                                    <VisibilityOffIcon className='travel-details-icon icon private'/>}
                             </h2>
                             <div className='travel-details-subtitle center'>{travel?.description}</div>
                         </div>
@@ -132,18 +154,18 @@ export default function TravelMain() {
                                 {compact ? 'Развернуть' : 'Свернуть'}
                             </span>
                         </div>
-                    <div className='flex-between flex-nowrap gap-0.5 pb-20'>
-                        <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
-                                    onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
-                        {
-                            travel.permission.showCheckList === 1 && <IconButton
-                                icon={<ChecklistIcon/>}
-                                title='Чек-лист'
-                                onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
-                            />
-                        }
-                        <IconButton icon={<ChatIcon badge/>} onClick={handleChatButtonClick}/>
-                    </div>
+                        <div className='flex-between flex-nowrap gap-0.5 pb-20'>
+                            <IconButton icon={<MoneyIcon className='icon'/>} title='Расходы'
+                                        onClick={() => navigate(`/travel/${travelCode}/expenses/`)}/>
+                            {
+                                travel.permission.showCheckList === 1 && <IconButton
+                                    icon={<ChecklistIcon/>}
+                                    title='Чек-лист'
+                                    onClick={() => navigate(`/travel/${travelCode}/checklist/`)}
+                                />
+                            }
+                            <IconButton icon={<ChatIcon badge/>} onClick={handleChatButtonClick}/>
+                        </div>
                     </div>
                 </div>
             </Container>

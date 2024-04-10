@@ -1,12 +1,9 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import {useNavigate} from "react-router-dom";
 
-import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
-import {useUser, useAppContext} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
-import {TravelService} from "../../../../classes/services";
-import {Travel} from '../../../../classes/StoreEntities'
+import {useUser} from "../../../../contexts/AppContextProvider";
 import {PageHeader} from "../../../../components/ui";
 import Menu from "../../../../components/Menu/Menu";
 
@@ -24,16 +21,13 @@ import './Main.css'
 export default function Main() {
     const navigate = useNavigate()
     const user = useUser()
-    const context = useAppContext()
+    // const context = useAppContext()
 
     async function handleNewTravel() {
         if (user) {
-            TravelService.create(context, new Travel({}), user)
-                .then((travel) => {
-                    context.setTravel(travel)
-                    navigate(`/travel/add/`)
-                })
-                .catch(defaultHandleError)
+            // const travel = new Travel({})
+            // context.setTravel(travel)
+            navigate(`/travel/add/`)
         } else {
             navigate('/login/')
         }

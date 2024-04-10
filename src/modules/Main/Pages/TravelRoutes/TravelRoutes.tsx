@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useNavigate, useParams} from "react-router-dom";
 
 import defaultHandleError from "../../../../utils/error-handlers/defaultHandleError";
+import {useActionSubject} from "../../../../contexts/ActionSubjectContextProvider";
 import {useAppContext, useUser} from "../../../../contexts/AppContextProvider";
 import Navigation from "../../../../components/Navigation/Navigation";
 import Container from "../../../../components/Container/Container";
@@ -9,6 +10,8 @@ import {TravelService} from "../../../../classes/services";
 import {PageHeader, Tab} from "../../../../components/ui";
 import {Travel} from "../../../../classes/StoreEntities";
 import {ShowTravelsList} from "./ShowTravelsList";
+import {filter} from "rxjs";
+import {StoreName} from "../../../../types/StoreName";
 
 /**
  * @typedef {'old' | 'current' | 'plan'} TravelDateStatus
@@ -24,6 +27,7 @@ import {ShowTravelsList} from "./ShowTravelsList";
 export default function TravelRoutes() {
     const user = useUser()
     const context = useAppContext()
+    const actionSubject = useActionSubject()
 
     const {travelsType} = useParams()
     const navigate = useNavigate()
@@ -32,6 +36,22 @@ export default function TravelRoutes() {
     const [actualTravels, setActualTravels] = useState<Array<Travel>>([])
 
     const [loading, setLoading] = useState(true)
+
+
+    useEffect(() => {
+        if(!user) return
+        const set = new Set(travels.map(t => t.id))
+        const subscription = actionSubject
+            .pipe( filter(a => a.entity === StoreName.TRAVEL && a.data.id && !set.has(a.data.id)) )
+            .subscribe({
+            next: (action) => {
+                TravelService.getById(action.data.id)
+                    .then(t => t && setTravels(prev => [...prev, t]) )
+                    .catch(defaultHandleError)
+            }
+        })
+        return () => {subscription.unsubscribe()}
+    }, [travels])
 
 
     useEffect(() => {

@@ -37,15 +37,7 @@ export class DB {
      */
     static async add<T>(storeName: StoreName, data: T) {
         const db = await openIDBDatabase()
-        const tx = db.transaction(storeName, "readwrite")
-        const store = tx.objectStore(storeName)
-        try {
-            if (data instanceof StoreEntity) store.add(data.dto())
-            else store.add(data)
-        } catch (e) {
-            console.error(e)
-            throw e
-        }
+        await db.add(storeName, data)
     }
 
     /**

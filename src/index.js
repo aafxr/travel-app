@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
+import {ActionSubjectContextProvider} from "./contexts/ActionSubjectContextProvider";
 import {AppContextProvider} from "./contexts/AppContextProvider/AppContextProvider";
 import ThemeContextProvider from "./contexts/ThemeContextProvider";
 import {pushAlertMessage} from "./components/Alerts/Alerts";
@@ -13,7 +14,6 @@ import errorReport from "./controllers/ErrorReport";
 import setFixedVH from "./utils/setFixedVH";
 
 import App from './App';
-
 
 
 let theme = localStorage.getItem(THEME)
@@ -27,9 +27,11 @@ const root = ReactDOM.createRoot(document.querySelector('#root'));
 root.render(
     <AppContextProvider>
         <ThemeContextProvider>
-            <BrowserRouter>
-                <App/>
-            </BrowserRouter>
+            <ActionSubjectContextProvider>
+                <BrowserRouter>
+                    <App/>
+                </BrowserRouter>
+            </ActionSubjectContextProvider>
         </ThemeContextProvider>
     </AppContextProvider>
 );

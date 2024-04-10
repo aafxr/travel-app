@@ -36,19 +36,23 @@ export class ActionService {
 
         const cursor = await DB.openIndexCursor<Action<any>>(StoreName.ACTION, IndexName.DATETIME, IDBKeyRange.lowerBound(action.datetime), "prev")
         const a = (await cursor.next()).value
-        await DB.update(StoreName.ACTION, action)
-        if (a && a.datetime > action.datetime) {
-            switch (storeName) {
-                case StoreName.TRAVEL:
-                    return await Recover.travel((action as unknown as Action<Travel>).data.id)
-                case StoreName.EXPENSE:
-                    return await Recover.expense((action as unknown as Action<Expense>).data.primary_entity_id, user)
-                case StoreName.LIMIT:
-                    return await Recover.limit((action as unknown as Action<Limit>).data.primary_entity_id, user)
+
+        try {
+            await DB.add(StoreName.ACTION, action)
+
+            if (a && a.datetime > action.datetime) {
+                switch (storeName) {
+                    case StoreName.TRAVEL:
+                        return await Recover.travel((action as unknown as Action<Travel>).data.id)
+                    case StoreName.EXPENSE:
+                        return await Recover.expense((action as unknown as Action<Expense>).data.primary_entity_id, user)
+                    case StoreName.LIMIT:
+                        return await Recover.limit((action as unknown as Action<Limit>).data.primary_entity_id, user)
+                }
+            } else {
+                return await Recover.assign(action)
             }
-        } else {
-            return await Recover.assign(action)
-        }
+        }catch (e) {console.error(e)}
     }
 
 
@@ -119,9 +123,11 @@ export class ActionService {
         return updatedEntities
     }
 
-    static async checkForNewActions(): Promise<Action<any>[]>{
+    static async checkForNewActions(): Promise<Action<any>[]> {
         let time = await ActionService.getLastActionTime()
-        if(!time) time = new Date(0)
+        if (!time) time = new Date(0)
+
+        console.log('fetch actions time: ', time.toISOString())
 
         const actions = await fetchActions(time.getTime())
         await DB.writeAllToStore(StoreName.ACTION, actions)
