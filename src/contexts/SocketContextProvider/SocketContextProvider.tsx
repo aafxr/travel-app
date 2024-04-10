@@ -65,17 +65,17 @@ export function SocketContextProvider(){
         })
 
         // socket.on(SMEType.MESSAGE, handle.newTravelMessage)
-        socket.on(SMEType.MESSAGE, console.log)
-        socket.on(SMEType.MESSAGE_RESULT, console.log)
+        // socket.on(SMEType.MESSAGE, console.log)
+        // socket.on(SMEType.MESSAGE_RESULT, console.log)
         // socket.on(SMEType.TRAVEL_ACTION, handle.newTravelAction)
-        socket.on(SMEType.TRAVEL_ACTION, console.log)
-        socket.on(SMEType.TRAVEL_ACTION_RESULT, console.log)
+        // socket.on(SMEType.TRAVEL_ACTION, console.log)
+        // socket.on(SMEType.TRAVEL_ACTION_RESULT, console.log)
         // socket.on(SMEType.EXPENSE_ACTION, handle.newExpenseAction)
-        socket.on(SMEType.EXPENSE_ACTION, console.log)
-        socket.on(SMEType.EXPENSE_ACTION_RESULT, console.log)
+        // socket.on(SMEType.EXPENSE_ACTION, console.log)
+        // socket.on(SMEType.EXPENSE_ACTION_RESULT, console.log)
         // socket.on(SMEType.LIMIT_ACTION, handle.newLimitAction)
-        socket.on(SMEType.LIMIT_ACTION, console.log)
-        socket.on(SMEType.LIMIT_ACTION_RESULT, console.log)
+        // socket.on(SMEType.LIMIT_ACTION, console.log)
+        // socket.on(SMEType.LIMIT_ACTION_RESULT, console.log)
 
 
         socket.on(SMEType.ACTION, async (action: Action<any>) => {
